@@ -265,9 +265,9 @@ const config = {
         darkTheme: prismThemes.okaidia,
       },
       algolia: {
-        appId: 'V68T4JDSGM',
-        apiKey: 'cc170875e7c75fee8994a4835a929a',
-        indexName: 'fly-klipper-docs',
+        appId: '70Z2SGFGF6',
+        apiKey: 'a7d8813938ec6d51edab3c6ad04a1b0b',
+        indexName: 'fly-docs',
         contextualSearch: true,
       },
     }),
