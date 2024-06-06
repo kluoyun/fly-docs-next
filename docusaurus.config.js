@@ -32,7 +32,7 @@ const config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans', 'en', 'ja', 'fr'],
+    locales: ['zh-Hans', 'en', 'ja', 'fr', 'de', 'ru', 'ko'],
   },
   presets: [
     [
@@ -55,6 +55,18 @@ const config = {
           customCss: [
             require.resolve('./src/css/custom.css'),
           ]
+        },
+        sitemap: {
+          lastmod: 'date',
+          changefreq: 'weekly',
+          priority: 0.5,
+          ignorePatterns: ['/tags/**'],
+          filename: 'sitemap.xml',
+          createSitemapItems: async (params) => {
+            const { defaultCreateSitemapItems, ...rest } = params;
+            const items = await defaultCreateSitemapItems(rest);
+            return items.filter((item) => !item.url.includes('/page/'));
+          },
         },
       }),
     ],
@@ -101,6 +113,7 @@ const config = {
           {
             type: 'localeDropdown',
             position: 'right',
+            queryString: '?persistLocale=true',
             dropdownItemsAfter: [
               {
                 type: 'html',
