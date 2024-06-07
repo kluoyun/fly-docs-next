@@ -262,7 +262,7 @@ const config = {
           },
         ],
         theme: prismThemes.oneLight,
-        darkTheme: prismThemes.okaidia,
+        darkTheme: prismThemes.oneDark,
       },
       algolia: {
         appId: '70Z2SGFGF6',
