@@ -13,7 +13,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://next-mellow.klipper.cn',
+  url: 'https://mellow-next.klipper.cn',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -269,6 +269,7 @@ const config = {
         apiKey: 'a7d8813938ec6d51edab3c6ad04a1b0b',
         indexName: 'fly-docs',
         contextualSearch: true,
+        facetFilters: ["language:zh-Hans",["docusaurus_tag:default","docusaurus_tag:docs-default-current"]],
       },
     }),
 };
