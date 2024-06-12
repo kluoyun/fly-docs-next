@@ -99,6 +99,12 @@ const config = {
             sidebarId: 'debugdocSidebar',
             label: '调试文档',
           },
+          {
+            type: 'docSidebar',
+            position: 'left',
+            sidebarId: 'toolsdocSidebar',
+            label: '实用工具',
+          },
           { to: '/blog', label: '动态', position: 'left' },
           {
             type: 'docSidebar',
