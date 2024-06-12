@@ -271,11 +271,12 @@ const config = {
         darkTheme: prismThemes.oneDark,
       },
       algolia: {
-        appId: '70Z2SGFGF6',
-        apiKey: 'a7d8813938ec6d51edab3c6ad04a1b0b',
-        indexName: 'fly-docs',
+        appId: 'LZ40BJW1SW',
+        apiKey: '729491300f69121a45f199542a7bac71',
+        indexName: 'mellow-next-klipper',
+        container: '### REPLACE ME WITH A CONTAINER (e.g. div) ###',
         contextualSearch: true,
-        facetFilters: ["language:zh-Hans",["docusaurus_tag:default","docusaurus_tag:docs-default-current"]],
+        facetFilters: ["language:zh-Hans", ["docusaurus_tag:default", "docusaurus_tag:docs-default-current"]],
       },
     }),
 };
