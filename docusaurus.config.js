@@ -34,22 +34,55 @@ const config = {
     defaultLocale: 'zh-Hans',
     locales: ['zh-Hans', 'en', 'ja', 'fr', 'de', 'ru', 'ko'],
   },
+  plugins: [
+    [
+      '@docusaurus/plugin-pwa',
+      {
+        debug: false,
+        offlineModeActivationStrategies: [
+          'appInstalled',
+          'standalone',
+          'queryString',
+        ],
+        pwaHead: [
+          {
+            tagName: 'link',
+            rel: 'icon',
+            href: '/img/logo.png',
+          },
+          {
+            tagName: 'link',
+            rel: 'manifest',
+            href: '/manifest.json',
+          },
+          {
+            tagName: 'meta',
+            name: 'theme-color',
+            content: 'rgb(37, 194, 160)',
+          },
+        ],
+      },
+    ],
+  ],
   presets: [
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          disableVersioning: false,
           sidebarPath: './sidebars.js',
           editUrl:
-            'https://github.com/Mellow-3D/klipper-docs/tree/dev-next/packages/docs/',
+            'https://github.com/kluoyun/fly-docs-next/tree/master/',
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
           editUrl:
-            'https://github.com/Mellow-3D/klipper-docs/tree/dev-next/packages/blog/',
+            'https://github.com/kluoyun/fly-docs-next/tree/master/',
         },
         theme: {
           customCss: [
@@ -222,8 +255,10 @@ const config = {
         ],
         logo: {
           alt: 'Mellow Logo',
-          src: '/img/mellow-logo.svg',
-          href: 'https://next-mellow.klipper.cn',
+          src: '/img/logo.png',
+          width: 64,
+          height: 64,
+          href: 'https://mellow-next.klipper.cn',
         },
         copyright: `Copyright © ${new Date().getFullYear()} 3D Mellow, Inc. All rights reserved`,
       },

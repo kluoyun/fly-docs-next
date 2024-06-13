@@ -31,7 +31,7 @@ import Chip from '@mui/material/Chip';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/system';
 import pako from 'pako';
-
+import Translate, { translate } from '@docusaurus/Translate';
 
 const blue = {
     50: '#F0F7FF',
@@ -176,10 +176,10 @@ const KlipperFirmwareParse = () => {
                 }
                 if (start_pos == -1) {
                     if (data_hex.indexOf("43616e426f6f74") > 0) {
-                        snackbarOpen("不支持解析 CanBoot(Katapult) 固件");
+                        snackbarOpen(<Translate>不支持解析 CanBoot(Katapult) 固件</Translate>);
                         return;
                     }
-                    snackbarOpen("BIN文件解析错误,0x01");
+                    snackbarOpen(<Translate>BIN文件解析错误,0x01</Translate>);
                     return;
                 }
                 var end_pos = data_hex.indexOf("020000000002", start_pos);
@@ -188,7 +188,7 @@ const KlipperFirmwareParse = () => {
                     end_pos = data_hex.indexOf("0000000000", start_pos);
                 }
                 if (end_pos == -1) {
-                    snackbarOpen("BIN文件解析错误,0x02");
+                    snackbarOpen(<Translate>BIN文件解析错误,0x02</Translate>);
                     return;
                 }
 
@@ -202,13 +202,13 @@ const KlipperFirmwareParse = () => {
                     setklipperDict(JSON.parse(decodedData));
                 } catch (error) {
                     console.error('解压数据时发生错误:', error);
-                    snackbarOpen("数据处理失败,0x01");
+                    snackbarOpen(<Translate>数据处理失败,0x01</Translate>);
                 }
             };
             fileReader.readAsArrayBuffer(file);
         } catch (e) {
             console.error(e);
-            snackbarOpen("Bin文件解析错误,0x0f");
+            snackbarOpen(<Translate>Bin文件解析错误,0x0f</Translate>);
         }
     }
 
@@ -233,10 +233,10 @@ const KlipperFirmwareParse = () => {
                 }
                 if (start_pos == -1) {
                     if (data_hex.indexOf("43616e426f6f74") > 0) {
-                        snackbarOpen("不支持解析 CanBoot(Katapult) 固件");
+                        snackbarOpen(<Translate>不支持解析 CanBoot(Katapult) 固件</Translate>);
                         return;
                     }
-                    snackbarOpen("UF2文件解析错误,0x01");
+                    snackbarOpen(<Translate>UF2文件解析错误,0x01</Translate>);
                     return;
                 }
                 var end_pos = data_hex.indexOf("020000000002", start_pos);
@@ -245,7 +245,7 @@ const KlipperFirmwareParse = () => {
                     end_pos = data_hex.indexOf("0000000000", start_pos);
                 }
                 if (end_pos == -1) {
-                    snackbarOpen("UF2文件解析错误,0x02");
+                    snackbarOpen(<Translate>UF2文件解析错误,0x02</Translate>);
                     return;
                 }
                 data_hex = data_hex.slice(start_pos, end_pos);
@@ -258,13 +258,13 @@ const KlipperFirmwareParse = () => {
                     setklipperDict(JSON.parse(decodedData));
                 } catch (error) {
                     console.error('解压数据时发生错误:', error);
-                    snackbarOpen("数据处理失败,0x01");
+                    snackbarOpen(<Translate>数据处理失败,0x01</Translate>);
                 }
             };
             fileReader.readAsArrayBuffer(file);
         } catch (e) {
             console.error(e);
-            snackbarOpen("UF2文件解析错误,0x0f");
+            snackbarOpen(<Translate>UF2文件解析错误,0x0f</Translate>);
         }
     }
 
@@ -281,7 +281,7 @@ const KlipperFirmwareParse = () => {
             fileReader.readAsArrayBuffer(file);
         } catch (e) {
             console.error(e);
-            snackbarOpen("DICT文件解析错误,0x0f");
+            snackbarOpen(<Translate>DICT文件解析错误,0x0f</Translate>);
         }
     }
 
@@ -314,10 +314,10 @@ const KlipperFirmwareParse = () => {
 
     const handleFileChange = (event) => {
         if (event.target.files.lenght > 1) {
-            snackbarOpen('不支持多文件解析，请选择单个文件');
+            snackbarOpen(<Translate>不支持多文件解析，请选择单个文件</Translate>);
             return;
         } else if (event.target.files.lenght < 1) {
-            snackbarOpen('请选择文件');
+            snackbarOpen(<Translate>请选择文件</Translate>);
             return;
         }
         const file = event.target.files[0];
@@ -339,19 +339,19 @@ const KlipperFirmwareParse = () => {
         // 文件后缀验证
         const fileExtension = selectedFile.name.toLowerCase();
         if (!fileExtension.endsWith('.bin') && !fileExtension.endsWith('.uf2') && !fileExtension.endsWith('.dict') && !fileExtension.endsWith('.elf')) {
-            snackbarOpen('文件格式错误，请选择.bin/.uf2/.dict/.elf文件')
+            snackbarOpen(<Translate>文件格式错误，请选择.bin/.uf2/.dict/.elf文件</Translate>)
             return;
         }
 
         // 文件不能大于2M
         if (!fileExtension.endsWith('.elf') && selectedFile.size > 2 * 1024 * 1024) {
-            snackbarOpen('文件不能大于2M')
+            snackbarOpen(<Translate>文件不能大于2M</Translate>);
             return;
         } else if (fileExtension.endsWith('.elf') && selectedFile.size > 5 * 1024 * 1024) {
-            snackbarOpen('elf文件不能大于5M')
+            snackbarOpen(<Translate>elf文件不能大于5M</Translate>);
             return;
         }
-        snackbarOpen('文件解析中，请稍后');
+        snackbarOpen(<Translate>文件解析中，请稍后</Translate>);
         // console.log(selectedFile);
 
         if (fileExtension.endsWith('.bin')) {
@@ -363,7 +363,7 @@ const KlipperFirmwareParse = () => {
         } else if (fileExtension.endsWith('.elf')) {
             parseElfFile(selectedFile);
         } else {
-            snackbarOpen('文件解析错误，请选择正确的文件')
+            snackbarOpen(<Translate>文件解析错误，请选择正确的文件</Translate>);
         }
     }, [selectedFile]);
 
@@ -372,7 +372,7 @@ const KlipperFirmwareParse = () => {
             return;
         }
         if (!klipperDict.hasOwnProperty('app') || !klipperDict.hasOwnProperty('version')) {
-            snackbarOpen('文件解析错误，缺少必要字段');
+            snackbarOpen(<Translate>文件解析错误，缺少必要字段</Translate>);
             return;
         }
         // console.log(klipperDict);
@@ -380,7 +380,7 @@ const KlipperFirmwareParse = () => {
         if (klipperDict.hasOwnProperty('app')) {
             setDict_infos(prevDictInfos => [...prevDictInfos,
             {
-                name: "APP程序",
+                name: <Translate>APP程序</Translate>,
                 info: klipperDict.app
             }
             ]);
@@ -389,7 +389,7 @@ const KlipperFirmwareParse = () => {
         if (klipperDict.hasOwnProperty('license')) {
             setDict_infos(prevDictInfos => [...prevDictInfos,
             {
-                name: "许可协议",
+                name: <Translate>许可协议</Translate>,
                 info: klipperDict.license
             }
             ]);
@@ -404,7 +404,7 @@ const KlipperFirmwareParse = () => {
             }
             setDict_infos(prevDictInfos => [...prevDictInfos,
             {
-                name: "固件版本",
+                name: <Translate>固件版本</Translate>,
                 info: commitHash ? klipperDict.version.replace(commitHash, "<a href='https://github.com/Klipper3d/klipper/commit/" + commitHash + "' target='_blank'>" + commitHash + "</a>") : klipperDict.version
             }
             ]);
@@ -413,7 +413,7 @@ const KlipperFirmwareParse = () => {
         if (klipperDict.hasOwnProperty('build_versions ')) {
             setDict_infos(prevDictInfos => [...prevDictInfos,
             {
-                name: "工具链版本",
+                name: <Translate>工具链版本</Translate>,
                 info: klipperDict.build_versions
             }
             ]);
@@ -424,7 +424,7 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty('MCU')) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "主控型号",
+                    name: <Translate>主控型号</Translate>,
                     info: config.MCU.toUpperCase()
                 }
                 ]);
@@ -433,7 +433,7 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty('CLOCK_FREQ')) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "主控频率",
+                    name: <Translate>主控频率</Translate>,
                     info: `${(config.CLOCK_FREQ / 1000000)}MHz`
                 }
                 ]);
@@ -442,7 +442,7 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty('RESERVE_PINS_USB')) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "USB引脚",
+                    name: <Translate>USB引脚</Translate>,
                     info: `DM:${config.RESERVE_PINS_USB.split(',')[0]},  DP:${config.RESERVE_PINS_USB.split(',')[1]}`
                 }
                 ]);
@@ -451,7 +451,7 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty('RESERVE_PINS_CAN')) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "CAN引脚",
+                    name: <Translate>CAN引脚</Translate>,
                     info: `RX:${config.RESERVE_PINS_CAN.split(',')[0]},  TX:${config.RESERVE_PINS_CAN.split(',')[1]}`
                 }
                 ]);
@@ -460,7 +460,7 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty('CANBUS_FREQUENCY')) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "CAN速率",
+                    name: <Translate>CAN速率</Translate>,
                     info: `${config.CANBUS_FREQUENCY} Kbps`
                 }
                 ]);
@@ -469,7 +469,7 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty('RESERVE_PINS_serial')) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "UART引脚",
+                    name: <Translate>UART引脚</Translate>,
                     info: `RX:${config.RESERVE_PINS_serial.split(',')[0]},  TX:${config.RESERVE_PINS_serial.split(',')[1]}`
                 }
                 ]);
@@ -478,7 +478,7 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty('SERIAL_BAUD')) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "UART速率",
+                    name: <Translate>UART速率</Translate>,
                     info: `${config.SERIAL_BAUD} bps`
                 }
                 ]);
@@ -487,26 +487,26 @@ const KlipperFirmwareParse = () => {
             if (config.hasOwnProperty("RESERVE_PINS_USB") && !config.hasOwnProperty("RESERVE_PINS_serial") && !config.hasOwnProperty("RESERVE_PINS_CAN")) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "通信方式", info: "该固件使用USB与上位机通信"
+                    name: <Translate>通信方式</Translate>, info: <Translate>该固件使用USB与上位机通信</Translate>
                 }
                 ]);
             } else if (config.hasOwnProperty("RESERVE_PINS_serial") || (config.hasOwnProperty('SERIAL_BAUD') && !config.hasOwnProperty("RESERVE_PINS_USB") && !config.hasOwnProperty("RESERVE_PINS_CAN"))) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "通信方式", info: "该固件使用串口UART与上位机通信"
+                    name: <Translate>通信方式</Translate>, info: <Translate>该固件使用串口UART与上位机通信</Translate>
                 }
                 ]);
             } else if (!config.hasOwnProperty("RESERVE_PINS_USB") && !config.hasOwnProperty("RESERVE_PINS_serial") && config.hasOwnProperty("RESERVE_PINS_CAN")) {
                 setDict_infos(prevDictInfos => [...prevDictInfos,
                 {
-                    name: "通信方式", info: "该固件使用CANBus与上位机通信"
+                    name: <Translate>通信方式</Translate>, info: <Translate>该固件使用CANBus与上位机通信</Translate>
                 }
                 ]);
             } else if (config.hasOwnProperty("RESERVE_PINS_USB") && !config.hasOwnProperty("RESERVE_PINS_serial") && config.hasOwnProperty("RESERVE_PINS_CAN")) {
                 if (config.hasOwnProperty("CANBUS_BRIDGE") && config.CANBUS_BRIDGE == "1") {
                     setDict_infos(prevDictInfos => [...prevDictInfos,
                     {
-                        name: "通信方式", info: "该固件使用USB桥接CANBus与上位机通信"
+                        name: <Translate>通信方式</Translate>, info: <Translate>该固件使用USB桥接CANBus与上位机通信</Translate>
                     }
                     ]);
                 }
@@ -544,7 +544,7 @@ const KlipperFirmwareParse = () => {
             });
         }
 
-        snackbarOpen('固件解析完成');
+        snackbarOpen(<Translate>固件解析完成</Translate>);
     }, [klipperDict]);
 
     return (
@@ -579,7 +579,7 @@ const KlipperFirmwareParse = () => {
                 {dict_infos.length > 0 && (
                     <Root>
                         <table style={{ tableLayout: 'fixed', width: '100%', minWidth: '100%' }} aria-label="custom pagination table">
-                            <caption>固件配置</caption>
+                            <caption><Translate>固件配置</Translate></caption>
                             <thead style={{ maxWidth: '100%', width: '100%' }}>
                                 <tr>
                                     <th style={{ width: 'auto', minWidth: '100px' }}>Name</th>
@@ -604,7 +604,7 @@ const KlipperFirmwareParse = () => {
                         <br />
                         <Root>
                             <table style={{ tableLayout: 'fixed', width: '100%', minWidth: '100%' }} aria-label="custom pagination table">
-                                <caption>初始引脚配置</caption>
+                                <caption><Translate>初始引脚配置</Translate></caption>
                                 <thead style={{ maxWidth: '100%', width: '100%' }}>
                                     <tr>
                                         <th style={{ width: 'auto', minWidth: '100px' }}>Pin</th>
@@ -635,7 +635,7 @@ const KlipperFirmwareParse = () => {
                         <br />
                         <Root>
                             <table style={{ tableLayout: 'fixed', width: '100%', minWidth: '100%' }} aria-label="custom pagination table">
-                                <caption>硬件SPI通道配置</caption>
+                                <caption><Translate>硬件SPI通道配置</Translate></caption>
                                 <thead style={{ maxWidth: '100%', width: '100%' }}>
                                     <tr>
                                         <th style={{ width: 'auto', minWidth: '100px' }}>Bus</th>
@@ -664,7 +664,7 @@ const KlipperFirmwareParse = () => {
                         <br />
                         <Root>
                             <table style={{ tableLayout: 'fixed', width: '100%', minWidth: '100%' }} aria-label="custom pagination table">
-                                <caption>硬件I2C通道配置</caption>
+                                <caption><Translate>硬件I2C通道配置</Translate></caption>
                                 <thead style={{ maxWidth: '100%', width: '100%' }}>
                                     <tr>
                                         <th style={{ width: 'auto', minWidth: '100px' }}>Bus</th>

@@ -1,0 +1,72 @@
+import ImageView from '@site/src/components/ImageView';
+
+:::danger
+
+查找CANBus UUID需要停止Klipper服务，请不要在打印过程中操作。
+
+:::
+
+:::warning
+
+请确保上位机的can网络、桥接主板的CAN速率、CAN工具板的速率完全一致
+
+:::
+
+* 开始获取ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/connect-ssh "点击即可跳转") 
+* 执行下面的命令停止Klipper服务：
+
+    ```bash
+    sudo systemctl stop klipper
+    ```
+
+* 执行下面的命令查询CANBus UUID：
+
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+
+    * 会输出类似下面的内容：
+
+        <ImageView image={require('./img/canbus-uuid.png').default} size="50%" align="left" />
+    
+    * 出现 `Found canbus_uuid=b7c79ec3f948, Application: Klipper` 则查找到设备ID，其中 `b7c79ec3f948` 为设备UUID。
+    * `Application: Klipper`, 表示这个UUID对应的主板正在运行的固件为Klipper
+
+    :::tip
+
+    如果是USB桥接CAN固件，则查询到的第一个UUID始终为桥接主板自身的UUID。如果还连接了CAN工具板，则至少查询到两个UUID才对。
+
+    :::
+
+    :::warning
+
+    * 如果没有查询的UUID，则需要仔细检查下面的注意事项
+
+        * 检查是否正确连接了主板或CAN工具板
+        * 是否正确供电
+        * 上位机是否支持CANBus
+        * 固件编译是否正确
+
+    :::
+
+* 执行下面的命令启动Klipper服务：
+
+    ```bash
+    sudo systemctl start klipper
+    ```
+
+* 打开打印机网页界面，在左侧边栏的配置选项里找到：fluidd为：`{…}` ；mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+
+    <ImageView image={require('./img/fluidd-cfg.png').default} size="50%" align="left" />
+
+* 将查询到的UUID复制，填写到 `printer.cfg` 配置里的 `[mcu]` 节点的 `canbus_uuid: ` 。保存重启后即可连上主板。若Klipper提示 ``ADC out of range``为正常现象，将热床和热敏连接好，配置好喷头、热床的热敏引脚和输出引脚，再保存重启即可。
+
+    <ImageView image={require('./img/cfg-canbus-uuid.png').default} size="50%" align="left" />
+
+    :::danger
+
+    注意：文档中所出现的所有ID均为示例，实际每个主板的ID均不一致，请根据实际获取到的ID修改填写。
+
+    :::
+
+----

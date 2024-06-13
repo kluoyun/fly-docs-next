@@ -1,0 +1,156 @@
+---
+sidebar_position: 2
+sidebar_label: 固件编译与烧录
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+
+
+# 固件编译与烧录
+
+## 准备工作
+
+* 请使用MobaXterm_Personal等SSH工具连接通过WIFI到您的上位机(使用**FlyTools**可以通过 `http://ip:9999/` 来打开SSH终端)，并且需要确定以下几点
+
+    1. 请确保上位机安装好了Klipper服务
+    2. 请确保登录的用户必须是安装好Klipper的用户
+    3. 请确保你的输入法是英文
+    4. 请确保你的上位机可以正常搜索到设备
+    5. 请确保以上注意事项都做到，否则无法进行下一步
+
+----
+
+## 编译Klipper固件
+
+<MakeOperate/>
+
+----
+
+<Tabs>
+    <TabItem value="usb" label="USB固件配置" default>
+        * USB固件配置示例
+
+            <ImageView image={require('./img/flash/make-config-usb.png').default} size="50%" align="left" />
+
+        * 请先阅读 [连接到SSH](/docs/DebugDoc/BasicTutorial/connect-ssh "点击即可跳转") 文档
+        * 连接到SSH后输入下面的命令并回车：
+
+            ```bash
+            cd ~/klipper && rm -rf .config ./out && make menuconfig
+            ```
+
+        * 选择**Enable extra low-level configuration options**并且回车
+        * 进入菜单**Micro-controller Architecture**
+
+            <ImageView image={require('./img/flash/make-config-2.png').default} size="50%" align="left" />
+
+        * 选择**STMicroelectronics STM32**回车
+
+            <ImageView image={require('./img/flash/make-config-3.png').default} size="50%" align="left" />
+
+        * 进入菜单**Processor model**，选择**STM32F072**回车
+
+            <ImageView image={require('./img/flash/make-config-4.png').default} size="50%" align="left" />
+
+        * **Bootloader offset** 设置为：**No bootloader**
+        * **Communication interface**是**USB (on PA11/PA12)**
+
+            * 配置好后是这样的
+
+            <ImageView image={require('./img/flash/make-config-usb.png').default} size="50%" align="left" />
+
+    </TabItem>
+    <TabItem value="can-br" label="USB桥接CAN固件配置">
+        * 此方法是桥接工具板的配置，请确保工具板CAN速率与上位机的CAN配置
+
+        <ImageView image={require('./img/flash/make-config-can-br.png').default} size="50%" align="left" />
+
+        下面介绍如何编译固件：
+
+        * 请先阅读 [连接到SSH](/docs/DebugDoc/BasicTutorial/connect-ssh "点击即可跳转") 文档
+        * 连接到SSH后输入下面的命令并回车：
+
+            ```bash
+            cd ~/klipper && rm -rf .config ./out && make menuconfig
+            ```
+
+        * 现在应该出现了Klipper编译配置界面，**↑ ↓ 键**选择菜单，**回车键**确认或进入菜单
+        * 选择**Enable extra low-level configuration options**并且回车
+        * 进入菜单**Micro-controller Architecture**
+
+            <ImageView image={require('./img/flash/make-config-2.png').default} size="50%" align="left" />
+
+        * 选择**STMicroelectronics STM32**回车
+
+            <ImageView image={require('./img/flash/make-config-3.png').default} size="50%" align="left" />
+
+        * 进入菜单**Processor model**，选择**STM32F072**回车
+
+            <ImageView image={require('./img/flash/make-config-4.png').default} size="50%" align="left" />
+
+        * **Bootloader offset** 设置为：**No bootloader**
+        * **Communication interface**设置为**USB to CAN bus bridge (USB on PA11/PA12)**
+        * **CAN bus  interface**设置为：**CAN bus (on PB8/PB9)**
+        * **CAN bus speed**设置为：**1000000**
+
+        * 配置好后是这样的
+
+            <ImageView image={require('./img/flash/make-config-can-br.png').default} size="50%" align="left" />
+
+    </TabItem>
+</Tabs>
+
+
+* 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+* 现在应该保存了配置并且退出到了命令行界面
+* 输入 `make -j4` 开始编译，时间有点长
+* 最后输出下面的内容则编译成功
+
+    ```bash
+    Linking out/klipper.elf
+    Creating hex file out/klipper.bin
+    ```
+    
+* 下图为编译成功示例
+
+    <ImageView image={require('./img/flash/make-done.png').default} size="50%" align="left" />
+
+----
+
+## 进入DFU烧录模式
+
+:::tip
+
+左侧为`BOOT按键`，右侧为`RESET按键`
+
+:::
+
+<ImageView image={require('./img/flash/boot-key.png').default} size="50%" align="center" />
+
+:::info
+
+方法一：主板完全断电后，按住Boot，使用TypeC线将D5主板接到上位机，然后松开Boot
+
+方法二：使用TypeC线连接到上位机后，按住Boot，再按下reset按键，松开reset按键，最后松开Boot按键
+:::
+
+----
+
+## DFU烧录固件
+
+<Tabs>
+    <TabItem value="hostdfuflash" label="使用上位机烧录" default>
+        <HostDfuFlash/>
+    </TabItem>
+    <TabItem value="pcdfuflash" label="使用Windows电脑烧录">
+        <PcDfuFlash/>
+    </TabItem>
+</Tabs>
+
+----
