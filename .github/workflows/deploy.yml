@@ -27,11 +27,15 @@ jobs:
       - name: Build website
         run: yarn build
 
+      - name: Compress build directory contents to tar
+        run: |
+          tar -cvf artifact.tar -C build .
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: static-files
-          path: build/
+          name: github-pages
+          path: artifact.tar
 
   deploy_git:
     name: Deploy to GitHub Pages
@@ -49,20 +53,9 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Download static Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: static-files
-          path: static-files/
-
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          git-config-name: XiaoK
-          git-config-email: xiaok@zxkxz.cn
-          repository-name: kluoyun/fly-docs-next
-          folder: static-files
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   deploy_cf:
     name: Deploy to Cloudflare Pages
@@ -73,8 +66,19 @@ jobs:
       - name: Download static Artifact
         uses: actions/download-artifact@v4
         with:
-          name: static-files
-          path: static-files/
+          name: github-pages
+          path: artifact.tar
+
+      - name: Extract Artifact
+        run: tar -xvf artifact.tar -C static_files
+
+      - name: Check for index.html
+        run: |
+          if [ ! -f static_files/index.html ]; then
+            echo "index.html not found"
+            exit 1
+          fi
+          echo "index.html found"
 
       - name: Delaoy to Cloudflare Pages
         env:
@@ -82,4 +86,4 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           npm install wrangler --save-dev
-          npx wrangler pages deploy static-files --project-name=fly-docs --commit-dirty
+          npx wrangler pages deploy static_files --project-name=fly-docs --commit-dirty
