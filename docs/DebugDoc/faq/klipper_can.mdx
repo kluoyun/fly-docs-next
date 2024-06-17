@@ -4,6 +4,86 @@ sidebar_position: 4
 
 import ImageView from '@site/src/components/ImageView';
 
-# CAN问题合集
+# CAN使用教程
 
 ----
+
+:::danger 须知
+
+请确定主板已经连接好上位机后在进行下面操作
+
+:::
+
+## 检测上位机是否支持CAN
+
+* 如果是FLY上位机则无需执行此操作
+
+```bash
+sudo modprobe can && echo "您的内核支持CAN" || echo "您的内核不支持CAN"
+```
+
+* 输入以上指令后，如果您的内核支持CAN就会返回：`您的内核支持CAN`；如果不支持就会返回：`您的内核不支持CAN`。
+
+## 确定当前上位机的CAN速率
+
+```bash
+ip -details link show can0
+```
+
+* 下图圈起来的地方为上位机CAN速率
+
+<ImageView image={require('./img/details.png').default} size="80%" align="center" />
+
+## 修改CAN速率
+
+* 此命令是覆盖原来CAN0配置
+
+* 1M速率输入下方命令
+
+```bash
+sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+allow-hotplug can0
+iface can0 can static
+    bitrate 1000000
+    up ifconfig $IFACE txqueuelen 1024
+    pre-up ip link set can0 type can bitrate 1000000
+    pre-up ip link set can0 txqueuelen 1024
+EOF
+```
+
+* 500K速率输入下方命令
+
+```bash
+sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+allow-hotplug can0
+iface can0 can static
+    bitrate 500000
+    up ifconfig $IFACE txqueuelen 1024
+    pre-up ip link set can0 type can bitrate 500000
+    pre-up ip link set can0 txqueuelen 1024
+EOF
+```
+
+* 重启设备
+
+```bash
+sudo reboot
+```
+
+## 搜索CAN ID
+
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+```
+
+* 如果正常则会出现CAN ID
+
+<ImageView image={require('./img/canuuid.png').default} size="80%" align="center" />
+
+以下几种情况可能导致无法搜索到CANID
+
+* Klipper之前连接过CAN设备，可以将配置里面的ID屏蔽后彻底断电重启
+* 固件刷错
+* UTOC使用typec供电足够，但是刷了CAN桥接固件的主板可能需要将电源口接上电源才可以搜索到ID
+* CAN速率不一致
+* CAN的H与L阻值不在60R左右(需要使用万用表在断电情况下测量CANH与CANL直接的阻值)
