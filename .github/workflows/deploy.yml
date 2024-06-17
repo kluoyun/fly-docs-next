@@ -27,58 +27,19 @@ jobs:
       - name: Build website
         run: yarn build
 
-      - name: Compress build directory contents to tar
-        run: |
-          tar -cvf artifact.tar -C build .
-
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: github-pages
-          path: artifact.tar
-
-  deploy_git:
-    name: Deploy to GitHub Pages
-    needs: build
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write # to deploy to Pages
-      id-token: write # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-  deploy_cf:
-    name: Deploy to Cloudflare Pages
-    needs: build
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download static Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages
-          path: artifact.tar
-
-      - name: Extract Artifact
-        run: tar -xvf artifact.tar -C static_files
-
       - name: Check for index.html
         run: |
-          if [ ! -f static_files/index.html ]; then
-            echo "index.html not found"
+          if [ ! -f build/index.html ]; then
+            echo "index.html not found in build directory"
             exit 1
           fi
-          echo "index.html found"
+          echo "index.html found in build directory"
+
+      - name: Delaoy to Github Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build
 
       - name: Delaoy to Cloudflare Pages
         env:
@@ -86,4 +47,4 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           npm install wrangler --save-dev
-          npx wrangler pages deploy static_files --project-name=fly-docs --commit-dirty
+          npx wrangler pages deploy build --project-name=fly-docs --commit-dirty
