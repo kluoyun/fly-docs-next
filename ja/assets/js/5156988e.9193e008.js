@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkklipper_docs=self.webpackChunkklipper_docs||[]).push([[1650],{6680:e=>{e.exports=JSON.parse('{"tags":[{"label":"Document","permalink":"/ja/blog/tags/document","description":"Document","count":1}]}')}}]);
