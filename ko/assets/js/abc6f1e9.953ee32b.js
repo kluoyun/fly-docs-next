@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkklipper_docs=self.webpackChunkklipper_docs||[]).push([[3984],{1335:e=>{e.exports=JSON.parse('{"tags":[{"label":"Document","permalink":"/ko/blog/tags/document","description":"Document","count":1}]}')}}]);
