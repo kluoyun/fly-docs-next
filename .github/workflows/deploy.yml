@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to Site
 
 on:
   push:
@@ -25,11 +25,6 @@ jobs:
       - name: Build website
         run: yarn build
 
-      - name: Upload Build Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build
-
   deploy:
     name: Deploy to GitHub Pages
     needs: build
@@ -47,5 +42,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build
+
+      - name: Delaoy to Cloudflare Pages
+        run: |
+          npm install wrangler --save-dev
+          npx wrangler pages deploy ./build --project-name=klipper-docs --commit-dirty
