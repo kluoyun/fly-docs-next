@@ -159,7 +159,7 @@ const config = {
                 value: '<hr style="margin: 0.3rem 0;">',
               },
               {
-                href: 'https://github.com/Mellow-3D/klipper-docs/issues/0',
+                href: 'https://gitlocalize.com/repo/9688',
                 label: 'Help Us Translate',
               },
             ],
