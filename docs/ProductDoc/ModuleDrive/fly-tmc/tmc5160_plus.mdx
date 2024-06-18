@@ -1,0 +1,151 @@
+---
+sidebar_position: 7
+---
+
+import ImageView from '@site/src/components/ImageView';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# TMC 5160 Plus
+
+:::tip
+
+此文档正在更新中
+
+:::
+
+<ImageView image={require('./img/5160plus.png').default} size="100%" align="left" />
+
+## 基本参数
+
+* 输入电压 ：12-60V
+* 最大电流 ：6A
+* 适用于 ： Marlin/Klipper/RRF 固件
+* 驱动模式支持：TMC：SPI
+* 带微步插值 microPlyer 的步进/方向接口
+* 最高分辨率为256细分
+* 支持stealthChop2静音工作和流畅动作
+* 支持中频共振的共振抑制
+* 支持spreadCycle高动态电机控制斩波器
+* 支持dcStep负载相关的速度控制
+* 支持stallGuard2高精度无传感器电机负载检测
+* 支持coolStep电流控制，最高可节能75%
+
+## 主板跳线与驱动接线说明
+
+:::tip
+
+TMC 5160 Plus使用SPI模式，FLY主板跳线请按照SPI跳线安装好跳线帽,其他家主板请咨询主板卖家
+
+:::
+
+<ImageView image={require('./img/jumper.png').default} size="100%" align="left" />
+
+### 主板FPC安装
+
+<ImageView image={require('./img/5160plus_fpc.png').default} size="100%" align="left" />
+
+### RGB拨码选择
+
+:::tip
+
+使用主板EN脚控制RGB时将会强制锁定电机
+
+:::
+
+<ImageView image={require('./img/5160plus_rgb.png').default} size="100%" align="left" />
+    
+
+
+### 12V FAN接线
+
+<ImageView image={require('./img/5160plus_fan.png').default} size="100%" align="left" />
+
+## 主板参考配置
+
+:::danger
+
+驱动采样电阻是0.033请不要设置错误
+
+:::
+
+
+<Tabs>
+    <TabItem value="使用驱动EN脚控制RGB时" default>
+    
+    * 拨码朝着FAN口拨
+
+     ```
+     [stepper_x]
+     step_pin: PE2
+     dir_pin: PC5 
+     # enable_pin: !PF11 
+
+     [tmc5160 stepper_x]
+     cs_pin: PC4
+     spi_software_mosi_pin: PB5
+     spi_software_miso_pin: PB4
+     spi_software_sclk_pin: PB3
+     run_current: 1.0
+     interpolate: False
+     sense_resistor: 0.033
+     stealthchop_threshold: 0
+
+     ```
+    </TabItem>
+
+
+    <TabItem value="使用主板RGB脚控制RGB时" default>
+    
+    * 拨码朝着FAN口另外一个方向拨
+
+     ```
+     [stepper_x]
+     step_pin: PE2
+     dir_pin: PC5 
+     enable_pin: !PF11 
+     
+     [tmc5160 stepper_x]
+     cs_pin: PC4
+     spi_software_mosi_pin: PB5
+     spi_software_miso_pin: PB4
+     spi_software_sclk_pin: PB3
+     run_current: 1.0
+     interpolate: False
+     sense_resistor: 0.033
+     stealthchop_threshold: 0
+
+     ```  
+
+    </TabItem>
+
+    <TabItem value="RGB参考配置" default>
+
+    * 通过插件扩展控制驱动LED[链接](/docs/ToolsDoc/led_effect/index.mdx "点击即可跳转") 
+
+     ```
+     [neopixel TP_led]
+     pin: PC13
+     chain_count: 6
+     # Number of LEDs
+     # 灯珠数量
+     color_order: GRB
+     initial_RED: 0.4    
+     initial_GREEN: 0.8
+     initial_BLUE: 1
+     initial_WHITE: 0.0
+     #66CCFF 
+
+     ```  
+
+    </TabItem>
+
+</Tabs>
+
+## 电流警告
+
+:::danger
+
+TMC5160 Plus支持10A，但是过高的电流可能导致损坏电机，并且需要加强散热
+
+:::
