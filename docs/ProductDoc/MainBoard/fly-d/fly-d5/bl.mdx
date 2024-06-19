@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 9
 sidebar_label: BL烧录
 ---
 
@@ -25,6 +25,7 @@ import ImageView from '@site/src/components/ImageView';
 * 请确保你的上位机可以正常搜索到设备
 * 请确保以上注意事项都做到，否则无法进行下一步
 * 连接SSH后下载最新Katapult(原Canboot)
+* 请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
 
 
 ## 下载Katapult
@@ -66,40 +67,40 @@ cd ~/FLY_Katapult && git pull
 
 1. 安装烧录工具
 
-* FLY上位机无需执行安装烧录工具
+    * FLY上位机无需执行安装烧录工具
 
-```bash
-sudo apt update
-sudo apt install dfu-util -y
-```
+    ```bash
+    sudo apt update
+    sudo apt install dfu-util -y
+    ```
 
 2. 执行下面的命令查看是否连接成功。
 
-```bash
-lsusb
-```
+    ```bash
+    lsusb
+    ```
 
-* 如果没有DFU设备请尝试重新进入**烧录模式**
-* 因系统版本问题可能显示其他名字，如果有`0483:df11`则代表进入烧录模式
+    * 如果没有DFU设备请尝试重新进入**烧录模式**
+    * 因系统版本问题可能显示其他名字，如果有`0483:df11`则代表进入烧录模式
 
-<ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="50%" align="center" />
+    <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="50%" align="center" />
 
 4. 烧录固件(烧录前确保已经编译过固件)
 
-```bash
-sudo dfu-util -a 0 -D ~/FLY_Katapult/BL/D/DP5_D5_D7.bin  --dfuse-address 0x08000000:force:mass-erase -d 0483:df11
-```
+    ```bash
+    sudo dfu-util -a 0 -D ~/FLY_Katapult/BL/D/DP5_D5_D7.bin  --dfuse-address 0x08000000:force:mass-erase -d 0483:df11
+    ```
 
 5. 出现下图箭头处所示内容``File downloaded successfully``则烧录成功
 
 
-<ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="50%" align="center" />
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="50%" align="center" />
 
-:::tip
+    :::tip
 
-烧录完成后，需要给主板彻底断电一次。再次上电后PC8风扇口的LED会闪烁
+    烧录完成后，需要给主板彻底断电一次。再次上电后PC8风扇口的LED会闪烁
 
-:::
+    :::
 
 
 
