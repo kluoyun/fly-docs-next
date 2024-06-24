@@ -14,6 +14,31 @@ import ImageView from '@site/src/components/ImageView';
 
 :::
 
+
+
+:::warning
+
+请确保上位机的can网络、桥接主板的CAN速率、CAN工具板的速率完全一致
+
+:::
+
+* 开始获取ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
+* 请确保下位机连接上位机的数据线具有数据传输功能
+* SSH连接连接到上位机后输入`lsusb`并且回车，将可能出现下面几种设备
+* 如果系统不支持`lsusb`可以执行下方指令进行安装
+* 如果`lsusb`后没有设备，请更换上位机！
+
+```
+sudo apt-get install usbutils
+```
+
+    <ImageView image={require('@site/docs/General/get-id/img/lsusb.png').default} size="100%" align="left" />
+
+* `1d50:606f` 属于CAN固件是你的下位机刷了CAN桥接固件或者接了UTOC才会显示，如果刷错固件或者未刷固件则不会显示设备或者显示其他设备。
+
+* 如果是之前在`printer.cfg`配置过对应主板的CAN UUID,需要删除或者屏蔽后保存配置并且重启Klipper
+
+
 ## 检测上位机是否支持CAN
 
 * 如果是FLY上位机则无需执行此操作
