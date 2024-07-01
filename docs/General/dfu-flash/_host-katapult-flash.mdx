@@ -1,0 +1,63 @@
+import ImageView from '@site/src/components/ImageView';
+
+## 开始烧录
+
+:::tip
+
+使用Katapult固件可以方便以后直接通过SSH更新固件，无需在进入DFU烧录固件
+:::
+
+### 安装烧录插件
+
+:::tip
+如果已经安装过则无需再次安装
+:::
+
+    * 安装`pip install pyserial`
+
+    ```bash
+    pip install pyserial
+    ```
+
+    * 如果提示`-bash: pip: command not found`需要执行
+
+    ```bash
+    sudo apt-get install pip
+    ```
+
+    * 如果提示出现下方报错需要执行
+
+    <ImageView image={require('@site/docs/General/get-id/img/pyserial.png').default} size="100%" align="left" />
+
+    ```bash
+    pip install pyserial --break-system-packages
+    ```
+
+### 开始烧录固件
+
+    * 烧录固件使用下方代码，请确保已经编译好固件，请注意`=`后面没有空格
+
+    ```bash
+    make flash FLASH_DEVICE=<你的设备串口地址>
+    ```
+
+### 更新固件方法
+
+
+    * 更新USB固件需要在编译好最新固件后输入下方命令更新，请注意`=`后面没有空格
+
+    ```bash
+    make flash FLASH_DEVICE=<你的设备串口地址>
+    ```
+
+    * 更新USB桥接CAN固件需要在编译好最新固件后输入下方命令重置进去Katapult
+
+    ```bash
+    ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -u <MCU ID> -r
+    ```
+
+    * 重置进去Katapult后在执行下方执行更新固件
+
+    ```bash
+    make flash FLASH_DEVICE=<你的设备串口地址>
+    ```

@@ -10,6 +10,9 @@ import ImageView from '@site/src/components/ImageView';
 import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
 import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/docs/General/dfu-flash/_firmware/072/_usb.mdx';
+import UTOC from '@site/docs/General/dfu-flash/_firmware/072/_utoc.mdx';
+import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
 
 
 # 固件编译与烧录
@@ -38,161 +41,39 @@ import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 
 ## 编译Klipper固件
 
-<MakeOperate/>
-
-----
-
-<Tabs>
-    <TabItem value="usb" label="USB固件配置" default>
-        * USB固件配置示例
-
-            <ImageView image={require('./img/flash/make-config-usb.png').default} size="50%" align="left" />
-
-        * 请先阅读 [连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 文档
-        * 连接到SSH后输入下面的命令并回车：
-
-            ```bash
-            cd ~/klipper && rm -rf .config ./out && make menuconfig
-            ```
-
-        * 其中` rm -rf .config ./out`是删除之前编译数据与固件
-        * 选择**Enable extra low-level configuration options**并且回车
-        * 进入菜单**Micro-controller Architecture**
-
-            <ImageView image={require('./img/flash/make-config-2.png').default} size="50%" align="left" />
-
-        * 选择**STMicroelectronics STM32**回车
-
-            <ImageView image={require('./img/flash/make-config-3.png').default} size="50%" align="left" />
-
-        * 进入菜单**Processor model**，选择**STM32F072**回车
-
-            <ImageView image={require('./img/flash/make-config-4.png').default} size="50%" align="left" />
-
-        * **Bootloader offset** 设置为：**8KiB bootloader**
-        * **Communication interface**是**USB (on PA11/PA12)**
-
-            * 配置好后是这样的
-
-            <ImageView image={require('./img/flash/make-config-usb.png').default} size="50%" align="left" />
-
-    </TabItem>
-    <TabItem value="can-br" label="USB桥接CAN固件配置">
-        * 此方法是桥接工具板的配置，请确保工具板CAN速率与上位机的CAN配置
-
-        <ImageView image={require('./img/flash/make-config-can-br.png').default} size="50%" align="left" />
-
-        下面介绍如何编译固件：
-
-        * 请先阅读 [连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 文档
-        * 连接到SSH后输入下面的命令并回车：
-
-            ```bash
-            cd ~/klipper && rm -rf .config ./out && make menuconfig
-            ```
-
-        * 现在应该出现了Klipper编译配置界面，**↑ ↓ 键**选择菜单，**回车键**确认或进入菜单
-        * 选择**Enable extra low-level configuration options**并且回车
-        * 进入菜单**Micro-controller Architecture**
-
-            <ImageView image={require('./img/flash/make-config-2.png').default} size="50%" align="left" />
-
-        * 选择**STMicroelectronics STM32**回车
-
-            <ImageView image={require('./img/flash/make-config-3.png').default} size="50%" align="left" />
-
-        * 进入菜单**Processor model**，选择**STM32F072**回车
-
-            <ImageView image={require('./img/flash/make-config-4.png').default} size="50%" align="left" />
-
-        * **Bootloader offset** 设置为：**No bootloader**
-        * **Communication interface**设置为**USB to CAN bus bridge (USB on PA11/PA12)**
-        * **CAN bus  interface**设置为：**CAN bus (on PB8/PB9)**
-        * **CAN bus speed**设置为：**1000000**
-
-        * 配置好后是这样的
-
-            <ImageView image={require('./img/flash/make-config-can-br.png').default} size="50%" align="left" />
-
-    </TabItem>
-</Tabs>
+    <MakeOperate/>
 
 
-* 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
-* 现在应该保存了配置并且退出到了命令行界面
-* 输入 `make -j4` 开始编译，时间有点长
-* 最后输出下面的内容则编译成功
+    <Tabs>
+        <TabItem value="usb" label="USB固件示例" default>
+            
+            <USB />
+            
+        </TabItem>
+        <TabItem value="UTOC" label="USB桥接CAN固件示例">
+            
+            <UTOC />
 
-    ```bash
-    Linking out/klipper.elf
-    Creating hex file out/klipper.bin
-    ```
-    
-* 下图为编译成功示例
-
-    <ImageView image={require('./img/flash/make-done.png').default} size="50%" align="left" />
+        </TabItem>
+    </Tabs>
 
 
 
-## 开始烧录
+    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+    * 现在应该保存了配置并且退出到了命令行界面
+    * 输入 `make -j4` 开始编译，时间有点长
+    * 最后输出下面的内容则编译成功
 
-:::tip
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * 下图为编译成功示例
 
-使用Katapult固件可以方便以后直接通过SSH更新固件，无需在进入DFU烧录固件
-:::
-
-### 安装烧录插件
-
-:::tip
-如果已经安装过则无需再次安装
-:::
-
-    * 安装`pip install pyserial`
-
-    ```bash
-    pip install pyserial
-    ```
-
-    * 如果提示`-bash: pip: command not found`需要执行
-
-    ```bash
-    sudo apt-get install pip
-    ```
-
-    * 如果提示出现下方报错需要执行
-
-    <ImageView image={require('@site/docs/General/get-id/img/pyserial.png').default} size="100%" align="left" />
-
-    ```bash
-    pip install pyserial --break-system-packages
-    ```
-
-### 开始烧录固件
-
-    *烧录固件使用下方代码，请确保已经编译好固件，请注意`=`后面没有空格
-
-    ```bash
-    make flash FLASH_DEVICE=<你的设备串口地址>
-    ```
-
-### 更新固件方法
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
 
 
-    * 更新USB固件需要在编译好最新固件后输入下方命令更新，请注意`=`后面没有空格
+    <CANBOOT />
 
-    ```bash
-    make flash FLASH_DEVICE=<你的设备串口地址>
-    ```
-
-    * 更新USB桥接CAN固件需要在编译好最新固件后输入下方命令重置进去Katapult
-
-    ```bash
-    ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -u <MCU ID> -r
-    ```
-
-    * 重置进去Katapult后在执行下方执行更新固件
-
-    ```bash
-    make flash FLASH_DEVICE=<你的设备串口地址>
-    ```
 ----
