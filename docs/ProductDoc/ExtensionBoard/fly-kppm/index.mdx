@@ -1,0 +1,73 @@
+---
+sidebar_position: 1
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+# 产品简介
+
+  FLY-KPPM安装关机模块是专为树莓派等开发板设计的安全模块，旨在防止停电导致数据丢失的问题。采用先进的技术，当停电发生时能自动切换至电容电源，确保开发板能在停电情况下依然稳定运行15秒，保障数据有效保存。小巧方便，安装简单。
+
+  <ImageView image={require('./img/kppm.png').default} size="100%" align="left" />
+
+
+## 产品注意事项
+
+  :::danger 须知
+  输入电源只支持 DC12-24V，接线时注意分清正负极，接线过程必须在断电状态下进行，确认接线无误方可上电；因接线有误造成的损失，我司不予承责。
+  :::
+
+  :::danger 须知
+  5V OUT插座处+5V 为应急电源输出，不做常用供电输出，请使用 USB-C供电。
+  :::
+
+  :::danger 须知
+  搭配安全关机模块时候，需要使用 12V-24V 电源供电，不能使用TYPE-C 5V 供电（为确保模块工作正常，安全关机模块板内 5V 输出电压不能低于 4.9V，否则 安全关机模块 会从内部升压取电，电容会一直处于充电状态，导致模块持续发热）
+  :::
+
+## 引脚说明
+
+  * OUT-RST 重置
+  * OUT-PDN 关机
+
+  * IN-PIN 
+
+    默认拉高, 模块上电时会自动检测上次掉电时间, 
+  如果掉电时间小于10秒,会等待到10秒后自动开关一次5V输出 (确保上位机完成关机并能再次重新启动)
+  如果接到GND. 将禁用自动检测掉电时间功能
+
+
+## FLY上位机使用教程
+
+  :::info
+  只适用与FLY-Pi FLY-Pi-V2 FLY-C8
+  :::
+
+  FLY上位机需要执行下方命令
+
+  ```
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo sh -c 'echo "\noverlays=power-key\n" >> /boot/FlyOS-Env.txt'
+  ```
+
+  重启系统
+
+  ```
+  sudo reboot
+  ```
+  
+### FLY上位机接线教程
+
+  * 图片正在更新
+
+## 树莓派上位机使用教程
+
+  树莓派和上面操作类似，树莓派需要将装有系统镜像的 SD 卡插入电脑中，在config.txt文件中添加`dtoverlay=gpio-shutdown,gpio_pin=21`这一行命令，然后保存退出即可。
+
+  <ImageView image={require('./img/rpi-config.png').default} size="80%" align="left" />
+
+  
+### 树莓派上位机接线教程
+
+  * 图片正在更新
