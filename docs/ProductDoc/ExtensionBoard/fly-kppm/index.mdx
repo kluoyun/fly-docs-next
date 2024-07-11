@@ -46,14 +46,14 @@ import ImageView from '@site/src/components/ImageView';
 
   FLY上位机需要使用SSH执行下方命令
 
-  ```
+  ```bash
   sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
-  sudo sh -c 'echo "\noverlays=power-key\n" >> /boot/FlyOS-Env.txt'
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
   ```
 
   重启系统
 
-  ```
+  ```bash
   sudo reboot
   ```
   
