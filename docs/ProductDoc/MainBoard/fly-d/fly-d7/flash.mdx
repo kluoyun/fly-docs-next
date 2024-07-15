@@ -1,0 +1,81 @@
+---
+sidebar_position: 2
+sidebar_label: 固件编译与烧录
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/docs/General/dfu-flash/_firmware/072/_usb.mdx';
+import UTOC from '@site/docs/General/dfu-flash/_firmware/072/_utoc.mdx';
+import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
+
+
+# 固件编译与烧录
+
+## 准备工作
+
+    * 开始获取ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
+    * 请确保下位机连接上位机的数据线具有数据传输功能
+    * SSH连接连接到上位机后输入`lsusb`并且回车，将可能出现下面几种设备
+    * 如果系统不支持`lsusb`可以执行下方指令进行安装
+    * 如果`lsusb`后还是没有设备，请更换上位机！
+
+    ```
+    sudo apt-get install usbutils
+    ```
+
+        <ImageView image={require('@site/docs/General/get-id/img/lsusb.png').default} size="100%" align="left" />
+
+    * `1d50:614e`属于Klipper的USB固件是你的下位机刷了正确的USB固件才会显示，如果刷错固件或者未刷固件则不会显示设或者显示其他设备。
+    * `1d50:606f`属于Klipper的USB桥接CAN固件是你的下位机刷了正确的USB固件才会显示，如果刷错固件或者未刷固件则不会显示设或者显示其他设备。
+    * `1d50:6177`属于Katapult的USB桥接CAN固件是你的下位机刷了正确的USB固件才会显示，如果刷错固件或者未刷固件则不会显示设或者显示其他设备。
+    * `2e8a:0003 `属于RP2040是处于固件烧录状态，只能烧后缀名为`uf2`的固件，当固件烧录进去后会消失
+    * 输入`ls /dev/serial/by-id/*` 回车。如果一切正常，则会出现一行ID。
+    * 如果输入`ls /dev/serial/by-id/*`后没有ID出来，但是`lsusb`有设备请更换上位机或者更换上位机系统
+
+
+----
+
+## 编译Klipper固件
+
+    <MakeOperate/>
+
+
+    <Tabs>
+        <TabItem value="usb" label="USB固件示例" default>
+            
+            <USB />
+            
+        </TabItem>
+        <TabItem value="UTOC" label="USB桥接CAN固件示例">
+            
+            <UTOC />
+
+        </TabItem>
+    </Tabs>
+
+
+
+    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+    * 现在应该保存了配置并且退出到了命令行界面
+    * 输入 `make -j4` 开始编译，时间有点长
+    * 最后输出下面的内容则编译成功
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * 下图为编译成功示例
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+
+    <CANBOOT />
+
+----
