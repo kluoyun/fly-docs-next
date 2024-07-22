@@ -1,0 +1,121 @@
+---
+sidebar_position: 3
+sidebar_label: 固件编译与烧录
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/docs/General/dfu-flash/_firmware/2040/_can1.mdx';
+import CANFLASH from '@site/docs/General/dfu-flash/_host-can-flash.mdx';
+import RS232 from '@site/docs/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import USBFLASH from '@site/docs/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import GetCanbusUUID from '@site/docs/General/get-id/_get-canbus-uuid.mdx';
+import RS232ID from '@site/docs/General/get-id/_get-rs232-id.mdx';
+
+# 固件编译与烧录
+
+## 准备工作
+
+:::warning
+
+请确保上位机的can网络、桥接主板的CAN速率、CAN工具板的速率完全一致
+
+:::
+
+    * 开始获取ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
+    * 请确保下位机连接上位机的数据线具有数据传输功能
+    * SSH连接连接到上位机后输入`lsusb`并且回车，将可能出现下面几种设备
+    * 如果系统不支持`lsusb`可以执行下方指令进行安装
+    * 如果`lsusb`后没有设备，请更换上位机！
+
+    ```
+    sudo apt-get install usbutils
+    ```
+
+        <ImageView image={require('@site/docs/General/get-id/img/lsusb.png').default} size="100%" align="left" />
+
+    * `1d50:606f` 属于CAN固件是你的下位机刷了CAN桥接固件或者接了UTOC才会显示，如果刷错固件或者未刷固件则不会显示设备或者显示其他设备。
+
+    * 如果是之前在`printer.cfg`配置过对应主板的CAN UUID,需要删除或者屏蔽后保存配置并且重启Klipper
+
+
+     <Tabs>
+            <TabItem value="CAN" label="CAN固件烧录" default>
+                 <CAN />
+                * 选择GPIO pins to set at micro-controller startup，输入：!gpio5 请注意!是大写
+                    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/can.png').default} size="100%" align="left" />
+          </TabItem>
+            <TabItem value="RS232" label="RS232固件烧录" default>
+                <RS232 />
+                * 选择GPIO pins to set at micro-controller startup，输入：!gpio5 请注意!是大写
+                    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/rs232.png').default} size="100%" align="left" />
+            </TabItem>
+     </Tabs>
+            
+
+    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+    * 现在应该保存了配置并且退出到了命令行界面
+    * 输入 `make -j4` 开始编译，时间有点长
+    * 最后输出下面的内容则编译成功
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * 下图为编译成功示例
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+
+## 接线
+
+     <Tabs>
+            <TabItem value="CAN" label="CAN参考接线" default>
+                * 以UTOC参考为例
+                <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/utoc.png').default} size="100%" align="left" />
+          </TabItem>
+            <TabItem value="RS232" label="RS232参考接线" default>
+                * 以UTOR参考为例
+                * 请注意RS232需要提前烧录固件才可以接线并且连接
+                <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/utor.png').default} size="100%" align="left" />
+            </TabItem>
+     </Tabs>
+            
+
+
+
+
+## 烧录
+
+     <Tabs>
+            <TabItem value="CAN" label="CAN烧录参考" default>
+:::tip
+使用Katapult固件可以方便以后直接通过SSH更新固件，无需在进入DFU。
+[烧录Katapult固件方法](https://mellow-next.klipper.cn/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/canboot "点击即可跳转") 
+:::
+
+                <CANFLASH />
+          </TabItem>
+            <TabItem value="RS232" label="RS232烧录参考" default>
+                * BOOT按钮
+                <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/boot.png').default} size="100%" align="left" />
+                <USBFLASH />
+            </TabItem>
+     </Tabs>
+
+## 搜索ID
+
+     <Tabs>
+            <TabItem value="CAN" label="CAN ID" default>
+                * 以UTOC参考为例
+                <GetCanbusUUID />
+          </TabItem>
+            <TabItem value="RS232" label="RS232 ID" default>
+                * 以UTOR参考为例
+                <RS232ID />
+            </TabItem>
+     </Tabs>
+            
