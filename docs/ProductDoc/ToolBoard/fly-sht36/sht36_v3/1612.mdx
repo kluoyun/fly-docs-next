@@ -1,0 +1,68 @@
+---
+sidebar_position: 7
+sidebar_label: 扫床使用
+---
+
+import ImageView from '@site/src/components/ImageView';
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# 扫床使用
+
+    * 请注意扫床建议使用单独Z限位，不建议将扫床当Z限位
+    * 在安装 Eddy 时，底部之于喷嘴的位置需至少在喷嘴上面 1-2 mm。
+
+## 接线示意图
+
+    * 热敏电阻朝下
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.png').default} size="100%" align="left" />
+
+
+## 参考配置与使用说明
+
+    ### 扫床配置
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 43
+        i2c_mcu: SHT36
+        i2c_bus: i2c1e
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+        * 请注意请注意目前没有出外置1612模块 此配置暂时用不了
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 42
+        i2c_mcu: SHT36
+        i2c_bus: i2c1e
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### 温补配置
+
+        ```cfg
+        [temperature_probe fly_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SHT36:gpio28
+        ```
+
+### bed_mesh配置
+
+    * [bed_mesh] 里的`horizontal_move_z`参数，建议设置为 2， 使扫描平台的时候，Eddy 尽可能的靠近平台
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+
+    <LDC1612 />

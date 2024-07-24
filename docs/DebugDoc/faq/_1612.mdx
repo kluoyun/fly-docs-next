@@ -1,0 +1,122 @@
+import ImageView from '@site/src/components/ImageView';
+
+## 操作说明
+
+    * 请使用`FUIDD`网页添加下方配置后在执行后面操作
+
+    ```cfg
+    [force_move]
+    enable_force_move: true
+    ```
+
+    ### 校准EDDY 电流
+
+        * 在控制台输入下方命令
+
+        ```bash
+        SET_KINEMATIC_POSITION z=80
+        ```
+
+        * 归位X与Y
+
+        ```bash
+        G28 X Y
+        ```
+
+        * 上述步骤完成后，首先需要校准 Eddy 的驱动电流，然后EDDY到热床中央20mm高的位置。在控制台执行下方命令自动获取电流，然后 SAVE_CONFIG 保存参数。正常应该是16左右如果是0或者30请检查接线。
+        * 请注意是离热床20mm高的位置
+
+        ```bash
+        LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
+        ```
+
+        * 正常返回值应该在15左右
+        * 校准完成后`SAVE_CONFIG`保存参数
+
+    ### 校准Eddy 频率
+
+        * 然后将喷头移动到平台中心（注意：此步骤要确保机器没有加载 heightmap）
+        * 开始手动 z 偏移校准 [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+
+        ```bash
+        PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+        ```
+        * 校准完成后`SAVE_CONFIG`保存参数
+        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，先运行一次`Z_TILT_ADJUST`或者`QUAD_GANTRY_LEVEL`后重新校准一次校准Eddy 频率
+
+    ### 温度补偿说明
+        * 正在更新
+
+## 各类优化宏
+
+    ### `[quad_gantry_level]`扫床优化
+
+        * 如果有配置`[quad_gantry_level]`可以添加下方宏到配置里面，没有则不需要添加
+        * 此宏会随着龙门高低差降低降低探测高度
+
+        ```cfg
+        [gcode_macro QUAD_GANTRY_LEVEL]
+        rename_existing: _QUAD_GANTRY_LEVEL
+        gcode:
+            SAVE_GCODE_STATE NAME=STATE_QGL
+            BED_MESH_CLEAR
+            {% if not printer.quad_gantry_level.applied %}
+            _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+            {% endif %}
+            _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=scan
+            # G28 Z
+            RESTORE_GCODE_STATE NAME=STATE_QGL
+        ```
+
+    ### `[z_tilt]`扫床优化
+
+        * 如果有配置`[z_tilt]`可以添加下方宏到配置里面，没有则不需要添加
+        * 此宏会随着龙门高低差降低降低探测高度
+
+        ```cfg
+        [gcode_macro Z_TILT_ADJUST]
+        rename_existing: _Z_TILT_ADJUST
+        gcode:
+            SAVE_GCODE_STATE NAME=STATE_Z_TILT
+            BED_MESH_CLEAR
+            {% if not printer.z_tilt.applied %}
+            _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+            {% endif %}
+            _Z_TILT_ADJUST horizontal_move_z=2 METHOD=scan
+            # G28 Z
+            RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+        ```
+
+    ### 扫床优化
+
+        * 如果使用大功率交流热床（500W以上）
+        * 下方宏是在扫床时候关闭热床扫床完成后重新加热
+
+        ```cfg
+        [gcode_macro BED_MESH_CALIBRATE]
+        rename_existing: _BED_MESH_CALIBRATE
+        gcode:
+            {% set TARGET_TEMP = printer.heater_bed.target %}
+            M140 S0
+            _BED_MESH_CALIBRATE {rawparams}
+            M140 S{TARGET_TEMP}
+        ```
+
+        * 快速整个扫床指令
+
+        ```bash
+        BED_MESH_CALIBRATE METHOD=scan SCAN_MODE=rapid
+        ```
+
+        * 快速局域扫床指令，需要确保Klipper可以使用对象排除功能
+
+        ```bash
+        BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
+        ```
+
+## 线圈模型下载链接
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/sen.step
+    https://cdn.mellow.klipper.cn/STEP/1612.step
+    ```
