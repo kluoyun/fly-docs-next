@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 sidebar_label: 固件编译与烧录
 ---
 
@@ -10,17 +10,19 @@ import ImageView from '@site/src/components/ImageView';
 import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
 import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
-import USB from '@site/docs/General/dfu-flash/_firmware/072/_usb.mdx';
-import UTOC from '@site/docs/General/dfu-flash/_firmware/072/_utoc.mdx';
+import USB from '@site/docs/General/dfu-flash/_firmware/723/_usb.mdx';
+import UTOC from '@site/docs/General/dfu-flash/_firmware/723/_utoc.mdx';
 import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/docs/General/dfu-flash/_pc-tf-flash.mdx';
 
 
 # 固件编译与烧录
 
 :::warning 注意事项
-* 如果是第一次观看本文档，需要手动刷BL后在刷固件[BL烧录教程](https://mellow-next.klipper.cn/docs/ProductDoc/MainBoard/fly-d/fly-d5/bl)
+* PRO X10预刷的是Katapult
 * 只要烧录过BL后续无需在烧录BL
-* D5的BL为Katapult固件
+* PRO X10的BL有两种，分别为Katapult固件与TF卡烧录的BL固件
+* 如果有需要可以根据自己选择重新[BL烧录教程](https://mellow-next.klipper.cn/docs/ProductDoc/MainBoard/fly-pro/fly-pro-x10/bl)
 :::
 
 
@@ -45,8 +47,6 @@ import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
     * 输入`ls /dev/serial/by-id/*` 回车。如果一切正常，则会出现一行ID。
     * 如果输入`ls /dev/serial/by-id/*`后没有ID出来，但是`lsusb`有设备请更换上位机或者更换上位机系统
 
-
-----
 
 ## 编译Klipper固件
 
@@ -82,7 +82,24 @@ import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
 
+## 烧录固件
 
-    <CANBOOT />
+:::danger 须知
 
-----
+* PRO X10预刷的是Katapult,如果需要内存卡烧录需要自己刷BL
+
+:::
+
+    <Tabs>
+        <TabItem value="CANBOOT" label="使用Katapult烧录方法" default>
+            
+            <CANBOOT />
+            
+        </TabItem>
+        <TabItem value="TF" label="使用TF卡烧录方法">
+            
+            <TF />
+
+        </TabItem>
+    </Tabs>
+
