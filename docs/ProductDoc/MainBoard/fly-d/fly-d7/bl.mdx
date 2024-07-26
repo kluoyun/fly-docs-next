@@ -3,45 +3,64 @@ sidebar_position: 9
 sidebar_label: BL烧录
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 import ImageView from '@site/src/components/ImageView';
 
+import Katapult from '@site/docs/General/dfu-flash/_host-dfu-flash.mdx';
+import WIN from '@site/docs/General/dfu-flash/_pc-dfu-flash.mdx';
 
-# 使用Katapult更新主板固件
 
-* 此文档还未更新完成
-* Katapult（以前称为 CanBoot）可用与固件烧录
-* 本次教程主要用于固件更新，以后无需按着BOOT键进入DFU
+# 烧录BL
 
+    * Katapult（以前称为 CanBoot）可用与固件烧录
+    * 本次教程主要用于方便以后固件更新，以后无需按着BOOT键进入DFU
+
+:::tip
 请使用MobaXterm_Personal等SSH工具连接通过WIFI到您的上位机，并且需要确定以下几点
-
-* 请确保上位机安装好了Klipper服务
-* 请确保登录的用户必须是安装好Klipper的用户
-* 请确保你的输入法是英文
-* 请确保你的上位机可以正常搜索到设备
-* 请确保以上注意事项都做到，否则无法进行下一步
-* 连接SSH后下载最新Katapult(原Canboot)
-* 请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
+:::
 
 
-## 下载Katapult
-```
-cd ~/ && git clone https://github.com/Arksine/katapult 
-```
+    * 请确保上位机安装好了Klipper服务
+    * 请确保登录的用户必须是安装好Klipper的用户
+    * 请确保你的输入法是英文
+    * 请确保你的上位机可以正常搜索到设备
+    * 请确保以上注意事项都做到，否则无法进行下一步
+    * 请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
 
-### 如果已安装Katapult(原Canboot)需要执行更新
-```
-cd ~/katapult && git pull
-```
+## 下载固件包
+    <Tabs>
+        <TabItem value="win" label="windows下载固件包" default>
+            
+            * windows需要访问此地址下载固件包
+            ```bash
+            https://github.com/FengHua741/FLY_Katapult.git
+            ```
 
-## 下载D7的BL
-```
-cd && git clone https://github.com/FengHua741/FLY_Katapult.git
-```
+        </TabItem>
+        <TabItem value="linux" label="上位机下载固件包">
+            
+            * Kipper上位机需要执行下方命令下载固件包
+            ```bash
+            cd && git clone https://github.com/FengHua741/FLY_Katapult.git
+            ```
 
-### 如果已经安装`FLY_Katapult`需要执行更新
-```
-cd ~/FLY_Katapult && git pull
-```
+            * 如果已经下载过固件包的建议更新固件包后在进行剩下操作
+
+            ```bash
+            cd ~/FLY_Katapult && git pull
+            ```
+            
+        </TabItem>
+    </Tabs>
+
+
+### 固件存放路径
+
+    ```bash
+    FLY_Katapult/BL/D/D7.bin
+    ```
+
 
 ## 进入DFU烧录模式
 
@@ -53,51 +72,23 @@ cd ~/FLY_Katapult && git pull
 
 <ImageView image={require('./img/boot-key.png').default} size="50%" align="center" />
 
-:::info
-
-方法一：主板完全断电后，按住Boot，使用TypeC线将D7主板接到上位机，然后松开Boot
+:::tip
+方法一：主板完全断电后，按住Boot，使用TypeC线将主板接到上位机，然后松开Boot
 
 方法二：使用TypeC线连接到上位机后，按住Boot，再按下reset按键，松开reset按键，最后松开Boot按键
 :::
 
-1. 安装烧录工具
 
-    * FLY上位机无需执行安装烧录工具
+## 烧录BL
+    <Tabs>
+        <TabItem value="win" label="windows烧录教程" default>
+            
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="上位机烧录教程">
+            
+            <Katapult />
 
-    ```bash
-    sudo apt update
-    sudo apt install dfu-util -y
-    ```
-
-2. 执行下面的命令查看是否连接成功。
-
-    ```bash
-    lsusb
-    ```
-
-    * 如果没有DFU设备请尝试重新进入**烧录模式**
-    * 因系统版本问题可能显示其他名字，如果有`0483:df11`则代表进入烧录模式
-
-    <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="50%" align="center" />
-
-4. 烧录固件(烧录前确保已经编译过固件)
-
-    * 请注意加入sudo后需要输入你当前用户的密码，并且密码看不到
-    
-    ```bash
-    sudo dfu-util -a 0 -D ~/FLY_Katapult/BL/D/D7.bin  --dfuse-address 0x08000000:force:mass-erase -d 0483:df11
-    ```
-
-5. 出现下图箭头处所示内容``File downloaded successfully``则烧录成功
-
-
-    <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="50%" align="center" />
-
-    :::tip
-
-    烧录完成后，需要给主板彻底断电一次。再次上电后PC8风扇口的LED会闪烁
-
-    :::
-
-
-
+        </TabItem>
+    </Tabs>
