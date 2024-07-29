@@ -1,0 +1,34 @@
+import ImageView from '@site/src/components/ImageView';
+
+## 搜索设备前注意事项
+
+    * 开始获取ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
+    * 请确保下位机连接上位机的数据线具有数据传输功能
+    * SSH连接连接到上位机后输入`lsusb`并且回车，将可能出现下面几种设备
+    * 如果系统不支持`lsusb`可以执行下方指令进行安装
+    * 如果`lsusb`后没有设备，请更换上位机！
+
+    ```
+    sudo apt-get install usbutils
+    ```
+
+    <ImageView image={require('./img/lsusb.png').default} size="100%" align="left" />
+    <ImageView image={require('./img/rs232.png').default} size="100%" align="left" />
+
+    * 请确定你需要主板固件是否刷了正确的固件
+    * 如果是USB固件在`lsusb`后应该出现`1d50:614e`
+    * 如果是USB桥接CAN固件在`lsusb`后应该出现`1d50:606f`
+    * 如果是RS232需要搭配UTOR或者G2T，其中G2T不需要搜索固件，而UTOR在`lsusb`后应该出现`1a86:7523`
+
+## 搜索设备时注意事项
+
+:::danger 须知
+搜索ID指令无法混用！！！
+:::
+
+    * 请注意USB固件只能使用USB ID的搜索方式
+    * 请注意USB桥接CAN固件只能使用CAN ID的搜索方式
+    * 请注意RS232固件只能使用RS232 ID的搜索方式
+    * 如果出现`0483:df11`则可能是刷了固件，但是没给主板断电重启，如果给主板断电重新上电后还是一样请检查DFU(跳线/拨码/按钮)有没有断开
+    * 如果出现`2e8a:0003`则可能是刷错固件，请注意RP2040只能刷编译出来的UF2固件，无法刷其他固件。出现`2e8a:0003`后需要断开BOOT(跳线/拨码/按钮)否则会烧录失败！！！
+    * RP2040的UF2固件是在编译时候选择`No bootloader`才会编译出UF2固件

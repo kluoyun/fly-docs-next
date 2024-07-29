@@ -6,10 +6,13 @@ sidebar_label: 固件编译与烧录
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import ImageView from '@site/src/components/ImageView';
+import LSUSB from '@site/docs/General/get-id/_get-lsusb.mdx';
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/docs/General/dfu-flash/_firmware/072/_can.mdx';
 import CAN103 from '@site/docs/General/dfu-flash/_firmware/103/_can.mdx';
 import CANFLASH from '@site/docs/General/dfu-flash/_host-can-flash.mdx';
+import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';
+
 
 # 固件编译与烧录
 
@@ -21,21 +24,10 @@ import CANFLASH from '@site/docs/General/dfu-flash/_host-can-flash.mdx';
 
 :::
 
-    * 开始获取ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
-    * 请确保下位机连接上位机的数据线具有数据传输功能
-    * SSH连接连接到上位机后输入`lsusb`并且回车，将可能出现下面几种设备
-    * 如果系统不支持`lsusb`可以执行下方指令进行安装
-    * 如果`lsusb`后没有设备，请更换上位机！
+    <SSH />
+## 开始编译           
 
-    ```
-    sudo apt-get install usbutils
-    ```
-
-        <ImageView image={require('@site/docs/General/get-id/img/lsusb.png').default} size="100%" align="left" />
-
-    * `1d50:606f` 属于CAN固件是你的下位机刷了CAN桥接固件或者接了UTOC才会显示，如果刷错固件或者未刷固件则不会显示设备或者显示其他设备。
-
-    * 如果是之前在`printer.cfg`配置过对应主板的CAN UUID,需要删除或者屏蔽后保存配置并且重启Klipper
+        <MakeOperate/>
 
      <Tabs>
             <TabItem value="072" label="SHT36 V2 072主控版本" default>
@@ -70,8 +62,9 @@ import CANFLASH from '@site/docs/General/dfu-flash/_host-can-flash.mdx';
         <ImageView image={require('./img/utoc.png').default} size="100%" align="center" />
 
 
+<LSUSB />
 
-## 搜索ID并且烧录
+## 烧录固件
 
 :::tip
 
