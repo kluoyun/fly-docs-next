@@ -1,0 +1,87 @@
+---
+sidebar_position: 10
+sidebar_label: BL烧录
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+import Katapult from '@site/docs/General/dfu-flash/_host-dfu-flash.mdx';
+import WIN from '@site/docs/General/dfu-flash/_pc-dfu-flash.mdx';
+
+
+# 烧录BL
+
+    * Katapult（以前称为 CanBoot）可用与固件烧录
+    * 本次教程主要用于方便以后固件更新，以后无需按着BOOT键进入DFU
+
+:::tip
+请使用MobaXterm_Personal等SSH工具连接通过WIFI到您的上位机，并且需要确定以下几点
+:::
+
+
+    * 请确保上位机安装好了Klipper服务
+    * 请确保登录的用户必须是安装好Klipper的用户
+    * 请确保你的输入法是英文
+    * 请确保你的上位机可以正常搜索到设备
+    * 请确保以上注意事项都做到，否则无法进行下一步
+    * 请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
+
+## 下载固件包
+    <Tabs>
+        <TabItem value="win" label="windows下载固件包" default>
+            
+            * windows需要访问此地址下载固件包
+            ```bash
+            https://github.com/FengHua741/FLY_Katapult.git
+            ```
+
+        </TabItem>
+        <TabItem value="linux" label="上位机下载固件包">
+            
+            * Kipper上位机需要执行下方命令下载固件包
+            ```bash
+            cd && git clone https://github.com/FengHua741/FLY_Katapult.git
+            ```
+
+            * 如果已经下载过固件包的建议更新固件包后在进行剩下操作
+
+            ```bash
+            cd ~/FLY_Katapult && git pull
+            ```
+            
+        </TabItem>
+    </Tabs>
+
+
+### 固件存放路径
+
+    * 内存卡烧录BL为
+    ```bash
+    FLY_Katapult/BL/SUPER/SUPER5PRO.bin
+    ```
+
+## 进入DFU烧录模式
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/boot.png').default} size="100%" align="left" />
+
+:::tip
+方法一：主板完全断电后，短接DFU，使用TypeC线将主板接到上位机
+
+方法二：使用TypeC线连接到上位机后，短接DFU，再按下reset按键，松开reset按键
+:::
+
+
+## 烧录BL
+    <Tabs>
+        <TabItem value="win" label="windows烧录教程" default>
+            
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="上位机烧录教程">
+            
+            <Katapult />
+
+        </TabItem>
+    </Tabs>

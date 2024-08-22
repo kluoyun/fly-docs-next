@@ -1,0 +1,98 @@
+---
+sidebar_position: 4
+sidebar_label: SSH连接上位机
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+# 连接上位机SSH
+
+
+* 可以使用串口或者WIFI连接到设备
+* 请提前准备好**MobaXterm_Personal**或其他**SSH终端工具**
+* 请确定SD卡或者M2WE有烧录**对应上位机的系统**
+* **如果上位机不能正常启动请把驱动，限位，风扇，等外设拆除！！！**
+* **最后请通过网络连接到SSH方便编译固件！！**
+* **需要编译固件请看通过WIFI或者网线连接上位机教程**
+
+<Tabs>
+    <TabItem value="serial" label="串口连接" default>
+        ## 使用串口连接到上位机SSH
+
+        * 使用USB Type-c线材将FLY的上位机与电脑连接
+        * 其他上位机请自行查询连接方法！！
+
+        <Tabs>
+            <TabItem value="c8" label="FLY-C8" default>
+                * FLY-C8 端口
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c8-port.png').default} size="40%" align="center" />
+            </TabItem>
+        </Tabs>
+
+        * 如果主板与电脑连接正常，打开设备管理器，就可以看到CH340的端口了
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.png').default} size="40%" align="center" />
+
+        * 打开`MobaXterm`，进行如下设置，端口选择前面在设备管理器看到的端口
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.png').default} size="40%" align="center" />
+
+        * 一切正常的话就可以看到启动画面了
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.png').default} size="40%" align="center" />
+
+        * 等待片刻，出现这个画面就是启动了
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.png').default} size="40%" align="center" />
+
+        **如果等了几分钟后，像下图一样，界面没有任何显示，按几下回车键即可**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.png').default} size="40%" align="center" />
+
+        **回车后会出现下图所示内容**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.png').default} size="40%" align="center" />
+
+        * 如果需要查看IP，在ssh中输入：输入 `ip a | grep inet` 回车，在返回内容中找到与你路由器同段的IP即可访问
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.png').default} size="40%" align="center" />
+
+    </TabItem>
+    <TabItem value="net" label="网络连接" default>
+        ## 使用网络IP连接到上位机SSH
+
+        * 请登录上位机连接的**路由器后台**
+        * 请确保系统已经**正常启动**
+        * 请确保**自己知道上位机的用户名与密码**，FLY系统默认用户名**fly**, 默认密码**mellow**
+        * 如果主板已经启动且已经连接到网络，可以使用IP连接到SSH
+        * 打开MobaXterm，进行如下设置，IP填写前面查看的，也可以在路由器后台查看
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+
+        **注意：这里第4步输入的上位机的用户名**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.png').default} size="40%" align="center" />
+
+        * 第一次连接回弹出这个窗口，点击`Accept`即可
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.png').default} size="40%" align="center" />
+
+        * 提示输入密码，输入上位机密码后回车
+
+        **注意：这里输入的密码是看不到的，输完后直接回车即可**
+
+        FLY系统默认，用户名为：`fly` ，密码为：`mellow`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.png').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.png').default} size="40%" align="center" />
+
+        * 登录成功
+
+    </TabItem>
+</Tabs>
+
+----
