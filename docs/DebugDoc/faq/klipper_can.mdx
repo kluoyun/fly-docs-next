@@ -1,10 +1,133 @@
 ---
 sidebar_position: 4
-sidebar_label: CAN配置与搜索ID
+sidebar_label: CAN问题合集
 ---
 
+import ImageView from '@site/src/components/ImageView';
 import CAN from '@site/docs/General/get-id/_get-canbus-uuid.mdx';
 
-# CAN配置与搜索ID
+# CAN问题合集
 
-<CAN />
+## 搜索设备前注意事项
+
+    * 搜索CAN ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转")
+    * 请注意需要确保是使用网络登录到SSH而不是串口登录
+    * 请确保有连接好UTOC或者刷好CAN桥接固件的主板，并且确保连接上位机的数据线具有数据传输功能
+
+## 确定是否有设备
+
+    * 现在你已经正常登录到上位机了可以输入`lsusb`搜索设备，将会以下几种情况之一
+        * 输入`lsusb`提示找不到`ls`指令,则可以输入下方指令来安装指令
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * 输入`lsusb`后什么反应都没有，这是系统问题这边无能为力，你需要更换系统或者使用确定正常的系统
+        * 出现下方图片中的信息，请注意这只是参考。你只需要确定有出现`1d50:606f`即可
+            <ImageView image={require('@site/docs/General/get-id/img/606f.png').default} size="100%" align="left" />
+    * `1d50:606f` 属于本次你要用到的设备。后面的提示你不需要管，因为系统问题可能会导致他显示不全或者干脆不显示
+    * 如果有多个`1d50:606f`，建议排除一个，否则会影响后续烧录与固件连接，如`FLY MINI PAD`则建议使用板载UTOC不要使用其他CAN桥接设备
+    * 如果没有，请自行检查数据线是否接好，固件有没有刷对。
+
+:::warning 注意事项
+有`1d50:606f`时候才能去搜索CAN ID
+:::
+
+## 根据报错判断问题
+
+    * 下方是常见的报错
+        * OSError: [Errno 19] No such device
+        * can.CanError: Failed to transmit: [Errno 100] Network is down
+        * can.CanError: Failed to transmit: [Errno 105] No buffer space available
+    * 第一种是上位机找不到CAN设备(刷了USB桥接固件的主板或者UTOC)
+    * 第二种是上位机没有进行或者配置错了CAN0
+    * 第三总是上位机缓存不足或者系统问题等导致缓存崩溃
+    * 第二点与第三点可以看下方配置CAN0,进行问题排查
+    * 搜索不到ID请看最下方
+
+## 检测上位机是否支持CAN
+
+    * 如果是FLY上位机则无需执行此操作
+    * 如果你的系统是`Ubuntu`需要`Ubuntu配置CAN0`
+    * 输入下方指令确定系统是否支持CAN
+
+    ```bash
+    sudo modprobe can && echo "您的内核支持CAN" || echo "您的内核不支持CAN"
+    ```
+    * 输入以上指令后，如果您的内核支持CAN就会返回：`您的内核支持CAN`；如果不支持就会返回：`您的内核不支持CAN`。
+    * 如果返回`您的内核支持CAN`则可以进行下一步配置CAN0
+
+## 配置CAN0
+
+    * 此命令是覆盖原来系统CAN0配置，执行完成后需要重启系统
+    * 需要根据实际情况选择其中一项
+----
+    * 1M速率输入下方命令
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig $IFACE txqueuelen 1024
+            pre-up ip link set $IFACE type can bitrate 1000000
+            pre-up ip link set $IFACE txqueuelen 1024
+    EOF
+    ```
+----
+    * 500K速率输入下方命令
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set $IFACE type can bitrate 500000
+        pre-up ip link set $IFACE txqueuelen 1024
+    EOF
+    ```
+
+    * 重启设备
+
+    ```bash
+    sudo reboot
+    ```
+
+
+## 搜索不到ID后需要注意以下几个地方
+
+    * 如果Klipper配置了对应ID则需要在系统配置里面先屏蔽ID后关机，断电在开机或者点一下主板的重置
+    * 上位机CAN速率与主板，工具板等是否一致
+    * 可以使用下方代码确定上位机CAN速率
+    * 确定一下是否有断线
+    * 工具板与设备(刷了USB桥接固件的主板或者UTOC)之间是否有安装`120Ω`跳线
+    * 如果有安装`120Ω`跳线,需要使用万用表在设备完全断电情况下测量CAN H与CAN L的阻值是否处于`60Ω`左右
+    * 确定一下是否有断线
+
+    ```bash
+    ip -details link show can0
+    ```
+    
+    * 下图圈起来的地方为上位机CAN速率与缓存
+    * 上方`1024`是当前CAN0缓存
+    * 下方`1000000`是当前CAN0速率
+
+    <ImageView image={require('@site/docs/General/get-id/img/details.png').default} size="80%" align="center" />
+
+    * 如果还是没有查询的UUID，则需要仔细检查下面的注意事项
+
+        * 检查是否正确连接了主板或CAN工具板
+        * 是否正确供电，使用主板建议接上VCC电源
+        * 上位机是否支持CAN网络
+        * CAN阻值是否处于`60Ω`左右
+        * 固件编译是否正确
+
+## 搜索ID
+
+    * 输入下方指令进行ID搜索
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * 如果出现ID并在最后面的`Application:`显示`Klipper`则代表此ID可以直接使用
+    * 如果出现ID并在最后面的`Application:`显示`CANBOOT`或者`Katapult`则代表需要刷固件才可以使用
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />

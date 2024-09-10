@@ -23,12 +23,13 @@ import ImageView from '@site/src/components/ImageView';
     ```bash
     sudo modprobe can && echo "您的内核支持CAN" || echo "您的内核不支持CAN"
     ```
+
     * 输入以上指令后，如果您的内核支持CAN就会返回：`您的内核支持CAN`；如果不支持就会返回：`您的内核不支持CAN`。
 
 ## 配置CAN0
 
     * 此命令是覆盖原来系统CAN0配置，执行完成后需要重启系统
-
+    
     * 1M速率输入下方命令
 ----
     ```bash
@@ -36,7 +37,7 @@ import ImageView from '@site/src/components/ImageView';
         allow-hotplug can0
         iface can0 can static
             bitrate 1000000
-            up ifconfig $IFACE txqueuelen 1024
+            up ifconfig can0 txqueuelen 1024
             pre-up ip link set can0 type can bitrate 1000000
             pre-up ip link set can0 txqueuelen 1024
     EOF
@@ -49,7 +50,7 @@ import ImageView from '@site/src/components/ImageView';
     allow-hotplug can0
     iface can0 can static
         bitrate 500000
-        up ifconfig $IFACE txqueuelen 1024
+        up ifconfig can0 txqueuelen 1024
         pre-up ip link set can0 type can bitrate 500000
         pre-up ip link set can0 txqueuelen 1024
     EOF
