@@ -1,13 +1,11 @@
 import ImageView from '@site/src/components/ImageView';
 
-### 开始烧录
-
 :::tip
 
 使用Katapult固件可以方便以后直接通过SSH更新固件，无需在进入DFU烧录固件
 :::
 
-### 安装烧录插件
+## 安装烧录插件
 
 :::tip
 请注意安装烧录插件需要上位机能联网
@@ -34,33 +32,51 @@ import ImageView from '@site/src/components/ImageView';
     pip install pyserial --break-system-packages
     ```
 
-### 开始烧录固件
+## 开始烧录固件
 
-    * 使用`ls /dev/serial/by-id/*`搜索你的设备串口地址
-    
+    * 使用下方指令搜索你的设备串口地址
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+
+    * 下方是参考
+    <ImageView image={require('@site/docs/General/dfu-flash/img/katapult1.png').default} size="100%" align="left" />
+
+
     * 烧录固件使用下方代码，请确保已经编译好固件，请注意`=`后面没有空格
+    * 请注意你需要在klipper目录下才能烧录固件
 
-    ```bash
-    make flash FLASH_DEVICE=<你的设备串口地址>
-    ```
+        ```bash
+        make flash FLASH_DEVICE=<你的设备串口地址>
+        ```
 
-### 更新固件方法
+    * 下方是参考
+    <ImageView image={require('@site/docs/General/dfu-flash/img/katapult2.png').default} size="100%" align="left" />
+
+    * 烧录完成参考
+    <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.png').default} size="100%" align="left" />
+
+## 更新固件方法
 
 
     * 更新USB固件需要在编译好最新固件后输入下方命令更新，请注意`=`后面没有空格
 
-    ```bash
-    make flash FLASH_DEVICE=<你的设备串口地址>
-    ```
+        ```bash
+        make flash FLASH_DEVICE=<你的设备串口地址>
+        ```
+    <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.png').default} size="100%" align="left" />
 
     * 更新USB桥接CAN固件需要在编译好最新固件后输入下方命令重置进去Katapult
+    * 请注意只能给USB桥接CAN的klipper固件执行，其他固件执行会报错
 
-    ```bash
-    ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -u <MCU ID> -r
-    ```
+        ```bash
+        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <MCU ID>
+        ```
 
+    <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.png').default} size="100%" align="left" />
     * 重置进去Katapult后在执行下方执行更新固件
 
-    ```bash
-    make flash FLASH_DEVICE=<你的设备串口地址>
-    ```
+        ```bash
+        make flash FLASH_DEVICE=<你的设备串口地址>
+        ```

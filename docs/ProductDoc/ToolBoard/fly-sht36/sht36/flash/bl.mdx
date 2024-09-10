@@ -1,0 +1,92 @@
+---
+sidebar_position: 6
+sidebar_label: 烧录Katapult固件
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import LS from '@site/docs/General/dfu-flash/_can.mdx';
+import ImageView from '@site/src/components/ImageView';
+import APM from '@site/docs/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/docs/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/docs/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/docs/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult固件
+
+## Katapult固件说明
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36/42支持CAN
+    * 这边只提供CAN固件分500K与1M速率
+    :::
+
+## 进入烧录模式
+
+    :::tip
+
+    圈起来的是`BOOT按键`
+
+    :::
+
+    * 主板完全断电情况下，短接BOOT按键然后将带有数据传输的数据线一头接主板一头接你设备
+    <ImageView image={require('./img/boot.png').default} size="50%" align="center" />
+    <ImageView image={require('./img/boot1.png').default} size="50%" align="center" />
+
+## 烧录固件
+    <Tabs>
+        <TabItem value="win" label="STM32F072使用windows烧录教程" default>
+
+            * SHT36_V2的Katapult固件下载链接
+            ```bash
+            https://cdn.mellow.klipper.cn/firmware/BL/SHT36.zip
+            ```
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="STM32F072使用上位机烧录教程">
+            
+            <Katapult />
+
+            4. 烧录固件
+
+            :::tip
+
+            只需要烧录其中一个固件
+
+            :::
+
+            * 下方是500K CAN速率的固件刷写指令
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_500K.BIN
+            ```
+                       
+            * 下方是1M CAN速率的固件刷写指令
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_1M.BIN
+            ```
+
+
+            5. 出现下图箭头处所示内容``File downloaded successfully``则烧录成功
+
+            :::warning
+
+            红色箭头所指这一行**后面的报错**请忽略！！！
+
+            :::
+
+            <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            烧录完成后，需要给主板彻底断电一次。
+
+            :::
+
+        </TabItem>
+
+            </Tabs>
+

@@ -2,6 +2,14 @@ import ImageView from '@site/src/components/ImageView';
 
 ## 操作说明
 
+    :::warning 注意事项
+
+    * 请注意需要先做电流校准后在做线圈频率校准
+    * 多Z轴机器需要手动调平一次做好全部校准后在进行调平一次，在重新做校准
+    * 下位机固件要与Kliiper版本完全一致
+
+    :::
+
     * 请使用`FUIDD`网页添加下方配置后在执行后面操作
 
     ```cfg
@@ -23,14 +31,14 @@ import ImageView from '@site/src/components/ImageView';
         G28 X Y
         ```
 
-        * 上述步骤完成后，首先需要校准 Eddy 的驱动电流，然后EDDY到热床中央20mm高的位置。在控制台执行下方命令自动获取电流，然后 SAVE_CONFIG 保存参数。正常应该是16左右如果是0或者30请检查接线。
+        * 上述步骤完成后，需要校准 Eddy 的驱动电流，首先EDDY到热床中央20mm高的位置。然后在控制台执行下方命令自动获取电流，最后`SAVE_CONFIG`保存参数。正常应该是16左右如果是0或者30请检查接线。
         * 请注意是离热床20mm高的位置
 
         ```bash
         LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
         ```
 
-        * 正常返回值应该在15左右
+        * 正常返回值应该在`15`左右
         * 校准完成后`SAVE_CONFIG`保存参数
 
     ### 校准Eddy 频率
@@ -101,7 +109,8 @@ import ImageView from '@site/src/components/ImageView';
             _BED_MESH_CALIBRATE {rawparams}
             M140 S{TARGET_TEMP}
         ```
-
+    ## 扫床指令
+    
         * 快速整个扫床指令
 
         ```bash

@@ -1,50 +1,43 @@
 import ImageView from '@site/src/components/ImageView';
 
+    1. 安装烧录工具
 
-1. 安装烧录工具
+    * FLY上位机无需执行安装烧录工具
+    * 如果你需要安装请注意：上位机需要能上网才可以正常安装
+    * 如果已经安装过则无需安装
 
-* FLY上位机无需执行安装烧录工具
+    ```bash
+    sudo apt update
+    sudo apt install dfu-util -y
+    ```
 
-```bash
-sudo apt update
-sudo apt install dfu-util -y
-```
+    2. 执行下面的命令查看是否连接成功。
 
-2. 执行下面的命令查看是否连接成功。
-
-```bash
-lsusb
-```
+    ```bash
+    lsusb
+    ```
 
     * 如果没有DFU设备请尝试重新进入**烧录模式**
     * 因系统版本问题可能显示其他名字，如果有`0483:df11`则代表进入烧录模式
 
-    <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="100%" align="left" />
 
-4. 烧录固件(烧录前确保已经编译过固件)
+        <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="80%" align="left" />    
 
-    * 如果执行不了请在前面加`sudo`请注意加入sudo后需要输入你当前用户的密码，并且密码看不到
-    * 其中`-D ~/klipper/out/klipper.bin`中的`~/klipper/out/klipper.bin`可以替换成你的固件存放路径如: `~/FLY_Katapult/BL/D/D5.bin`                               
-    * 路径需要自己替换！！！
-    * 路径需要自己替换！！！
-    * 路径需要自己替换！！！
+
+    3. 烧录固件
+
+    * 执行下方代码开始烧录
+    
     ```bash
     sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/klipper/out/klipper.bin
     ```
 
-5. 出现下图箭头处所示内容``File downloaded successfully``则烧录成功
+    4. 出现下图箭头处所示内容``File downloaded successfully``则烧录成功
 
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="80%" align="left" />    
 
-:::warning
+    :::tip
 
-红色箭头所指这一行**后面的报错**请忽略！！！
+    烧录完成后，需要给主板彻底断电一次。
 
-:::
-
-    <ImageView image={require('./img/make-flash.png').default} size="100%" align="center" />
-
-:::tip
-
-烧录完成后，需要给主板彻底断电一次。
-
-:::
+    :::
