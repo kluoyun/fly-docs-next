@@ -43,21 +43,21 @@ const FeatureList = [
       </>
     ),
   }, {
-    title: <Translate>扩展板</Translate>,
+    title: <Translate>扩展板 & 模块</Translate>,
     Svg: require('@site/static/img/extensionboard.png').default,
-    url: '/docs/category/%E6%89%A9%E5%B1%95%E6%9D%BF%E7%B1%BB',
+    url: '/docs/category/%E6%A8%A1%E5%9D%97--%E6%89%A9%E5%B1%95%E6%9D%BF%E7%B1%BB',
     description: (
       <>
         <Translate>增强您的3D打印机功能，轻松扩展连接更多传感器和附件，实现无限可能。</Translate>
       </>
     ),
   }, {
-    title: <Translate>模块 & 驱动</Translate>,
+    title: <Translate>驱动</Translate>,
     Svg: require('@site/static/img/drive.png').default,
-    url: '/docs/category/%E6%A8%A1%E5%9D%97--%E6%89%A9%E5%B1%95%E6%9D%BF%E7%B1%BB',
+    url: '/docs/category/fly-%E9%A9%B1%E5%8A%A8%E7%B3%BB%E5%88%97',
     description: (
       <>
-        <Translate>各种专业模块和驱动器，优化打印机性能，提升打印精度和速度，为您的项目提供最佳支持。</Translate>
+        <Translate>各种专业驱动器，优化打印机性能，提升打印精度和速度，为您的项目提供最佳支持。</Translate>
       </>
     ),
   },
