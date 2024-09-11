@@ -129,3 +129,17 @@ import ImageView from '@site/src/components/ImageView';
     https://cdn.mellow.klipper.cn/STEP/sen.step
     https://cdn.mellow.klipper.cn/STEP/1612.step
     ```
+
+## 下降后报错`Error during homing z: Eddy current sensor error`解决方法
+    * 需要使用SSH登录到安装好Klipper服务的用户中
+    * 输入下方命令
+        ```bash
+        sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/1612.png').default} size="110%" align="center" />
+    * 确认是否替换
+    * 如果这个命令返回一个带有`LDC1612_FREQ = 40000000`的行，那么替换就成功了。如果没有任何返回，则表示替换没有成功。
+        ```bash
+        grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/40mhz.png').default} size="110%" align="center" />
