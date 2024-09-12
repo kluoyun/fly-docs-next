@@ -1,9 +1,10 @@
 import ImageView from '@site/src/components/ImageView';
+import Button from "@mui/material/Button";
 
     :::tip
 
-    * 找ID与刷固件都建议不用在打印过程中进行
-    * Katapult的CAN固件与Klipper的CAN固件ID完全一致
+    * 找ID与刷固件都建议不要在打印过程中进行
+    * 同一个主板或者工具板Katapult的CAN固件与Klipper的CAN固件他们ID完全一致
 
     :::
 
@@ -24,38 +25,40 @@ import ImageView from '@site/src/components/ImageView';
 
     * 输入后会根据你机器出现以下几种情况，下方是参考
         * 第一种：刷了桥接固件的主板，出现一个ID并且提示`Application: Klipper`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canid.png').default} size="100%" align="left" />  
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.png').default} size="100%" align="left" />  
         * 第二种：刷了桥接固件的主板并且搭配需要烧录固件的工具板，出现两个ID
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.png').default} size="100%" align="left" />  
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.png').default} size="100%" align="left" />  
         * 第三种：使用UTOC搭配需要烧录的工具板
-        * 提示UTOC是没有ID显示出来的
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.png').default} size="100%" align="left" />  
+        * 提示：UTOC是没有ID显示出来的
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.png').default} size="100%" align="left" />  
         * 第四种：没有ID提示，一般情况是被klipper占用，上位机CAN0速率不正确，接线异常
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.png').default} size="100%" align="left" />  
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.png').default} size="100%" align="left" />  
 
     * 正常情况下需要烧录的工具板处于CANBOOT情况下则会提示`Application: CanBoot`并且对应的固件灯会闪烁。这个时候你需要烧录Klipper固件，否则无法连接！！！
     * 提示：如果是Klipper固件并且已经将ID填入配置里面后，ID将不会显示并且被Klipper占用，你需要屏蔽对应ID后彻底给主板断电重启一次。
 
     :::warning
 
-    * 如果没有查询的UUID，请看此处文档:[CAN问题合集](/docs/DebugDoc/faq/klipper_can "点击即可跳转") 
+    * 如果没有查询的UUID，请看下方文档  
+    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN问题合集</Button>
+
     :::
 
 * 固件烧录
 
     * 将下面命令中的`241696050c56`替换为查找uuid中查找到的uuid，请注意`-u`后面有空格
-    ```bash
-    python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
-    ```
+        ```bash
+        python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
+        ```
 
     * 如下图，出现`CAN Flash Success`则烧录成功 
-    <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.png').default} size="100%" align="left" />  
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.png').default} size="100%" align="left" />  
 
 
 
 * 如果需要更新固件只需要编译好固件后重新执行烧录指令就可以更新固件，但是请保证能找到ID或者Klipper已经连接上
 
-    ```bash
-    python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
-    ```
-    <ImageView image={require('@site/docs/General/dfu-flash/img/canflash1.png').default} size="100%" align="left" />  
+        ```bash
+        python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash1.png').default} size="100%" align="left" />  
