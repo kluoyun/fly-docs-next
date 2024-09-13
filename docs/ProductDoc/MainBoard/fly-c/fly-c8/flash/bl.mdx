@@ -1,0 +1,67 @@
+---
+sidebar_position: 6
+sidebar_label: 烧录bootloader固件
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/docs/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/docs/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/docs/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL固件
+
+    :::tip
+
+    * 请注意出厂已经预刷了`bootloader`无需在刷
+
+    :::
+
+## 进入烧录模式
+
+
+    * 进入烧录模式有两种方法
+    * 第一种：主板完全断电情况下，长接BOOT然后将带有数据传输的数据线一头接主板一头接你设备，合适WINDOWS
+    * 第二种：在将带有数据传输的数据线一头接主板一头接你设备后，长按BOOT然后输入指令，合适上位机
+        <ImageView image={require('./img/boot.png').default} size="100%" align="center" />
+
+## 烧录固件
+    <Tabs>
+        <TabItem value="win" label="windows烧录教程" default>
+
+            * C8的bootloader固件 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">点击自动下载固件</Button>
+
+
+            * 拨码开关`3`,`4`往右边拨，将下位机与上位机通过内置USB连接
+            * 拨码开关`1`,`2`往左边拨，否则会影响下位机与上位机连接
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.png').default} size="100%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="上位机烧录教程">
+
+            * 拨码开关`1`,`2`往右边拨，将下位机与上位机通过内置USB连接
+            * 拨码开关`3`,`4`往左边拨，否则会影响下位机与上位机连接
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.png').default} size="100%" align="center" />
+            * 按着此方法拨动拨码开关后，下方usb口将被下位机占用，请不要接入其他设备
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.png').default} size="50%" align="center" />
+
+            * 请确保上位机可以正常上网
+
+
+                ```bash
+                sudo wget https://cdn.mellow.klipper.cn/BL/HIDBL.bin -O ~/HIDBL.bin && sudo fly-flash -d c8 -u -f ~/HIDBL.bin
+                ```
+            * 出现下方提示时候需要长按下位机的BOOT键然后回车
+
+                <ImageView image={require('./img/boot.png').default} size="80%" align="center" />
+
+            * 当出现下图时候则证明烧录成功并且可以将BOOT键松开
+                <ImageView image={require('./img/hid3.png').default} size="80%" align="center" />
+
+
+        </TabItem>
+    </Tabs>
+

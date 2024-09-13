@@ -1,81 +1,65 @@
 ---
 sidebar_position: 9
-sidebar_label: BL烧录
+sidebar_label: 烧录bootloader固件
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
 import ImageView from '@site/src/components/ImageView';
-
-import Katapult from '@site/docs/General/dfu-flash/_host-dfu-flash.mdx';
 import WIN from '@site/docs/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/docs/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/docs/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
+# bootloader固件
 
-# 烧录BL
+## 进入烧录模式
 
-:::tip
-请使用MobaXterm_Personal等SSH工具连接通过WIFI到您的上位机，并且需要确定以下几点
-:::
+    :::tip
+ 
+    右边为`BOOT按键`，左边为`RESET按键`
 
-    * 请确保上位机安装好了Klipper服务
-    * 请确保登录的用户必须是安装好Klipper的用户
-    * 请确保你的输入法是英文
-    * 请确保你的上位机可以正常搜索到设备
-    * 请确保以上注意事项都做到，否则无法进行下一步
-    * 请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转") 
+    :::
 
-## 下载固件包
-    <Tabs>
-        <TabItem value="win" label="windows下载固件包" default>
-            
-            * windows需要访问此地址下载固件包
-            ```bash
-            https://github.com/FengHua741/FLY_Katapult.git
-            ```
+    * 进入烧录模式有两种方法
+    * 第一种：主板完全断电情况下，按着BOOT按键然后将带有数据传输的数据线一头接主板一头接你设备
+    * 第二种：在将带有数据传输的数据线一头接主板一头接你设备后，按着BOOT键然后按下RST键，然后松开RST键最后松开BOOT键
+        <ImageView image={require('./img/boot.png').default} size="50%" align="center" />
 
-        </TabItem>
-        <TabItem value="linux" label="上位机下载固件包">
-            
-            * Kipper上位机需要执行下方命令下载固件包
-            ```bash
-            cd && git clone https://github.com/FengHua741/FLY_Katapult.git
-            ```
-
-            * 如果已经下载过固件包的建议更新固件包后在进行剩下操作
-
-            ```bash
-            cd ~/FLY_Katapult && git pull
-            ```
-            
-        </TabItem>
-    </Tabs>
-
-
-### 固件存放路径
-
-    ```bash
-    FLY_Katapult/BL/CDV/CDYV3_V2.hex
-    ```
-
-## 进入DFU烧录模式
-
-:::tip
-按着BOOT0接到电脑或者上位机后松开B00T0
-:::
-
-    <ImageView image={require('./img/boot-key.png').default} size="50%" align="center" />
-
-
-## 烧录BL
+## 烧录固件
     <Tabs>
         <TabItem value="win" label="windows烧录教程" default>
-            
+
+            * CDV的bootloader固件 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/CDYV3_V2.hex">点击自动下载固件</Button>
             <WIN />
-            
+
         </TabItem>
         <TabItem value="linux" label="上位机烧录教程">
-            
+
             <Katapult />
+
+            4. 烧录固件
+
+            :::tip
+
+            只需要烧录其中一个固件
+
+            :::
+
+            * 下方是固件刷写指令
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/CDV/CDYV3_V2.hex
+                ```
+
+            5. 出现下图箭头处所示内容``File downloaded successfully``则烧录成功
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            烧录完成后，需要给主板彻底断电一次。
+
+            :::
 
         </TabItem>
     </Tabs>
