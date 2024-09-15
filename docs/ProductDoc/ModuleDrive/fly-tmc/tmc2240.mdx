@@ -2,14 +2,100 @@
 sidebar_position: 2
 ---
 
+import Button from "@mui/material/Button";
 import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
 
 # TMC 2240
 
-:::tip
+    <ImageView image={require('./img/2240.png').default} size="80%" align="left" />
 
-此文档正在迁移中，在完成之前请访问 [旧版文档](https://mellow.klipper.cn/#/)。
+## 基本参数
 
-:::
+    * 输入电压 ：12V-36V
+    * 适用于 ： Klipper/RRF 固件
+    * 驱动模式支持：TMC：SPI/UART
+    * 集成温度检测
+    * 通用模拟输入全保护和诊断
+    * 完全集成的无损电流感应 (ICS)
+    * 带微步插值 microPlyer 的步进/方向接口
+    * 短路保护、欠压锁定、芯片过热保护（热关断）
+    * 支持stallGuard2高精度无传感器电机负载检测
+    * 集成StallGuard2 和 StallGuard4 无传感器电机负载检测
+    * StealthChop 和 SpreadCycle 的无抖动组合，解决了斩波切换速度点的电机跳动问题。
+    * 功率更大，发热量更低。（支持更大电压，3.0AMAX，适用于更高领域的3D打印工作，及更长时间工作不易发热及损坏。）
 
-----
+## 主板跳线说明
+
+    * TMC2240默认使用SPI跳线
+        <ImageView image={require('./img/jumper.png').default} size="100%" align="left" />
+    * TMC2240使用UART跳线方法
+        <ImageView image={require('./img/2240uart.png').default} size="100%" align="left" />
+
+
+## TMC2240参考配置
+
+    :::danger
+
+    驱动采样电阻是`rref: 12300`请不要设置错误
+
+    :::
+
+### SPI模式参考配置
+
+    ```cfg
+    [tmc2240 stepper_x]
+    cs_pin: 
+    spi_bus: 
+    run_current: 0.65                   # 电机运行电流值
+    interpolate: False                  # 是否开启256微步插值（不建议开启）
+    rref: 12300
+    stealthchop_threshold: 0           # 静音阀值（如果不需要静音，请将数值改为0）
+    ```
+
+### UART模式参考配置
+
+    ```cfg
+    [tmc2240 stepper_x]
+    uart_pin:
+    run_current: 0.65                   # 电机运行电流值
+    interpolate: False                  # 是否开启256微步插值（不建议开启）
+    rref: 12300                         # 驱动采样电阻
+    stealthchop_threshold: 0            # 静音阀值（如果不需要静音，请将数值改为0）
+    ```
+
+    * 如果出现下方报错
+        
+        <ImageView image={require('./img/2240error.png').default} size="80%" align="left" />
+
+    * 需要在SSH终端下登录到安装了klipper的用户下然后执行此代码
+
+        ```bash
+        sed -i 's/"uart_pin"/\'"'"'uart_pin'\''/g' ~/klipper/klippy/extras/tmc2240.py
+        ```
+
+## 无限位使用说明
+
+    <DIAG />
+
+    :::tip 无限位使用提示
+
+    * 原来的`endstop_pin:`需要屏蔽或者删除，在添加`endstop_pin: tmc2240_stepper_x:virtual_endstop`
+    * 配置`diag0_pin:`后刷新限位状态是未触发
+    * 配置`driver_SGT:`需要自行测试一个合适的值正常为`1`
+
+    :::
+
+    * 参考配置
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3   # 需要将原来的限位口屏蔽或者删除
+    endstop_pin: tmc2240_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 回退不改0可能会导致归位失败
+
+    [tmc2240 stepper_x]
+    diag0_pin: ^!PG12
+    driver_SGT: 1
+
+    ```

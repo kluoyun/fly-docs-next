@@ -2,14 +2,81 @@
 sidebar_position: 1
 ---
 
+import Button from "@mui/material/Button";
 import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
 
 # TMC 2209
 
-:::tip
+    <ImageView image={require('./img/2209.png').default} size="80%" align="left" />
 
-此文档正在迁移中，在完成之前请访问 [旧版文档](https://mellow.klipper.cn/#/)。
+## 基本参数
 
-:::
+    * 输入电压 ：12V-24V
+    * 适用于 ： Marlin/Klipper/RRF 固件
+    * 电机不容易丢步
+    * 支持静音模式
+    * 大面积风扇热垫，降低驱动工作温度
+    * 驱动模式支持：TMC：UART
+    * 支持电机堵转检测
 
-----
+## 主板跳线说明
+
+    * TMC2209使用UART跳线
+        <ImageView image={require('./img/jumper.png').default} size="100%" align="left" />
+    * FLY驱动的UART脚是在左边往下数第四个脚，PDN脚就是UART脚。如果主板不是对应脚位则无法使用UART
+    * 其他驱动如果是在第五脚使用我们主板可以使用参考此方法解决  <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">UART使用不了解决方法</Button>
+        
+        <ImageView image={require('./img/uart1.png').default} size="80%" align="left" />
+
+## TMC2209参考配置
+
+    :::danger
+
+    驱动采样电阻是0.110请不要设置错误
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0.8                    # 电机运行电流值（单位：mA）
+    sense_resistor: 0.110               # 驱动采样电阻不要改
+    stealthchop_threshold: 0
+    ```
+
+## 无限位使用说明
+
+    <DIAG />
+
+    :::tip 无限位使用提示
+
+    * 原来的`endstop_pin:`需要屏蔽或者删除，在添加`endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * 配置`diag_pin:`后刷新限位状态是未触发
+    * 配置`driver_SGTHRS:`需要自行测试一个合适的值
+
+    :::
+
+        <ImageView image={require('./img/2209diag.png').default} size="80%" align="left" />
+
+    * 参考配置
+
+    :::tip
+
+    * FLY 2209背面有拨码，需要拨到另外一边
+    * FLY 2209C是直连驱动DIAG不需要进行此步
+
+    :::
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 回退不改0可能会导致归位失败
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```
