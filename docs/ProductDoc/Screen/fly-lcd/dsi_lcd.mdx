@@ -1,6 +1,90 @@
 ---
 sidebar_position: 5
-sidebar_label: DSI-LCD5使用
+sidebar_label: DSI-LCD5
 ---
 
-## 正在更新
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import DSI from '@site/docs/General/rpi/_dsi.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+# DSI-LCD5
+
+    <ImageView image={require('./img/dsi_lcd5.png').default} size="50%" align="left" />
+
+## 产品简介
+
+    * 屏幕尺寸：120.7mm*76.0mm
+    * 屏幕显示区域：108mm*66.2mm
+    * 分辨率：800*480
+    * 屏幕类型：IPS
+    * 通信方式：DSI/Mipi
+    * 板载接口：15 pin DSI / 22pin Mipi
+    * 工作稳定：0°-60°C
+    * 触摸类型：Capacitive（电容式）
+    * 逻辑电压：3.3V
+    * 重量：135.5g
+
+## 板载按钮
+
+    <ImageView image={require('./img/dip.png').default} size="50%" align="left" />
+
+## 树莓派安装
+
+    <ImageView image={require('./img/rpi.png').default} size="50%" align="left" />
+
+## 树莓派配置
+
+    :::warning 注意事项
+
+    * 树莓派系统建议使用`bookworm`版本
+
+    :::
+
+    <Tabs>
+        <TabItem value="树莓派4B/3B使用DSI接口" default>
+        
+        <DSI />
+        * 参考接线
+            <ImageView image={require('./img/dsi.png').default} size="100%" align="left" />
+        </TabItem>
+
+
+        <TabItem value="树莓派5B使用Mipi接口" default>
+
+        :::danger 须知
+
+        * 树莓派5的DSI与CSI接口现在已经改名叫MIPI
+        * MIPI接口可通过配置直接使用CSI摄像头或者DSI屏幕
+        * 请注意金手指方向
+
+        :::
+
+        * 树莓派5现在有两个MIPI接口，如果正面看的话可以看到上面有标记1和0
+        * 左边箭头在系统默认为DSI1,右边箭头在系统默认CAM0
+            <ImageView image={require('@site/docs/General/rpi/img/mipi.png').default} size="100%" align="left" />
+        * DSI屏幕接线
+
+            * 如果使用左边MIPI接口需要按下方配置屏幕
+
+            ```bash
+            dtoverlay=vc4-kms-dsi-7inch,dsi1
+            ```
+
+            * 如果使用右边MIPI接口需要按下方配置屏幕
+
+            ```bash
+            dtoverlay=vc4-kms-dsi-7inch,dsi0
+            ```
+            * 参考接线
+                <ImageView image={require('./img/mipi.png').default} size="100%" align="left" />
+
+        </TabItem>
+    </Tabs>
+
+
+## 三维模型下载
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/FLY-DSI-LCD5.step
+    ```

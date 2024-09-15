@@ -3,77 +3,76 @@ sidebar_position: 8
 ---
 
 import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
 
 # TP 2209
 
-:::tip
-**TP2209支持12V-24V**
-:::
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/fly-tmc/img/tp2209.png').default} size="60%" align="left" />
 
-:::tip
- **采样电阻0.110**
-:::
 
-:::tip
-**无需驱动跳线帽，正常配置即可**
-:::
-
-## TMC-2209
+## 基本参数
 
     * 输入电压 ：12V-24V
     * 适用于 ： Marlin/Klipper/RRF 固件
     * 电机不容易丢步
     * 支持静音模式
+    * 大面积风扇热垫，降低驱动工作温度
     * 驱动模式支持：TMC：UART
     * 支持电机堵转检测
-
-<ImageView image={require('@site/docs/ProductDoc/ModuleDrive/fly-tmc/img/tp2209.png').default} size="60%" align="left" />
 
 
 ## FLY主板跳线
 
-:::tip
-TP2209使用UART模式
-:::
+    :::tip
 
-* TP2209无需驱动跳线帽，只需要单纯配置即可
+    * TP2209使用UART模式
+    * TP2209无需驱动跳线帽，只需要单纯配置即可
+    
+    :::
+
 
 ## TP2209参考配置
+
+    :::danger
+
+    驱动采样电阻是0.110请不要设置错误
+
+    :::
 
     ```cfg
     [tmc2209 stepper_x]
     uart_pin: 
-    interpolate: False                  # 是否开启256微步插值（开启是True，关闭是False）
+    interpolate: False
     run_current: 0.8                    # 电机运行电流值（单位：mA）
     sense_resistor: 0.110               # 驱动采样电阻不要改
-    stealthchop_threshold: 0            # 静音阀值（如果不需要静音，请将数值改为0）
+    stealthchop_threshold: 0
     ```
 
-## TP2209无限位配置
 
-    * 注意事项
-    * 使用TP2209的无限位需要将主板的DIAG跳线接上
+
+## 无限位使用说明
+
+    <DIAG />
+
+    :::tip 无限位使用提示
+
+    * 原来的`endstop_pin:`需要屏蔽或者删除，在添加`endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * 配置`diag_pin:`后刷新限位状态是未触发
+    * 配置`driver_SGTHRS:`需要自行测试一个合适的值
+
+    :::
+
+
+    * 参考配置
 
     ```cfg
-
     [stepper_x]
-    endstop_pin: tmc2209_stepper_x:virtual_endstop      # 使用驱动当限位
-    homing_retract_dist: 0        # 后撤距离
-    #   回退不改0会导致归位失败
-    #--------------------------------------------------------------------
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 回退不改0可能会导致归位失败
+
     [tmc2209 stepper_x]
-    sense_resistor: 0.110             # 驱动采样电阻不要改
-    diag_pin: ^                   # 虚拟限位
-
-    #   请确保限位状态是未触发
-    #   微控制器连接到TMC2209的DIAG接口的引脚
-    #   这个引脚通常使用"^"前缀来开启内部上拉
-    #   设置这个会创建一个名为"tmc2209_stepper_x:virtual_endstop"的虚拟引脚
-    #   用做步进电机的终止引脚。
-    #   在启动"sensorless homing"（无限位归零）时设置这个。
-    #   默认是关闭了无限位归零
+    diag_pin: ^
     driver_SGTHRS: 100
-    #   灵敏度和皮带松紧有关需要自行调节
-    #  （确保同时设置了driver_SGTHRS为一个合适的灵敏度）
-
+    
     ```
