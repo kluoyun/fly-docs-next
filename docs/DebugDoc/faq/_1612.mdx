@@ -31,7 +31,7 @@ import ImageView from '@site/src/components/ImageView';
         G28 X Y
         ```
 
-        * 上述步骤完成后，需要校准 Eddy 的驱动电流，首先EDDY到热床中央20mm高的位置。然后在控制台执行下方命令自动获取电流，最后`SAVE_CONFIG`保存参数。正常应该是16左右如果是0或者30请检查接线。
+        * 上述步骤完成后，需要校准 Eddy 的驱动电流，首先EDDY到移动热床中间然后抬高喷嘴与热床直接距离要求20mm。然后在控制台执行下方命令自动获取电流，最后`SAVE_CONFIG`保存参数。正常应该是16左右如果是0或者30请检查接线。
         * 请注意是离热床20mm高的位置
 
         ```bash
@@ -50,7 +50,7 @@ import ImageView from '@site/src/components/ImageView';
         PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
         ```
         * 校准完成后`SAVE_CONFIG`保存参数
-        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，先运行一次`Z_TILT_ADJUST`或者`QUAD_GANTRY_LEVEL`后重新校准一次校准Eddy 频率
+        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，先运行一次`Z_TILT_ADJUST`或者`QUAD_GANTRY_LEVEL`后重新校准一次校准Eddy频率
 
     ### 温度补偿说明
         * 正在更新
@@ -117,7 +117,7 @@ import ImageView from '@site/src/components/ImageView';
         BED_MESH_CALIBRATE METHOD=scan SCAN_MODE=rapid
         ```
 
-        * 快速局域扫床指令，需要确保Klipper可以使用对象排除功能
+        * 快速局域扫床指令，需要确保Klipper可以使用对象排除功能，建议添加到开始宏中
 
         ```bash
         BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
@@ -136,10 +136,10 @@ import ImageView from '@site/src/components/ImageView';
         ```bash
         sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
         ```
-        <ImageView image={require('@site/docs/DebugDoc/faq/img/1612.png').default} size="110%" align="center" />
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/1612.png').default} size="110%" align="center" />
     * 确认是否替换
     * 如果这个命令返回一个带有`LDC1612_FREQ = 40000000`的行，那么替换就成功了。如果没有任何返回，则表示替换没有成功。
         ```bash
         grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
         ```
-        <ImageView image={require('@site/docs/DebugDoc/faq/img/40mhz.png').default} size="110%" align="center" />
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/40mhz.png').default} size="110%" align="center" />

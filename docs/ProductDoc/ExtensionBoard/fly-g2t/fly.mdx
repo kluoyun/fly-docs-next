@@ -1,0 +1,79 @@
+---
+sidebar_position: 3
+sidebar_label: FLY PI使用教程
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# FLY上位机使用说明
+
+## 注意事项：
+
+    * 确保在安装扩展板前，上位机已经关闭电源。
+    * 避免在潮湿或灰尘环境中使用扩展板。
+    * 安装屏幕时，请注意不要带电拔插注意屏线方向，以免造成损坏。
+    * 安装风扇时，请注意风扇的电流和电压规格，以免造成损坏。
+    * FLY上位机只能使用中间的RS232接口，FAN口与FPC屏幕接口！！！
+    * FLY上位机中可以使用G2T的上位机有`PI V2`、`C8`、`PRO X10`
+    * `Gemini`系列与`PI V1`无法使用
+
+## 安装G2T
+
+    * 下方是参考
+        <ImageView image={require('./img/piv2.png').default} size="60%" align="left" />
+    * 参考接线
+        <ImageView image={require('./img/wiring.png').default} size="60%" align="left" />
+
+
+## 使用板载RS232连接工具版方法
+
+    * FLY上位机刷好最新系统后需要访问**上位机的IP+:9999**
+    * FLY上位机只能使用中间的RS232接口，FAN口与FPC屏幕接口！！！
+    * 在系统设置里面找到**UART1**并且保存重启
+        <ImageView image={require('./img/uart.png').default} size="100%" align="left" />
+
+    * 下方是参考配置
+
+        ```cfg
+        [mcu] 
+        serial: /dev/ttyS1
+        baud: 250000
+        restart_method:command
+        ```
+
+## 板载5VFAN使用
+
+            <ImageView image={require('./img/fan.png').default} size="50%" align="left" />
+
+        ```cfg
+        [mcu host]         
+        serial: /tmp/klipper_host_mcu 
+
+        [temperature_sensor FLY Pi]
+        sensor_type: temperature_host
+
+        [temperature_fan core_fan]      # 上位机散热风扇
+        pin: host:gpiochip1/gpio102     # 上位机风扇pin脚
+        max_power: 1.0
+        sensor_type: temperature_host   # 设置为上位机主控温度
+        control:watermark               # 控制方式
+        target_temp: 48                 # 上位机散热风扇启动温度
+        min_temp: 0                     # 最低温度，低于此温度将会报错
+        max_temp: 90                    # 最高温度，高于此温度将会报错
+        off_below: 0.10
+        kick_start_time: 0.50
+        max_speed: 0.8                  # 最大转速，为满功率运转时的80%
+        min_speed: 0.3                  # 最小转速，为满功率运转时的30%
+
+        ```
+
+## 屏幕使用方法
+
+    * FLY上位机刷好最新系统后需要访问**上位机的IP+:9999**
+        * fly-tft-v2-c是3.5寸TFT电容屏选择
+        * fly-tft-v2-r是3.5寸TFT电阻屏选择
+            <ImageView image={require('./img/tools.png').default} size="100%" align="left" />
+
+### 屏幕安装
+
+    <ImageView image={require('./img/tft.png').default} size="60%" align="left" />
