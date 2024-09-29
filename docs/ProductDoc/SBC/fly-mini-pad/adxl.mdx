@@ -4,14 +4,38 @@ sidebar_label: 加速度计使用
 ---
 
 import ADXL from "/docs/DebugDoc/faq/kipper-adxl.mdx";
+import ImageView from '@site/src/components/ImageView';
 
 
 # 加速度计使用
 
-:::warning 注意事项
+    :::tip
 
-板载加速度计口因系统问题暂时无法使用。
+    * Mini Pad可使用板载接口直接连接加速度计或者使用工具版等自带加速度计
 
-:::
+    :::
+
+## 板载接口外接加速度计
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/adxl.png').default} size="80%" align="left" />
+
+    * 参考配置
+
+    ```cfg
+    [mcu host]
+    serial: /tmp/klipper_host_mcu
+
+    [adxl345]
+    cs_pin: host:None
+    spi_bus: spidev1.0
+
+    [resonance_tester]
+    accel_chip: adxl345
+    #accel_chip_y: adxl345 bed
+    probe_points:
+        100, 100, 20  # an example
+    ```
+
+## 加速度计使用
 
     <ADXL />
