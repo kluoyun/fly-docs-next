@@ -1,0 +1,61 @@
+---
+sidebar_position: 5
+sidebar_label: 系统崩溃备份配置方法
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+# 备份配置方法
+
+:::danger 须知
+
+* 本教程适用于FLY-Pi、树莓派、香橙派等上位机
+* 如果使用EMMC需要可以进入烧录模式，否则本教程并不适用
+* 本教程基于Windows系统下操作，请不要格式化未知磁盘等操作！！！
+* 不要格式化！！！    不要格式化！！！  不要格式化！！！
+
+:::
+
+## 下载需要的软件
+
+    * 点击进去后下载，网页会提示你电脑合适哪个版本
+    * 软件为绿色版，无需安装，下载后解压即可使用。
+    * <Button variant="contained" disableElevation href="https://www.diskgenius.cn/download.php">DG硬盘工具</Button>
+
+## 开始备份
+
+    :::info
+    * 不要格式化！！！
+    * 格式化后就没办法恢复！！！
+    * 如果是TF卡直接接到电脑即可
+    * 如果是EMMC需要手动进入烧录模式！！！
+    :::
+
+### 连接
+    * 将需要备份的系统接到电脑上
+    * 打开`DiskGenius.exe`
+    * 如果正常则会显示你需要备份的磁盘
+        <ImageView image={require('./img/backup/boot.png').default} size="80%" align="center" />
+    
+### 寻找
+    * 左边点击主分区，在点击上方的浏览文件，最后会出现下方文件
+        <ImageView image={require('./img/backup/home.png').default} size="80%" align="center" />
+    * 找到`home`双击进去
+    * 进去后一般是只有一个文件夹，并且名字是你系统用户的名字
+    * 如果有两个或者以上，需要你自行确定那个有你的系统配置
+    * 然后双击进去
+    * 进去后寻找`printer_data`
+        <ImageView image={require('./img/backup/printer-data.png').default} size="80%" align="center" />
+    * `printer_data`这个文件夹包含了你的打印文件、klipper配置、klipper日志等东西，可以直接全部导出
+
+### 导出配置
+    * 右键点击`printer_data`会出现下方提示
+        <ImageView image={require('./img/backup/export.png').default} size="40%" align="center" />
+    * 选择你需要保存的目录或者直接导出即可
+    * 确定导出
+        <ImageView image={require('./img/backup/export1.png').default} size="80%" align="center" />
+    * 打开你导出的文件，并且找到`config`这里面是你的系统配置
+        <ImageView image={require('./img/backup/export2.png').default} size="80%" align="center" />
+    * 导出配置已经完成
+    * 请注意`moonraker`文件不要随意上传到其他系统，可能因系统不一样导致klipper无法连接
