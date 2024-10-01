@@ -10,125 +10,156 @@ import ImageView from '@site/src/components/ImageView';
 
     :::
 
-    * 请使用`FUIDD`网页添加下方配置后在执行后面操作
+    :::info
 
-    ```cfg
-    [force_move]
-    enable_force_move: true
-    ```
+    * 请注意需要先做电流校准后在做线圈频率校准
+    * 多Z轴机器需要手动调平一次做好全部校准后在进行调平一次，在重新做校准
+    * 下位机固件要与Kliiper版本完全一致
+
+    :::
+
+
+    * 请使用`FUIDD`网页添加下方配置后在执行后面操作
+        ```cfg
+        [force_move]
+        enable_force_move: true
+        ```
 
     ### 校准EDDY 电流
 
         * 在控制台输入下方命令
-
-        ```bash
-        SET_KINEMATIC_POSITION z=80
-        ```
-
+            ```bash
+            SET_KINEMATIC_POSITION z=80
+            ```
         * 归位X与Y
-
-        ```bash
-        G28 X Y
-        ```
-
+            ```bash
+            G28 X Y
+            ```
         * 上述步骤完成后，需要校准 Eddy 的驱动电流，首先EDDY到移动热床中间然后抬高喷嘴与热床直接距离要求20mm。然后在控制台执行下方命令自动获取电流，最后`SAVE_CONFIG`保存参数。正常应该是16左右如果是0或者30请检查接线。
         * 请注意是离热床20mm高的位置
-
-        ```bash
-        LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
-        ```
-
+            ```bash
+            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
+            ```
         * 正常返回值应该在`15`左右
         * 校准完成后`SAVE_CONFIG`保存参数
 
     ### 校准Eddy 频率
 
+
+        :::info
+
+        * 在安装 Eddy 时，底部之于喷嘴的位置需至少在喷嘴上面 1-2 mm
+        * 校准校准Eddy频率时，线圈PCB要远离热床至少5mm
+
+        :::
+
         * 然后将喷头移动到平台中心（注意：此步骤要确保机器没有加载 heightmap）
         * 开始手动 z 偏移校准 [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
-
-        ```bash
-        PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-        ```
+            ```bash
+            PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+            ```
         * 校准完成后`SAVE_CONFIG`保存参数
         * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，先运行一次`Z_TILT_ADJUST`或者`QUAD_GANTRY_LEVEL`后重新校准一次校准Eddy频率
 
     ### 温度补偿说明
-        * 正在更新
 
+        * 归位所有轴
+        * 如果有`[quad_gantry_level]`或者 `[z_tilt]`，先运行一次`Z_TILT_ADJUST`或者`QUAD_GANTRY_LEVEL`后，在归位一次
+        * 在控制台输入G0 Z5或者通过网页等方式，将Z轴移动到热床上方`5mm`
+        * 执行下方代码将机器的`idle timeout`设置长一点，避免我们升温过程的时候 timeout
+            ```bash
+            SET_IDLE_TIMEOUT TIMEOUT=36000
+            ```
+        * 执行下方指令开始校准
+            ```bash
+            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
+            ```
+        :::warning 注意事项
+
+        * 提示：在上方命令中，目标温度设置为`56℃`，适用于多数设备。
+        * 如果您的 3D 打印机腔体的实际温度更高，您可以适当提高目标温度。
+        * 请注意，目标温度越高，校准所需时间将相应延长，因为 Eddy 需要更长时间来达到温度平衡。
+
+        :::
+    
+        1. 执行此操作后，UI 将显示 Z 轴调整框。请使用上述提到的手动 [Z轴偏移校准（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)，将纸张夹在喷嘴和床面之间，然后确认该值。
+        2. 接受值后，将热床温度调至最高，喷嘴温度调至 220℃。
+        3. 如果您在有空调或开窗的房间中，为了确保 Eddy 的温度上升，建议关闭空调或窗户，因为风会影响温度的升高。
+        4. 随着 Eddy 温度的上升，系统会自动提示您每隔 4℃执行一次手动 Z 偏移校准。热床温度很高，谨防烫伤!!!
+        5. 重复手动 Z 偏移校准（Paper Test）直到校准完成。如果发现 Eddy 的温度不再上升，可以使用下面的相关命令提前结束校准。
+        
+        * 在漂移校准期间可用的额外 gcode 命令包括：TEMPERATURE_PROBE_NEXT
+            * `TEMPERATURE_PROBE_NEXT`    可用于在达到步进增量前强制采样新数据。
+            * `TEMPERATURE_PROBE_COMPLETE`    可用于在达到目标前完成校准。
+            * `ABORT`  可用于终止校准并忽略结果。
+        * 完成这些步骤后，Eddy 将能够在广泛的温度范围内提供出色的首层打印效果！
 ## 各类优化宏
 
     ### `[quad_gantry_level]`扫床优化
-
         * 如果有配置`[quad_gantry_level]`可以添加下方宏到配置里面，没有则不需要添加
         * 此宏会随着龙门高低差降低降低探测高度
-
-        ```cfg
-        [gcode_macro QUAD_GANTRY_LEVEL]
-        rename_existing: _QUAD_GANTRY_LEVEL
-        gcode:
-            SAVE_GCODE_STATE NAME=STATE_QGL
-            BED_MESH_CLEAR
-            {% if not printer.quad_gantry_level.applied %}
-            _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-            {% endif %}
-            _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=scan
-            # G28 Z
-            RESTORE_GCODE_STATE NAME=STATE_QGL
-        ```
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=scan
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
 
     ### `[z_tilt]`扫床优化
 
         * 如果有配置`[z_tilt]`可以添加下方宏到配置里面，没有则不需要添加
         * 此宏会随着龙门高低差降低降低探测高度
-
-        ```cfg
-        [gcode_macro Z_TILT_ADJUST]
-        rename_existing: _Z_TILT_ADJUST
-        gcode:
-            SAVE_GCODE_STATE NAME=STATE_Z_TILT
-            BED_MESH_CLEAR
-            {% if not printer.z_tilt.applied %}
-            _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-            {% endif %}
-            _Z_TILT_ADJUST horizontal_move_z=2 METHOD=scan
-            # G28 Z
-            RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-        ```
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=scan
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
 
     ### 扫床优化
 
         * 如果使用大功率交流热床（500W以上）
         * 下方宏是在扫床时候关闭热床扫床完成后重新加热
-
-        ```cfg
-        [gcode_macro BED_MESH_CALIBRATE]
-        rename_existing: _BED_MESH_CALIBRATE
-        gcode:
-            {% set TARGET_TEMP = printer.heater_bed.target %}
-            M140 S0
-            _BED_MESH_CALIBRATE {rawparams}
-            M140 S{TARGET_TEMP}
-        ```
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
     ## 网床指令
     
         * 扫描整个网床指令
-
-        ```bash
-        BED_MESH_CALIBRATE METHOD=scan SCAN_MODE=rapid
-        ```
-
+            ```bash
+            BED_MESH_CALIBRATE METHOD=scan SCAN_MODE=rapid
+            ```
         * 局域网床指令，需要确保Klipper可以使用对象排除功能，建议添加到开始宏中
-
-        ```bash
-        BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
-        ```
+            ```bash
+            BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
+            ```
 
 ## 线圈模型下载链接
 
-    ```bash
-    https://cdn.mellow.klipper.cn/STEP/sen.step
-    https://cdn.mellow.klipper.cn/STEP/1612.step
-    ```
+        ```bash
+        https://cdn.mellow.klipper.cn/STEP/sen.step
+        https://cdn.mellow.klipper.cn/STEP/1612.step
+        ```
 
 ## 下降后报错`Error during homing z: Eddy current sensor error`解决方法
     * 需要使用SSH登录到安装好Klipper服务的用户中
