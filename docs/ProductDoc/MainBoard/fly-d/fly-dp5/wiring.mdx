@@ -1,0 +1,183 @@
+---
+sidebar_position: 4
+sidebar_label: 主板接线
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# 主板接线
+
+## 接口图
+
+### 接口说明
+
+    <ImageView image={require('./img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Pin脚说明
+
+    <ImageView image={require('./img/pin.png').default} size="50%" align="center" />
+
+---
+
+## 电源接线
+
+    <ImageView image={require('./img/wiring/power.png').default} size="40%" align="center" />
+
+----
+
+## 驱动器安装
+
+### 主板驱动跳线
+    * DP5无需安装驱动跳线帽
+
+
+### 无限位引脚
+
+    <ImageView image={require('./img/wiring/sensorless.png').default} size="40%" align="center" />
+
+----
+
+## 步进电机接线
+
+:::info
+* 不管是哪个厂家生产的两相步进电机，它的最终出现方式对应的就是4根线。不管是什么颜色，什么黑，白，绿，黄好，对应的都是4根线。所以我们要把线进行分组，分成A,B两组来。
+* 对于两相四线步进电机来说，我们不需要知道哪个是A组哪个是B组，主要是确定是一组即可，在配置里面修改电机方向即可
+:::
+
+* 在3D打印机中，最常用的是两相四线步进电机，其原理如图所示。鉴别步进电机线序有两种方法：
+    * 将任意两根相线连接，手拧电机轴，若产生明显阻力，则两根相线互为一组。反之，则不为一组，需测试另外的相线。
+    * 使用万用表，调至通断档位，测试步进电机的任意两根相线，若相通，则为一组；反之，则不为一组，需测试另外的相线。
+    <ImageView image={require('./img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('./img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## 加热管接线
+
+    <ImageView image={require('./img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## 热床接线
+
+* **交流热床：** 固态继电器在接线时，请注意输入和输出别接错了。
+
+    <ImageView image={require('./img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('./img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **直流热床：** 板载MOS接直流热床时请注意使用功率，直流热床最大电流不能超过10A。如果超过10A，建议使用外接MOS模块来使用热床，否则可能会对主板造成不可逆的损伤。
+
+    <ImageView image={require('./img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## 测温热敏接线
+
+### 热敏类型介绍
+
+* 热敏的接线方法如下图。热敏电阻的类型请咨询购买商家。
+
+* 如果为fly购买的（如下图所示），请将sensor_type 配置为：**ATC Semitec 104GT-2**
+
+    <ImageView image={require('./img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* 如果为常规的NTC 100K（如下图所示），请将sensor_type 配置为：**Generic 3950**
+
+    <ImageView image={require('./img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('./img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### 主板热敏接线
+
+    <ImageView image={require('./img/wiring/ntc-4.png').default} size="40%" align="center" />
+
+----
+
+## 风扇接线
+
+* **风扇接线**
+
+    :::tip
+
+    下图红色框图框出来的接口，上下接口为同一个引脚控制的可控风扇，即一拖二
+
+    :::
+
+    <ImageView image={require('./img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## 限位开关接线
+
+* 限位开关有常开（NO）和常闭（NC）两种。一般在3D打印机上，建议使用**常闭（NC）**，这样在限位开关线路出现问题时，系统会及时报错，可以避免一些不必要的撞车，避免损坏打印机。
+
+    <ImageView image={require('./img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## 调平传感器接线
+
+### 金属接近开关接线
+
+* VORON官方建议是使用欧姆龙Omron TL-Q5MC（之前官方推荐的是PL08N，两者原理一样，只是探测距离不一样）传感器来进行热床调平。接线方式如下图所示。
+
+    <ImageView image={require('./img/wiring/pl08.png').default} size="40%" align="center" />
+
+----
+
+### BL-Touch接线
+
+* BL-touch一共有五根线，三根为第一组，负责传感器的供电和探针的收放，第二组为地线和信号线，输出限位信号。BL-touch接线时请仔细核对线序，错误的接线可能会永久性损坏传感器和主板！！！接线方法如下图所示。
+
+    <ImageView image={require('./img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Klicky接线
+
+* Klicky为第三方的调平传感器，能够用极低的成本自己在家制作，且性能稳定，性价比高，推荐使用。接线方法如下图所示。
+* 项目地址：[jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "项目地址，点击即可跳转")
+
+    <ImageView image={require('./img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Voron Tap接线
+
+* Tap是一种基于喷嘴的z探针，适用于V2和Trident打印机设计。整个工具头移动以触发光开关，精度比常规限位开关更好，可以使用几乎市面上所有的打印平台。
+
+    :::warning
+
+    Voron Tap不建议接 **24V** ，某些版本使用 **24V** 有一定概率会导致Tap传感器烧坏，这并非Fly产品的问题，是Voron Tap的设计缺陷，请悉知！！！
+
+    :::
+
+    :::danger
+
+    注意：5V和GND不能接反，否则会损坏Tap传感器甚至主板！！！
+
+    :::
+
+    <ImageView image={require('./img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+## FLY-Mini12864 LCD接线
+
+* 下图为FLY的mini12864的接线方式，其他厂家的屏幕请咨询相应厂家。Mini12864屏幕接接反，接错可能会导致上位机连不上MCU。如果使用mini12864屏幕之前可以正常连上主板的MCU，而使用mini12864后就连不上MCU了，请尝试拔出mini12864的接线！！！
+
+    <ImageView image={require('./img/wiring/mini12864.png').default} size="30%" align="center" />
+
+----
+
+## 连接到上位机
+
+* 主板通过TypeC接口连接到上位机的USB口，也可以用过串口连接到上位机。这里只对前者做介绍。
+
+    <ImageView image={require('./img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----
