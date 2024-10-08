@@ -1,8 +1,148 @@
 ---
 sidebar_position: 2
 ---
+import ImageView from '@site/src/components/ImageView';
+import Button from "@mui/material/Button";
 
 # Klipper常用指令
 
-----
+    :::tip
+
+    * 本教程以Fuiidd网页为主
+    * 本教程是在已经正常连接好打印机，负责调试用用
+    * 本教程提供常用的指令，但是可能因为各种问题导致收录不完全
+
+    :::
+
+## 驱动相关
+
+    :::danger 须知
+
+    * 请注意，没有配置或者有问题的驱动的是检查不了
+    * 请全部驱动供电，主板供电，驱动跳线与配置是正常的！！
+
+    :::
+
+
+### 检查驱动状态
+
+    * 此命令是验证TMC驱动在SPI/UART模式的驱动状态
+        ```bash
+        DUMP_TMC STEPPER=stepper_x
+        DUMP_TMC STEPPER=stepper_x1
+        DUMP_TMC STEPPER=stepper_y
+        DUMP_TMC STEPPER=stepper_y1
+        DUMP_TMC STEPPER=stepper_z
+        DUMP_TMC STEPPER=stepper_z1
+        DUMP_TMC STEPPER=stepper_z2
+        DUMP_TMC STEPPER=stepper_z3
+        DUMP_TMC STEPPER=extruder
+        ```
+
+### 驱动强制移动
+
+    * 在`printer.cfg`中添加下方指令
+        ```bash
+        [force_move]
+        enable_force_move: true
+        ```
+
+    * 强制来回运动1mm指令
+        ```bash
+        STEPPER_BUZZ STEPPER=stepper_x
+        STEPPER_BUZZ STEPPER=stepper_x1
+        STEPPER_BUZZ STEPPER=stepper_y
+        STEPPER_BUZZ STEPPER=stepper_y1
+        STEPPER_BUZZ STEPPER=stepper_z
+        STEPPER_BUZZ STEPPER=stepper_z1
+        STEPPER_BUZZ STEPPER=stepper_z2
+        STEPPER_BUZZ STEPPER=stepper_z3
+        STEPPER_BUZZ STEPPER=extruder
+        ```
+
+    * 打开此选项即可通过移动控制强制移动
+    * 请注意一次性只能移动一个电机
+    * 如果是多个轴，如两个Z轴需要归位才可以控制
+        <ImageView image={require('./img/force.png').default} size="80%" align="center" />
+
+### 强制设定打印头距离
+
+    * 控制台输入下方命令即可强制设定打印头位置，设置后可直接控制移动
+        ```bash
+        SET_KINEMATIC_POSITION x=100 y=100 z=100
+        ```
+### 步进电机 步进值校准
+    * 需要先驱动挤出机是否正常工作，然后需要确定`full_steps_per_rotation`与`gear_ratio`是否正确否则无法校准挤出机步进值
+    * 得到新的`rotation_distance`新的后需要取整到小数点后3位
+    * 校准步进值: rotation_distance=旧rotation_distance*实际挤出长度/请求的挤出长度
+    
+        ```bash
+        full_steps_per_rotation: 200        # 单圈脉冲数 （200 为 1.8 度, 400 为 0.9 度）
+        gear_ratio: 50:10                   # 减速比（伽利略齿比7.5:1 并且这行注释掉；BMG为50：17，输出轴在前，输入轴在后）
+        rotation_distance: 22.522           # 主动带轮周长mm
+        ```
+## 加热相关
+
+### PID
+    :::tip
+    * 指令中的`TARGET=`是设定温度，请设定自己平常打印的文档
+    * 如果你有多个加热设备就可以使用此命令做PID
+    :::
+
+    * 挤出机
+        ```bash
+        PID_CALIBRATE HEATER=extruder TARGET=245
+        ```
+
+    * 热床
+        ```bash
+        PID_CALIBRATE HEATER=heater_bed TARGET=100
+        ```
+
+    * PTC
+        ```bash
+        PID_CALIBRATE HEATER=PTC TARGET=70
+        ```
+
+### 温度误差相关
+
+    :::tip
+    * 如果是加热等待过久可以参考此方法 <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">点击跳转</Button>
+    * 请注意温度不够稳可以使用此方法解决温度不稳导致的报错 <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">点击跳转</Button>
+    :::
+
+## 限位相关
+
+    :::tip
+    * 正在更新
+    :::
+
+### 普通限位
+    * 限位检查指令
+    * 请确保限位是两线的，如果三线需要确定线序是否有误，否则可能导致主板损坏！！！
+    * 请确保限位没有是正常打开状态没有碰任何等下
+    * 控制台输入下方指令,如果正常会返回下方信息
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('./img/query.png').default} size="80%" align="center" />
+    * 请确保限位都是打开状态，然后手动按下限位后在输入`QUERY_ENDSTOPS`
+
+### 无限位
+
+## 探针校准
+
+### BL-TOUCH
+
+### Probe & TAP
+
+## 特殊类型
+
+    :::tip
+    * 正在更新
+    :::
+
+### 舵机
+
+### RGB
 
