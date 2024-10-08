@@ -13,7 +13,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://mellow-next.klipper.cn',
+  url: 'https://mellow.klipper.cn',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -188,7 +188,7 @@ const config = {
               },
               {
                 label: '原文档站',
-                href: 'https://mellow.klipper.cn',
+                href: 'https://mellow-old.klipper.cn',
               },
             ],
           },
@@ -258,7 +258,7 @@ const config = {
           src: '/img/logo.png',
           width: 64,
           height: 64,
-          href: 'https://mellow-next.klipper.cn',
+          href: 'https://mellow.klipper.cn',
         },
         copyright: `Copyright © ${new Date().getFullYear()} 3D Mellow, Inc. All rights reserved`,
       },
