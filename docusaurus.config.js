@@ -63,6 +63,24 @@ const config = {
         ],
       },
     ],
+    function reanimatedDocusaurusPlugin(context, options) {
+      return {
+        name: 'custom-docusaurus-plugin',
+        configureWebpack(config, isServer, utils) {
+          const { getJSLoader } = utils;
+          return {
+            module: {
+              rules: [
+                {
+                  test: /\*/,
+                  use: [],
+                },
+              ],
+            },
+          };
+        },
+      };
+    },
   ],
   presets: [
     [
