@@ -127,22 +127,69 @@ import Button from "@mui/material/Button";
         ```
         <ImageView image={require('./img/query.png').default} size="80%" align="center" />
     * 请确保限位都是打开状态，然后手动按下限位后在输入`QUERY_ENDSTOPS`
+        <ImageView image={require('./img/query1.png').default} size="80%" align="center" />
+    * 限位状态变了则代表接线正确
 
 ### 无限位
+    * 请注意无限位状态一定是打开，否则就是配置或者接线有问题
+    * 控制台输入下方指令,如果正常会返回下方信息
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('./img/query.png').default} size="80%" align="center" />
 
-## 探针校准
+## 探针相关
 
 ### BL-TOUCH
 
+    * pin_down:探针弹出
+    * pin_up:探针缩回
+    * touch_mode:验证传感器
+    ```bash
+    BLTOUCH_DEBUG COMMAND=pin_down
+    BLTOUCH_DEBUG COMMAND=pin_up
+    BLTOUCH_DEBUG COMMAND=touch_mode
+    touch_mode
+    ```
+
 ### Probe & TAP
+
+    * 正常是未触发
+    * 建议在配置pin时候添加`^`
+    ```bash
+    QUERY_PROBE
+    ```
+        <ImageView image={require('./img/probe.png').default} size="80%" align="center" />
+
+### 重复精度
+    * 十次
+        ```bash
+        probe_accuracy
+        ```
+    * 一百次
+        ```bash
+        probe_accuracy samples=100
+        ```
 
 ## 特殊类型
 
-    :::tip
-    * 正在更新
-    :::
-
 ### 舵机
 
-### RGB
+    :::tip
+    * 舵机分180度与360度请注意区分
+    :::
+
+    * 参考配置
+        ```cfg
+        [servo my_servo]
+        pin:PE6
+        ```
+
+    * 参考指令
+        ```bash
+        SET_SERVO SERVO=my_servo ANGLE=360
+        SET_SERVO SERVO=my_servo ANGLE=180
+        SET_SERVO SERVO=my_servo ANGLE=0
+        ```
+
 
