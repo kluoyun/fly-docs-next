@@ -4,9 +4,9 @@ sidebar_position: 3
 
 import ImageView from '@site/src/components/ImageView';
 
-# TMC驱动问题合集
+# TMC报错
 
-## `Unable to read tmc uart ‘stepper_x’ register IFCNT`或者 `Unable to read tmc spi ‘stepper_x’ register register` 的错误？
+## `Unable to read tmc uart ‘stepper_x’ register IFCNT`或者 `Unable to read tmc spi ‘stepper_x’ register register` 
 
     1. 报错相信
 
@@ -27,7 +27,7 @@ import ImageView from '@site/src/components/ImageView';
         * 如果你买的驱动UART脚是在第五脚可以按下方跳线解决
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart1.png').default} size="80%" align="center" />
 
-## `TMC XXXX reports error: GSTAT: 00000001 reset=1(Reset) ` 的错误？
+## `TMC XXXX reports error: GSTAT: 00000001 reset=1(Reset) ` 
 
     1. 报错相信
 
@@ -35,11 +35,45 @@ import ImageView from '@site/src/components/ImageView';
 
     2. 报错原因
 
-        * 驱动突然重置
+        * 驱动重置
 
 
     3. 主要解决方法
 
         * 电源接线接触不良
         * 电机断线
-        * 可以将电机金属外壳与GND连接一起
+        * 可以将电机金属外壳与主板或者工具版的GND连接一起
+
+## `TMC 'extruder' reports error: DRV_STATUS: c00d0103 otpw=1(OvertempWarning!) `
+
+    1. 报错相信
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/overtemperror.png').default} size="80%" align="center" />
+
+    2. 报错原因
+
+        * 驱动过热!
+        * 不是电机过热！
+
+    3. 主要解决方法
+
+        * 降低运行电流
+        * 删除保持电流
+        * 检查驱动采样电阻是否正确
+        * 加强驱动散热，比如添加风扇
+
+## `TMC ‘extruder’ reports error: DRV_STATUS: 601f1000 s2vsa=1(ShortToSupply_A!) csactual=31 ola=1(OpenLoad_A!) olb=1(OpenLoad_B!)）`
+
+    1. 报错相信
+        * 暂无图片
+
+    2. 报错原因
+
+        * 检查驱动器电流不正确
+
+
+    3. 主要解决方法
+        
+        * 检查步进电机AB两组线圈阻值是否一致
+        * 检查步进电机或者部件电机内部的电线松动或短路了
+        * 关闭静音模式
