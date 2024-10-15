@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+---
+
+# Klipper 断电续打
+
+:::danger 须知
+
+* 仅适用部分机器
+
+:::
+
+## 切换分支
+    * 需要使用SS通过网络连接到上位机后执行，需要确保上位机可以联网
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/klipper-dev.git -b fly-dev klipper
+    ```
+
+## 参考配置
+
+    ```cfg
+    [power_resume]
+    power_pin: PA10
+    is_shutdown: True # 是否执行关机操作, 默认为启用
+    start_gcode:
+        # 开始续打前执行的gcode
+        # 断电前保存的所有参数均可通过{PR}获取
+        # 可使用M118 {PR}输出所有可用参数
+        M118 开始续打: {PR.print_stats.filename}
+        {% if PR.print_stats.info.total_layer %}
+            M118 总层数: {PR.print_stats.info.total_layer}
+            M118 中断层: {PR.print_stats.info.current_layer}
+        {% endif %}
+        M118 中断位置: X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
+        M140 S{PR.bed.target}      ; 设置热床温度
+        # M104 S180                ; 设置挤出头温度
+        # M109 S180                ; 等待挤出头加热到设定温度
+        G91                        ; 相对坐标
+        G1 Z2 F100                 ; 抬升Z，准备X,Y归零
+        G90                        ; 绝对坐标
+        G28 X Y                    ; 归零XY
+        M140 S{PR.bed.target}      ; 设置热床温度
+        M104 S{PR.extruder.target} ; 设置挤出头温度
+        M190 S{PR.bed.target}      ; 等待热床加热到设定温度
+        M109 S{PR.extruder.target} ; 等待挤出头加热到设定温度
+        M106 S255                  ; 开启吹料风扇
+        M83                        ; 相对挤出
+        G1 E10 F400                ; 挤出一点
+        G90                        ; 绝对坐标
+        G1 F{PR.gcode_move.speed}  ; 设置移动速度
+        G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; 移动到开始位置
+        {% if PR.gcode_move.absolute_coordinates %}
+            G90 ; 绝对运动
+        {% else %}
+            G91 ; 相对运动
+        {% endif %}
+        {% if PR.gcode_move.absolute_extrude %}
+            M82 ; 绝对挤出
+        {% else %}
+            M83 ; 相对挤出
+        {% endif %}
+        G92 E{PR.POS_E} ; 设置挤出位置
+    shutdown_gcode:
+        # 关机前执行的gcode
+        M118 电源电压低，关机
+        # M112 ; 紧急停止
+    ```

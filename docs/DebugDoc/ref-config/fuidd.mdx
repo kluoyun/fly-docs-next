@@ -1,0 +1,79 @@
+---
+sidebar_position: 10
+---
+
+# 暂停 取消打印自定义位置
+
+    * 需要在`printer.cfg`中添加`[include mainsail.cfg]`或者`[include fluidd.cfg]`
+    * 将下方宏添加到`printer.cfg`中
+
+## 中文翻译
+
+    ```cfg
+    [gcode_macro _CLIENT_VARIABLE]
+    ### 暂停宏相关自定义设置
+    variable_use_custom_pos   : False ; 是否使用x, y自定义停靠坐标 [True/False]
+    variable_custom_park_x    : 0.0   ; 暂停打印时X位置
+    variable_custom_park_y    : 0.0   ; 暂停打印时Y位置
+    variable_custom_park_dz   : 2.0   ; 暂停打印时Z上升的距离 (单位为毫米)
+
+    ### 取消暂停宏相关自定义设置
+    variable_park_at_cancel   : False ; 是否在执行取消打印宏时允许移动工具头到停车位置 [True/False]
+    variable_park_at_cancel_x : None  ; 取消打印后X位置
+    variable_park_at_cancel_y : None  ; 取消打印后Y位置
+
+    ### 暂停与取消时候挤出机动作
+    variable_retract          : 1.0     ; 暂停打印时挤出机回抽长度(mm)
+    variable_cancel_retract   : 5.0     ; 取消打印时挤出机回抽长度(mm)
+    variable_speed_retract    : 35.0    ; 挤出机回抽速度 mm/s
+    variable_unretract        : 1.0     ; 恢复打印时挤出长度
+    variable_speed_unretract  : 35.0    ; 挤出机挤出速度 mm/s
+    variable_speed_hop        : 15.0    ; Z轴移动速度 mm/s
+    variable_speed_move       : 100.0   ; 移动速度 mm/s
+
+    ### 关闭电机加热配置
+    ### 一天为86400秒
+    variable_idle_timeout     : 0     ; 空闲超时到启动所需要的秒数。 设置为0意味着不会设置或恢复任何值
+
+    # !!!注意如果你设置use_fw_retract: True，那么在printer.cfg中必须定义[firmware_retraction]!!!
+    variable_use_fw_retract   : False ; 是否使用固件回抽，替代手动版本 [True/False]
+    variable_runout_sensor    : ""    ; 如果定义了传感器，它将在检测到没有丝料的情况下，用来取消执行RESUME。
+    #                                指定runout传感器的配置名称，例如 "filament_switch_sensor runout"。提醒：使用你的printer.cfg中相同的
+    # !!!自定义宏，请小心使用并查看相应宏的部分。 这些宏是用于像设置状态LED的简单操作。请确保你的宏不会干扰基本宏的功能。 只支持单行命令，请创建一个宏，如果你需要多个命令。
+    variable_user_pause_macro : ""    ; ""内的所有内容将在klipper base pause (PAUSE_BASE)函数之后执行
+    variable_user_resume_macro: ""    ; ""内的所有内容将在klipper base resume (RESUME_BASE)函数之前执行
+    variable_user_cancel_macro: ""    ; ""内的所有内容将在klipper base cancel (取消打印宏_BASE)函数之前执行
+    gcode:
+    ```
+
+## 英文(原版)
+
+    ```cfg
+    [gcode_macro _CLIENT_VARIABLE]
+    variable_use_custom_pos   : False ; use custom park coordinates for x,y [True/False]
+    variable_custom_park_x    : 0.0   ; custom x position; value must be within your defined min and max of X
+    variable_custom_park_y    : 0.0   ; custom y position; value must be within your defined min and max of Y
+    variable_custom_park_dz   : 2.0   ; custom dz value; the value in mm to lift the nozzle when move to park position
+    variable_retract          : 1.0   ; the value to retract while PAUSE
+    variable_cancel_retract   : 5.0   ; the value to retract while CANCEL_PRINT
+    variable_speed_retract    : 35.0  ; retract speed in mm/s
+    variable_unretract        : 1.0   ; the value to unretract while RESUME
+    variable_speed_unretract  : 35.0  ; unretract speed in mm/s
+    variable_speed_hop        : 15.0  ; z move speed in mm/s
+    variable_speed_move       : 100.0 ; move speed in mm/s
+    variable_park_at_cancel   : False ; allow to move the toolhead to park while execute CANCEL_PRINT [True/False]
+    variable_park_at_cancel_x : None  ; different park position during CANCEL_PRINT [None/Position as Float]; park_at_cancel must be True
+    variable_park_at_cancel_y : None  ; different park position during CANCEL_PRINT [None/Position as Float]; park_at_cancel must be True
+    # !!! Caution [firmware_retraction] must be defined in the printer.cfg if you set use_fw_retract: True !!!
+    variable_use_fw_retract   : False ; use fw_retraction instead of the manual version [True/False]
+    variable_idle_timeout     : 0     ; time in sec until idle_timeout kicks in. Value 0 means that no value will be set or restored
+    variable_runout_sensor    : ""    ; If a sensor is defined, it will be used to cancel the execution of RESUME in case no filament is detected.
+    #                                   Specify the config name of the runout sensor e.g "filament_switch_sensor runout". Hint use the same as in your printer.cfg
+    # !!! Custom macros, please use with care and review the section of the corresponding macro.
+    # These macros are for simple operations like setting a status LED. Please make sure your macro does not interfere with the basic macro functions.
+    # Only  single line commands are supported, please create a macro if you need more than one command.
+    variable_user_pause_macro : ""    ; Everything inside the "" will be executed after the klipper base pause (PAUSE_BASE) function
+    variable_user_resume_macro: ""    ; Everything inside the "" will be executed before the klipper base resume (RESUME_BASE) function
+    variable_user_cancel_macro: ""    ; Everything inside the "" will be executed before the klipper base cancel (CANCEL_PRINT_BASE) function
+    gcode:
+    ```
