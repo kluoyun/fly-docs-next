@@ -1,0 +1,55 @@
+---
+sidebar_position: 2
+sidebar_label: 固件更新
+---
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+# 固件更新与烧录
+
+    :::danger 须知
+
+    * 出厂已经预刷好固件
+
+    :::
+
+## 固件下载
+    * 固件说明
+    * `wbtn-vX.X.X-X-XXXXXX-full.bin`为全量固件, 需要从0x0地址烧录, 烧录后所有配置不会保留
+    * `wbtn-vX.X.X-X-XXXXXX-delta.bin`为增量固件, 需要从0x10000地址烧录, 只更新固件, 不影响原有配置
+    * `wbtn-vX.X.X-X-XXXXXX-www.bin`为UI固件, 需要从0x290000地址烧录, 只更新网页前端UI, 不影响原有固件及配置
+    * <Button variant="contained" disableElevation href="无法下载需要更新">固件包下载，无法下载需要更新</Button>
+
+## 固件更新
+
+    * 如果发布全量升级固件则需要使用USB将AirClick连接到电脑来升级
+
+    :::tip
+
+    * 全量升级您的原有设置将不会保留，所有设置都会恢复默认
+
+    :::
+
+
+    1. 下载并解压USB烧录工具 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/Utils/flash_download_tool_3.9.4.zip">点击下载</Button>
+    2. 打开``flash_download_tool_3.9.4.exe``，注意：打开烧录工具后会先弹出一个CMD窗口，然后再弹出烧录工具的界面，一定不要关闭CMD窗口
+    3. 在烧录工具中``ChipType:``选择``ESP32-C3``
+    4. 在烧录工具中``WorkMode:``选择``Develop``
+    5. 在烧录工具中``LoadMode:``选择``USB``
+    6. 最后再点击``OK``,可参考下图
+        <ImageView image={require('./img/flash.png').default} size="50%" align="Center" />
+    7. 点击后将出现下方图片
+        <ImageView image={require('./img/flash-1.png').default} size="50%" align="Center" />
+
+    :::tip
+
+    * 上图中的绿色框选区域必须保证和图片中一致，不可自行修改
+
+    :::
+
+    8. 将AirClick通过USB-Typec数据线连接到电脑
+    9. 点击上图中的蓝色区域1按钮选择你烧录的固件
+    10. 点击上图中的蓝色区域2输入烧录地址
+    11. 点击上图中的蓝色区域3选择AirClick的串口（如果没有，可以按住AirClick的烧录按键不放，然后再连接电脑）
+    12. 点击上图中的蓝色区域4波特率选择最大`921600`
+    13. 点击上图中的蓝色区域5开始烧录，等待烧录完成后AirClick即可完成固件升级（必须等待提示烧录完成后才能断开AirClick的线）

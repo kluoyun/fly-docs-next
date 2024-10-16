@@ -1,0 +1,55 @@
+---
+sidebar_position: 5
+sidebar_label: 有线连接配置
+---
+
+import Katapult from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/docs/General/dfu-flash/_firmware/072/_usb1.mdx';
+import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+import LS from '@site/docs/General/dfu-flash/_rs232.mdx';
+import CANBOOT from '@site/docs/General/dfu-flash/_host-dfu-flash.mdx';
+import GetUsbID from '@site/docs/General/get-id/_get-usb-id.mdx';
+
+# 有线连接配置
+
+:::danger 须知
+
+* 需要给STM32F072刷固件后连接到klipper否则不支持有线连接操作
+
+:::
+
+## 开始编译固件
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 现在应该保存了配置并且退出到了命令行界面
+    * 输入 `make -j4` 开始编译，时间有点长
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最后输出下面的内容则编译成功
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## 确认是否进入烧录模式
+
+    * 长按BOOT后接到上位机
+    * 图片正在更新
+
+    <LS />
+
+## 开始烧录
+
+    <CANBOOT />
+
+## 搜索USBID
+    <GetUsbID />
