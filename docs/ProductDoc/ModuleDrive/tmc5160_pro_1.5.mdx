@@ -1,19 +1,19 @@
 ---
-sidebar_position: 3
+sidebar_position: 5
 ---
 
 import Button from "@mui/material/Button";
 import ImageView from '@site/src/components/ImageView';
-import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
+import DIAG from '@site/docs/ProductDoc/ModuleDrive/_diag.mdx';
 
-# TMC 5160
+# TMC 5160 Pro V1.5
 
-    <ImageView image={require('./img/5160.png').default} size="80%" align="left" />
+    <ImageView image={require('./img/5160pro.png').default} size="80%" align="center" />
 
 ## 基本参数
 
-    * 输入电压 ：12V-24V
-    * 最大电流 ：4.4A
+    * 输入电压 ：24-48V
+    * 最大电流 ：6A
     * 适用于 ： Marlin/Klipper/RRF 固件
     * 驱动模式支持：TMC：SPI
     * 带微步插值 microPlyer 的步进/方向接口
@@ -27,16 +27,24 @@ import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
 
 ## 主板跳线说明
 
-    * TMC5160使用SPI跳线
+    * TMC5160 Pro 使用SPI跳线
     * FLY驱动的SPI脚是在左边往下数第四个脚，CS脚就是SPI脚。如果主板不是对应脚位则无法使用SPI
-        <ImageView image={require('./img/jumper.png').default} size="100%" align="left" />
+        <ImageView image={require('./img/jumper.png').default} size="100%" align="center" />
+
+## 主板FPC安装
+
+        <ImageView image={require('./img/line.png').default} size="80%" align="center" />
+
+## 12V FAN接线
+
+        <ImageView image={require('./img/5160pro-fan.png').default} size="80%" align="center" />
 
 
-## TMC5160参考配置
+## TMC5160 Pro 参考配置
 
     :::danger
 
-    * 驱动采样电阻是`sense_resistor: 0.075`请不要设置错误
+    * 驱动采样电阻是`sense_resistor: 0.033`请不要设置错误
     * spi_bus和spi_software只能二选一
     
     :::
@@ -52,7 +60,7 @@ import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
     # spi_software_sclk_pin: 
     run_current: 1.0                    # 电机运行电流值
     interpolate: False                  # 是否开启256微步插值（开启是True，关闭是False）
-    sense_resistor: 0.075
+    sense_resistor: 0.033
     stealthchop_threshold: 0
     driver_DISS2G: 1
     driver_DISS2VS: 1
@@ -64,9 +72,9 @@ import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
 
     :::tip 无限位使用提示
 
-    * 本款驱动需要自行焊接DIAG脚，否则无法使用无限位功能
+    * 本款驱动需要将4pin的FPC安装上才可以使用
     * 原来的`endstop_pin:`需要屏蔽或者删除，在添加`endstop_pin: tmc5160_stepper_x:virtual_endstop`
-    * 配置`diag1_pin:`后刷新限位状态是未触发
+    * 配置`diag0_pin:`后刷新限位状态是未触发
     * 配置`driver_SGT: :`需要自行测试一个合适的值
 
     :::
@@ -80,7 +88,7 @@ import DIAG from '@site/docs/ProductDoc/ModuleDrive/fly-tmc/_diag.mdx';
     homing_retract_dist: 0        # 回退不改0可能会导致归位失败
 
     [tmc5160 stepper_x]
-    diag1_pin: ^!
+    diag0_pin: ^!
     driver_SGT: 1
 
     #   配置好后请确保限位状态是未触发
