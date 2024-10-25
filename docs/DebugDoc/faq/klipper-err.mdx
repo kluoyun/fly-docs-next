@@ -15,28 +15,28 @@ import ImageView from '@site/src/components/ImageView';
 
 2. **报错原因**
 
- * 上位机无法找到主板并且连接
+   * 上位机无法找到主板并且连接
 
 3. **解决方法**
 
- * 查看Klippy.log翻到最下方
- * 出现`[Errno 2]`代表没有搜索ID并且添加到**printer.cfg**里面
+   * 查看Klippy.log翻到最下方
+   * 出现`[Errno 2]`代表没有搜索ID并且添加到**printer.cfg**里面
 
    <ImageView image={require('./img/errno2.png').default} size="80%" align="center" />
 
- * 出现**serialhdl.error: mcu 'xxx': Serial connection closed**代表CAN ID没有找到或者填写错误，需要搜索ID并且填写进去
+   * 出现**serialhdl.error: mcu 'xxx': Serial connection closed**代表CAN ID没有找到或者填写错误，需要搜索ID并且填写进去
 
    <ImageView image={require('./img/lnvalid_can_uuid.png').default} size="80%" align="center" />
  
- * 出现**mcu 'mcu': Unable to open CAN port: [Errno 19] No such device**代表没有**UOTC或者刷了CAN桥接的主板**
+   * 出现**mcu 'mcu': Unable to open CAN port: [Errno 19] No such device**代表没有**UOTC或者刷了CAN桥接的主板**
 
    <ImageView image={require('./img/errno19.png').default} size="80%" align="center" />
 
- * 出现**mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 100] Network is down**代表**CAN网络没配置或者CAN0没启动**
+   * 出现**mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 100] Network is down**代表**CAN网络没配置或者CAN0没启动**
 
-* 出现**mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 105] Network is down**代表**CAN网络的缓存太小**解决方法将缓存改大
+   * 出现**mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 105] Network is down**代表**CAN网络的缓存太小**解决方法将缓存改大
 
-* 出现`[Errno 105] Network is down`与`[Errno 100] Network is down`可以看此处文档:[CAN配置](/docs/DebugDoc/faq/klipper_can.mdx "点击即可跳转") 
+   * 出现`[Errno 105] Network is down`与`[Errno 100] Network is down`可以看此处文档:[CAN配置](/docs/DebugDoc/faq/klipper_can.mdx "点击即可跳转") 
 
 ## mcu 'mcu': Invalid CAN uuid
 
@@ -46,11 +46,11 @@ import ImageView from '@site/src/components/ImageView';
 
 2. **报错原因**
 
- * CAN ID没有填写或者填写错误
+   * CAN ID没有填写或者填写错误
 
 3. **解决方法**
 
- * 需要搜索ID并且填写进去
+   * 需要搜索ID并且填写进去
 
 ## Option 'serial' in section 'mcu' must be specified
 
@@ -60,11 +60,11 @@ import ImageView from '@site/src/components/ImageView';
 
 2. **报错原因**
 
- * USB ID没有填写或者填写错误
+   * USB ID没有填写或者填写错误
 
 3. **解决方法**
 
- * 需要搜索ID并且填写进去
+   * 需要搜索ID并且填写进去
 
 ##  homing override method always homes X and Y before homing Z. The safe_z_home
 
@@ -74,11 +74,11 @@ import ImageView from '@site/src/components/ImageView';
 
 2. **报错原因**
 
- * 重复配置`[safe_z_home]`与`[homing_override]`
+   * 重复配置`[safe_z_home]`与`[homing_override]`
 
 3. **解决方法**
 
- * 只需要配置其中一项，另外一个删除即可
+   * 只需要配置其中一项，另外一个删除即可
 
  ##  Error ‘XXX ‘mcu’ shutdown: ADC out of range….
 
@@ -88,16 +88,16 @@ import ImageView from '@site/src/components/ImageView';
 
 2. **报错原因**
 
- * Klipper 检测到温度超过最大或最小阀值（热敏电阻可能开路或者短路），系统将进入关闭保护模式。
+   * Klipper 检测到温度超过最大或最小阀值（热敏电阻可能开路或者短路），系统将进入关闭保护模式。
 
 3. **解决方法**
 
- * 配置里面搜索`min_temp:`最小温度改-235
- * 配置里面搜索`max_temp:`最大温度改99999999
- * 检查热敏型号是否正确
- * 检查热敏Pin脚是否正确
- * 检查热敏是否有短路
- * 确定并且解决后需要更改回原来温度
+   * 配置里面搜索`min_temp:`最小温度改-235
+   * 配置里面搜索`max_temp:`最大温度改99999999
+   * 检查热敏型号是否正确
+   * 检查热敏Pin脚是否正确
+   * 检查热敏是否有短路
+   * 确定并且解决后需要更改回原来温度
 
 ## MCU ‘mcu’ shutdown: Timer too close
 
@@ -107,20 +107,39 @@ import ImageView from '@site/src/components/ImageView';
 
 2. **报错原因**
 
- * 主要原因下位机超载或者或者上位机超时
+   * 主要原因下位机超载或者或者上位机超时
 
 3. **解决方法**
 
- * 降低细分
- * 减少打印速度
- * 重新刷写上位机系统与重新刷写固件
+   * 降低细分
+   * 减少打印速度
+   * 重新刷写上位机系统与重新刷写固件
 
 ### 树莓派可以使用此方法
 
-```bash
-sudo timedatectl status | grep "NTP service" 
-sudo timedatectl set-ntp false
-```
+   ```bash
+   sudo timedatectl status | grep "NTP service" 
+   sudo timedatectl set-ntp false
+   ```
 
-* 查看NTP服务状态
-* 关闭NTP同步
+   * 查看NTP服务状态
+   * 关闭NTP同步
+
+## Communication timeout during homing probe 
+
+1. **报错信息**
+
+   暂无图片
+
+2. **报错原因**
+
+   * 同时CAN与屏幕服务大概率会报此错
+
+3. **解决方法**
+
+   * 使用SSH通过网络连接到上位机后执行下方代码
+   * 如果更新了klipper会自动还原
+   * 请不要在打印中执行
+   ```bash
+   sed -i 's/TRSYNC_TIMEOUT = 0.025/TRSYNC_TIMEOUT = 0.05/g' ~/klipper/klippy/mcu.py && sudo systemctl restart klipper
+   ```
