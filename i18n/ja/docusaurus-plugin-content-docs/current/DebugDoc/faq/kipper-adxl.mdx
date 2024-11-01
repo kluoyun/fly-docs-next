@@ -1,0 +1,59 @@
+---
+sidebar_position: '5'
+sidebar_label: 加速度計の使用方法
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+## 必要な依存関係パッケージのインストール
+
+:::tip 作業する際には`MobaXterm_Personal`などの SSHツールを使用することをお勧めします。:::
+
+:::tip FLY製品の場合はホストコンピューター上で実行する必要はありません。加速度センサーの依存関係パッケージが既に付属しています:::
+
+```
+※依存パッケージをインストールするには以下のコマンドを実行してください。
+※CPUの性能によっては10～20分ほど時間がかかる場合がありますのでご了承ください。インストールが完了するまでしばらくお待ちください。マザーボードの RAMが少なすぎると、場合によってはインストールが失敗することがあります。
+
+```bash
+sudo apt install python3-numpy python3-matplotlib libatlas-base-dev```
+
+```bash
+~/klippy-env/bin/pip install matplotlib numpy
+```
+```
+
+## 加速度計のテスト
+
+```
+* 実行前に原点に戻す必要があります
+* コンソールで`ACCELEROMETER_QUERY`を実行します
+* 特定の加速度センサーや複数の加速度センサーのテストを`ACCELEROMETER_QUERY CHIP=<ADXL>`で実行できます。`<ADXL>`は対応する加速度センサー名に変更する必要があります
+※エラーが発生する場合は、配線や設定を確認してください。
+※通常の出力は以下の通りです
+<ImageView image={require(`@site/docs/DebugDoc/faq/img/adxl_1.png`).default} size="80%" align="center" />
+* 共振補正測定が可能となります
+```
+
+## 加速度計の校正
+
+```
+* 実行前にG28で原点に戻してください。
+* コンソールに`SHAPER_CALIBRATE`と入力すると、X、Y の自動調整が開始されます。
+* キャリブレーション完了後`SAVE_CONFIG`を実行してデータを保存します。
+* `SHAPER_CALIBRATE AXIS=X`を使用して特定の軸を自動的に校正することも可能です。
+* 校正には時間がかかる場合がございますので、しばらくお待ちください。
+```
+
+:::ヒント 注意!テスト中にプリンターの振動が激しすぎる場合は、非常停止を押すか`M112`送信して停止してください:::
+
+```
+* accel_per_hzが高すぎると激しい振動が発生するため、適切に下げてください。
+
+```cfg
+[resonance_tester]
+accel_chip: adxl345
+accel_per_hz: 50 #デフォルト値は75です
+probe_points: ...
+```
+```
