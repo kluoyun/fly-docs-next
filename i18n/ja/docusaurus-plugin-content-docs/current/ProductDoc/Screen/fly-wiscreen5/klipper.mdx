@@ -1,0 +1,133 @@
+---
+sidebar_position: '4'
+sidebar_label: Wi-Fi接続とKlipperの設定
+---
+
+import ImageView from '@site/src/components/ImageView'; import Button from "@mui/material/Button";
+
+```
+:::ヒント
+
+出荷時にファームウェアはすでにインストールされていますが、一度手動で更新することをお勧めします
+
+:::
+```
+
+## 画面ファームウェアのダウンロード
+
+```
+* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen5/WIFI/update.img">点击下载屏幕固件</Button>
+
+* 32GB以下のメモリーカードを使用する必要があります。TFカードの転送速度はclass10またはclass10以上でなければならず、SanDiskなどのブランドのTFカードを使用することをお勧めします。
+```
+
+## Wi-Fi接続と基本操作
+
+```
+[Fly WiScreen 7で複数の機械を制御する](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
+```
+
+## Klipperの構成
+
+### LEDの構成
+
+```
+```cfg
+[led LED]
+white_pin:PA15
+```
+```
+
+### サーミスター構成
+
+```
+```cfg
+[heater_generic warehouse]
+heater_pin:E_CS
+sensor_type:ATC Semitec 104GT-2
+sensor_pin:PA1
+min_temp:-270
+max_temp:600
+control = pid
+pid_kp = 16.804
+pid_ki = 0.794
+pid_kd = 88.854
+```
+```
+
+### ファン構成
+
+```
+```cfg
+[fan_generic fan1]
+pin: FAN1
+```
+
+
+```cfg
+[fan_generic fan2]
+pin: FAN2
+```
+```
+
+### カスタムGコード
+
+```
+* 画面を下にスライドするとカスタムGコードが表示されます。
+* ボタン1つで複数のGコードを送信する形式：
+* 例：
+
+```cfg
+G91
+G1 X10 F6000
+G90
+```
+
+* 画面上の入力形式：（2行目から、各コマンドの前に\nを追加）
+
+```cfg
+G91\nG1 X10 F6000\nG90
+```
+```
+
+## オブジェクト排除機能を使用する
+
+```
+* Moonrakerを置き換える必要があります
+
+* まずSSHに接続し、正常にインターネットに接続できることを確認してください
+
+1. Moonrakerファイルをバックアップする
+
+```bash
+mv ~/moonraker ~/moonraker-bak
+```
+
+2. Moonrakerサービスを停止する
+
+```bash
+sudo systemctl restart moonraker
+```
+
+3. Moonrakerを取得する
+
+```bash
+git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
+```
+
+4. ブラウザで上位機にアクセスし、`moonraker.conf`を追加してシステムを再起動する
+
+```bash
+[network]
+```
+
+5. その後、ブラウザで以下のアドレスを入力し、IPを上位機のIPに置き換える
+
+```bash
+http://ip:7125/server/network/wifi/scan
+```
+```
+
+- このステップの表示は、操作が完了したことを意味します。
+
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.png').default} size="100%" align="left" />
