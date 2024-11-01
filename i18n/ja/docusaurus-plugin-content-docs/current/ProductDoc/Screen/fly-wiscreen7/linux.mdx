@@ -1,0 +1,132 @@
+---
+sidebar_position: '3'
+sidebar_label: Raspberry Pi およびその他のホストコンピューターのネットワークケーブルの使用に関するチュートリアル
+---
+
+import ImageView from '@site/src/components/ImageView'; import Button from "@mui/material/Button";
+
+# ネットワークケーブルの使用方法のチュートリアル
+
+```
+:::ヒント
+
+有線接続の画面ファームウェアは手動で更新する必要があります
+
+:::
+```
+
+## 画面ファームウェアのダウンロード
+
+```
+* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">ファームウェアをダウンロードする</Button>
+
+* 32GB以下のメモリーカードを使用する必要があります。TFカードの転送速度はclass10またはclass10以上でなければならず、SanDiskなどのブランドのTFカードを使用することをお勧めします。
+```
+
+## 有線LANの配線
+
+```
+<ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.png').default} size="100%" align="left" />
+```
+
+## FLYホストコンピュータに適したシステムパッケージ
+
+:::ヒント FLY C8, FLY Pi V2, FLY Pi, FLY GEMINI シリーズに適用されます:::
+
+```
+* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">システムパッケージのダウンロード</Button>
+```
+
+## 必要なパッケージの導入
+
+:::ヒント FLY以外の他のホストコンピュータは独自にサービスをインストールする必要があります:::
+
+:::警告 インストールプロセスにはインターネット接続が必要であることに注意してください::: `bash sudo apt install isc-dhcp-server`
+
+## ネットワークの構成
+
+:::ヒント
+
+- このチュートリアルはホストコンピューターのネットワーク ポートを占有し、接続画面のみを使用できます。
+
+- 必要ない場合は、以下で変更および追加した設定を完全に削除してください::: `/etc/network/interfaces.d/eth0`を変更します。
+
+    ```bash
+    auto eth0
+    iface eth0 inet static
+    address 192.168.251.100
+    netmask 255.255.255.0
+    broadcast 192.168.251.255
+    network 192.168.251.0
+    gateway 192.168.251.1
+    ```
+
+    `/etc/default/isc-dhcp-server`を変更します
+
+    ```bash
+    # Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
+
+    # Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+    #DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
+    #DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
+
+    # Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+    #DHCPDv4_PID=/var/run/dhcpd.pid
+    #DHCPDv6_PID=/var/run/dhcpd6.pid
+
+    # Additional options to start dhcpd with.
+    #       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+    #OPTIONS=""
+
+    # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+    #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+    INTERFACESv4="eth0"
+    #INTERFACESv4="eth0"
+    INTERFACESv6=""
+    #INTERFACES="eth0"
+
+    INTERFACES="eth0"
+    ```
+
+    `/etc/dhcp/dhcpd.conf`を変更し、最後に次の内容を追加します
+
+    ```bash
+    # ddns-update-style none;
+    subnet 192.168.251.0 netmask 255.255.255.0 {
+        range 192.168.251.100 192.168.251.200;
+        option routers 192.168.251.1;
+        option domain-name-servers 8.8.8.8, 8.8.4.4; # Google Public DNS as an example
+        default-lease-time 600; # Default lease time in seconds
+        max-lease-time 7200;    # Maximum lease time in seconds
+    }
+    ```
+
+    まずシステムを再起動してから、次のネットワークサービス再起動サービスを実行します。
+
+    ネットワークサービスを再起動してください
+
+    ```bash
+    sudo systemctl restart NetworkManager
+    ```
+
+    この操作によりネットワークが切断され、再接続されます
+
+    サービスを再起動する
+
+    ```bash
+    sudo systemctl restart isc-dhcp-server
+    ```
+
+    ローカル IP アドレスは`192.168.251.100`である必要があります。
+
+## Wi-Fiの優先度の変更
+
+:::ヒント
+
+- このコマンドはネットワークの優先順位を上げるためのもので、追加しないとインターネットに接続できず、正常にダウンロードできません！！！ :::
+
+    - ホストコンピューターの`/etc/rc.local`に以下のコマンドを追加してください。
+
+    ```bash
+    sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0
+    ```
