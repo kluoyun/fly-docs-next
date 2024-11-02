@@ -1,0 +1,212 @@
+---
+sidebar_position: 4
+sidebar_label: Main Board Wiring
+
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Main Board Wiring
+
+## Interface Diagram
+
+### Interface Description
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Pin Description
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Power Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/power.png').default} size="40%" align="center" />
+    * Fuse Installation
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fuse.png').default} size="40%" align="center" />
+
+----
+
+## Driver Installation
+
+### Main Board Driver Jumper
+
+* **STEP/DIR Mode.** In this mode, the subdivision is set by using a jumper cap and the current is adjusted by regulating a potentiometer. The most common driver used is A4988. For drivers like A4988, you need to consult the manufacturer's subdivision configuration table and then set the subdivision using the jumper cap.
+* **UART Mode.** The most common drivers using this mode are TMC2208, TMC2209, TMC2226, etc. These driver chips can communicate asynchronously with the main controller via UART, and you can set the driver's subdivision, operating current, silent mode, etc., by modifying the configuration file.
+* **SPI Mode.** The most common drivers using this mode are TMC5160, TMC2230, etc. These driver chips communicate synchronously with the main controller via SPI, and you can also set the driver's subdivision, operating current, silent mode, etc., by modifying the configuration file.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Driver Installation
+
+* Before installing the driver, it needs to be checked accordingly to avoid damaging the driver or the main board.
+* **FLY Driver:** If you do not use the infinite zeroing function, set the DIP switch to position 1; conversely, if you want to use the infinite zeroing function, set the DIP switch to ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Attention!!! When installing the driver module, make sure the insertion direction is correct, i.e., the EN pin should be on the top left corner, otherwise it may damage the driver or even the main board!!! Make sure to attach a heatsink to the driver!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## Stepper Motor Wiring
+
+:::info
+* Regardless of the manufacturer, a two-phase stepper motor will ultimately have four wires. No matter what color they are (black, white, green, yellow, etc.), they correspond to four wires. So we need to group these wires into two groups, A and B.
+* For a two-phase four-wire stepper motor, we don't need to know which one is group A or group B; we just need to determine that one group is correct, and we can modify the motor direction in the configuration.
+
+:::
+
+* In 3D printers, the most commonly used stepper motors are two-phase four-wire stepper motors, as shown in the diagram below. There are two methods to identify the wire sequence of the stepper motor:
+    * Connect any two phase wires and turn the motor shaft by hand; if there is significant resistance, the two wires are in the same group. Otherwise, they are not in the same group, and you need to test the other phase wires.
+    * Use a multimeter set to continuity mode to test any two phase wires of the stepper motor; if they are connected, they are in the same group; otherwise, they are not in the same group, and you need to test the other phase wires.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Heater Wire Connection
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Bed Heating Wire Connection
+
+* **AC Bed:** When wiring the solid-state relay, please pay attention to the input and output connections.
+    
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **DC Bed:** When connecting the DC bed to the onboard MOS, please pay attention to the power usage. The maximum current for a DC bed cannot exceed 10A. If it exceeds 10A, it is recommended to use an external MOS module to connect the DC bed, otherwise, it may cause irreversible damage to the main board.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Temperature Sensor Wiring
+
+### Introduction to Temperature Sensor Types
+
+* The wiring method for the temperature sensor is shown in the following diagram. Please consult the seller for the type of thermistor.
+
+* If purchased from fly (as shown in the following diagram), set the sensor_type to: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* If it is a conventional NTC 100K (as shown in the following diagram), set the sensor_type to: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Main Board Temperature Sensor Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-4.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-5.png').default} size="40%" align="center" />
+
+----
+
+## Fan Wiring
+
+* **Fan Wiring**
+
+    :::tip
+
+    Fan voltage selection. You can choose the voltage by shorting the corresponding pin with a jumper cap, as shown in the following diagram. Note: The jumper method within the yellow box in the diagram is the same.
+    Attention!!! Incorrect fan voltage selection may damage the fan or MOS module.
+
+    :::
+    * Installation of MOS module (no polarity). As shown in the following diagram
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/mos.png').default} size="30%" align="center" />
+    * Fan wiring
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## Limit Switch Wiring
+
+* Limit switches come in normally open (NO) and normally closed (NC) types. In 3D printers, it is generally recommended to use **normally closed (NC)**, so that when there is a problem with the limit switch circuit, the system will report an error promptly, avoiding unnecessary crashes and damage to the printer.
+
+**The limit switch voltage on Super8 can be changed by adjusting the shorting resistor, with options of 3.3V, 5V, 12V, defaulting to 5V. The default voltage is sufficient for most scenarios and does not require modification. If modification is needed, proceed with caution.**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/endstop-voltage.png').default} size="40%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## Bed Leveling Sensor Wiring
+
+### Metal Proximity Switch Wiring
+
+* VORON officially recommends using the Omron TL-Q5MC proximity sensor (previously, the official recommendation was PL08N, but both have the same principle, only different detection distances) for bed leveling. The wiring method is shown in the following diagram.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/pl08.png').default} size="40%" align="center" />
+
+----
+
+### BL-Touch Wiring
+
+* BL-Touch has five wires, three of which form the first group, responsible for powering the sensor and extending/retracting the probe. The second group consists of ground and signal lines, which output the limit signal. When wiring BL-Touch, carefully verify the wire sequence; incorrect wiring may permanently damage the sensor and the main board. The wiring method is shown in the following diagram.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Klicky Wiring
+
+* Klicky is a third-party leveling sensor that can be made at home with low cost and stable performance, making it highly cost-effective. It is recommended for use. The wiring method is shown in the following diagram.
+* Project Address: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Project Address, click to jump")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Voron Tap Wiring
+
+* Tap is a z-probe based on the nozzle, suitable for V2 and Trident printer designs. The entire toolhead moves to trigger the optical switch, providing better precision than standard limit switches and can be used with almost all printing platforms.
+
+    :::warning
+
+    Voron Tap is not recommended to be connected to **24V**, as some versions may have a high probability of burning out the Tap sensor when powered by **24V**. This is not a problem with the Fly product but a design flaw in the Voron Tap. Please be aware!!!
+
+    :::
+
+    :::danger
+
+    Attention: 5V and GND cannot be reversed, otherwise, it may damage the Tap sensor or even the main board!!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+## FLY-Mini12864 LCD Wiring
+
+* The wiring method for FLY's mini12864 is shown in the following diagram. For screens from other manufacturers, please consult the respective manufacturer. If the Mini12864 screen is wired incorrectly, it may prevent the host computer from connecting to the MCU. If you previously could connect to the MCU via Mini12864 but now cannot, try unplugging the Mini12864 wiring.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/mini12864.png').default} size="30%" align="center" />
+
+----
+
+## Connecting to Host
+
+* The main board connects to the host computer's USB port via a Type-C interface, or it can connect to the host via serial communication. Here, only the former is described.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----

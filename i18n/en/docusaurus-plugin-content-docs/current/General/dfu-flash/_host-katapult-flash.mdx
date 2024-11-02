@@ -1,0 +1,86 @@
+import ImageView from '@site/src/components/ImageView';
+
+:::tip
+
+Use the Katapult firmware to conveniently update the firmware via SSH in the future, without needing to enter DFU mode for firmware burning.
+:::
+
+## Installation of Flashing Plugin
+
+:::tip
+Please note that installing the flashing plugin requires an internet-connected host machine.
+If it has already been installed, there is no need to install it again.
+:::
+
+    * Install `pip install pyserial`
+
+        ```bash
+        pip install pyserial
+        ```
+
+    * If prompted with `-bash: pip: command not found`, execute the following:
+
+        ```bash
+        sudo apt-get install pip
+        ```
+
+    * If you encounter the error shown below, execute the following:
+
+        <ImageView image={require('@site/docs/General/get-id/img/pyserial.png').default} size="100%" align="left" />
+
+        ```bash
+        pip install pyserial --break-system-packages
+        ```
+
+## Start Flashing Firmware
+
+    * Use the following command to search for your device's serial port address:
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+
+    * Below is a reference:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult1.png').default} size="100%" align="left" />
+
+
+    * To flash the firmware, use the following command. Ensure that the firmware has been compiled and note that there should be no space after `=`.
+    * Please ensure you are in the klipper directory to flash the firmware.
+
+        ```bash
+        make flash FLASH_DEVICE=
+        ```
+
+    * Below is a reference:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult2.png').default} size="100%" align="left" />
+
+    * After flashing, refer to the following:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.png').default} size="100%" align="left" />
+
+## Method to Update Firmware
+
+    * To update the USB firmware, input the following command after compiling the latest firmware. Note that there should be no space after `=`.
+    
+        ```bash
+        make flash FLASH_DEVICE=
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.png').default} size="100%" align="left" />
+
+    * To update the USB bridge CAN firmware, input the following command after compiling the latest firmware to reset into Katapult.
+    * Please note that this command can only be executed on the klipper firmware for the USB bridge CAN; executing it on other firmwares will result in errors.
+
+        ```bash
+        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <MCU ID>
+        ```
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.png').default} size="100%" align="left" />
+    * After resetting into Katapult, execute the following command to update the firmware:
+
+        ```bash
+        make flash FLASH_DEVICE=<your device serial port address>
+        ```
+
+## Solution for Incorrect Firmware Flashing
+
+    * Power off the motherboard, then power it back on and quickly click the reset button twice.
+    * Alternatively, use WINDOWS to clean the firmware and then reflash BL

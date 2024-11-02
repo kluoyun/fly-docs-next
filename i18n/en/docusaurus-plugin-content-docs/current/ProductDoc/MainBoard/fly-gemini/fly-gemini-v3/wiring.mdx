@@ -1,0 +1,199 @@
+---
+sidebar_position: 7
+sidebar_label: Main Board Wiring
+
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Main Board Wiring
+
+## Interface Diagram
+
+### Interface Description
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Pin Description
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Power Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/power.png').default} size="40%" align="center" />
+
+----
+
+## Driver Installation
+
+### Main Board Driver Jumper
+
+* **STEP/DIR mode.** In this mode, the subdivision is set by using a jumper cap, and the current is adjusted by a potentiometer. The most common driver used in this mode is A4988. For drivers like A4988, you need to consult the manufacturer's subdivision configuration table and then use the jumper cap to set the subdivision.
+* **UART mode.** The most common drivers that use this mode are: TMC2208, TMC2209, TMC2226, etc. These driver chips can communicate asynchronously with the main controller via UART. You can set the driver's subdivision, operating current, silent mode, etc., by modifying the configuration file.
+* **SPI mode.** The most common drivers that use this mode are: TMC5160, TMC2230, etc. These driver chips communicate synchronously with the main controller via SPI. Similarly, you can set the driver's subdivision, operating current, silent mode, etc., by modifying the configuration file.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Driver Installation
+
+* Before installing the driver, it needs to be checked accordingly to avoid damaging the driver or the main board.
+* **FLY driver:** If you do not use the infinite zeroing function, set the DIP switch to position 1; conversely, if you want to use the infinite zeroing function, set the DIP switch to ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Note!!!! When installing the driver module, ensure the correct insertion direction, i.e., the EN pin should be on the top-left corner, otherwise it may damage the driver or even the main board!!!! Ensure the driver has a good heat sink!!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+----
+
+## Stepper Motor Wiring
+
+:::info
+* Regardless of the manufacturer, a two-phase stepper motor will ultimately appear as 4 wires. No matter what color they are, black, white, green, yellow, etc., they all correspond to 4 wires. Therefore, we need to group these wires into two groups, A and B.
+* For a two-phase four-wire stepper motor, we don't need to know which is group A or B; we just need to determine one group. The motor direction can be configured in the settings.
+:::
+
+* In a 3D printer, the most commonly used is a two-phase four-wire stepper motor. Its principle is as shown in the figure. There are two methods to identify the wiring sequence of a stepper motor:
+    * Connect any two phase wires, and turn the motor shaft by hand. If there is a noticeable resistance, the two wires belong to one group. Conversely, they do not belong to one group, and another pair of phase wires needs to be tested.
+    * Use a multimeter set to continuity mode to test any two phase wires of the stepper motor. If they are connected, they belong to one group; otherwise, they do not belong to one group, and another pair of phase wires needs to be tested.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Heater Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Bed Wiring
+
+* **AC Bed:** When wiring the solid-state relay, make sure not to mix up the input and output.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **DC Bed:** When connecting a DC bed to the onboard MOSFET, pay attention to the power usage. The maximum current for a DC bed cannot exceed 10A. If it exceeds 10A, it is recommended to use an external MOS module to connect the bed to avoid irreversible damage to the main board.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Thermistor Wiring
+
+### Introduction to Thermistor Types
+
+* The wiring method for thermistors is as follows. Please consult the purchasing merchant for the type of thermistor.
+
+* If purchased from fly (as shown below), please configure `sensor_type` as: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* If it is a standard NTC 100K (as shown below), please configure `sensor_type` as: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Main Board Thermistor Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/ntc-4.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/ntc-5.png').default} size="40%" align="center" />
+
+
+----
+
+## Fan Wiring
+
+* **Fan Wiring**
+
+    :::tip
+
+    Fan voltage selection. Short the corresponding voltage pins with a jumper cap. The selection method is as shown in the figure. Note: The jumper configurations in the yellow box are the same.
+    Note!!!! Incorrect fan voltage selection may damage the fan or MOS module.
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/fan-voltage.png').default} size="30%" align="center" />
+
+    * Fan Wiring
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## Limit Switch Wiring
+
+* Limit switches come in normally open (NO) and normally closed (NC) types. Generally, in a 3D printer, it is recommended to use **normally closed (NC)**. This way, if there is a problem with the limit switch circuit, the system will report an error promptly, preventing unnecessary crashes and protecting the printer.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## Leveling Sensor Wiring
+
+### Metal Proximity Switch Wiring
+
+* VORON recommends using the Omron Omron TL-Q5MC sensor (previously, the official recommendation was PL08N, which has the same principle but different detection distance) for bed leveling. The wiring method is as shown in the figure.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/pl08.png').default} size="40%" align="center" />
+
+----
+
+### BL-Touch Wiring
+
+* BL-touch has five wires, three of which form the first group, responsible for sensor power supply and probe extension/retraction. The second group is the ground and signal lines, outputting limit signals. Carefully check the wiring sequence when connecting BL-touch, as incorrect wiring could permanently damage the sensor and the main board!!! The wiring method is as shown in the figure.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Klicky Wiring
+
+* Klicky is a third-party leveling sensor that can be made at home with low cost and stable performance, making it highly recommended. The wiring method is as shown in the figure.
+* Project Address: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Project Address, click to jump")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Voron Tap Wiring
+
+* Tap is a nozzle-based z-probe suitable for V2 and Trident printer designs. The entire toolhead moves to trigger the optical switch, providing better precision than conventional limit switches and can be used with almost any print platform.
+
+    :::warning
+
+    Voron Tap is not recommended to be connected to **24V**, as some versions may have a high probability of burning out the Tap sensor due to **24V**. This is not a problem with the Fly product, but a design flaw of Voron Tap, please be aware!!!
+
+    :::
+
+    :::danger
+
+    Note: The 5V and GND cannot be reversed, otherwise it may damage the Tap sensor or even the main board!!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+## FLY-Mini12864 LCD Wiring
+
+* The diagram below shows the wiring method for the FLY mini12864. For other manufacturers' screens, please consult the respective manufacturers. Reversing or incorrectly connecting the Mini12864 screen may cause the host computer to lose connection with the MCU. If the Mini12864 screen worked fine before but now fails to connect to the MCU, try unplugging the Mini12864 wiring!!!
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/mini12864.png').default} size="30%" align="center" />
+
+----

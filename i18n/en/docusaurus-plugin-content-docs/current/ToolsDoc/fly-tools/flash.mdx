@@ -1,0 +1,36 @@
+---
+sidebar_position: 4
+sidebar_label: Firmware Compilation
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+# Function Demonstration
+
+    <ImageView image={require('@site/docs/ToolsDoc/fly-tools/img/home.gif').default} size="100%" align="left" />
+
+    * Supports one-click copy of device ID, automatically recognizes the ID and adds **serial:** , **canbus_uuid:** , **device:** in front of the corresponding configuration
+    * Supports modification of CAN speed and CAN buffer, allowing players to customize CAN easily
+    * Supports camera device query, avoiding the trouble of players searching for cameras
+
+    :::tip Tip
+
+    * Please note that FLY-Tools will not automatically create CAN configurations; you need to create CAN configurations yourself to use CAN speed and CAN buffer modification
+
+    :::
+
+    * Please provide SSH network connection to your user and execute the following command
+    * This feature is temporarily not supported on Ubuntu
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 1000000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 1000000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ``` 
+

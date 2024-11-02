@@ -1,0 +1,89 @@
+---
+sidebar_position: 6
+sidebar_label: BL firmware, please ignore
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult Firmware
+
+## Katapult Firmware Description
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 LIS3DH supports CAN
+    * Only CAN firmware at 500K and 1M speed is provided here
+    :::
+
+## Entering Programming Mode
+
+    :::tip
+
+    The circled part is the `BOOT button`
+
+    :::
+
+    * With the motherboard completely powered off, short the BOOT button and connect one end of the data cable to the motherboard and the other end to your device.
+    * Then release the short on the BOOT button
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/boot.png').default} size="50%" align="center" />
+
+## Flashing Firmware
+    <Tabs>
+        <TabItem value="win" label="Windows flashing guide" default>
+
+            * Katapult firmware for SHT36_LIS3DH <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_LIS3DH.zip">Click to automatically download firmware</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Host flashing guide">
+            
+            <Katapult />
+
+            4. Flashing Firmware
+
+            :::tip
+
+            Only one firmware needs to be flashed.
+
+            :::
+
+            * Below is the command to flash the 500K CAN speed firmware
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_500K.uf2
+                ```
+                        
+                * Below is the command to flash the 1M CAN speed firmware
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_1M.uf2
+                ```
+
+
+            5. If you see the prompt below, flashing is successful.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+
+            :::tip
+
+            After flashing, you need to power off the motherboard completely.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Confirming Firmware Startup
+
+    * If the firmware starts up normally, the LED will blink.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.png').default} size="100%" align="center" />

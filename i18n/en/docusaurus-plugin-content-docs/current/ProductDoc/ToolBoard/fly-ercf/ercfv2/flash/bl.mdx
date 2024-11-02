@@ -1,0 +1,92 @@
+---
+sidebar_position: 6
+sidebar_label: BL firmware, please ignore
+
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult Firmware
+
+## Katapult Firmware Description
+
+    <CANBOOT />
+
+    :::tip
+
+    * ERCF V2 supports CANR, S232, USB
+    * Only CAN firmware is provided here, with speeds of 500K and 1M
+
+    :::
+
+## Enter Programming Mode
+
+    :::tip
+
+    The circled part is the `BOOT button`
+
+    :::
+
+    * To enter programming mode, you need to fully power off the mainboard, press the BOOT button, and then connect the data transfer cable to the mainboard and the host machine.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flash Firmware
+    <Tabs>
+        <TabItem value="win" label="Windows Flash Tutorial" default>
+
+            * Katapult firmware for ERCF V2 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ERCF_V2.zip">Click to automatically download firmware</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Host Machine Flash Tutorial">
+
+            <Katapult />
+
+            4. Flash Firmware
+
+            :::tip
+
+            Only one firmware needs to be flashed.
+
+            :::
+
+            * Below is the flash command for the 500K CAN speed firmware
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCFV2_CANBOOT_CAN_500K.uf2
+                ```
+                       
+            * Below is the flash command for the 1M CAN speed firmware
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCFV2_CANBOOT_CAN_1M.uf2
+                ```
+            * Below is the flash command for the USB firmware
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/FLY_ERCFV2_CANBOOT_USB.uf2
+                ```
+
+            5. If the following prompt appears, the flashing is successful.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing, the mainboard needs to be completely powered off once.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Confirm Firmware Boot
+
+    * If the firmware starts up normally, the LED will blink.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

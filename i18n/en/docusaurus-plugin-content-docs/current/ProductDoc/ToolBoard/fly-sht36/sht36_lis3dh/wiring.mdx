@@ -1,0 +1,141 @@
+---
+sidebar_position: 4
+sidebar_label: Mainboard Wiring
+
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# SHT36 LIS3DH
+
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/interface.png').default} size="80%" align="center" />
+
+
+:::tip
+The blue heat sink included is to be attached to the driver!!!
+:::
+
+
+
+## Terminal Resistor Configuration
+
+:::tip
+Before using CAN, please correctly configure the CANBUS terminal resistors.
+:::
+    * There must and can only be two 120 ohm resistors on a CANBUS bus protocol line
+    * Regardless of how many USB devices you connect, as long as they are on one bus, only two 120 ohm resistors should be configured. Do not add a resistor for each device
+    * After properly connecting the CAN H and CAN L signal lines, use a multimeter to measure the resistance between CAN H and CAN L, which should be approximately 60 ohms
+    
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/120.png').default} size="80%" align="center" />
+
+## Power Connection
+
+:::tip
+FLY SHT36 LIS3DH does not support reverse polarity protection!! Before powering on, please carefully check the power connection, do not reverse it!!!! Otherwise, it will damage the SHT36 V2 tool board!!!!
+:::
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/power.png').default} size="80%" align="center" />
+
+## Fan MOS
+
+The fan MOS is not polarized, just plug it in securely.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/mos.png').default} size="80%" align="center" />
+
+## Fan Connection
+
+SHT36 supports up to two controllable fans, with the fan voltage being the power supply voltage. The wiring method is as follows.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/fan.png').default} size="80%" align="center" />
+
+## Heater Wire Connection
+
+The heater wire supports a maximum current of 5A, please pay attention to the power of the heater when using it!
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/heat.png').default} size="80%" align="center" />
+
+## Thermistor Connection
+
+The following diagram shows the wiring method for ordinary thermistors and PT1000.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/thermistor.png').default} size="80%" align="center" />
+
+The following diagram shows the wiring method for PT100. By default, two-wire PT100, simply connect to the second and third pins from left to right.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/31865.png').default} size="80%" align="center" />
+
+## RGB Connection
+
+Make sure the positive and negative terminals of the RGB LED are not connected in reverse, otherwise the SHT tool board may be damaged.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/rgb.png').default} size="80%" align="center" />
+
+## Extruder Connection
+
+After completing the extruder connection, please ensure that the drive current is configured correctly and that the extruder motor rotation is calibrated.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/extruder.png').default} size="80%" align="center" />
+
+## Limit Switch
+
+    Limit switches come in normally open (NO) and normally closed (NC) types. In 3D printers, it is generally recommended to use normally closed (NC), so that if there is an issue with the limit switch circuit, the system will promptly report an error, avoiding unnecessary crashes and damage to the printer.
+
+    If you have a VORON model, you can consider changing the installation position of the limit switch, installing the X limit switch on the print head carriage, and the Y limit switch on the A motor mount. Additionally, on the SHT36, it is recommended to add ``^`` before the limit switch signal to pull it up. For example:
+
+    ```cfg
+    [stepper_x]
+    endstop_pin: ^sht36:PA0  # Add ^ before the signal to pull it up, especially when using PA1, make sure to add the pull-up ^
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/endstop.png').default} size="80%" align="center" />
+
+## Leveling Sensor Connection
+
+:::danger Note
+gpio21 only supports PWM signal output, not signal input!!! Therefore, it cannot be used as an input for leveling sensors or limit switches!!!
+:::
+
+### Proximity Switch
+
+    The official VORON recommendation is to use the Omron TL-Q5MC proximity sensor (previously recommended was PL08N, both have the same principle, just different detection distances) for bed leveling.
+
+    It is not recommended to use proximity switches with SHT36 LIS3DH. You need to connect a separate 12V or 24V power line to the switch.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/pl08.png').default} size="80%" align="center" />
+
+
+### Klicky
+
+    Klicky is a third-party leveling sensor that can be made at home with low cost and stable performance, offering the best value for money. It is recommended to use. The wiring method is shown in the following diagram.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/klicky.png').default} size="80%" align="center" />
+
+### Voron Tap
+
+    Voron Tap is the latest leveling sensor solution released by the Voron team, known for its high precision, stability, and adaptability. When wiring, make sure the positive and negative terminals are not reversed, as this could damage the Tap sensor or the SHT tool board.
+
+:::tip
+It is not recommended to connect **24V** to Voron Tap. Some versions using **24V** have a certain probability of burning out the Tap sensor, which is not a problem with the Fly product but a design flaw of Voron Tap. Please be aware!!!
+:::
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/tap.png').default} size="80%" align="center" />
+
+### Bltouch
+
+    BL-touch has five wires, three in the first group responsible for sensor power and probe retraction, the second group for ground and signal line, outputting the limit signal. Carefully verify the wiring sequence when connecting BL-touch, incorrect wiring could permanently damage the sensor and motherboard!!! The wiring method is shown in the following diagram.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/bltouch.png').default} size="80%" align="center" />
+
+
+## SHT36 LIS3DH Connection to UTOC
+
+    FLY UTOC is a module that converts USB to CAN bus, allowing the FLY π's USB port to be converted to CAN bus for connection to 3D printer motherboards, SHT36 V2, and other CAN bus products. The FLY UTOC board has multiple terminal interfaces, providing good flexibility and compatibility with different usage scenarios. **Additionally, UTOC comes pre-flashed with firmware, ready to use without needing to flash any firmware.**
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/utoc.png').default} size="100%" align="left" />
+
+    **USB-IN:** USB to CAN input interface, connect to the host computer
+
+    **12-24v & GND:** Power interface
+
+    **CANBUS:** CAN interface, connect to expansion motherboards and tool boards (connect to devices with onboard CAN transceiver)
+
+    **CANBUS/*:** CAN interface, connect to expansion motherboards and tool boards (only connect to STM32 devices via USB ports [PA11,PA12], please purchase the appropriate version of UTOC)

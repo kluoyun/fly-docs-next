@@ -1,0 +1,50 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware Burning Instructions
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * SHT36 V3 ships with Katapult firmware pre-flashed for CAN connection at a rate of 1M
+    * The Katapult firmware for SHT36 V3 connected via CAN has rates of 500K and 1M; you can flash it yourself if needed
+    * <Button variant="contained" disableElevation href="./bl">Burning Katapult Firmware</Button>
+
+    :::
+
+# Firmware Burning Instructions
+    
+    * Both firmware compilation and burning require the use of an upper-level machine
+    * SHT36 V3 can connect to the upper-level machine via RS232 or CAN
+    * RS232 and CAN connections require the use of `XT30(2+2)-F` cable
+    * Below is the image of the `XT30(2+2)-F` data cable
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Notice
+* Mainboard firmware burning requires flashing Klipper through Katapult
+* If you are sure that the mainboard already has Katapult flashed, you do not need to perform the final step of flashing Katapult firmware; this is just a precaution in case the Katapult firmware on the mainboard was not flashed successfully
+* You can quickly press the reset button twice to see if a LED on the mainboard blinks; if it does, it indicates that the mainboard has entered Katapult firmware
+:::
+
+## How to Determine Which Firmware You Need
+
+    * SHT36 V3 can connect to the upper-level machine using the following methods
+    * <Button variant="contained" disableElevation href="./can">CAN Firmware</Button>
+        * Advantages: If you flash the `Katapult` firmware, you can update the firmware without touching the mainboard and it supports bus connections
+        * Disadvantages: Using `KlipperScreen` together might cause timeout errors during homing
+        * Note: If you need to use CAN, ensure your upper-level machine supports CAN and use it with UTOC or a mainboard flashed with bridge firmware
+    * <Button variant="contained" disableElevation href="./rs232">RS232 Firmware</Button>
+        * Advantages: No special software is required, communication is reliable and stable
+        * Disadvantages: To reflash the firmware, you need to enter manual DFU mode or double-click RST to enter `Katapult` to update the firmware
+        * Note: Use with G2T or UTOR
+
+## Katapult Firmware Instructions
+
+    <CANBOOT />

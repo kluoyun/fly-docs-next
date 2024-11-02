@@ -1,0 +1,227 @@
+---
+sidebar_position: 2
+sidebar_label: Raspberry Pi Usage Guide
+
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+# Raspberry Pi Usage Instructions
+
+## Precautions:
+
+    * Ensure the power is turned off before installing the expansion board.
+    * Avoid using the expansion board in humid or dusty environments.
+    * When installing the screen, please pay attention not to plug and unplug while powered on, and note the direction of the screen cable to avoid damage.
+    * When installing the fan, please pay attention to the current and voltage specifications of the fan to avoid damage.
+    * Please note that UART1 is already enabled by default and does not need to be configured in the system.
+    * Please flash the latest image such as `mainsailos`, not upgrade the kernel.
+    * **The Raspberry Pi can use all interfaces!**
+    * **Note:** The system kernel version used by the Raspberry Pi must be greater than `5.17.x`. Use the command `uname -r` to check the kernel version.
+
+## Download Link for Pre-installed TFTV2 System for Raspberry Pi
+
+    * System image for Raspberry Pi Zero 2/Zero 2 W/2B/3B/3B+/4B/CM4/5B
+    * This image comes pre-installed with klipper, moonraker, mainsail, fulidd, and klipper-screen.
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## Installation of G2T
+
+    * Below is a reference:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi.png').default} size="60%" align="left" />
+    * Reference wiring:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## Method for Using Onboard RS232 Connection Tool
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi1.png').default} size="60%" align="left" />
+
+    * After flashing the latest system on the Raspberry Pi, you need to edit the **config.txt file in the boot partition**.
+    * Note that UART1 is already enabled by default and does not need to be configured in the system. UART3 needs to be configured as follows.
+    * Add the following to the **config.txt** file:
+
+    ```bash
+    dtoverlay=uart3
+    ```
+
+    * If using UART1, the reference configuration is:
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA0
+    baud: 250000
+    restart_method:command
+    ```
+
+    * If using UART3, the reference configuration is:
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA1
+    baud: 250000
+    restart_method:command
+    ```
+
+## Usage of Onboard 5V Fan
+
+    * If you need to control devices via the 40-pin GPIO on the Raspberry Pi, follow the Klipper tutorial for installation <Button variant="contained" disableElevation href="https://www.klipper3d.org/zh/RPi_microcontroller.html?h=rpi">RPi Microcontroller</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+    ```cfg
+    [mcu host]       
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor Raspberry Pi]
+    sensor_type: temperature_host
+
+    [temperature_fan core_fan] 
+    pin: host:gpio12
+    max_power: 1.0
+    sensor_type: temperature_host   # Set to the main controller temperature of the host machine
+    control:watermark                  # Control method
+    target_temp: 48                   # Starting temperature for the cooling fan of the host machine
+    min_temp: 0                     # Minimum temperature, below which an error will occur
+    max_temp: 90                    # Maximum temperature, above which an error will occur
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                   # Maximum speed, 80% of full power operation
+    min_speed: 0.3                    # Minimum speed, 30% of full power operation
+    ```
+
+## Screen Usage Methods
+
+    * GitHub address <Button variant="contained" disableElevation href="https://github.com/kluoyun/FLY-TFT">FLY-TFT</Button>
+
+### 1. Introduction
+
+    FLY-TFT-V2 is a TFT LCD screen based on st7796, supporting both capacitive and resistive touch, with a resolution of 320x480, using SPI interface.
+
+### 2. System Installation
+
+    :::tip
+
+    * Note: The system kernel version used by the Raspberry Pi must be greater than `5.17.x`. Use the command `uname -r` to check the kernel version.
+    * Flash the latest image such as `mainsailos`, not upgrade the kernel.
+    * You need to install it yourself <Button variant="contained" disableElevation href="https://klipperscreen.readthedocs.io/en/latest/Installation/">KlipperScreen</Button>
+
+    :::
+
+    * Install the latest **MainsailOS** using [Raspberry Imager](https://www.raspberrypi.com/software/)
+        * Download and install [Raspberry Imager](https://www.raspberrypi.com/software/)
+        * Open **Raspberry Imager**
+        * Click **CHOOSE DEVICE**
+        * Select the corresponding model according to your device
+        * Click **CHOOSE OS**
+        * Choose **Other specific-purpose OS**
+        * Choose **3D printing**
+        * Choose **Mainsail OS**
+        * Choose the latest version. If your settings support 64-bit systems, choose **rpi64**
+        * Click **CHOOSE STORAGE**
+        * Select your storage device, such as an SD card
+        * Click **NEXT**, wait for the installation to complete
+
+### 4. Driver Installation
+
+    * Install the FLY-TFT-V2 driver
+    
+        ```bash
+        git clone https://github.com/kluoyun/FLY-TFT.git
+        cd FLY-TFT
+        sudo chmod +x ./scripts/install.sh
+        ./scripts/install.sh
+        ```
+        
+    
+
+### 5. Usage
+
+    :::tip
+
+    * Touch requires enabling I2C support, the corresponding configuration is `dtparam=i2c_arm=on`
+
+    :::
+
+    1. After installing the driver, add the `dtoverlay=fly-tft-v2` overlay to the config.txt file.
+    2. Open `/boot/config.txt` (for bookworm systems, it is `/boot/firmware/config.txt`)
+        ```bash
+        sudo nano /boot/config.txt
+        ```
+    3. At the end of the file, add the following configuration
+        ```bash
+        dtoverlay=fly-tft-v2
+        ```
+    * By default, the screen displays horizontally at 90 degrees. If you need to rotate the screen, use the following configuration
+        ```bash
+        dtoverlay=fly-tft-v2,r90  # Same as default orientation, horizontal
+        dtoverlay=fly-tft-v2,r270 # 270 degrees horizontal, flipped
+        dtoverlay=fly-tft-v2,r0   # 0 degrees vertical, vertical
+        dtoverlay=fly-tft-v2,r180 # 180 degrees vertical, flipped
+        ```
+        * Only one configuration can be added, multiple configurations cannot be added.
+        * Under normal circumstances, the TFT touch direction will automatically follow the display direction without modifying the touch configuration in the system.
+
+    4. After adding the configuration at the end of the file, execute the command `sudo reboot` to restart the system.
+
+        * Make sure hardware connections are correct.
+        * The driver has been installed.
+        * The `dtoverlay=fly-tft-v2` overlay has been added to the `/boot/config.txt` (for bookworm systems, it is `/boot/firmware/config.txt`) file.
+        * Some systems may have the default fb0 device, and the FLY-TFT will be assigned to the fb1 device. You need to enable the fb1 device by modifying the configuration file.
+        * Execute the command `ls /dev/fb*` to view the devices. If two devices, fb0 and fb1, appear, execute the following command to enable the fb1 device (by default, it is fb0).
+        * Execute the following command to modify the default configuration to use fb1 device
+            ```bash
+            sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+            ```
+
+### 6. Using KlipperScreen
+
+    * MainsailOS does not come with KlipperScreen installed by default, it needs to be installed manually.
+    * Refer to [KlipperScreen](https://github.com/KlipperScreen/KlipperScreen) or use [kiauh](https://github.com/dw-0/kiauh) to install.
+    * If KlipperScreen is successfully installed and step 5 has been completed correctly, you should see the KlipperScreen interface at this point.
+
+### 7. All Available Configurations
+
+    * `speed` **Requires parameter**: Set the maximum SPI clock frequency for the TFT, in Hz, default 96000000 (if severe screen artifacts occur, reduce this value appropriately)
+    * Example: `dtoverlay=fly-tft-v2,speed=80000000` 
+
+    * `r0/r90/r180/r270` **Optional**: Set the display and touch direction of the TFT, default is 90 degrees, available values are 0, 90, 180, 270 (only one configuration can be set)
+    * Example: `dtoverlay=fly-tft-v2,r90` or `dtoverlay=fly-tft-v2,r180`
+
+    * `disable_touch` **No parameter required**: Disable the touch function of the TFT, default is enabled
+    * Example: `dtoverlay=fly-tft-v2,disable_touch`
+
+    * `invx`,`invy` **No parameter required**: Set the touch direction of the TFT, `invx` flips the X direction, `invy` flips the Y direction
+    * Example: `dtoverlay=fly-tft-v2,invx` or `dtoverlay=fly-tft-v2,invy` or `dtoverlay=fly-tft-v2,invx,invy`
+
+    * `swapxy` **No parameter required**: Set the touch direction of the TFT, swap the X and Y axes, i.e., horizontal orientation
+        * Example: `dtoverlay=fly-tft-v2,swapxy`
+    
+    :::tip
+
+    * **Note:** All parameters can be set simultaneously (optional parameters can only choose one), separate parameters with commas, only one line of configuration is allowed.
+    * **Warning:** Under normal conditions, only `r0`, `r90`, `r180`, `r270` are used, other parameters are used only in special cases, especially `invx`, `invy`, `swapxy`.
+
+    :::
+
+    * Example: `dtoverlay=fly-tft-v2,speed=80000000,r270`
+
+
+## Precautions for Raspberry Pi Zero 2 and Zero 2 W
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/zero.png').default} size="60%" align="left" />
+    * These precautions are for the instructions when using the FLY-TFT screen with G2T.
+    * For Raspberry Pi Zero 2 and Zero 2 W, you need to modify the default display device by executing the code below directly, otherwise, it will not display.
+    * Note that you need to restart after execution to use.
+
+    ```bash
+    sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+    ```
+
+## Screen Installation
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.png').default} size="60%" align="left" />

@@ -1,0 +1,175 @@
+import ImageView from '@site/src/components/ImageView';
+
+## Operation Instructions
+
+    :::warning Note
+
+    * Please note that current calibration needs to be done before coil frequency calibration.
+    * For multi-Z axis machines, manual leveling needs to be done once before completing all calibrations and then leveling again, followed by re-calibration.
+    * The firmware of the lower-level machine must be completely consistent with the Klipper version.
+
+    :::
+
+    :::info
+
+    * Please note that current calibration needs to be done before coil frequency calibration.
+    * For multi-Z axis machines, manual leveling needs to be done once before completing all calibrations and then leveling again, followed by re-calibration.
+    * The firmware of the lower-level machine must be completely consistent with the Klipper version.
+
+    :::
+
+    * Please use the `FUIDD` web page to add the configuration below before executing subsequent operations
+        ```cfg
+        [force_move]
+        enable_force_move: true
+        ```
+
+    ### Eddy Current Calibration
+
+        * Enter the command below in the console
+            ```bash
+            SET_KINEMATIC_POSITION z=80
+            ```
+        * Home X and Y
+            ```bash
+            G28 X Y
+            ```
+        * After completing the above steps, Eddy's drive current needs to be calibrated. First, move Eddy to the center of the heated bed and then raise the nozzle so that the distance between the nozzle and the heated bed is 20mm. Then execute the command below in the console to automatically obtain the current, and finally save the parameters with `SAVE_CONFIG`. Normally, it should be around 16. If it is 0 or 30, please check the wiring.
+        * Please note that the position should be 20mm away from the heated bed
+            ```bash
+            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
+            ```
+        * The normal return value should be around `15`
+        * After calibration, save the parameters with `SAVE_CONFIG`
+
+    ### Eddy Frequency Calibration
+
+
+        :::info
+
+        * When installing Eddy, the bottom of the probe should be at least 1-2mm above the nozzle.
+        * During Eddy frequency calibration, the coil PCB should be at least 5mm away from the heated bed.
+
+        :::
+
+        * Move the nozzle to the center of the platform (Note: Ensure that the machine does not have a heightmap loaded)
+        * Start manual Z offset calibration [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+            ```bash
+            PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+            ```
+        * After calibration, save the parameters with `SAVE_CONFIG`
+        * For printers with `z_tilt` or `quad_gantry_level (QGL)` features, run `Z_TILT_ADJUST` or `QUAD_GANTRY_LEVEL` once before re-calibrating Eddy frequency
+
+    ### Temperature Compensation Explanation
+
+        * Home all axes
+        * If there is `[quad_gantry_level]` or `[z_tilt]`, run `Z_TILT_ADJUST` or `QUAD_GANTRY_LEVEL` once before homing again
+        * In the console, enter G0 Z5 or move the Z-axis to 5mm above the heated bed via the web interface or other methods
+        * Execute the following code to set the machine's `idle timeout` longer to avoid timeout during the heating process
+            ```bash
+            SET_IDLE_TIMEOUT TIMEOUT=36000
+            ```
+        * Execute the following command to start calibration
+            ```bash
+            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
+            ```
+        :::warning Note
+
+        * Note: In the above command, the target temperature is set to `56℃`, which is suitable for most devices.
+        * If your 3D printer chamber is actually hotter, you can appropriately increase the target temperature.
+        * Please note that the higher the target temperature, the longer the calibration time will be, as Eddy needs more time to reach temperature equilibrium.
+
+        :::
+    
+        1. After performing this operation, the UI will display a Z-axis adjustment box. Use the manual [Z-axis offset calibration (Paper Test) method](https://www.klipper3d.org/Bed_Level.html#the-paper-test) mentioned above to place the paper between the nozzle and the bed surface, then confirm the value.
+        2. After accepting the value, set the heated bed temperature to the maximum and the nozzle temperature to 220℃.
+        3. If you are in a room with air conditioning or open windows, to ensure that Eddy reaches the required temperature, it is recommended to turn off the air conditioning or close the windows, as wind can affect temperature rise.
+        4. As Eddy's temperature rises, the system will prompt you to perform a manual Z-axis offset calibration every 4℃. Be cautious of burns when the heated bed is very hot!!!
+        5. Repeat the manual Z-axis offset calibration (Paper Test) until calibration is complete. If you find that Eddy's temperature no longer rises, you can use the relevant commands below to end calibration early.
+        
+        * During drift calibration, additional G-code commands available include: TEMPERATURE_PROBE_NEXT
+            * `TEMPERATURE_PROBE_NEXT` can be used to force sampling new data before reaching the step increment.
+            * `TEMPERATURE_PROBE_COMPLETE` can be used to complete calibration before reaching the target.
+            * `ABORT` can be used to terminate calibration and ignore the results.
+        * After completing these steps, Eddy will provide excellent first-layer printing results over a wide range of temperatures!
+
+## Various Optimization Macros
+
+    ### `[quad_gantry_level]` Bed Leveling Optimization
+        * If you have configured `[quad_gantry_level]`, you can add the macro below to the configuration; otherwise, it is not needed
+        * This macro adjusts the detection height according to the difference in the gantry height
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=scan
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### `[z_tilt]` Bed Leveling Optimization
+
+        * If you have configured `[z_tilt]`, you can add the macro below to the configuration; otherwise, it is not needed
+        * This macro adjusts the detection height according to the difference in the gantry height
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=scan
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### Bed Leveling Optimization
+
+        * If using a high-power AC heated bed (above 500W)
+        * The macro below turns off the heated bed during leveling and re-heats it after completion
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+    ## Bed Mesh Commands
+    
+        * Full bed scan command
+            ```bash
+            BED_MESH_CALIBRATE METHOD=scan SCAN_MODE=rapid
+            ```
+        * Localized bed scan command, requires Klipper to support object exclusion feature, recommended to add to startup macros
+            ```bash
+            BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
+            ```
+
+## Coil Model Download Links
+
+        ```bash
+        https://cdn.mellow.klipper.cn/STEP/sen.step
+        https://cdn.mellow.klipper.cn/STEP/1612.step
+        ```
+
+## Error Resolution for `Error during homing z: Eddy current sensor error` after Descending
+    * You need to log in to the user running the Klipper service via SSH
+    * Enter the command below
+        ```bash
+        sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+        ```
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/1612.png').default} size="110%" align="center" />
+    * Confirm the replacement
+    * If this command returns a line containing `LDC1612_FREQ = 40000000`, then the replacement was successful. If there is no output, then the replacement did not succeed.
+        ```bash
+        grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+        ```
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/40mhz.png').default} size="110%" align="center" />

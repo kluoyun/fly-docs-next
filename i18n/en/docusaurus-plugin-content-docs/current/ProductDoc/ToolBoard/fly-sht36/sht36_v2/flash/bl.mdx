@@ -1,0 +1,140 @@
+---
+sidebar_position: 6
+sidebar_label: BL firmware, please ignore
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import APM from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult Firmware
+
+## Katapult Firmware Description
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 V2 can only use CAN connection
+    * CAN firmware is available at two speeds: 500K and 1M
+
+    :::
+
+
+    :::warning Note
+
+    * APMF072 can only use a computer to flash firmware
+    * STM32F103 can only use an upper-level machine to update firmware
+
+    ::
+
+
+## Entering Flash Mode
+
+    :::tip
+
+    The circled part is the BOOT switch
+
+    :::
+
+    * STM32F103 does not need to perform this step!!!!
+    * With the motherboard completely powered off, hold the BOOT button and connect one end of the data transfer cable to the motherboard and the other end to your device
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flashing Firmware
+    <Tabs>
+        <TabItem value="win" label="STM32F072 Windows Flash Tutorial" default>
+
+            * Katapult firmware for SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Click to automatically download firmware</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="STM32F072 Upper-Level Machine Flash Tutorial">
+
+            <Katapult />
+
+            4. Flash Firmware
+
+            :::tip
+
+            Only one firmware needs to be flashed
+
+            :::
+
+            * Below is the command to flash the 500K CAN speed firmware
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_500K.BIN
+            ```
+                       
+            * Below is the command to flash the 1M CAN speed firmware
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_1M.BIN
+            ```
+
+
+            5. When the following content appears as shown by the arrow ``File downloaded successfully`` then the flashing is successful
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing, it is necessary to completely power off the motherboard once.
+
+            :::
+
+        </TabItem>
+        <TabItem value="apm" label="APM32F072 Windows Flash Tutorial" default>
+
+           * Katapult firmware for SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Click to automatically download firmware</Button>
+
+            <APM />
+            
+        </TabItem>
+        <TabItem value="103" label="STM32F103 Klipper Firmware Update Tutorial" default>
+
+            <LS />
+
+            * Pull pre-compiled firmware
+            * These are all pre-compiled firmwares
+            * Please note that the upper-level machine needs to be connected to the internet to install
+            * The upper-level machine needs to execute the following command to download the firmware package
+
+            ```bash
+            cd && git clone https://github.com/FengHua741/FLY_Katapult.git
+            ```
+
+            * If you have already downloaded the firmware package, it is recommended to update the firmware package before proceeding with further operations
+
+            ```bash
+            cd ~/FLY_Katapult && git pull
+            ```
+
+            * This method directly updates the Katapult firmware on the original Toolboard using CAN
+            * Replace `<Toolboard ID>` with the CAN ID of the STM32F103 controller
+            * Below is the firmware update command for the 103 version with 1M CAN speed
+
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_1M.BIN  -u <Toolboard ID>
+            ```
+
+            * Below is the firmware update command for the 072 version with 500K CAN speed
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_500K.BIN  -u <Toolboard ID>
+            ```
+                    
+                </TabItem>
+            </Tabs>
+
+## Confirming Firmware Startup
+
+    * If the firmware starts up normally, the LED will blink
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.png').default} size="100%" align="center" />

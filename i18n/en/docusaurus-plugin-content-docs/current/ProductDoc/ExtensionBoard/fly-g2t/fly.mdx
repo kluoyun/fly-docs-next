@@ -1,0 +1,78 @@
+---
+sidebar_position: 3
+sidebar_label: FLY PI User Guide
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# FLY Host Machine User Manual
+
+## Precautions:
+
+    * Ensure the power is turned off before installing the expansion board.
+    * Avoid using the expansion board in humid or dusty environments.
+    * When installing the screen, make sure not to plug or unplug it while powered on, and pay attention to the direction of the screen cable to avoid damage.
+    * When installing the fan, pay attention to the current and voltage specifications of the fan to avoid damage.
+    * The FLY host machine can only use the middle RS232 interface, FAN port, and FPC screen interface!!!!
+    * The FLY host machine can use the G2T host machine with `PI V2`, `C8`, and `PRO X10`
+    * The `Gemini` series and `PI V1` cannot be used.
+
+## Installing G2T
+
+    * Below is a reference:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.png').default} size="60%" align="left" />
+    * Reference wiring:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## Using the Onboard RS232 Connection Tool Method
+
+    * After flashing the latest system on the FLY host machine, access **the host machine's IP:9999**
+    * The FLY host machine can only use the middle RS232 interface, FAN port, and FPC screen interface!!!!
+    * In the system settings, find **UART1** and save and restart.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.png').default} size="100%" align="left" />
+
+    * Below is a reference configuration:
+
+        ```cfg
+        [mcu] 
+        serial: /dev/ttyS1
+        baud: 250000
+        restart_method: command
+        ```
+
+## Using the Onboard 5V Fan
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+        ```cfg
+        [mcu host]         
+        serial: /tmp/klipper_host_mcu 
+
+        [temperature_sensor FLY Pi]
+        sensor_type: temperature_host
+
+        [temperature_fan core_fan]      # FLY host machine cooling fan
+        pin: host:gpiochip1/gpio102     # FLY host machine fan pin
+        max_power: 1.0
+        sensor_type: temperature_host   # Set to the temperature of the main controller of the host machine
+        control: watermark              # Control method
+        target_temp: 48                 # Temperature at which the FLY host machine cooling fan starts
+        min_temp: 0                     # Minimum temperature, below this temperature an error will occur
+        max_temp: 90                    # Maximum temperature, above this temperature an error will occur
+        off_below: 0.10
+        kick_start_time: 0.50
+        max_speed: 0.8                  # Maximum speed, 80% of full power operation
+        min_speed: 0.3                  # Minimum speed, 30% of full power operation
+        ```
+
+## Screen Usage Methods
+
+    * After flashing the latest system on the FLY host machine, access **the host machine's IP:9999**
+        * fly-tft-v2-c is the selection for a 3.5-inch TFT capacitive screen
+        * fly-tft-v2-r is the selection for a 3.5-inch TFT resistive screen
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.png').default} size="100%" align="left" />
+
+### Screen Installation
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.png').default} size="60%" align="left" />

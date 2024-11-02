@@ -1,0 +1,48 @@
+---
+sidebar_position: 3
+sidebar_label: USB Bridge to CAN Firmware Flashing
+---
+
+import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_utoc.mdx';
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# USB Bridge to CAN Firmware Flashing
+
+## Start Compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Choose GPIO pins to set at micro-controller startup, input: gpio8
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/can.png').default} size="100%" align="center" />
+    * Press `Q` key, the prompt **Save configuration** appears, press `Y` key then
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Now you should have saved the configuration and exited to the command line interface
+    * Input `make -j4` to start compilation, it takes a bit of time
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * The compilation is successful if the output is as follows
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Confirm if Entered Flash Mode
+
+
+    <LS />
+
+## Flash Firmware
+
+
+    <CANBOOT />

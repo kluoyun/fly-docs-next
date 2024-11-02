@@ -1,0 +1,83 @@
+import ImageView from '@site/src/components/ImageView';
+
+
+import Button from "@mui/material/Button";
+
+## CAN Configuration and ID Search
+
+* If you need to use CAN, make sure your host computer has undergone CAN configuration.
+
+----
+
+:::danger Notice
+
+Please ensure the motherboard is properly connected to the host computer before proceeding with the following operations.
+
+:::
+
+
+:::warning
+
+Please ensure that the CAN network on the host computer, the CAN rate of the bridge motherboard, and the CAN tool board rate are all consistent.
+
+:::
+
+### Precautions Before Device Search
+
+    * Before searching for CAN IDs, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump").
+    * Please note that you need to ensure you are logging into SSH via the network, not via serial port.
+    * Please ensure that the UTOC or a motherboard with CAN bridge firmware installed is properly connected, and the data cable connecting to the host computer has data transfer capability.
+
+### Device Search
+
+    * Now that you have successfully logged into the host computer, you can enter `lsusb` to search for devices. You will encounter one of the following situations:
+        * Entering `lsusb` prompts that the `ls` command is not found; in this case, you can enter the following command to install the command:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * Entering `lsusb` produces no response. This is a system issue beyond our control; you will need to replace the system or use a confirmed working system.
+        * The information shown below appears. Please note that this is only for reference. You only need to confirm that `1d50:606f` appears.
+            <ImageView image={require('@site/docs/General/get-id/img/606f.png').default} size="100%" align="left" />
+    * `1d50:606f` belongs to the device you will be using. Ignore any subsequent prompts as they may be incomplete or not displayed due to system issues.
+    * If there are multiple `1d50:606f`, it is recommended to exclude one, otherwise it may affect subsequent firmware burning and connection, such as when using the `FLY MINI PAD`, it is recommended to use the onboard UTOC and not other CAN bridge devices.
+    * If none appear, please check if the data cable is properly connected and if the firmware is correctly installed.
+
+:::warning Note
+You can only proceed with CAN ID search when `1d50:606f` is present.
+:::
+
+### CAN ID Search
+
+    * Enter the following command to search for IDs:
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * If an ID appears and the `Application:` at the end shows `Klipper`, it means this ID can be used directly.
+    * If an ID appears and the `Application:` at the end shows `CANBOOT` or `Katapult`, it means you need to flash the firmware to use it.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />
+
+
+### CAN Issue Collection
+
+    :::danger Notice
+
+    * If you cannot find a CAN ID, refer to the documentation below.
+    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN Issue Collection</Button>
+
+    :::
+
+### Fill in the CAN ID into the Configuration
+
+    * Open the printer's web interface. In the configuration options on the left sidebar, find `fluidd`: `{...}` ; `mainsail`: `Machine`, then click to access `printer.cfg`.
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.png').default} size="50%" align="left" />
+
+    * Copy the queried UUID and paste it into the `[mcu]` section of the `printer.cfg` configuration under `canbus_uuid:`. After saving and restarting, you should be able to connect to the motherboard. If Klipper prompts for firmware updates, ADC errors, etc., it indicates that Klipper has successfully connected to the motherboard.
+
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />
+
+        :::danger
+
+        Note: All IDs mentioned in the document are examples. Each motherboard's ID is unique, so please modify according to the actual ID obtained.
+
+        :::

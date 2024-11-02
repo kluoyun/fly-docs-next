@@ -1,0 +1,106 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+## Precautions
+
+    1. Do not plug or unplug any device except USB while powered on.
+    2. The Type C interface can be used for power supply or as a USB SLAVE interface to burn images.
+    3. To ensure normal CM4 power supply, do not connect other devices when burning images using the Type C interface.
+    4. The module has no protection, please do not short circuit the power.
+    5. FLY motherboard does not support POE function! Please do not use POE power supply.
+
+:::danger Notice
+* Note: EMMC version cannot use SD card.
+* Note: For non-EMMC versions, use MICRO SD card to boot, you need to use a card reader to burn the image.
+* Memory cards are recommended to have a transmission speed of `class10` or higher, it is suggested to use TF cards from brands like SanDisk.
+:::
+
+    <ImageView image={require('@site/docs/General/rpi/img/emmc.png').default} size="100%" align="left" />
+
+## Download Link for Raspberry Pi Pre-installed TFTV2 System
+
+    * System image suitable for Raspberry Pi 3B/3B+/4B/CM4/5B.
+    * This image comes pre-installed with Klipper, Moonraker, Mainsail, Fulidd, Klipper-Screen, etc.
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## Image Download
+
+    * Download the system by clicking [here](https://www.raspberrypi.org/downloads/raspberry-pi-os/) to download the latest released system (or as shown in the figure).
+    * If downloading a torrent file, use software like Thunder or Comet to download.
+
+    <ImageView image={require('@site/docs/General/rpi/img/rpi.png').default} size="70%" align="left" />
+
+
+    * The image with desktop and recommended software `(Raspberry Pi OS with desktop and recommended software)` is recommended for use with EMMC 16G or higher storage capacity for CM4 lite 16G memory card or above.
+
+:::danger Notice
+EMMC version needs to switch the DIP switch into CM4 burning mode while powered off, Lite version can directly burn the image to the system card.
+:::
+
+:::danger Notice
+* EMMC version needs to enter burning mode before entering, see below for instructions on how to enter burning mode.
+* Lite version does not need to enter burning mode, just format and burn the image.
+:::
+
+## Download rpiboot (Boot Loader)
+
+    * Download and run the rpiboot software with administrator privileges by clicking [here](https://files.waveshare.net/wiki/w/upload/f/f3/Rpiboot_setup.zip).
+    * Install the driver and start tool. After installation, there will be an rpiboot.exe application in the installation directory.
+
+    <ImageView image={require('@site/docs/General/rpi/img/boot.png').default} size="80%" align="left" />
+
+## Enter Burning Mode
+
+    * Connect the computer and power the motherboard. In the computer's Device Manager, a BCMxxx device should be recognized.
+
+        <ImageView image={require('@site/docs/General/rpi/img/bcm2711.png').default} size="80%" align="left" />
+
+
+    * Then run rpiboot.
+
+        <ImageView image={require('@site/docs/General/rpi/img/rpiboot.png').default} size="80%" align="left" />
+
+
+    * Wait until the process ends, a U drive icon should appear on your computer.
+
+:::danger Notice
+Note: If the BCMxxx device is not recognized, one of the steps above may have gone wrong. It is essential to recognize the BCMxxx device to run rpiboot effectively; otherwise, it will be ineffective.
+:::
+
+
+## Format EMMC or SD Card
+
+    * Use SDFormatter.exe software to format the SD card by clicking [here](https://www.waveshare.net/w/upload/d/d7/Panasonic_SDFormatter.zip).
+
+        <ImageView image={require('@site/docs/General/rpi/img/sdformatter.png').default} size="80%" align="left" />
+
+
+    * Alternatively, use the built-in disk management tool in Windows to delete partitions and then recreate them.
+    * Right-click on This PC -> Manage -> Disk Management -> Find the newly added drive (choosing the wrong one could lead to problems) -> Delete all partitions -> Create a partition (any file system). If the drive has been used for system installation, there might be two drive icons, ignore them and proceed with formatting or deleting partitions.
+
+## Burn Image
+
+    1. Use Raspberry Pi Imager by clicking [here](https://www.raspberrypi.com/software/) to burn the image.
+    2. Before burning, configure username, password, and enable SSH.
+
+            <ImageView image={require('@site/docs/General/rpi/img/imager.png').default} size="80%" align="left" />
+
+
+    3. After burning, a U drive icon should appear on your computer.
+
+## Complete Burning and Restart
+
+    * After burning, disconnect the power, disconnect the connection to the computer, and set the BOOT switch back. Power up again.
+
+## Precautions for Raspberry Pi Zero2 and Zero2W
+
+    * These precautions are for using FLY-TFT screen with G2T.
+    * For Raspberry Pi Zero2 and Zero2W, modify the default display device by executing the following code:
+    ```cfg
+    sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+    ```
+    * Please note that a restart is required after execution to take effect.

@@ -1,0 +1,98 @@
+---
+sidebar_position: 4
+sidebar_label: Motherboard Wiring
+
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Motherboard Wiring
+
+:::info
+* The heatsink is attached to the driver!
+:::
+
+
+## Pin Description
+
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/pin.png').default} size="50%" align="center" />
+
+
+## Power Wiring
+
+:::info
+* SB2040 PRO does not support reverse polarity protection, please check the positive and negative polarity of the power supply before powering on!!! Otherwise, it will damage the SB2040 tool board!!!
+:::
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/power.png').default} size="40%" align="center" />
+
+    * CAN wire color function representation
+
+    | Color | Function                 |
+    | :--: | :-----------------------|
+    | Red | ***DC 12/24v input***    |
+    | Black | ***DC Negative (GND)***  |
+    | Yellow | ***CAN H***              |
+    | White | ***CAN L***              |
+
+
+## Heater Wire Connection
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/heater.png').default} size="40%" align="center" />
+
+## Thermistor Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/ntc.png').default} size="40%" align="center" />
+
+## PT100 Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/pt100.png').default} size="40%" align="center" />
+
+## FAN Wiring
+:::info
+* SB2040 supports up to two controllable fans, fan voltage can be selected as 24V or 5V, supports 2, 3, or 4-wire fans. Wiring method is as follows.
+* For 3-wire fans, the third wire is generally a tachometer line and can be left unconnected. Directly connect the two power lines, the wiring method is the same as for 2-wire fans.
+:::
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/fan.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/fan1.png').default} size="40%" align="center" />
+
+## RGB Wiring
+    * Make sure the positive and negative poles of the RGB LED are not connected in reverse, otherwise, it will damage the CAN tool board.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/rgb.png').default} size="40%" align="center" />
+
+
+## Extruder Wiring
+    * After completing the extruder wiring, make sure to configure the drive current properly and calibrate the extruder motor direction.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/extruder.png').default} size="40%" align="center" />
+
+
+## Limit Switch Wiring
+
+    * There are two types of limit switches: normally open (NO) and normally closed (NC). Generally, in a 3D printer, it is recommended to use NC, so that if there is an issue with the limit switch circuit, the system will report an error promptly, preventing unnecessary crashes and damage to the printer.
+    * If it is a VORON model, you can consider changing the installation position of the limit switch, installing the X limit switch on the print head slider and the Y limit switch on the A motor mount. Additionally, on the SB2040, it is recommended to add a ^ before the limit switch signal to pull it up. For example:
+        ```cfg
+        [stepper_x]
+        endstop_pin: ^sb2040:PA0  # Add ^ before the signal to pull it up
+        ```
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/endstop.png').default} size="40%" align="center" />
+
+## Leveling Sensor
+
+### Proximity Switch
+    * VORON officially recommends using the Omron TL-Q5MC proximity switch (previously the official recommendation was PL08N; both have the same principle but different detection distances) for bed leveling.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/pl08.png').default} size="40%" align="center" />
+
+### Klicky
+    * Klicky is a third-party leveling sensor that can be made at home with very low cost and has stable performance, offering high value for money, and is highly recommended. Wiring method is shown below.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/klicky.png').default} size="40%" align="center" />
+
+### TAP
+:::tip
+* It is not recommended to connect Voron Tap to **24V**, some versions may have a high probability of burning out the Tap sensor when using **24V**, this is not a problem with the Fly product, but a design flaw of the Voron Tap, please be aware!!!
+:::
+
+    * Voron Tap is the latest leveling sensor solution released by the Voron team, known for its high precision, strong stability, and good adaptability. When wiring, make sure the positive and negative poles are not connected in reverse, otherwise, it may damage the Tap sensor or even the tool board.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/img/wiring/tap.png').default} size="40%" align="center" />
+

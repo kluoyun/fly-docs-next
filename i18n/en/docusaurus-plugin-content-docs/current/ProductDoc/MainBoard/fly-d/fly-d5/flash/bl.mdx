@@ -1,0 +1,76 @@
+---
+sidebar_position: 6
+sidebar_label: Flashing Katapult Firmware
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult Firmware
+
+## Katapult Firmware Description
+
+    <CANBOOT />
+
+    :::tip
+
+    * D5 uses USB connection
+    * D5 units manufactured after September 1, 2024, come pre-flashed with the Katapult firmware
+    :::
+
+## Entering Flash Mode
+
+    :::tip
+
+    Left is the `BOOT button`, right is the `RESET button`
+
+    :::
+
+    * There are two ways to enter flash mode
+    * First method: With the main board completely powered off, hold the BOOT button and connect one end of the data transfer cable to the main board and the other end to your device
+    * Second method: Connect one end of the data transfer cable to the main board and the other end to your device, then hold the BOOT button and press the RST button, release the RST button first, then release the BOOT button
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/boot.png').default} size="50%" align="center" />
+
+## Flashing Firmware
+    <Tabs>
+        <TabItem value="win" label="Windows Flash Tutorial" default>
+            * The Katapult firmware for D5 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">click to automatically download the firmware</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Host Machine Flash Tutorial">
+
+            <Katapult />
+
+            4. Flashing Firmware
+
+            :::tip
+
+            Only one firmware needs to be flashed
+
+            :::
+
+            * Below is the firmware flashing command
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D5.bin
+                ```
+
+            5. When you see the content shown by the arrow in the following image ``File downloaded successfully``, the flashing is successful
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing, the main board needs to be completely powered off once.
+
+            :::
+
+        </TabItem>
+    </Tabs>

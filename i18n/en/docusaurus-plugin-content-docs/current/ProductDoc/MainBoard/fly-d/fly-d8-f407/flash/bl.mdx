@@ -1,0 +1,77 @@
+---
+sidebar_position: 6
+sidebar_label: BL firmware, please ignore
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult Firmware
+
+## Katapult Firmware Description
+
+    <CANBOOT />
+
+    :::tip
+
+    * D8 uses USB connection
+
+    :::
+
+## Entering Programming Mode
+
+    :::tip
+
+    Left is the `RST button`, right is the `BOOT button`
+
+    :::
+
+    * There are two methods to enter programming mode
+    * First method: With the motherboard completely powered off, press and hold the BOOT button then connect the data transfer cable to the motherboard and your device.
+    * Second method: Connect the data transfer cable to the motherboard and your device, then press and hold the BOOT button and press the RST button, release the RST button first and then release the BOOT button.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d8-f407/flash/img/boot.png').default} size="50%" align="center" />
+
+## Flashing Firmware
+    <Tabs>
+        <TabItem value="win" label="Windows flashing tutorial" default>
+
+            * Katapult firmware for D8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Click to automatically download firmware</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Host machine flashing tutorial">
+
+            <Katapult />
+
+            4. Flashing Firmware
+
+            :::tip
+
+            Only one firmware needs to be flashed.
+
+            :::
+
+            * Below is the firmware flashing command
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D8_F407.bin
+                ```
+
+            5. When the content shown in the arrow below ``File downloaded successfully`` appears, flashing is successful.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing, you need to power off the motherboard completely.
+
+            :::
+
+        </TabItem>
+    </Tabs>

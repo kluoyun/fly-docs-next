@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+---
+
+# Power Failure Resume for Klipper
+
+:::danger Notice
+
+* Only applicable to certain machines
+
+:::
+
+## Switch Branch
+    * This needs to be executed via SS through a network connection to the host machine after ensuring the host machine can access the internet.
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/klipper-dev.git -b fly-dev klipper
+    ```
+
+## Reference Configuration
+
+    ```cfg
+    [power_resume]
+    power_pin: PA10
+    is_shutdown: True # Whether to perform a shutdown operation, default is enabled
+    start_gcode:
+        # G-code to execute before resuming printing
+        # All parameters saved before power failure can be retrieved using {PR}
+        # Use M118 {PR} to output all available parameters
+        M118 Resuming Print: {PR.print_stats.filename}
+        {% if PR.print_stats.info.total_layer %}
+            M118 Total Layers: {PR.print_stats.info.total_layer}
+            M118 Current Layer: {PR.print_stats.info.current_layer}
+        {% endif %}
+        M118 Interrupt Position: X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
+        M140 S{PR.bed.target}      ; Set bed temperature
+        # M104 S180                ; Set extruder temperature
+        # M109 S180                ; Wait for extruder to heat up to set temperature
+        G91                        ; Relative coordinates
+        G1 Z2 F100                 ; Lift Z, prepare for X,Y zeroing
+        G90                        ; Absolute coordinates
+        G28 X Y                    ; Home XY
+        M140 S{PR.bed.target}      ; Set bed temperature
+        M104 S{PR.extruder.target} ; Set extruder temperature
+        M190 S{PR.bed.target}      ; Wait for bed to heat up to set temperature
+        M109 S{PR.extruder.target} ; Wait for extruder to heat up to set temperature
+        M106 S255                  ; Turn on cooling fan
+        M83                        ; Relative extrusion
+        G1 E10 F400                ; Extrude some filament
+        G90                        ; Absolute coordinates
+        G1 F{PR.gcode_move.speed}  ; Set movement speed
+        G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; Move to starting position
+        {% if PR.gcode_move.absolute_coordinates %}
+            G90 ; Absolute movement
+        {% else %}
+            G91 ; Relative movement
+        {% endif %}
+        {% if PR.gcode_move.absolute_extrude %}
+            M82 ; Absolute extrusion
+        {% else %}
+            M83 ; Relative extrusion
+        {% endif %}
+        G92 E{PR.POS_E} ; Set extrusion position
+    shutdown_gcode:
+        # G-code to execute before shutting down
+        M118 Low Power Supply Voltage, Shutting Down
+        # M112 ; Emergency stop
+    ```

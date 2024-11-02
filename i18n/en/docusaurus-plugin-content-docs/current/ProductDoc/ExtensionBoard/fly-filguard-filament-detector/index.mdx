@@ -1,0 +1,145 @@
+---
+sidebar_position: 1
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Product Introduction
+
+  FilGuard Filament Detector is compatible with VZ-Hextrudort-Low extruder, supporting filament runout detection, clog detection, and a customizable button.
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament_1.png').default} size="60%" align="left" />
+ 
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament.png').default} size="40%" align="left" />
+
+## Wiring Tutorial
+
+* The built-in PH2.0 5P terminal makes wiring more convenient
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/connection.png').default} size="80%" align="left" />
+
+## Firmware Light Status Explanation
+
+* Filament Runout: Red flashing
+* Filament Infeed: Blue flashing (the faster the infeed speed, the higher the flashing frequency)
+* Filament Retract: Green flashing (same as above)
+* Filament Present but No Movement: Orange breathing light
+
+## Klipper, Filament Runout and Clog Reference Configuration
+
+:::warning
+For clog detection configuration, set `detection_length: 2.0`.
+
+2.0mm is the minimum detection length required for this smart filament detection module to function properly. If you encounter false triggering issues, try increasing the detection length by 1mm until the problem is resolved.
+:::
+
+        ```cfg
+        [respond]
+        default_type: echo
+
+        [force_move]
+        enable_force_move: True
+
+        [filament_switch_sensor Filament Runout Detection]
+        pause_on_runout: False
+        switch_pin: ^!PG12
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 Filament Runout
+                # filament_unload
+        insert_gcode:
+                M118 Loading Filament
+                FORCE_MOVE STEPPER=extruder DISTANCE=8 VELOCITY=5 ACCEL=60
+                {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                        M118 Waiting for Heating!
+                        SET_HEATER_TEMPERATURE HEATER=extruder TARGET=200
+                        TEMPERATURE_WAIT SENSOR=extruder MINIMUM=190
+                {% endif %}
+                M83
+                G92 E0
+                G0 E50 F500
+                G0 E10 F200
+
+        [filament_motion_sensor Clog Detection]
+        extruder: extruder
+        detection_length: 2.0
+        switch_pin: ^!PG10
+        pause_on_runout: False
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 Clog Detected
+        insert_gcode:
+                M118 Clog Resolved
+        #event_delay:
+        #pause_delay:
+
+        ```
+
+:::info
+Infeed and retract can only use one of them
+:::
+
+## Klipper Retract Button Reference Configuration
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 Waiting for Heating!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E10 F300
+                        G0 E-20 F200
+                        G0 E-50 F500
+                {% else %}
+                        M118 Printing, no retraction operation!
+                {% endif %}
+        ```
+
+
+## Klipper Infeed Button Reference Configuration
+
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 Waiting for Heating!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E20 F300
+                {% else %}
+                        M118 Printing, no retraction operation!
+                {% endif %}
+        ```
+
+
+## 3D Model Download Link
+
+        ```
+        https://cdn.mellow.klipper.cn/STEP/Filament-Detector-Module.7z
+        ```

@@ -1,0 +1,84 @@
+---
+sidebar_position: 9
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 5160
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.png').default} size="60%" align="center" />
+
+## TMC-5160
+
+    * Input Voltage: 12V-48V
+    * Maximum Current: 4.4A
+    * Applicable to: Marlin/Klipper/RRF firmware
+    * Drive Mode Support: TMC: SPI
+    * Stepping/direction interface with microPlyer for micro-stepping interpolation
+    * Highest resolution: 256 microsteps
+    * Supports stealthChop2 for quiet operation and smooth motion
+    * Resonance suppression for mid-frequency resonance
+    * Supports spreadCycle for high dynamic motor control chopping
+    * Supports dcStep for load-dependent speed control
+    * Supports stallGuard2 for high-precision sensorless motor load detection
+    * Supports coolStep current control, saving up to 75%
+
+## TP5160 Reference Configuration
+
+    :::danger
+
+    * The driver sampling resistor is `sense_resistor: 0.075`. Please do not set it incorrectly.
+    * Only one of `spi_bus` and `spi_software` can be selected.
+    
+    :::
+
+### SPI Mode Reference Configuration
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Motor running current value
+    interpolate: False                  # Whether to enable 256 microstep interpolation (True for enabled, False for disabled)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Infinite Limit Usage Instructions
+
+    <DIAG />
+
+    :::tip Infinite Limit Usage Tips
+    
+    * To use the infinite limit with TP5160, you need to connect the motherboard's DIAG jumper.
+    * The original `endstop_pin:` needs to be masked or deleted, and add `endstop_pin: tmc5160_stepper_x:virtual_endstop`.
+    * After configuring `diag1_pin:`, the limit status should be untriggered.
+    * You need to test a suitable value for `driver_SGT:`.
+
+    :::
+
+    * Reference Configuration
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Retract distance should be 0 to avoid failure in homing
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   Ensure that the limit status is untriggered after configuration.
+    #   This pin usually uses the "^" prefix to enable internal pull-up.
+    #   Sensitivity is related to belt tension and needs to be adjusted manually.
+    #  (Make sure to set `driver_SGTHRS` to an appropriate sensitivity.)
+    ```
