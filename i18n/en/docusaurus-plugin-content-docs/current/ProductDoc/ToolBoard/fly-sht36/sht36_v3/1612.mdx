@@ -1,0 +1,77 @@
+---
+sidebar_position: 7
+sidebar_label: Eddy Usage
+
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# Eddy Usage
+
+    :::info
+
+    * Please note that it is recommended to use a separate Z limit switch for bed sweeping, and not to use the sweeping mechanism as a Z limit switch.
+    * When installing Eddy, ensure that the bottom of the nozzle is at least 1-2 mm above the base.
+    * When calibrating the frequency of Eddy, keep the coil PCB at least 5 mm away from the heated bed.
+    * Do not test the entire heated bed at room temperature, and do not turn on the heated bed during testing.
+
+    :::
+
+## Wiring Diagram
+
+    * The thermistor should face downward.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.png').default} size="100%" align="left" />
+
+
+## Reference Configuration and Usage Instructions
+
+### Bed Sweeping Configuration
+
+    ```cfg
+    [probe_eddy_current fly_eddy_probe]
+    sensor_type: ldc1612
+    z_offset: 0.8
+    i2c_address: 43
+    i2c_mcu: SHT36
+    i2c_bus: i2c1e
+    x_offset: 0
+    y_offset: 0
+    speed:40
+    lift_speed: 5
+    ```
+
+    * Please note that there is currently no external 1612 module available, so this configuration cannot be used.
+    ```cfg
+    [probe_eddy_current fly_eddy_probe]
+    sensor_type: ldc1612
+    z_offset: 0.8
+    i2c_address: 42
+    i2c_mcu: SHT36
+    i2c_bus: i2c1e
+    x_offset: 0
+    y_offset: 0
+    speed:40
+    lift_speed: 5
+    ```
+
+### Temperature Compensation Configuration
+
+    ```cfg
+    [temperature_probe fly_probe]
+    sensor_type:Generic 3950
+    sensor_pin:SHT36:gpio28
+    ```
+
+### bed_mesh Configuration
+
+    * In `[bed_mesh]`, the `horizontal_move_z` parameter is recommended to be set to 2, to make Eddy as close to the platform as possible during scanning.
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+
+<LDC1612 />

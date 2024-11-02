@@ -1,0 +1,73 @@
+---
+sidebar_position: 6
+sidebar_label: BL firmware, please ignore
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL firmware
+
+    :::tip
+
+    * Please note that the `bootloader` has already been pre-flashed at the factory and does not need to be re-flashed.
+
+    :::
+
+## Entering Burn Mode
+
+
+    * There are two methods to enter burn mode
+    * Method 1: With the motherboard completely powered off, short the BOOT pin and connect one end of the data transfer cable to the motherboard and the other end to your device.
+    * Method 2: Connect one end of the data transfer cable to the motherboard and the other end to your device, then short the BOOT pin and press the RST button, then release the RST button, and finally disconnect the BOOT jumper.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-pro/fly-pro-x10/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flashing Firmware
+    <Tabs>
+        <TabItem value="win" label="Windows flashing tutorial" default>
+
+            * The bootloader firmware for PRO X10 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ProX10.zip">click to automatically download the firmware</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Host machine flashing tutorial">
+            
+            <Katapult />
+
+            4. Flashing firmware
+
+            :::tip
+
+            Only one firmware needs to be flashed.
+
+            :::
+
+            * Below is the katapult firmware flashing command
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            * Below is the bootloader firmware flashing command
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            5. When you see the content shown by the arrow in the image below ``File downloaded successfully``, the flashing is successful.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing, the motherboard needs to be completely powered off once.
+
+            :::
+
+        </TabItem>
+    </Tabs>

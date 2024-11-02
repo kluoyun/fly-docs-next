@@ -1,0 +1,41 @@
+import ImageView from '@site/src/components/ImageView';
+
+
+import win32 from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
+
+# Flashing M2WE via TF Card
+
+:::info
+System migration can fully migrate the image originally on the TF card to the M2WE, after which the contents in M2WE will be consistent with those on the original TF card.
+:::
+
+    * Install and power on M2WE
+    * Please first connect to SSH using serial port [Click here to jump to the connection guide](/docs/DebugDoc/BasicTutorial/index.mdx "Click to jump")
+    * Execute the following command; you may be prompted to enter a password. Enter the password `mellow` and press Enter (please note that the password is invisible)
+
+    ```cfg
+    sudo nand-sata-install
+    ```
+
+    * Select the `Boot from eMMC - system on eMMC` option and press Enter (usually the default option is selected, so just press Enter)
+
+    <ImageView image={require('@site/docs/General/fly-os/img/emmc/emmc_install_1.png').default} size="80%" align="left" />
+
+    * When prompted with `This script will erase your eMMC. Continue?`, select `Yes` and press Enter (usually the default option is selected, so just press Enter)
+
+    <ImageView image={require('@site/docs/General/fly-os/img/emmc/emmc_install_2.png').default} size="80%" align="left" />
+
+    * Choose the file system type as `ext4` and press Enter (usually the default option is selected, so just press Enter)
+
+    <ImageView image={require('@site/docs/General/fly-os/img/emmc/emmc_install_3.png').default} size="80%" align="left" />
+
+    * Wait patiently until the progress bar appears (if no progress bar appears within 2 minutes, please press `CTRL+C` to terminate the operation, then restart the device and try again)
+
+    <ImageView image={require('@site/docs/General/fly-os/img/emmc/emmc_install_4.png').default} size="80%" align="left" />
+    * Do not disconnect power or perform any other operations during the system migration process until it is complete
+    * After the migration is complete, press Enter to wait for the device to fully shut down
+
+    <ImageView image={require('@site/docs/General/fly-os/img/emmc/emmc_install_5.png').default} size="80%" align="left" />
+
+
+    * Power off, remove the TF card, and power on again. At this point, the system can boot from the eMMC.

@@ -1,0 +1,84 @@
+---
+sidebar_position: 6
+sidebar_label: BL firmware, please ignore
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import APM from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult Firmware
+
+## Katapult Firmware Description
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36/42 supports CAN
+    * Only CAN firmware is provided here at speeds of 500K and 1M
+    :::
+
+## Enter Programming Mode
+
+    :::tip
+
+    The circled part is the `BOOT button`
+
+    :::
+
+    * With the motherboard completely powered off, short-circuit the BOOT button and then connect one end of the data transfer cable to the motherboard and the other end to your device.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot.png').default} size="50%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot1.png').default} size="50%" align="center" />
+
+## Flash Firmware
+    <Tabs>
+        <TabItem value="win" label="STM32F072 Windows Flash Tutorial" default>
+
+            * SHT36 Katapult firmware <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36.zip">Click to download firmware automatically</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="STM32F072 Uploader Flash Tutorial">
+            
+            <Katapult />
+
+            4. Flash Firmware
+
+            :::tip
+
+            Only one firmware needs to be flashed.
+
+            :::
+
+            * Below is the command to flash the 500K CAN speed firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_500K.BIN
+                ```
+                       
+            * Below is the command to flash the 1M CAN speed firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_1M.BIN
+                ```
+
+
+            5. When you see the content as shown in the arrow below ``File downloaded successfully``, the flashing is successful.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing, the motherboard needs to be powered off completely.
+
+            :::
+
+        </TabItem>
+    </Tabs>

@@ -1,0 +1,57 @@
+---
+sidebar_position: 3
+sidebar_label: CAN Firmware Flashing
+---
+
+import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN Firmware Compilation
+
+## Start Compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Select GPIO pins to set at micro-controller startup, input: !gpio5 Please note that ! is uppercase.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/can.png').default} size="100%" align="center" />
+    * Press `Q` key, you will see **Save configuration**, then press `Y` key
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Now the configuration should be saved and you are back to the command line interface
+    * Input `make -j4` to start compilation, it might take some time
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * The compilation is successful if the following output is shown
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Search for Devices
+
+    <LS />
+
+
+## Flash Firmware
+
+    * Before flashing the firmware, connect the tool board to UTOC or a motherboard with bridge firmware flashed using an XT30 cable. Below is a reference wiring diagram
+    * Please make sure the DIP switches are set correctly
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Ensure that the resistance between CAN H and CAN L is around `60Ω` when measured with a multimeter in a power-off state. If it is `120Ω`, turn on the `120Ω` DIP switch. If it is around `40Ω`, turn off the DIP switch
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Confirm Firmware Startup
+
+    * If the firmware starts up normally, the LED will light up
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.png').default} size="100%" align="center" />

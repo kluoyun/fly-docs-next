@@ -1,0 +1,48 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware Burn-in Instructions
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+    :::tip
+
+    * The SB2040 PRO V3 is shipped with a Katapult firmware pre-flashed for CAN connection at a rate of 1M.
+    * The Katapult firmware connected via CAN to the SB2040 PRO V3 has rates of 500K and 1M, which can be flashed as needed.
+    * <Button variant="contained" disableElevation href="./bl">Burn Katapult Firmware</Button>
+
+    :::
+
+# Firmware Burn-in Instructions
+
+    * The SB2040 PRO V3 can connect to the host machine via two methods: RS232 or CAN.
+    * Both RS232 and CAN require the use of `XT30(2+2)-F` for connection.
+    * Below is the appearance of the `XT30(2+2)-F` data cable.
+    <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Note
+* Motherboard firmware burn-in needs to be done through Katapult to flash Klipper.
+* If it is confirmed that the motherboard has already been flashed with Katapult, there is no need to perform the final step of flashing the Katapult firmware; this is just a precaution in case the Katapult firmware was not successfully flashed on the motherboard.
+* You can quickly press the reset button twice to see if an LED on the motherboard blinks, indicating that the motherboard has entered the Katapult firmware.
+:::
+
+## How to Determine Which Firmware You Need
+
+    * The SB2040 PRO V3 can connect to the host machine using the following methods.
+    * <Button variant="contained" disableElevation href="./can">CAN Firmware Burn-in</Button>
+        * Advantage: If the `Katapult` firmware is flashed, you can update the firmware without touching the motherboard, and it supports bus connections.
+        * Disadvantage: There may be errors such as homing timeouts when used with `KlipperScreen`.
+        * Tip: If you need to use CAN, ensure that the host machine supports CAN and that it is paired with UTOC or a motherboard with bridge firmware flashed.
+    * <Button variant="contained" disableElevation href="./rs232">RS232 Firmware Burn-in</Button>
+        * Advantage: No special software is required; communication is reliable and stable.
+        * Disadvantage: To reflash the firmware, you need to enter manual DFU mode or double-click RST to enter `Katapult` to update the firmware.
+        * Tip: It requires pairing with G2T or UTOR to be used.
+
+## Katapult Firmware Instructions
+
+
+    <CANBOOT />

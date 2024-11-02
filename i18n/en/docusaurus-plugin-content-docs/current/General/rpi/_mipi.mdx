@@ -1,0 +1,54 @@
+import ImageView from '@site/src/components/ImageView';
+
+
+## Raspberry Pi 5 with MIPI
+
+:::tip
+FLY_MIPI is a special adapter module designed for Raspberry Pi 5, which can be used directly with DSI and CSI devices through the adapter.
+:::
+
+### Wiring for Raspberry Pi 5 with MIPI
+
+    :::danger Note
+
+    * The DSI and CSI interfaces on Raspberry Pi 5 are now called MIPI.
+    * The MIPI interface can be used directly with CSI cameras or DSI screens through configuration.
+    * Please pay attention to the direction of the gold fingers.
+
+    :::
+
+    * Raspberry Pi 5 now has two MIPI interfaces. If you look at it from the front, you can see markings 1 and 0.
+
+
+## Wiring for DSI Screen
+
+    * If using the 1st interface, configure the screen as follows:
+
+    ```bash
+    dtoverlay=vc4-kms-dsi-7inch,dsi1
+    ```
+
+    * If using the 0th interface, configure the screen as follows:
+
+    ```bash
+    dtoverlay=vc4-kms-dsi-7inch,dsi0
+    ```
+    * Reference wiring:
+        <ImageView image={require('@site/docs/General/rpi/img/mipi_dsi.png').default} size="100%" align="left" />
+
+## Wiring for CSI Camera
+
+    <ImageView image={require('@site/docs/General/rpi/img/csi1.png').default} size="100%" align="left" />
+    * Please note that the camera model needs to be configured according to the one you purchased. This tutorial uses imx219 as an example.
+
+    * If using the left MIPI interface, configure the camera as follows:
+    ```bash
+    dtoverlay=imx219,cam1
+    ```
+
+    * If using the right MIPI interface, configure the camera as follows:
+    ```bash
+    dtoverlay=imx219,cam0
+    ```
+    * Reference wiring:
+    <ImageView image={require('@site/docs/General/rpi/img/mipi_csi.png').default} size="100%" align="left" />

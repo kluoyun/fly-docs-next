@@ -1,0 +1,138 @@
+---
+sidebar_position: 3
+sidebar_label: Raspberry Pi and Other Hosts Using Ethernet Cable Tutorial
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+import Button from "@mui/material/Button";
+
+# Ethernet Cable Usage Tutorial
+
+
+    :::tip
+
+    The screen firmware needs to be manually updated.
+
+    :::
+
+## Screen Firmware Download
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">Click to download screen firmware</Button>
+
+    * A memory card no larger than 32GB is required, and the TF card transfer speed must be Class10 or higher. It is recommended to use brands such as SanDisk.
+
+
+## Ethernet Cable Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.png').default} size="100%" align="left" />
+
+
+## System Package for Use with FLY Host
+
+:::tip
+Applicable to C8 PI_V2 PI GEMINI series
+:::
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">Download system package</Button>
+
+
+## Service Installation
+
+:::tip
+Other hosts need to install services themselves.
+:::
+
+:::warning Note
+The installation process requires internet access.
+:::
+    ```bash
+    sudo apt install isc-dhcp-server
+    ```
+## Network Configuration
+
+:::tip
+* This tutorial will occupy the host's network port, allowing only the screen to be used.
+* If not needed, simply delete all the modified and added configurations below.
+:::
+    Modify `/etc/network/interfaces.d/eth0`
+
+    ```bash
+    auto eth0
+    iface eth0 inet static
+    address 192.168.251.100
+    netmask 255.255.255.0
+    broadcast 192.168.251.255
+    network 192.168.251.0
+    gateway 192.168.251.1
+    ```
+
+    Modify `/etc/default/isc-dhcp-server`
+
+    ```bash
+    # Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
+
+    # Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+    #DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
+    #DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
+
+    # Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+    #DHCPDv4_PID=/var/run/dhcpd.pid
+    #DHCPDv6_PID=/var/run/dhcpd6.pid
+
+    # Additional options to start dhcpd with.
+    #       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+    #OPTIONS=""
+
+    # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+    #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+    INTERFACESv4="eth0"
+    #INTERFACESv4="eth0"
+    INTERFACESv6=""
+    #INTERFACES="eth0"
+
+    INTERFACES="eth0"
+    ```
+
+    Modify `/etc/dhcp/dhcpd.conf`, add the following content at the end
+
+    ```bash
+    # ddns-update-style none;
+    subnet 192.168.251.0 netmask 255.255.255.0 {
+        range 192.168.251.100 192.168.251.200;
+        option routers 192.168.251.1;
+        option domain-name-servers 8.8.8.8, 8.8.4.4; # Example using Google Public DNS
+        default-lease-time 600; # Default lease time in seconds
+        max-lease-time 7200;    # Maximum lease time in seconds
+    }
+    ```
+
+    Reboot the system first, then execute the following service restart
+
+    Or restart the network service
+
+    ```bash
+    sudo systemctl restart NetworkManager
+    ```
+
+    This operation will cause a network disconnection and reconnection.
+
+    Restart the service
+
+    ```bash
+    sudo systemctl restart isc-dhcp-server
+    ```
+
+    The local IP address should be `192.168.251.100`.
+
+## Increase WIFI Priority
+
+:::tip
+* This command is to increase network priority. If not added, normal internet access and downloads will not be possible!!!
+:::
+    * Please add the following instruction in `/etc/rc.local` on the host
+
+    ```bash
+    sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0
+    ```

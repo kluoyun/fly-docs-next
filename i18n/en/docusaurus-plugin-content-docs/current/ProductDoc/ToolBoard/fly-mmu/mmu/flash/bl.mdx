@@ -1,0 +1,95 @@
+---
+sidebar_position: 7
+sidebar_label: BL firmware, please ignore
+
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult Firmware
+
+## Katapult Firmware Description
+
+    <CANBOOT />
+
+    :::tip
+
+    * Three types of MMU are supported
+    * Only CAN firmware and USB firmware are provided here
+
+    :::
+
+## Entering Programming Mode
+
+    :::tip
+
+    The button above is the `RESET button`, and the button below is the `BOOT button`.
+
+    :::
+
+    * There are two methods to enter programming mode
+    * Method one: Under the condition that the main board is completely powered off, hold down the BOOT button and then connect the data transfer cable to the main board and your device.
+    * Method two: After connecting the data transfer cable to the main board and your device, hold down the BOOT button and then press the RST button, release the RST button first, and finally release the BOOT button
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flashing Firmware
+
+    <Tabs>
+        <TabItem value="win" label="Windows Flash Tutorial" default>
+        
+            * Katapult firmware for MMU <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">Click to download firmware automatically</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Host Machine Flash Tutorial">
+
+            <Katapult />
+
+            4. Flashing Firmware
+
+            :::tip
+
+            You only need to flash one firmware.
+
+            :::
+
+            * Below is the flashing command for the 500K CAN rate firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+                       
+            * Below is the flashing command for the 1M CAN rate firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+
+            * Below is the flashing command for the USB firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_USB.bin
+                ```
+
+            5. When you see the content as shown in the arrow below ``File downloaded successfully``, the flashing is successful.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing, the main board needs to be completely powered off once.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Confirming Firmware Startup
+
+    * If the firmware starts up normally, the LED will blink.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />

@@ -1,0 +1,50 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware Burning Instructions
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * The Katapult firmware pre-installed with the CAN connection on ERCF has a rate of 1M.
+    * The Katapult firmware connected via CAN to ERCF can have rates of 500K and 1M; you can burn it yourself if needed.
+    * <Button variant="contained" disableElevation href="./bl">Burn Katapult Firmware</Button>
+
+
+
+    :::
+
+# Firmware Burning Instructions
+
+    * ERCF can use CAN connection method to connect to the host computer.
+    * CAN needs to be connected using `XT30(2+2)-F`.
+    * Below is the `XT30(2+2)-F` data cable style.
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Notice
+* The main board firmware burning needs to be done through Katapult to burn Klipper.
+* If you are sure that the main board already has Katapult burned, there is no need to do the last step of burning the Katapult firmware; this is just a precaution in case the Katapult firmware was not successfully burned onto the main board.
+* You can quickly press reset twice and check if an LED on the main board is blinking; if it is, it indicates that the main board has entered the Katapult firmware.
+:::
+
+## How to Determine Which Firmware You Need
+
+    * ERCF can use the following methods to connect to the host computer.
+    * <Button variant="contained" disableElevation href="./can">CAN Firmware Burning</Button>
+        * Advantage: If you install the `Katapult` firmware, you can update the firmware without touching the main board, and it supports bus connections.
+        * Disadvantage: It may cause errors such as homing timeout when used with KlipperScreen.
+        * Note: If you need to use CAN, ensure that the host computer supports CAN and that it is paired with UTOC or a main board with bridge firmware installed.
+    * <Button variant="contained" disableElevation href="./usb">USB Firmware Burning</Button>
+        * Advantage: If you install the Katapult firmware, you can update the firmware without touching the main board, although if you are using SD card or DFU flashing, you still need to update the firmware as usual, and the communication is reliable and stable.
+        * Disadvantage: Multiple USB devices may affect data transmission.
+
+## Katapult Firmware Instructions
+
+    <CANBOOT />

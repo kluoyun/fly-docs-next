@@ -1,0 +1,45 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware Burning Instructions
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * The SB2040 comes with a pre-flashed Katapult firmware at 1M baud rate via CAN connection.
+    * The SB2040 CAN connection Katapult firmware supports both 500K and 1M baud rates; you can flash the desired rate if needed.
+    * <Button variant="contained" disableElevation href="./bl">Katapult Firmware Burning</Button>
+    
+    :::
+
+# Firmware Burning Instructions
+
+    * The SB2040 can be connected to the host machine via CAN connection.
+    * CAN connection requires the use of `XT30(2+2)-F` cable.
+    * Below is the appearance of the `XT30(2+2)-F` cable.
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Notice
+* To burn the mainboard firmware, you need to burn Katapult first to burn Klipper.
+* If the mainboard has already been burned with Katapult, there is no need to perform the final step of burning Katapult firmware; this is just a precaution in case the Katapult firmware was not successfully burned.
+* You can quickly press the reset button twice to check if an LED on the mainboard is blinking; if it is, it indicates that the mainboard is in Katapult firmware mode.
+:::
+
+## How to Determine Which Firmware You Need
+
+    * The SB2040 can only connect to the host machine via CAN.
+    * <Button variant="contained" disableElevation href="./can">CAN Firmware Burning</Button>
+        * Advantage: If you flash the `Katapult` firmware, you can update the firmware without touching the mainboard, and it supports bus connections.
+        * Disadvantage: It may cause timeouts or errors when used with `KlipperScreen`.
+        * Tip: If you need to use CAN, ensure that your host machine supports CAN and that you have a UTOC or a mainboard flashed with bridge firmware.
+
+## Katapult Firmware Instructions
+
+    <CANBOOT />

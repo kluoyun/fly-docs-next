@@ -1,0 +1,47 @@
+---
+sidebar_position: 3
+sidebar_label: USB Firmware Flashing
+---
+
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# USB Firmware Compilation
+
+## Start Compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Press the `Q` key, and when **Save configuration** appears, press the `Y` key again.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * You should now have saved the configuration and exited to the command line interface.
+    * Enter `make -j4` to start compiling; this will take some time.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * When you see the following output, the compilation is successful.
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Firmware Flashing
+
+:::tip
+Run the following command to flash the firmware.
+:::
+
+    ```bash
+    sudo fly-flash -d c8 -h -f ~/klipper/out/klipper.bin
+    ```

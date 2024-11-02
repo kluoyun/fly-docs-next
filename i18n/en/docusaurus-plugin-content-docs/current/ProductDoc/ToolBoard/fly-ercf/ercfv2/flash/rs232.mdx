@@ -1,0 +1,65 @@
+---
+sidebar_position: 4
+sidebar_label: RS232 Firmware Flashing
+
+---
+
+import USBFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+# RS232 Firmware Compilation
+
+## Start Compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Select GPIO pins to set at micro-controller startup, input: gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/can.png').default} size="100%" align="center" />
+    * Press `Q` key, the prompt **Save configuration** appears, then press `Y` key
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Now the configuration should be saved and you are back in the command line interface
+    * Input `make -j4` to start compilation, it will take some time
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * The following output indicates successful compilation
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
+
+
+## Enter Flash Mode
+
+    :::tip
+
+    Circled as `BOOT button`
+
+    :::
+
+    * To enter DFU mode, the motherboard must be completely powered off. Hold the BOOT button while connecting the data transfer cable to the motherboard and your host machine.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Confirm Entry into Flash Mode
+
+    <LS />
+
+
+## Flash Firmware 
+
+    <USBFLASH />
+
+
+## Confirm Firmware Startup
+
+    * If the firmware starts up correctly, the LED will light up
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

@@ -1,0 +1,36 @@
+---
+sidebar_position: 9
+sidebar_label: Connecting the Mainboard via UART
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Configuration Method
+
+:::danger Notice
+Please note that after using this method, you will not be able to use the accelerometer interface of mini pad to connect an external accelerometer.
+:::
+
+    * Open the BOOT disk and find `armbianEnv.txt` and open it
+    * Modify **uart2** in `overlays=usbhost2 usbhost3 uart2` to **uart3** and save it
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart.png').default} size="80%" align="center" />
+
+## Wiring Method
+
+    * Please note that the TX of mini-pad should be connected to the RX of the mainboard with serial port firmware flashed
+    * Please note that the RX of mini-pad should be connected to the TX of the mainboard with serial port firmware flashed
+    * Please note that a common ground is required
+    * Otherwise, you cannot connect to the mainboard with serial port firmware flashed
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart1.png').default} size="80%" align="center" />
+
+## Klipper Reference Configuration
+
+    ```cfg
+    [mcu]
+    serial: /dev/ttyS3
+    baud：250000
+    #   The baud rate used. Default is 250000
+    restart_method:command
+    ```

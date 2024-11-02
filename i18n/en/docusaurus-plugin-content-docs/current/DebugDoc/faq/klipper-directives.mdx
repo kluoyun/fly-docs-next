@@ -1,0 +1,197 @@
+---
+sidebar_position: 2
+---
+import ImageView from '@site/src/components/ImageView';
+
+
+import Button from "@mui/material/Button";
+
+# Common Debug Commands
+
+    :::tip
+
+    * This tutorial is based on the Fuiidd web page
+    * This tutorial is for debugging purposes after the printer has been properly connected.
+    * This tutorial provides commonly used commands, but due to various issues, it may not be completely comprehensive.
+
+    :::
+
+## Driver Related
+
+    :::danger Notice
+
+    * Please note that malfunctioning or improperly configured drivers cannot be checked.
+    * Ensure all drivers, power supply, motherboard, and driver jumpers and configurations are correct!!
+
+    :::
+
+
+### Check Driver Status
+
+    * This command verifies the status of TMC drivers in SPI/UART mode.
+        ```bash
+        DUMP_TMC STEPPER=stepper_x
+        DUMP_TMC STEPPER=stepper_x1
+        DUMP_TMC STEPPER=stepper_y
+        DUMP_TMC STEPPER=stepper_y1
+        DUMP_TMC STEPPER=stepper_z
+        DUMP_TMC STEPPER=stepper_z1
+        DUMP_TMC STEPPER=stepper_z2
+        DUMP_TMC STEPPER=stepper_z3
+        DUMP_TMC STEPPER=extruder
+        ```
+
+### Force Move Drivers
+
+    * Add the following command in `printer.cfg`.
+        ```bash
+        [force_move]
+        enable_force_move: true
+        ```
+
+    * Force back-and-forth movement by 1mm.
+        ```bash
+        STEPPER_BUZZ STEPPER=stepper_x
+        STEPPER_BUZZ STEPPER=stepper_x1
+        STEPPER_BUZZ STEPPER=stepper_y
+        STEPPER_BUZZ STEPPER=stepper_y1
+        STEPPER_BUZZ STEPPER=stepper_z
+        STEPPER_BUZZ STEPPER=stepper_z1
+        STEPPER_BUZZ STEPPER=stepper_z2
+        STEPPER_BUZZ STEPPER=stepper_z3
+        STEPPER_BUZZ STEPPER=extruder
+        ```
+
+    * Enable this option to force move through movement control.
+    * Please note that only one motor can be moved at a time.
+    * If multiple axes are involved, such as two Z axes, they need to be homed before controlling.
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/force.png').default} size="80%" align="center" />
+
+### Force Set Print Head Distance
+
+    * Enter the following command in the console to force set the print head position and directly control the movement.
+        ```bash
+        SET_KINEMATIC_POSITION x=100 y=100 z=100
+        ```
+
+### Step Motor Step Value Calibration
+    * First ensure the extruder driver is functioning correctly, then confirm that `full_steps_per_rotation` and `gear_ratio` are correct; otherwise, extruder step value calibration will fail.
+    * Obtain the new `rotation_distance`, rounding it to three decimal places.
+    * Calibrate the step value: `rotation_distance = old_rotation_distance * actual_extrusion_length / requested_extrusion_length`
+    
+        ```bash
+        full_steps_per_rotation: 200        # Number of pulses per rotation (200 for 1.8°, 400 for 0.9°)
+        gear_ratio: 50:10                   # Gear ratio (Galileo gear ratio 7.5:1, comment out this line; BMG 50:17, output shaft first, input shaft second)
+        rotation_distance: 22.522           # Pulley circumference mm
+        ```
+
+## Heating Related
+
+### PID
+    :::tip
+    * The `TARGET=` in the command sets the temperature, please set it according to your usual printing temperature.
+    * If you have multiple heating devices, you can use these commands for PID tuning.
+    :::
+
+    * Extruder
+        ```bash
+        PID_CALIBRATE HEATER=extruder TARGET=245
+        ```
+
+    * Bed
+        ```bash
+        PID_CALIBRATE HEATER=heater_bed TARGET=100
+        ```
+
+    * PTC
+        ```bash
+        PID_CALIBRATE HEATER=PTC TARGET=70
+        ```
+
+### Temperature Error Related
+
+    :::tip
+    * If heating takes too long, refer to this method <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">Click to Jump</Button>
+    * Please note that if the temperature is unstable, use this method to resolve errors caused by unstable temperatures <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">Click to Jump</Button>
+    :::
+
+## Limit Switch Related
+
+    :::tip
+    * Currently being updated.
+    :::
+
+### Normal Limit Switch
+    * Limit switch check command.
+    * Ensure the limit switch is a two-wire type. If it is a three-wire type, verify that the wiring sequence is correct; otherwise, it could damage the motherboard!!!
+    * Ensure the limit switch is normally open and not triggered by any object.
+    * Enter the following command in the console. If it works correctly, it will return the following information:
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+    * Ensure the limit switch is in the open state, then manually press the limit switch and enter `QUERY_ENDSTOPS`.
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query1.png').default} size="80%" align="center" />
+    * A change in the limit switch status indicates correct wiring.
+
+### No Limit Switch
+    * Note that the no-limit switch state should always be open; otherwise, there might be an issue with the configuration or wiring.
+    * Enter the following command in the console. If it works correctly, it will return the following information:
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+
+## Probe Related
+
+### BL-TOUCH
+
+    * pin_down: Probe extends.
+    * pin_up: Probe retracts.
+    * touch_mode: Verify sensor.
+    ```bash
+    BLTOUCH_DEBUG COMMAND=pin_down
+    BLTOUCH_DEBUG COMMAND=pin_up
+    BLTOUCH_DEBUG COMMAND=touch_mode
+    touch_mode
+    ```
+
+### Probe & TAP
+
+    * Normally untriggered.
+    * It is recommended to add `^` when configuring the pin.
+    ```bash
+    QUERY_PROBE
+    ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/probe.png').default} size="80%" align="center" />
+
+### Repeatability Accuracy
+    * Ten times.
+        ```bash
+        probe_accuracy
+        ```
+    * One hundred times.
+        ```bash
+        probe_accuracy samples=100
+        ```
+
+## Special Types
+
+### Servo
+
+    :::tip
+    * Servos are available in 180° and 360° versions. Please distinguish between them.
+    :::
+
+    * Reference configuration.
+        ```cfg
+        [servo my_servo]
+        pin:PE6
+        ```
+
+    * Reference command.
+        ```bash
+        SET_SERVO SERVO=my_servo ANGLE=360
+        SET_SERVO SERVO=my_servo ANGLE=180
+        SET_SERVO SERVO=my_servo ANGLE=0
+        ```

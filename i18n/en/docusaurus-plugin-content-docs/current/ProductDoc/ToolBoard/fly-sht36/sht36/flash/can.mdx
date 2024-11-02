@@ -1,0 +1,49 @@
+---
+sidebar_position: 3
+sidebar_label: CAN firmware flashing
+---
+
+import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_can.mdx';
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN Firmware Compilation
+
+## Start Compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Press the `Q` key, and when **Save configuration** appears, press the `Y` key again.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * You should now have saved the configuration and exited to the command line interface.
+    * Enter `make -j4` to start the compilation process; it may take some time.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * The compilation is successful if the following output is displayed at the end:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Search for Devices
+
+    <LS />
+
+
+## Flash Firmware
+
+    * Before flashing the firmware, connect the tool board to the UTOC or a mainboard with bridging firmware using an XT30 data cable. Below is a reference wiring diagram.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/utoc.png').default} size="80%" align="left" />
+    * Ensure that the resistance between CAN H and CAN L is around `60Ω` in a power-off state. If it is `120Ω`, you need to attach a `120Ω` jumper. If it is around `40Ω`, remove the jumper.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />

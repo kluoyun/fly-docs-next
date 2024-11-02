@@ -1,0 +1,152 @@
+---
+sidebar_position: 7
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+
+# TMC 5160 Plus
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus.png').default} size="100%" align="center" />
+
+## Basic Parameters
+
+    * Input Voltage: 12-60V
+    * Maximum Current: 10A
+    * Applicable to: Marlin/Klipper/RRF firmware
+    * Drive Mode Support: TMC: SPI
+    * Stepper/direction interface with microPlyer interpolation for microstepping
+    * Highest resolution is 256 microsteps
+    * Supports stealthChop2 silent operation and smooth motion
+    * Supports resonance suppression for mid-frequency resonance
+    * Supports spreadCycle high dynamic motor control chopper
+    * Supports dcStep load-related speed control
+    * Supports stallGuard2 high-precision sensorless motor load detection
+    * Supports coolStep current control, up to 75% energy saving
+
+## Jumper and Driver Wiring Instructions
+
+    :::tip
+
+    TMC 5160 Plus uses SPI mode. For the FLY motherboard, please install the jumpers according to the SPI jumper settings. For other motherboards, please consult the motherboard seller.
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+### Motherboard FPC Installation
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fpc.png').default} size="100%" align="center" />
+
+### RGB DIP Switch Selection
+
+    :::tip
+
+    When using the motherboard EN pin to control RGB, the motor will be forcibly locked.
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb.png').default} size="100%" align="center" />
+    
+    * Multiple driver RGB wiring
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb-1.png').default} size="80%" align="center" />
+
+
+### 12V FAN Wiring
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fan.png').default} size="100%" align="center" />
+
+## Motherboard Reference Configuration
+
+    :::danger
+
+    The drive sampling resistor is 0.033. Please do not set it incorrectly.
+
+    :::
+
+
+    <Tabs>
+        <TabItem value="When Using the Driver EN Pin to Control RGB" default>
+        
+        * Turn the DIP switch towards the FAN port
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        # enable_pin: !
+
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+
+        ```
+        </TabItem>
+
+
+        <TabItem value="When Using the Motherboard RGB Pin to Control RGB" default>
+        
+        * Turn the DIP switch in the opposite direction towards the FAN port
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        enable_pin: !
+        
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+        driver_DISS2G: 1
+        driver_DISS2VS: 1
+        ```  
+
+        </TabItem>
+
+        <TabItem value="RGB Reference Configuration" default>
+
+        * Control the driver LED via a plugin extension  <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">Click to jump</Button>
+
+        ```
+        [neopixel TP_led]
+        pin: 
+        chain_count: 6
+        # Number of LEDs
+        # 灯珠数量
+        color_order: GRB
+        initial_RED: 0.4    
+        initial_GREEN: 0.8
+        initial_BLUE: 1
+        initial_WHITE: 0
+        #66CCFF 
+
+        ```  
+
+        </TabItem>
+
+    </Tabs>
+
+## Current Warning
+
+    :::danger
+
+    TMC5160 Plus supports 10A, but excessively high currents can damage the motor and require enhanced cooling.
+
+    :::

@@ -1,0 +1,46 @@
+---
+sidebar_position: 3
+---
+
+# USB Drive Printing
+
+This tutorial is only applicable to the FLY host machine.
+
+    :::danger Notice
+
+    * You need to install it yourself.
+    * This tutorial will replace the `klipper/klippy/extras/virtual_sdcard.py` file in Klipper.
+    * It allows automatic copying of files selected from a USB drive to the system’s `/tmp` directory.
+    * After the copy is completed, it will prompt `File selected` in the web command line.
+    * This file will detect the `sdaX` folder; if not found, it will not execute (where X in sda represents A-Z and 0-9).
+    * Currently, only the FLY host machine has been tested; other host machines have not been tested.
+
+    :::
+
+## Usage Instructions
+
+
+
+* Use an SSH software to connect to the host machine and execute the following command.
+* Please note that this command will restart the host machine!
+* This step is to enable USB drive printing functionality.
+    ```bash
+    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://upyun.pan.zxkxz.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
+    ```
+
+## USB Drive Printing Instructions
+
+### Backup and Download File
+
+* Please note that this command will stop Klipper.
+* This step is to enable automatic copying of selected USB drive files to the system’s `/tmp` directory.
+    ```bash
+    sudo systemctl stop klipper && mv ~/klipper/klippy/extras/virtual_sdcard.py ~/virtual_sdcard.py && curl -kfsSL https://cdn.mellow.klipper.cn/firmware/virtual_sdcard.py -o ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```
+
+### Restore Original Files
+
+* Please note that this command is to restore the original Klipper.
+    ```bash
+    sudo systemctl stop klipper && mv ~/virtual_sdcard.py ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```

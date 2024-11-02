@@ -1,0 +1,43 @@
+import ImageView from '@site/src/components/ImageView';
+
+    1. Install the flashing tool
+
+    * No need to install the flashing tool for the FLY GUI.
+    * If you need to install it, please note: The GUI needs to be connected to the internet to install properly.
+    * If you have already installed it, no need to install again.
+
+    ```bash
+    sudo apt update
+    sudo apt install dfu-util -y
+    ```
+
+    2. Execute the following command to check if the connection is successful.
+
+    ```bash
+    lsusb
+    ```
+
+    * If there is no DFU device, please try to re-enter **flashing mode**.
+    * Due to system version issues, other names may be displayed. If `0483:df11` is shown, it indicates that the flashing mode has been entered.
+
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="80%" align="left" />    
+
+
+    3. Flash the firmware
+
+    * Execute the code below to start flashing.
+
+    ```bash
+    sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/klipper/out/klipper.bin
+    ```
+
+    4. If the following content is shown at the arrow as ``File downloaded successfully``, the flashing is successful.
+
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="80%" align="left" />    
+
+    :::tip
+
+    After flashing is complete, you need to power off the motherboard completely.
+
+    :::

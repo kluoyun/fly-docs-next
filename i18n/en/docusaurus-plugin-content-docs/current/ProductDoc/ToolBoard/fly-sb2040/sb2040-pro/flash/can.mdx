@@ -1,0 +1,56 @@
+---
+sidebar_position: 3
+sidebar_label: CAN Firmware Flashing
+---
+
+import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN Firmware Compilation
+
+## Start Compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Select GPIO pins to set at micro-controller startup, input: gpio24
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/flash/img/can.png').default} size="100%" align="center" />
+    * Press `Q` key, then appear **Save configuration**, press `Y` key now
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Now the configuration should be saved and exit to command line interface
+    * Input `make -j4` to start compilation, it takes some time
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * The compilation is successful if the following output is shown
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Search for Device
+
+    <LS />
+
+
+## Flash Firmware
+
+    * Before flashing firmware, connect the tool board to UTOC or a mainboard flashed with bridge firmware using an XT30 cable, refer to the wiring diagram below
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Ensure that CAN H and CAN L have a resistance of around `60Ω` when measured with a multimeter in a power-off condition. If the resistance is `120Ω`, connect a `120Ω` jumper wire. If the resistance is around `40Ω`, remove the jumper wire.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/flash/img/120.png').default} size="50%" align="center" />
+
+    <CANFLASH />
+
+## Confirm Firmware Startup
+
+    * If the firmware starts up normally, the LED will light up
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/flash/img/led.png').default} size="50%" align="center" />

@@ -1,0 +1,52 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware Burn Instructions
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * MMU provides Katapult firmware with USB and CAN connections, which can be flashed as needed.
+    * MMU comes with pre-flashed Katapult firmware for CAN connection at a rate of 1M.
+    * <Button variant="contained" disableElevation href="./bl">Katapult Firmware Burn</Button>
+
+    :::
+
+# Firmware Burn Instructions
+
+    * MMU can connect to the host machine via RS232, CAN, or USB.
+    * RS232 and CAN require the use of `XT30(2+2)-F` for connection, while USB requires a data-enabled `TYPE-C` cable for connection.
+    * Below is the style of the `XT30(2+2)-F` data cable.
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Note
+* Motherboard firmware burning needs to be done through Katapult to burn Klipper.
+* If you are sure that the motherboard has already been burned with Katapult, there is no need to perform the final Katapult firmware burn, as this is only a precaution in case the Katapult firmware was not burned successfully.
+* You can quickly press the reset button twice to see if an LED on the motherboard is blinking. If it is, it indicates that the motherboard has entered Katapult firmware.
+:::
+
+## How to Determine Which Firmware You Need
+
+    * MMU can connect to the host machine using the following methods.
+    * <Button variant="contained" disableElevation href="./can">CAN Firmware Burn</Button>
+        * Advantage: If you flash the `Katapult` firmware, you can update the firmware without touching the motherboard and it supports bus connections.
+        * Disadvantage: It may cause errors such as timeout when using `KlipperScreen` together.
+        * Tip: If you need to use CAN, confirm whether the host machine supports CAN and pair it with UTOC or a motherboard with bridge firmware.
+    * <Button variant="contained" disableElevation href="./rs232">RS232 Firmware Burn</Button>
+        * Advantage: No special software is required to use it, communication is reliable and stable.
+        * Disadvantage: To reflash the firmware, you need to enter manual DFU mode or double-click RST to enter `Katapult` to update the firmware.
+        * Tip: It requires G2T or UTOR to use.
+    * <Button variant="contained" disableElevation href="./usb">USB Firmware Burn</Button>
+        * Advantage: If you flash the Katapult firmware, you can update the firmware without touching the motherboard. If you use memory cards or DFU flashing, you still need to update the firmware as usual, communication is reliable and stable.
+        * Disadvantage: Multiple USB devices may affect data transmission.
+
+## Katapult Firmware Instructions
+
+    <CANBOOT />

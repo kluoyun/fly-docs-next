@@ -1,0 +1,30 @@
+import ImageView from '@site/src/components/ImageView';
+
+## Precautions Before Searching for Devices
+
+    * Before starting to get the ID, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump")
+    * Please ensure that the data cable connecting the lower-level machine to the upper-level machine has data transmission capabilities
+    * After connecting to the upper-level machine via SSH, enter `lsusb` and press Enter. Several devices may appear as follows:
+    * If the system does not support `lsusb`, you can execute the following command to install it:
+    ```
+    sudo apt-get install usbutils
+    ```
+        <ImageView image={require('@site/docs/General/get-id/img/lsusb.png').default} size="100%" align="left" />
+        <ImageView image={require('@site/docs/General/get-id/img/rs232.png').default} size="100%" align="left" />
+    * Please confirm whether the motherboard firmware has been correctly flashed.
+    * If it is a USB firmware, `1d50:614e` should appear after `lsusb`.
+    * If it is a USB bridge CAN firmware, `1d50:606f` should appear after `lsusb`.
+    * If it is RS232, it needs to be paired with UTOR or G2T. G2T does not require searching for firmware, while UTOR should appear `1a86:7523` after `lsusb`.
+
+## Precautions While Searching for Devices
+
+:::danger Note
+Search ID commands cannot be mixed!
+:::
+
+    * Please note that USB firmware can only use the USB ID search method.
+    * Please note that USB bridge CAN firmware can only use the CAN ID search method.
+    * Please note that RS232 firmware can only use the RS232 ID search method.
+    * If `0483:df11` appears, it may be due to the firmware being flashed but the motherboard not being powered off and restarted. If the motherboard remains unchanged after power-off and re-power-on, please check if DFU (jumpers/dip switches/buttons) has been disconnected.
+    * If `2e8a:0003` appears, it may indicate that the wrong firmware was flashed. Please note that RP2040 can only flash UF2 firmware compiled, not other types of firmware. After `2e8a:0003` appears, disconnect BOOT (jumpers/dip switches/buttons) to avoid flashing failure!!!
+    * The UF2 firmware for RP2040 is compiled with `No bootloader` selected during compilation.

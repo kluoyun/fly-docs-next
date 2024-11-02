@@ -1,0 +1,502 @@
+---
+sidebar_position: 6
+---
+
+# VORON 0.2 Reference Configuration
+
+
+```cfg
+#####################################################################
+#      Items to be changed/checked
+#####################################################################
+##***Items to be changed/checked:***
+## MCU path                                [mcu] 
+## Printer activity range                  xyz's position   
+## Thermistor type                         [extruder] and [heater_bed]
+## Z-axis limit switch stop position       [safe_z_home] 
+## Z-axis limit switch offset position     [stepper_z] 
+## PID calibration                         [extruder] and [heater_bed] 
+## Fine-tune extruder motor step value     [extruder] 
+
+#####################################################################
+#      File invocation
+#####################################################################
+### When using fuidd or mainsail as the frontend, remove the '#' before #[include XXX.cfg].
+### When using fuidd or mainsail as the frontend, remove the '#' before #[include XXX.cfg].
+[include fluidd.cfg]
+#[include mainsail.cfg]
+
+### Replace 'fly' in /home/fly with your host computer username, ensuring it's not the ROOT user.
+### Replace 'fly' in /home/fly with your host computer username, ensuring it's not the ROOT user.
+[virtual_sdcard]
+path: /home/fly/printer_data/gcodes
+on_error_gcode: CANCEL_PRINT
+
+
+#####################################################################
+#      Master ID Configuration
+#####################################################################
+[mcu]
+serial: /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00
+### Find the USB firmware ID with: ls /dev/serial/by-id/* and replace
+### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00 with the ID you discover.
+### Find the USB firmware ID with: ls /dev/serial/by-id/* and replace
+### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00 with the ID you discover.
+
+#canbus_uuid: 114514114514
+### Query the CAN firmware ID with: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Replace 'serial:' in the CAN ID with 'canbus_uuid:', then append the ID.
+### Query the CAN firmware ID with: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Replace 'serial:' in the CAN ID with 'canbus_uuid:', then append the ID.
+
+#####################################################################
+#      Temperature monitoring
+#####################################################################
+[temperature_sensor motherboard]
+sensor_type: temperature_mcu
+
+[temperature_sensor Raspberry Pi]
+sensor_type: temperature_host
+
+#####################################################################
+#      Tmodel and acceleration
+#####################################################################
+[printer]
+kinematics: corexy
+max_velocity: 200
+max_accel: 2000
+max_z_velocity: 15
+max_z_accel: 300
+square_corner_velocity: 6.0
+
+#####################################################################
+#      X/Y Stepper Settings
+#####################################################################
+
+[stepper_x]
+## Refer to https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:                                        # Check motor direction in link above. If inverted, add a ! before gpio3 
+enable_pin:! 
+rotation_distance: 40
+microsteps: 32
+full_steps_per_rotation: 200                    # Set to 400 for 0.9° degree stepper motor, 200 is for 1.8° stepper motors
+endstop_pin:
+# endstop_pin: tmc2209_stepper_x:virtual_endstop
+# endstop_pin: tmc5160_stepper_x:virtual_endstop
+position_min: 0
+position_endstop: 120
+position_max: 120
+homing_speed: 40                                # for sensorless homing it is recommended not to go above 40mm/s   
+homing_retract_dist: 0
+homing_positive_dir: true
+
+[tmc2209 stepper_x]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0                        # Set to 999999 to turn stealthchop on, and 0 to use spreadcycle
+diag_pin: ^
+driver_SGTHRS: 80
+
+[tmc5160 stepper_x]
+cs_pin:
+### spi_bus and spi_software can only use one of them.
+### spi_bus and spi_software can only use one of them.
+# spi_bus:
+spi_software_mosi_pin:
+spi_software_miso_pin:
+spi_software_sclk_pin:
+run_current: 1.0
+interpolate: False
+### The driver sampling resistor needs to be modified according to the driver
+### The driver sampling resistor needs to be modified according to the driver
+sense_resistor: 0.075
+stealthchop_threshold: 0
+diag0_pin: ^!
+driver_SGT: 1
+
+[stepper_y]
+## Refer to https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:                                        # Check motor direction in link above. If inverted, add a ! before gpio0
+enable_pin:!
+rotation_distance: 40
+microsteps: 32
+full_steps_per_rotation: 200
+endstop_pin:
+# endstop_pin: tmc2209_stepper_y:virtual_endstop
+# endstop_pin: tmc5160_stepper_y:virtual_endstop
+position_min: 0
+position_endstop: 120
+position_max: 120
+homing_speed: 40 
+homing_retract_dist: 0
+homing_positive_dir: true
+
+[tmc2209 stepper_y]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+diag_pin: ^
+driver_SGTHRS: 80
+
+[tmc5160 stepper_y]
+cs_pin:
+### spi_bus and spi_software can only use one of them.
+### spi_bus and spi_software can only use one of them.
+# spi_bus:
+spi_software_mosi_pin:
+spi_software_miso_pin:
+spi_software_sclk_pin:
+run_current: 1.0
+interpolate: False
+### The driver sampling resistor needs to be modified according to the driver
+### The driver sampling resistor needs to be modified according to the driver
+sense_resistor: 0.075
+stealthchop_threshold: 0
+diag0_pin: ^!
+driver_SGT: 1
+
+#####################################################################
+#   Z Stepper Settings
+#####################################################################
+
+[stepper_z]
+## Refer to https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:!                                         # Check motor direction in link above. If inverted, add a ! before gpio25
+enable_pin: !
+rotation_distance: 8                                                # For T8x8 integrated lead screw
+microsteps: 32
+endstop_pin: ^PA6
+position_endstop: 120
+position_max: 120
+position_min: -1.5
+homing_speed: 20
+second_homing_speed: 3.0
+homing_retract_dist: 3.0
+
+[tmc2209 stepper_z]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+#####################################################################
+#      Extruder
+#####################################################################
+[extruder]
+## Type of sensor # common thermistors are (Generic 3950, ATC Semitec 104GT#2)
+## Type of sensor # common thermistors are (Generic 3950, ATC Semitec 104GT#2)
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: 
+#####################################################################
+## If using PT1000, please connect the jumper next to the thermal sensitivity.
+## If using PT1000, please connect the jumper next to the thermal sensitivity.
+# sensor_type:PT1000
+# pullup_resistor: 1100
+# sensor_pin: 
+#####################################################################
+#      extruder
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html#extruder
+[extruder]
+step_pin:
+dir_pin:
+enable_pin: !
+rotation_distance: 21.84
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## Calibration step value: 22.44=old value 22 * actual value 102 / target value 100
+gear_ratio:50:10
+## Gear ratio (Galileo gear ratio 7.5:1 and comment out this line; BMG is 50:17, output shaft in front, input shaft behind)
+microsteps:16
+full_steps_per_rotation: 200    
+nozzle_diameter:0.400
+filament_diameter:1.75
+heater_pin:
+min_temp: -50
+max_temp: 300
+max_power: 1.0
+min_extrude_temp: 150
+pressure_advance: 0.05
+##Pressure in advance
+##Pressure advance
+##https://www.klipper3d.org/zh/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040
+#max_extrude_only_distance: 200.0   # Extrusion flow error can be commented out, but it is recommended to re-slice
+# Calibrate the nozzle temperature PID command ： PID_CALIBRATE HEATER=extruder TARGET=245
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+step_pulse_duration: 0.000004
+
+[tmc2209 extruder]
+uart_pin:gpio9
+uart_address:3
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+#####################################################################
+#   Bed Heater
+#####################################################################
+
+[heater_bed]
+heater_pin: 
+## Check what thermistor type you have. See https://www.klipper3d.org/Config_Reference.html#common#thermistors for common thermistor types.
+## Use "Generic 3950" for Keenovo heaters
+sensor_type:
+sensor_pin:
+max_power: 1.0 
+min_temp: -50
+max_temp: 120
+# Heated bed temperature PID calibration command： PID_CALIBRATE HEATER=heater_bed TARGET=100
+# Calibrate the heated bed temperature PID command： PID_CALIBRATE HEATER=heater_bed TARGET=100
+control: pid
+pid_kp: 68.453
+pid_ki: 2.749
+pid_kd: 426.122
+
+#####################################################################
+#      Fan Control
+#####################################################################
+[fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5                                                # Depending on your fan, you may need to increase this value if your fan will not start
+off_below: 0.13
+cycle_time: 0.010
+#####################################################################
+[heater_fan hotend_fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5
+heater: extruder
+heater_temp: 50.0
+
+
+#####################################################################
+#   Filament Runout Sensor
+#####################################################################
+
+#[filament_switch_sensor Filament_Runout_Sensor]
+#pause_on_runout: True
+#runout_gcode: PAUSE
+#switch_pin: 
+
+#####################################################################
+# Homing and Gantry Adjustment Routines
+#####################################################################
+### You can only use either safe_z_home or homing_override
+### You can only use either safe_z_home or homing_override
+#[safe_z_home]                      Only needed if you are using V0.0 or V0.1 Z endstop location
+#home_xy_position: 120,120
+#speed: 50.0
+#z_hop: 5
+
+
+[homing_override]
+axes: xyz
+set_position_z: 0
+gcode:
+   G90
+   G0 Z5 F600
+  {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+
+  {% if home_all or 'X' in params %}
+    _HOME_X
+  {% endif %}
+  
+  {% if home_all or 'Y' in params %}
+    _HOME_Y
+  {% endif %}
+  
+  {% if home_all or 'Z' in params %}
+    _HOME_Z
+  {% endif %}
+
+## To be used with BED_SCREWS_ADJUST
+[bed_screws]
+screw1: 60,5
+screw1_name: front screw
+screw2: 5,115
+screw2_name: back left
+screw3: 115,115
+screw3_name: back right
+Probe_height: 0.1
+
+#####################################################################
+# Neopixel
+#####################################################################
+
+[neopixel board_rgb]
+pin: 
+chain_count: 1
+color_order: GRB
+initial_RED: 0.0
+initial_GREEN: 0.1
+initial_BLUE: 0.0
+
+#####################################################################
+#   V0 Display
+#####################################################################
+# [mcu display]
+# serial: **PASTE YOUR SERIAL PORT HERE AND UNCOMMENT**
+# restart_method: command
+
+# [display]
+# lcd_type: sh1106
+# i2c_mcu: display
+# i2c_bus: i2c1a
+# # Set the direction of the encoder wheel
+# #   Standard: Right (clockwise) scrolls down or increases values. Left (counter-clockwise scrolls up or decreases values.)
+# encoder_pins: ^display:PA3, ^display:PA4
+# #   Reversed: Right (clockwise) scrolls up or decreases values. Left (counter-clockwise scrolls down or increases values.)
+# #encoder_pins: ^display:PA4, ^display:PA3
+# click_pin: ^!display:PA1
+# kill_pin: ^!display:PA5
+# #x_offset: 2
+# #   Use X offset to shift the display towards the right. Value can be 0 to 3
+# #vcomh: 0
+# #   Set the Vcomh value on SSD1306/SH1106 displays. This value is
+# #   associated with a "smearing" effect on some OLED displays. The
+# #   value may range from 0 to 63. Default is 0.
+# #   Adjust this value if you get some vertical stripes on your display. (31 seems to be a good value)
+
+# [neopixel displayStatus]
+# pin: display:PA0
+# chain_count: 1
+# color_order: GRB
+# initial_RED: 0.2
+# initial_GREEN: 0.05
+# initial_BLUE: 0
+
+#####################################################################
+# Macros
+#####################################################################
+
+[idle_timeout]
+### If idle for more than 30 minutes, heated bed will be turned off.
+### If idle for more than 30 minutes, heated bed will be turned off.
+timeout: 1800
+
+[gcode_macro PRINT_START]
+#   Use PRINT_START for the slicer starting script - please customize for your slicer of choice
+gcode:
+    G28                            ; home all axes
+    G90                            ; absolute positioning    
+    G1 Z20 F3000                   ; move nozzle away from bed
+   
+[gcode_macro PRINT_END]
+#   Use PRINT_END for the slicer ending script - please customize for your slicer of choice
+gcode:
+    M400                           ; wait for buffer to clear
+    G92 E0                         ; zero the extruder
+    G1 E-4.0 F3600                 ; retract filament
+    G91                            ; relative positioning
+
+    #   Get Boundaries
+    {% set max_x = printer.configfile.config["stepper_x"]["position_max"]|float %}
+    {% set max_y = printer.configfile.config["stepper_y"]["position_max"]|float %}
+    {% set max_z = printer.configfile.config["stepper_z"]["position_max"]|float %}
+
+    #   Check end position to determine safe direction to move
+    {% if printer.toolhead.position.x < (max_x - 20) %}
+        {% set x_safe = 20.0 %}
+    {% else %}
+        {% set x_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.y < (max_y - 20) %}
+        {% set y_safe = 20.0 %}
+    {% else %}
+        {% set y_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.z < (max_z - 2) %}
+        {% set z_safe = 2.0 %}
+    {% else %}
+        {% set z_safe = max_z - printer.toolhead.position.z %}
+    {% endif %}
+
+    G0 Z{z_safe} F3600             ; move nozzle up
+    G0 X{x_safe} Y{y_safe} F20000  ; move nozzle to remove stringing
+    TURN_OFF_HEATERS
+    M107                           ; turn off fan
+    G90                            ; absolute positioning
+    G0 X60 Y{max_y-10} F3600          ; park nozzle at rear
+  
+[gcode_macro LOAD_FILAMENT]
+gcode:
+   M83                            ; set extruder to relative
+   G1 E30 F300                    ; load
+   G1 E15 F150                    ; prime nozzle with filament
+   M82                            ; set extruder to absolute
+    
+[gcode_macro UNLOAD_FILAMENT]
+gcode:
+   M83                            ; set extruder to relative
+   G1 E10 F300                    ; extrude a little to soften tip
+   G1 E-40 F1800                  ; retract some, but not too much or it will jam
+   M82                            ; set extruder to absolute
+
+[gcode_macro _HOME_X]
+gcode:
+    # Always use consistent run_current on A/B steppers during sensorless homing
+    {% set RUN_CURRENT_X = printer.configfile.settings['tmc2209 stepper_x'].run_current|float %}
+    {% set RUN_CURRENT_Y = printer.configfile.settings['tmc2209 stepper_y'].run_current|float %}
+    {% set HOME_CURRENT_RATIO = 0.7 %} # by default we are dropping the motor current during homing. you can adjust this value if you are having trouble with skipping while homing
+    SET_TMC_CURRENT STEPPER=stepper_x CURRENT={HOME_CURRENT_RATIO * RUN_CURRENT_X}
+    SET_TMC_CURRENT STEPPER=stepper_y CURRENT={HOME_CURRENT_RATIO * RUN_CURRENT_Y}
+
+    # Home
+    G28 X
+    # Move away
+    G91
+    G1 X-10 F1200
+    
+    # Wait for StallGuard registers to clear
+    M400
+    G90
+    # Set current during print
+    SET_TMC_CURRENT STEPPER=stepper_x CURRENT={RUN_CURRENT_X}
+    SET_TMC_CURRENT STEPPER=stepper_y CURRENT={RUN_CURRENT_Y}
+
+[gcode_macro _HOME_Y]
+gcode:
+    # Set current for sensorless homing
+    {% set RUN_CURRENT_X = printer.configfile.settings['tmc2209 stepper_x'].run_current|float %}
+    {% set RUN_CURRENT_Y = printer.configfile.settings['tmc2209 stepper_y'].run_current|float %}
+    {% set HOME_CURRENT_RATIO = 0.7 %} # by default we are dropping the motor current during homing. you can adjust this value if you are having trouble with skipping while homing
+    SET_TMC_CURRENT STEPPER=stepper_x CURRENT={HOME_CURRENT_RATIO * RUN_CURRENT_X}
+    SET_TMC_CURRENT STEPPER=stepper_y CURRENT={HOME_CURRENT_RATIO * RUN_CURRENT_Y}
+
+    # Home
+    G28 Y
+    # Move away
+    G91
+    G1 Y-10 F1200
+
+    # Wait for StallGuard registers to clear
+    M400
+    G90
+    # Set current during print
+    SET_TMC_CURRENT STEPPER=stepper_x CURRENT={RUN_CURRENT_X}
+    SET_TMC_CURRENT STEPPER=stepper_y CURRENT={RUN_CURRENT_Y}
+
+
+
+[gcode_macro _HOME_Z]
+gcode:
+    G90
+    G28 Z
+    G1 Z30
+```

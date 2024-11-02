@@ -1,0 +1,66 @@
+---
+sidebar_position: 2
+sidebar_label: Firmware Compilation and Flashing
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# Firmware Compilation and Flashing
+
+    :::tip
+
+    * The E3 Pro defaults to using an SD card for firmware flashing.
+    * Please prepare an SD card with a capacity of no more than `32G`.
+    * Cheap memory cards may cause flashing failures, so it is recommended to use the memory cards listed below for firmware updates.
+    * The SD card's transfer speed should be at least `class10`, it is recommended to use brands like SanDisk.
+
+    :::
+
+
+
+## Preparations
+
+    <SSH />
+
+## Compiling Klipper Firmware
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Press `Q` key, then you will see **Save configuration**, press `Y` key at this time.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * You should now have saved the configuration and exited to the command line interface.
+    * Enter `make -j4` to start compiling, it will take some time.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * If the following output appears, the compilation is successful.
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * Below is an example of a successful compilation.
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## Flashing Firmware
+
+:::danger Notice
+* The F404ZG comes pre-flashed with BL firmware that can be flashed via SD card.
+:::
+
+    <TF />

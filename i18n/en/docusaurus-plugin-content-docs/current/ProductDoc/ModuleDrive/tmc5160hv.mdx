@@ -1,0 +1,92 @@
+---
+sidebar_position: 4
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160HV
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160hv.png').default} size="80%" align="center" />
+
+## Basic Parameters
+
+    * Input Voltage: 12V-48V
+    * Maximum Current: 4.4A
+    * Suitable for: Marlin/Klipper/RRF Firmware
+    * Drive Mode Support: TMC: SPI
+    * Stepper/Direction Interface with microPlyer Microstep Interpolation
+    * Maximum Resolution: 256 Microsteps
+    * Supports StealthChop2 Silent Operation and Smooth Motion
+    * Supports Resonance Suppression for Mid-Frequency Resonances
+    * Supports SpreadCycle High Dynamic Motor Control Chopper
+    * Supports dcStep Load-Dependent Speed Control
+    * Supports stallGuard2 High Precision Sensorless Motor Load Detection
+    * Supports coolStep Current Control, up to 75% Energy Saving
+
+## Mainboard Jumper Instructions
+
+    * TMC5160 uses SPI Jumper
+    * The SPI pin for FLY drive is the fourth pin counting down from the left. The CS pin is the SPI pin. If the motherboard does not have the corresponding pin position, SPI cannot be used.
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+
+## TMC5160 Reference Configuration
+
+    :::danger
+
+    * The sampling resistor for the driver is `sense_resistor: 0.075`. Please do not set it incorrectly.
+    * Only one of `spi_bus` and `spi_software` can be selected.
+    
+    :::
+
+### SPI Mode Reference Configuration
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Motor Running Current Value
+    interpolate: False                  # Whether to Enable 256 Microstep Interpolation (Enable is True, Disable is False)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Infinite Limit Usage Instructions
+
+    <DIAG />
+
+    :::tip Infinite Limit Usage Tip
+
+    * The original `endstop_pin:` needs to be masked or deleted, add `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * After configuring `diag1_pin:`, the limit status will be untriggered.
+    * Configure `driver_SGT:` and test a suitable value.
+
+    :::
+
+    * Reference Configuration
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Retract Distance, 0 may cause failed homing
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    # After configuration, ensure that the limit status is untriggered.
+    # This pin usually uses the "^" prefix to enable internal pull-up.
+    # Sensitivity is related to belt tension and needs to be adjusted.
+    # (Ensure that `driver_SGTHRS` is set to an appropriate sensitivity at the same time)
+
+    ```

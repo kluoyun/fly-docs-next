@@ -1,0 +1,65 @@
+---
+sidebar_position: 5
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+
+import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.2
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro.png').default} size="80%" align="center" />
+
+## Basic Parameters
+
+    * Input Voltage: 24-48V
+    * Maximum Current: 6A
+    * Suitable for: Marlin/Klipper/RRF firmware
+    * Drive Mode Support: TMC: SPI
+    * Stepper/direction interface with microPlyer for micro-stepping interpolation
+    * Highest resolution is 256 microsteps
+    * Supports stealthChop2 silent operation and smooth motion
+    * Resonance suppression for mid-frequency resonance
+    * Supports spreadCycle high dynamic motor control chopper
+    * Supports dcStep load-dependent speed control
+    * Supports stallGuard2 high-precision sensorless motor load detection
+    * Supports coolStep current control, up to 75% energy saving
+
+## Motherboard Jumper Instructions
+
+    * TMC5160 Pro uses SPI jumpers
+    * The SPI pin for FLY drive is the fourth pin counting down from the left, and the CS pin is the SPI pin. If the motherboard does not have the corresponding pin position, SPI cannot be used.
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+## 12V FAN Wiring
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.png').default} size="80%" align="center" />
+
+
+## TMC5160 Pro Reference Configuration
+
+    :::danger
+
+    * The sampling resistor for the driver is `sense_resistor: 0.033`, please do not set it incorrectly
+    * Only one of `spi_bus` and `spi_software` can be selected
+    
+    :::
+
+### SPI Mode Reference Configuration
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Motor operating current value
+    interpolate: False                  # Whether to enable 256 microstep interpolation (enable is True, disable is False)
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
