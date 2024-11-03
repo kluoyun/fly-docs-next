@@ -39,6 +39,7 @@ jobs:
       - name: Update baseUrl
         run: |
           sed -i "s|baseUrl: '/'|baseUrl: '/fly-docs-next/'|" docusaurus.config.js
+          sed -i "s|/js/pdfjs-dist@3.4.120/pdf.worker.min.js|/fly-docs-next/js/pdfjs-dist@3.4.120/pdf.worker.min.js|" src/components/PdfView/index.js
       - name: Install canvas dependencies
         run: |
           sudo apt-get update
@@ -60,7 +61,7 @@ jobs:
       - name: Revert baseUrl
         run: |
           sed -i "s|baseUrl: '/fly-docs-next/'|baseUrl: '/'|" docusaurus.config.js
-
+          sed -i "s|/fly-docs-next/js/pdfjs-dist@3.4.120/pdf.worker.min.js|/js/pdfjs-dist@3.4.120/pdf.worker.min.js|" src/components/PdfView/index.js
       - name: Check for index.html
         run: |
           if [ ! -f build/index.html ]; then
