@@ -63,6 +63,21 @@ const config = {
         ],
       },
     ],
+    () => ({
+      name: "custom-webpack-config",
+      configureWebpack: () => {
+        return {
+          module: {
+            rules: [
+              {
+                test: /\.node$/,
+                loader: 'node-loader',
+              },
+            ],
+          },
+        };
+      },
+    }),
   ],
   presets: [
     [
