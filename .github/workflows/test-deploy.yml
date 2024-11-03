@@ -11,6 +11,9 @@ jobs:
   test-deploy:
     name: Test deployment
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,16 +34,20 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-      - name: Install env
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: yarn
       - name: Install canvas dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
       - name: Test build website
-        run: yarn build
+        run: pnpm build
