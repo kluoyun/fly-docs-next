@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkklipper_docs=self.webpackChunkklipper_docs||[]).push([[71511],{71511:(e,c,p)=>{p.r(c),p.d(c,{DocSearchModal:()=>s.a1});var s=p(40903)}}]);
