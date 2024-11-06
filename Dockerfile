@@ -24,18 +24,18 @@ COPY ./ /fly-docs/
 WORKDIR /fly-docs
 
 ARG BUILD_LOCALE=all
+
 ### install PNPM
-RUN npm config set registry https://registry.npmmirror.com \
-    && npm install -g pnpm
+RUN npm install -g pnpm
 
 ### install dependencies
 RUN pnpm install
 
 ### build
 RUN if [ "$BUILD_LOCALE" = "all" ]; then \
-        pnpm build \
+        pnpm build ; \
     else \
-        pnpm build --locale "$BUILD_LOCALE" \
+        pnpm build --locale "$BUILD_LOCALE" ; \
     fi
 
 ### final image
