@@ -18,6 +18,9 @@ jobs:
   push_to_registries:
     name: Push Docker image to multiple registries
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
     permissions:
       contents: read
       packages: write
@@ -42,6 +45,27 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
+      - name: Install canvas dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: build website
+        run: pnpm build
+
+      - name: rm node_modules
+        run: rm -rf ./node_modules
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -75,3 +99,5 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_SKIP=true

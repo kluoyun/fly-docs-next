@@ -1,41 +1,45 @@
 ### build image
 FROM node:lts-bookworm-slim AS builder
-RUN apt-get update && apt-get install -y \
-    --no-install-recommends \
-    --no-install-suggests \
-    ### non-specific packages
-    git \
-    sudo \
-    ### node-canvas dependencies
-    build-essential \
-    libcairo2-dev \
-    libpango1.0-dev \
-    libjpeg-dev \
-    libgif-dev \
-    librsvg2-dev \
-    ### clean up
-    && apt-get -y autoremove \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+
+ARG BUILD_LOCALE=all
+ARG BUILD_SKIP=false
 
 ### copy files
 COPY ./ /fly-docs/
 
-WORKDIR /fly-docs
-
-ARG BUILD_LOCALE=all
-
-### install PNPM
-RUN npm install -g pnpm
-
-### install dependencies
-RUN pnpm install
-
-### build
-RUN if [ "$BUILD_LOCALE" = "all" ]; then \
-        pnpm build ; \
+RUN if [ "$BUILD_SKIP" = "true" ]; then \
+        rm -rf /fly-docs/node_modules ; \
+        rm -rf /fly-docs/docs ; \
+        rm -rf /fly-docs/i18n ; \
+        exit 0 ; \
     else \
-        pnpm build --locale "$BUILD_LOCALE" ; \
+        rm -rf /fly-docs/node_modules ; \
+        apt-get update && apt-get install -y \
+        --no-install-recommends \
+        --no-install-suggests \
+        ### non-specific packages
+        git \
+        sudo \
+        ### node-canvas dependencies
+        build-essential \
+        libcairo2-dev \
+        libpango1.0-dev \
+        libjpeg-dev \
+        libgif-dev \
+        librsvg2-dev \
+        ### clean up
+        && apt-get -y autoremove \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ; \
+        cd /fly-docs ; \
+        npm install -g pnpm ; \
+        pnpm install ; \
+        if [ "$BUILD_LOCALE" = "all" ]; then \
+            pnpm build ; \
+        else \
+            pnpm build --locale "$BUILD_LOCALE" ; \
+        fi ;\
+        exit 0 ; \
     fi
 
 ### final image
