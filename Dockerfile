@@ -49,7 +49,7 @@ RUN rm -rf /etc/nginx/conf.d/default.conf \
 COPY --from=builder /fly-docs/build/ /web/
 
 WORKDIR /web
-COPY ./scripts/nginx-web.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/config/nginx-web.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
