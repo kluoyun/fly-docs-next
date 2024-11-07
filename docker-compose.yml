@@ -1,0 +1,16 @@
+services:
+  mellow:
+    container_name: fly-docs
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_LOCALE: ${BUILD_LOCALE:-all}
+        BUILD_SKIP: ${BUILD_SKIP:-false}
+    ports:
+      - "9527:80"
+    networks:
+      - fly_net
+networks:
+  fly_net:
+    driver: bridge
