@@ -10,29 +10,26 @@ import ADXL from "/docs/DebugDoc/faq/kipper-adxl.mdx";
 
 ## 切换klipper
 
-    * 因为还没合并需要切换klipper才能使用
-
-    ```bash
-    sudo cp -r klipper klipperdev
-    sudo rm -rf ~/klipper
-    git clone https://github.com/FLYmaker/klipper.git
-    sudo systemctl restart klipper
-    ```
-
+    * Klipper在2024年11月13号支持LIS3DH加速计，如果需要使用LIS3DH加速计需要更新klipper
+    * 使用网络连接到上位机后输入下方代码（因网络问题可能更新失败）
+        ```bash
+        cd ~/klipper 
+        git pull
+        ```
+    
     * 参考配置
     ```cfg
     #####################################################################
     #                       LIS3DH加速度计配置（需要时启用即可）
     #####################################################################
-    [lis2dw]
-    is_lis3dh:True
+    [lis3dh]
     cs_pin: SHT36:gpio9
     spi_software_sclk_pin: SHT36:gpio10
     spi_software_mosi_pin: SHT36:gpio11
     spi_software_miso_pin: SHT36:gpio12
 
     [resonance_tester]
-    accel_chip: lis2dw
+    accel_chip: lis3dh
     probe_points:
         125, 125, 20  #此处设置为你进行共振测量时喷头所处坐标
 
