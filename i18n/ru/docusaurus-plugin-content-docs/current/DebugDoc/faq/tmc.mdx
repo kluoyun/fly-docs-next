@@ -1,0 +1,98 @@
+---
+sidebar_position: 3
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Связи с ошибками TMC
+
+## `Unable to read tmc uart ‘stepper_x’ register IFCNT` или `Unable to read tmc spi ‘stepper_x’ register register`
+
+    1. детали ошибки
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart.png').default} size="80%" align="center" />
+
+    2. причина ошибки
+
+        * не удалось соединиться с драйвером
+
+    3. основные методы решения
+
+        * проверьте правильность конфигурации UART-входов для соответствующего драйвера
+        * правильно собраны провода для УТГ
+        * есть ли питание драйверу
+        * замените драйвер или измените настройки порта управления
+        * если используется другой производитель драйвера, убедитесь в совместимости UART-входов с FLY. В FLYUART-входы расположены слева сверху по четвертому физическому выводу
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/2209uart.png').default} size="80%" align="center" />
+        * если UART-входы на драйвере расположены на пятом физическом выводе, воспользуйтесь следующими разъемами
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart1.png').default} size="80%" align="center" />
+
+## `TMC XXXX reports error: GSTAT: 00000001 reset=1(Reset)`
+
+    1. детали ошибки
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/reset.png').default} size="80%" align="center" />
+
+    2. причина ошибки
+
+        * драйвер сбросился
+
+
+    3. основные методы решения
+
+        * не ровное соединение проводов питания
+        * разрыв ленты двигателя
+        * можно установить связь между заземлением корпуса двигателя и заземлением платы контролера или сборки инструмента
+
+## `TMC 'extruder' reports error: DRV_STATUS: c00d0103 otpw=1(OvertempWarning!)`
+
+    1. детали ошибки
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/overtemperror.png').default} size="80%" align="center" />
+
+    2. причина ошибки
+
+        * драйвер нагрелся!
+        * это не ошибка температуры двигателя!
+
+    3. основные методы решения
+
+        * уменьшите ток в работе
+        * удалите запасной ток
+        * проверьте правильность настроек образцового резистора драйвера
+        * улучшите охлаждение драйвера, например, добавив вентилятор
+
+## `TMC ‘extruder’ reports error: DRV_STATUS: 601f1000 s2vsa=1(ShortToSupply_A!) csactual=31 ola=1(OpenLoad_A!) olb=1(OpenLoad_B!)`
+
+    1. детали ошибки
+    
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/ab.png').default} size="80%" align="center" />
+
+    2. причина ошибки
+
+        * неправильное подключение или проблема с двигателем
+
+
+    3. основные методы решения
+    
+        * проверьте совпадение сопротивления двух групп катушек шагового двигателя
+        * проверьте, не сломалась ли лента или замкнулся контакт в машине шагового двигателя или компоненте двигателя
+        * выключите тихий режим
+
+## `TMC 'extruder' reports error: DRV_STATUS: 00190060 s2vsb=1(ShortToSupply_B!) ola=1(OpenLoad_A!) cs_actual-25`
+
+    1. детали ошибки
+    
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/ab.png').default} size="80%" align="center" />
+
+    2. причина ошибки
+
+        * неправильное подключение или проблема с двигателем
+
+
+    3. основные методы решения
+    
+        * проверьте совпадение сопротивления двух групп катушек шагового двигателя
+        * проверьте двигатель и провода
+        * убедитесь, что лента расположена слева на одной стороне, а справа - на другой

@@ -1,0 +1,75 @@
+---
+sidebar_position: 6
+sidebar_label: Запись прошивки Katapult
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Прошивка Katapult
+
+## Описание прошивки Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * D5 использует USB-подключение
+
+    :::
+
+## Вход в режим записи
+
+    :::tip
+
+    Слева кнопка `BOOT`, справа кнопка `RESET`
+
+    :::
+
+    * Есть два способа войти в режим записи:
+    * Первый: при полностью отключенном питании платы, удерживая кнопку BOOT, подключите кабель с передачей данных к плате и устройству
+    * Второй: после подключения кабеля с передачей данных к плате и устройству, удерживая кнопку BOOT, нажмите кнопку RST, затем отпустите RST и в последнюю очередь BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/flash/img/boot.png').default} size="50%" align="center" />
+
+## Запись прошивки
+    <Tabs>
+        <TabItem value="win" label="Руководство по записи на Windows" default>
+            * Прошивка Katapult для DP5 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Нажмите для автоматической загрузки прошивки</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Руководство по записи с использованием хост-устройства">
+
+            <Katapult />
+
+            4. Запись прошивки
+
+            :::tip
+
+            Нужно записать только одну прошивку
+
+            :::
+
+            * Ниже приведена команда для записи прошивки:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_DP5.bin
+                ```
+
+            5. Если появляется сообщение ``File downloaded successfully``, запись прошла успешно
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения записи, необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+

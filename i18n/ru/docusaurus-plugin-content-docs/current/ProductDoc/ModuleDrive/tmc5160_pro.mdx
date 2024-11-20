@@ -1,0 +1,63 @@
+---
+sidebar_position: 5
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.2
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro.png').default} size="80%" align="center" />
+
+## Основные параметры
+
+    * Входное напряжение: 24-48 В
+    * Максимальный ток: 6 А
+    * Подходит для: прошивок Marlin/Klipper/RRF
+    * Поддержка режимов работы: TMC: SPI
+    * Интерфейс шага/направления с микрошаговой интерполяцией microPlyer
+    * Максимальное разрешение 256 микрошагов
+    * Поддержка stealthChop2 для бесшумной работы и плавного движения
+    * Поддержка подавления резонанса на средних частотах
+    * Поддержка spreadCycle для высокодинамичного управления двигателем
+    * Поддержка dcStep для управления скоростью в зависимости от нагрузки
+    * Поддержка stallGuard2 для высокоточного бесконтактного обнаружения нагрузки двигателя
+    * Поддержка coolStep для управления током, с возможностью экономии до 75%
+
+## Описание джамперов на материнской плате
+
+    * TMC5160 Pro использует SPI-джамперы
+    * Контакты SPI для FLY-драйвера находятся слева, считая вниз четвертым контактом, CS-контакт является SPI-контактом. Если на материнской плате нет соответствующих контактов, то SPI использовать нельзя
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+## Подключение 12В вентилятора
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.png').default} size="80%" align="center" />
+
+
+## Рекомендуемая конфигурация для TMC5160 Pro
+
+    :::danger
+
+    * Сопротивление выборки драйвера должно быть `sense_resistor: 0.033`, пожалуйста, не устанавливайте неправильно
+    * spi_bus и spi_software могут быть выбраны только один из двух вариантов
+    
+    :::
+
+### Пример конфигурации для режима SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Значение тока работы двигателя
+    interpolate: False                  # Включить ли интерполяцию на 256 микрошагов (True для включения, False для отключения)
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```

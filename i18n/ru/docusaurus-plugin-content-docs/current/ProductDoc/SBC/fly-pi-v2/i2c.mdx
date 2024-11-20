@@ -1,0 +1,61 @@
+---
+sidebar_position: 11
+sidebar_label: Использование I2C
+---
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+# Использование I2C
+
+    * Используйте интерфейс I2C на верхней панели 40PIN
+    * В данном руководстве используется датчик I2C FLY-PI V2LM75 и I2C2 в качестве примера!!!
+    * Обратите внимание, что если I2C1 уже занят другим устройством, он не может быть использован!!!
+    * Убедитесь, что подключение надежно и стабильно!!!
+
+## Открытие I2C через FLY Tools
+
+    * Найдите Overlays и выберите i2c2 и i2c0
+    * Обратите внимание, что если I2C1 уже занят другим устройством, он не может быть использован!!!
+    * Сохраните и перезагрузите
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c.png').default} size="80%" align="center" />
+
+
+## Подключение и поиск
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c2.png').default} size="80%" align="center" />
+
+    * После подключения к FLY через SSH введите следующую команду, чтобы вывести нижеуказанный контент
+    * Если используется `I2C0`, замените `2` на `0` в команде ниже
+
+    ```cfg
+    sudo i2cdetect -y -r 2
+    ```
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c1.png').default} size="80%" align="center" />
+
+    * Обратите внимание, что если все нормально, после нажатия Enter сразу появится вышеуказанный контент с адресом
+    * Обратите внимание, что адрес является случайным
+    * Обратите внимание, что если кабель не подключен правильно, подключен неправильно, конфигурация не включена или модуль поврежден, вывод будет некорректным
+    * Адрес необходимо перевести из шестнадцатеричного в десятичное и добавить его в конфигурацию в поле `i2c_address:`
+    * Можно использовать онлайн-конвертер систем счисления для перевода
+
+## Конфигурация
+
+    ```cfg
+    [mcu host]
+    serial: /tmp/klipper_host_mcu
+
+    [temperature_sensor my_sensor]
+    sensor_type: LM75
+    i2c_address:72
+    # #   Default is 72 (0x48). Normal range is 72-79 (0x48-0x4F) and the 3
+    # #   low bits of the address are configured via pins on the chip
+    # #   (usually with jumpers or hard wired).
+    i2c_mcu:host
+    i2c_bus:i2c.2
+    # i2c_software_scl
+
+    ```
+

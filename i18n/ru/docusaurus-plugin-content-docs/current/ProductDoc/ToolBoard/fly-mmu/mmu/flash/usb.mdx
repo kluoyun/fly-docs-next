@@ -1,0 +1,60 @@
+---
+sidebar_position: 5
+sidebar_label: Загрузка прошивки через USB
+---
+
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb1.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import Button from "@mui/material/Button";
+
+# Компиляция прошивки для USB
+
+    :::tip
+
+    * MMU изначально прошит фирменным CAN-соединенным Katapult
+    * Если вы используете загрузку прошивки через USB, необходимо прошить USB версию Katapult
+    * После прошивки повторная прошивка не требуется
+    * <Button variant="contained" disableElevation href="./bl">Загрузка прошивки Katapult</Button>
+
+    :::
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Выберите GPIO pins to set at micro-controller startup, введите: !PA15 Обратите внимание, что ! в верхнем регистре
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/usb.png').default} size="100%" align="center" />
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы вернетесь в командную строку
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * В конце вы увидите следующие строки, если компиляция прошла успешно
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Проверка режима загрузки прошивки
+
+
+    <LS />
+
+
+## Загрузка прошивки
+    
+    <Katapult />
+
+## Проверка запуска прошивки
+
+    * Если прошивка запустилась нормально, LED загорится
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />

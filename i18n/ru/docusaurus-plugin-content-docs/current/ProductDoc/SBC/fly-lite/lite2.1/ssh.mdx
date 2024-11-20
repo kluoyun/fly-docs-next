@@ -1,0 +1,97 @@
+---
+sidebar_position: 3
+sidebar_label: Подключение к SSH хост-компьютера
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+# Подключение к SSH хост-компьютера
+
+* Можно подключиться к устройству через последовательный порт или Wi-Fi
+* Заранее подготовьте **MobaXterm_Personal** или другой **SSH-терминал**
+* Убедитесь, что на SD-карте или M2WE записана **система для хост-компьютера**
+* **Если хост-компьютер не запускается, отключите все периферийные устройства, такие как драйверы, концевые выключатели, вентиляторы и т.д.!!!**
+* **Наконец, подключитесь к SSH через сеть для удобства компиляции прошивки!!!**
+* **Для компиляции прошивки ознакомьтесь с инструкцией по подключению хост-компьютера через Wi-Fi или сетевой кабель**
+
+<Tabs>
+    <TabItem value="serial" label="Подключение через последовательный порт" default>
+        ## Подключение к SSH хост-компьютера через последовательный порт
+
+        * Подключите хост-компьютер FLY к компьютеру с помощью кабеля USB Type-C
+        * Для других хост-компьютеров, пожалуйста, самостоятельно найдите способ подключения!!
+
+        <Tabs>
+            <TabItem value="pilite2" label="FLY-Pi Lite2.1" default>
+                * Порты FLY-Pi Lite2.1
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pilite2-port.png').default} size="40%" align="center" />
+            </TabItem>
+        </Tabs>
+
+        * Если плата правильно подключена к компьютеру, откройте диспетчер устройств, чтобы увидеть порт CH340
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.png').default} size="40%" align="center" />
+
+        * Откройте `MobaXterm` и настройте следующим образом, выберите порт, который вы видели в диспетчере устройств
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.png').default} size="40%" align="center" />
+
+        * Если всё настроено правильно, вы увидите экран загрузки
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.png').default} size="40%" align="center" />
+
+        * Подождите немного, когда появится этот экран, значит система загружена
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.png').default} size="40%" align="center" />
+
+        **Если прошло несколько минут, а экран не отображается, нажмите несколько раз клавишу Enter**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.png').default} size="40%" align="center" />
+
+        **После нажатия Enter появится следующее:**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.png').default} size="40%" align="center" />
+
+        * Чтобы узнать IP-адрес, введите в SSH: `ip a | grep inet` и нажмите Enter. В результатах найдите IP-адрес, который находится в одном сегменте с вашим роутером
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.png').default} size="40%" align="center" />
+
+    </TabItem>
+    <TabItem value="net" label="Подключение через сеть" default>
+        ## Подключение к SSH хост-компьютера через IP-адрес
+
+        * Войдите в **административную панель вашего роутера**
+        * Убедитесь, что система **правильно загружена**
+        * Убедитесь, что **вы знаете имя пользователя и пароль хост-компьютера**. По умолчанию в системе FLY имя пользователя **fly**, пароль **mellow**
+        * Если плата уже запущена и подключена к сети, вы можете подключиться к SSH с помощью IP-адреса
+        * Откройте MobaXterm и настройте следующим образом, введите IP-адрес, который вы видели ранее, или проверьте его в административной панели роутера
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+
+        **Обратите внимание: на шаге 4 введите имя пользователя хост-компьютера**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.png').default} size="40%" align="center" />
+
+        * При первом подключении появится это окно, нажмите `Accept`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.png').default} size="40%" align="center" />
+
+        * Откроется окно для ввода пароля, введите пароль хост-компьютера и нажмите Enter
+
+        **Обратите внимание: вводимый пароль не отображается, просто введите его и нажмите Enter**
+
+        В системе FLY по умолчанию имя пользователя: `fly`, пароль: `mellow`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.png').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.png').default} size="40%" align="center" />
+
+        * Успешный вход
+
+    </TabItem>
+</Tabs>
+
+----

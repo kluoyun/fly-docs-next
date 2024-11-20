@@ -1,0 +1,68 @@
+---
+sidebar_position: 6
+sidebar_label: BL прошивка, пожалуйста, игнорируйте
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL прошивка
+
+    :::tip
+
+    * Обратите внимание, что `bootloader` уже предустановлен на заводе, не нужно его перепрошивать
+
+    :::
+
+## Вход в режим прошивки
+
+
+    * Существует два способа входа в режим прошивки
+    * Первый способ: при полном отключении питания платы, долго удерживайте кнопку BOOT, затем подключите кабель передачи данных с одной стороны к плате, а с другой - к вашему устройству, подходит для WINDOWS
+    * Второй способ: после подключения кабеля передачи данных с одной стороны к плате, а с другой - к вашему устройству, долго удерживайте кнопку BOOT и введите команду, подходит для хост-компьютера
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.png').default} size="100%" align="center" />
+
+## Прошивка
+
+    <Tabs>
+        <TabItem value="win" label="Руководство по прошивке Windows" default>
+
+            * Прошивка bootloader для C8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">Нажмите для автоматической загрузки прошивки</Button>
+
+
+            * Переключите переключатели `3`, `4` вправо, подключите нижнюю плату к хост-компьютеру через встроенный USB
+            * Переключите переключатели `1`, `2` влево, иначе это повлияет на подключение нижней платы к хост-компьютеру
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.png').default} size="100%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Руководство по прошивке хост-компьютера">
+
+            * Переключите переключатели `1`, `2` вправо, подключите нижнюю плату к хост-компьютеру через встроенный USB
+            * Переключите переключатели `3`, `4` влево, иначе это повлияет на подключение нижней платы к хост-компьютеру
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.png').default} size="100%" align="center" />
+            * После переключения переключателей согласно этому методу, USB-порт внизу будет занят нижней платой, не подключайте другие устройства
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.png').default} size="50%" align="center" />
+
+            * Убедитесь, что хост-компьютер имеет доступ к Интернету
+
+
+                ```bash
+                sudo wget https://cdn.mellow.klipper.cn/BL/HIDBL.bin -O ~/HIDBL.bin && sudo fly-flash -d c8 -u -f ~/HIDBL.bin
+                ```
+            * Когда появится нижеуказанное сообщение, долго нажмите кнопку BOOT на нижней плате и нажмите Enter
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.png').default} size="80%" align="center" />
+
+            * Когда появится изображение ниже, это значит, что прошивка успешно завершена и можно отпустить кнопку BOOT
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.png').default} size="80%" align="center" />
+
+
+        </TabItem>
+    </Tabs>
+

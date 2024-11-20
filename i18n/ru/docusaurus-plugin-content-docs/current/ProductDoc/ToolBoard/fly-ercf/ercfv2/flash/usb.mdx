@@ -1,0 +1,59 @@
+---
+sidebar_position: 4
+sidebar_label: Запись прошивки USB
+---
+
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import Button from "@mui/material/Button";
+
+# Компиляция прошивки USB
+
+    :::tip
+
+    * ERCF поставляется с предустановленной прошивкой Katapult для подключения по CAN
+    * Для записи прошивки USB необходимо записать прошивку Katapult для USB
+    * После записи повторная запись не требуется
+    * <Button variant="contained" disableElevation href="./bl">Запись прошивки Katapult</Button>
+
+    :::
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Выберите GPIO pins to set at micro-controller startup, введите: gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/usb.png').default} size="100%" align="center" />
+    * Нажмите `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
+    * Введите `make -j4`, чтобы начать компиляцию, это займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Если в конце выводится следующее, значит компиляция прошла успешно
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Подтверждение режима записи
+
+    <LS />
+
+
+## Запись прошивки
+    
+    <Katapult />
+
+## Подтверждение запуска прошивки
+
+    * Если прошивка запускается нормально, LED загорится
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

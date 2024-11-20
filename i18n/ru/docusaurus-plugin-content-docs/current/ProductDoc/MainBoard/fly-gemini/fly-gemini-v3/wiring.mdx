@@ -1,0 +1,145 @@
+---
+sidebar_position: 7
+sidebar_label: Подключение материнской платы
+---
+
+
+import ImageView from '@site/src/components/ImageView';
+
+# Подключение материнской платы
+
+## Схема интерфейсов
+
+### Описание интерфейсов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Описание выводов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Подключение питания
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/power.png').default} size="40%" align="center" />
+
+----
+
+## Установка драйверов
+
+### Переключение режима драйвера
+
+* **Режим STEP/DIR.** В этом режиме настройка микрошагов осуществляется с помощью перемычек, а ток регулируется потенциометром. Наиболее распространёнными являются драйверы A4988, для использования которых необходимо свериться с таблицей конфигурации микрошагов от производителя и установить микрошаги с помощью перемычек.
+* **Режим UART.** Наиболее часто используются драйверы TMC2208, TMC2209, TMC2226 и т.д. Эти драйверы могут общаться с контроллером через асинхронный последовательный интерфейс UART, и их параметры (микрошаги, ток, режим тихой работы и т.д.) могут быть настроены через конфигурационный файл.
+* **Режим SPI.** Наиболее распространёнными являются драйверы TMC5160, TMC2230 и т.д. Эти драйверы общаются с контроллером через синхронный последовательный интерфейс SPI, и их параметры также могут быть настроены через конфигурационный файл.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Установка драйверов
+
+* Перед установкой драйверов необходимо провести соответствующие проверки, чтобы избежать повреждений драйверов или материнской платы.
+* **Драйверы FLY:** Если не используется функция бесконечного возвращения в ноль, установите переключатель в положение 1; если же требуется использовать эту функцию, установите переключатель в положение ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Внимание!!! При установке драйверного модуля обязательно убедитесь, что направление вставки правильное, то есть EN-контакт должен быть в левом верхнем углу, в противном случае драйвер и даже материнская плата могут быть повреждены!!! Не забудьте установить теплоотвод на драйвер!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## Подключение шаговых двигателей
+
+:::info
+* Независимо от того, какой производитель двухфазного шагового двигателя, он всегда будет иметь 4 провода. Цвет не имеет значения, будь то черный, белый, зеленый, желтый и т.д., важны только 4 провода. Поэтому мы должны разделить их на группы A и B.
+* Для двухфазных четырехпроводных шаговых двигателей не требуется знать, какая группа A, а какая B, главное - определить, что это одна группа, а затем в конфигурации изменить направление двигателя.
+:::
+
+* В 3D принтерах наиболее часто используются двухфазные четырехпроводные шаговые двигатели, принцип их работы изображен на схеме. Существует два способа определения последовательности проводов:
+    * Подключите любые два провода вместе, если при попытке прокрутить ось двигателя вы почувствуете значительное сопротивление, то эти два провода образуют группу. Если нет, попробуйте другие два провода.
+    * Используйте мультиметр в режиме проверки непрерывности цепи, если провода замкнуты, то они образуют группу; если нет, попробуйте другие два провода.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Подключение нагревательного элемента
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Подключение нагревательной платформы
+
+* **Альтернативный ток:** При подключении твердотельного реле, обратите внимание на правильность подключения входа и выхода.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **Постоянный ток:** При подключении нагревательной платформы к встроенному MOSFET, убедитесь, что мощность используется правильно, максимальный ток нагревательной платформы не должен превышать 10А. Если ток превышает 10А, рекомендуется использовать внешний модуль MOSFET, иначе это может привести к необратимым повреждениям материнской платы.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Подключение термистора для измерения температуры
+
+### Введение в типы термисторов
+
+* Способы подключения термистора показаны на следующем изображении. Тип термистора уточните у продавца.
+
+* Если вы покупаете у fly (как показано на изображении), настройте sensor_type как: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* Если это обычный NTC 100K (как показано на изображении), настройте sensor_type как: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Подключение термистора к материнской плате
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/ntc-4.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/ntc-5.png').default} size="40%" align="center" />
+
+
+----
+
+## Подключение вентилятора
+
+* **Подключение вентилятора**
+
+    :::tip
+
+    Выбор напряжения вентилятора. Используйте перемычки для короткого замыкания соответствующих контактов для выбора напряжения, как показано на изображении. Обратите внимание: все способы перемычек в желтой рамке одинаковы.
+    Внимание!!! Неправильный выбор напряжения вентилятора может повредить вентилятор или модуль MOSFET.
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/fan-voltage.png').default} size="30%" align="center" />
+
+    * Подключение вентилятора
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## Подключение концевых выключателей
+
+* Концевые выключатели бывают двух типов: нормально открытые (NO) и нормально закрытые (NC). В 3D принтерах рекомендуется использовать **нормально закрытые (NC)**, так как при обрыве линии концевого выключателя система быстро сообщит об ошибке, что поможет избежать ненужных столкновений и повреждений принтера.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----

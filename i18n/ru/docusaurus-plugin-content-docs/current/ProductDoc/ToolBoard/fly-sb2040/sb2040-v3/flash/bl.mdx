@@ -1,0 +1,86 @@
+---
+sidebar_position: 6
+sidebar_label: BL прошивка, игнорируйте
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Прошивка Katapult
+
+## Описание прошивки Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * SB2040_V3 поддерживает CAN и RS232
+    * Здесь предоставляются только прошивки CAN на скорости 500K и 1M
+    :::
+
+## Вход в режим прошивки
+
+    :::tip
+
+    Слева кнопка `RESET`, справа кнопка `BOOT`
+
+    :::
+
+    * Есть два способа войти в режим прошивки
+    * Первый: при полном отключении питания платы, удерживайте кнопку BOOT, затем подключите кабель данных к плате и устройству
+    * Второй: после подключения кабеля данных к плате и устройству, удерживайте кнопку BOOT, затем нажмите и отпустите кнопку RST, после чего отпустите кнопку BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## Прошивка прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по прошивке для Windows" default>
+
+            * Прошивка Katapult для SB2040 V3 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SB2040_V3.zip">Нажмите для автоматической загрузки прошивки</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по прошивке с помощью хост-машины">
+            
+            <Katapult />
+
+            4. Прошивка прошивки
+
+            :::tip
+
+            Нужно прошить только одну из прошивок
+
+            :::
+
+            * Ниже приведена команда для прошивки прошивки на скорости CAN 500K
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040V3_CANBOOT_CAN_500K.uf2
+                ```
+                       
+            * Ниже приведена команда для прошивки прошивки на скорости CAN 1M
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040V3_CANBOOT_CAN_1M.uf2
+                ```
+
+
+            5. Если появится следующий запрос, прошивка успешна
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Проверка запуска прошивки
+
+    * Если прошивка запускается нормально, светодиод начнет мигать
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.png').default} size="100%" align="center" />

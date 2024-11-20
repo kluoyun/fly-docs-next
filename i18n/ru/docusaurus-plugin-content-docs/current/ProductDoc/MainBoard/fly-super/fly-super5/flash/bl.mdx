@@ -1,0 +1,73 @@
+---
+sidebar_position: 6
+sidebar_label: BL прошивка, игнорировать
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL прошивка
+
+    :::tip
+
+    * Обратите внимание, что на заводе уже предустановлен `bootloader`, нет необходимости его перепрошивать
+
+    :::
+
+## Вход в режим прошивки
+
+    :::tip
+
+    Справа находится `BOOT перемычка`, слева - `RESET кнопка`
+
+    :::
+
+    * Существует два способа входа в режим прошивки
+    * Первый способ: при полном отключении питания материнской платы, удерживайте кнопку BOOT, затем подключите кабель с поддержкой передачи данных к материнской плате и вашему устройству
+    * Второй способ: после подключения кабеля с поддержкой передачи данных к материнской плате и вашему устройству, удерживайте кнопку BOOT, затем нажмите кнопку RST, после чего отпустите RST и затем BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/flash/img/boot.png').default} size="100%" align="center" />
+
+## Прошивка
+
+    <Tabs>
+        <TabItem value="win" label="Инструкция по прошивке для Windows" default>
+
+            * Прошивка bootloader для SUPER5 PRO <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">Нажмите для автоматической загрузки прошивки</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по прошивке с хоста">
+            
+            <Katapult />
+
+            4. Прошивка прошивки
+
+            :::tip
+
+            Требуется прошить только один из файлов прошивки
+
+            :::
+
+
+            * Ниже приведена команда для прошивки
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER5PRO.bin
+                ```
+
+            5. Появление надписи ``File downloaded successfully`` указывает на успешную прошивку
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

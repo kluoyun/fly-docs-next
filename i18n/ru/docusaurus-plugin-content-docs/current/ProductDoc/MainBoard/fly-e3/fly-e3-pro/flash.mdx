@@ -1,0 +1,64 @@
+---
+sidebar_position: 2
+sidebar_label: Компиляция и прошивка прошивки
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# Компиляция и прошивка прошивки
+
+    :::tip
+
+    * E3 Pro по умолчанию использует карту TF для прошивки
+    * Подготовьте карту TF объемом не более `32ГБ`
+    * Карта памяти неизвестного производителя может привести к сбоям при прошивке, по возможности используйте рекомендуемые карты памяти для обновления прошивки
+    * Скорость передачи данных TF карты должна быть `class10` или выше, рекомендуется использовать карты SanDisk и т.п.
+
+    :::
+
+
+
+## Подготовительная работа
+
+    <SSH />
+
+## Компиляция прошивки Klipper
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите клавишу `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Если в конце появится следующее сообщение, значит компиляция прошла успешно
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * На изображении ниже пример успешной компиляции
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## Прошивка прошивки
+
+:::danger Обратите внимание
+* F404ZG предварительно прошит для использования TF карты
+:::
+
+    <TF />

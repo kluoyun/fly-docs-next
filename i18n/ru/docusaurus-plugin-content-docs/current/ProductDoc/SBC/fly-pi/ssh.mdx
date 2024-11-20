@@ -1,0 +1,97 @@
+---
+sidebar_position: 3
+sidebar_label: Подключение к SSH верхнего уровня
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+# Подключение к SSH верхнего уровня
+
+* Можно подключиться к устройству через последовательный порт или Wi-Fi
+* Заранее подготовьте **MobaXterm_Personal** или другой **инструмент для SSH терминала**
+* Убедитесь, что на SD-карте или M2WE записана **система для верхнего уровня**
+* **Если верхний уровень не запускается, отключите все периферийные устройства, такие как драйверы, концевые выключатели, вентиляторы и т.д.!!!**
+* **В конце подключитесь к SSH через сеть для удобства компиляции прошивки!!!**
+* **Для компиляции прошивки смотрите руководство по подключению верхнего уровня через Wi-Fi или сетевой кабель**
+
+<Tabs>
+    <TabItem value="serial" label="Подключение через последовательный порт" default>
+        ## Использование последовательного порта для подключения к SSH верхнего уровня
+
+        * Используйте кабель USB Type-C для подключения верхнего уровня FLY к компьютеру
+        * Для других верхних уровней найдите способ подключения самостоятельно!!!
+
+        <Tabs>
+            <TabItem value="piv1" label="FLY-Pi(π)" default>
+                * Порты FLY-Pi
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pi-port.png').default} size="20%" align="center" />
+            </TabItem>
+        </Tabs>
+
+        * Если плата правильно подключена к компьютеру, в диспетчере устройств вы увидите порт CH340
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.png').default} size="40%" align="center" />
+
+        * Откройте `MobaXterm` и настройте как показано ниже, выберите порт, который вы видели в диспетчере устройств
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.png').default} size="40%" align="center" />
+
+        * Если все сделано правильно, вы увидите экран загрузки
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.png').default} size="40%" align="center" />
+
+        * Подождите немного, когда появится этот экран, значит система запущена
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.png').default} size="40%" align="center" />
+
+        **Если через несколько минут экран остается пустым, как на изображении ниже, нажмите несколько раз клавишу Enter**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.png').default} size="40%" align="center" />
+
+        **После нажатия Enter появится следующее**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.png').default} size="40%" align="center" />
+
+        * Если вам нужно узнать IP-адрес, введите в SSH: `ip a | grep inet` и нажмите Enter, найдите в ответе IP-адрес в той же подсети, что и ваш роутер
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.png').default} size="40%" align="center" />
+
+    </TabItem>
+    <TabItem value="net" label="Сетевое подключение" default>
+        ## Использование IP-адреса для подключения к SSH верхнего уровня
+
+        * Зайдите в **административную панель роутера**, к которому подключен верхний уровень
+        * Убедитесь, что система **успешно запущена**
+        * Убедитесь, что вы **знаете имя пользователя и пароль верхнего уровня**, по умолчанию для системы FLY имя пользователя **fly**, пароль **mellow**
+        * Если плата уже запущена и подключена к сети, вы можете подключиться к SSH по IP
+        * Откройте MobaXterm и настройте как показано ниже, введите IP-адрес, который вы нашли ранее или посмотрите в административной панели роутера
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+
+        **Внимание: Здесь на четвертом шаге введите имя пользователя верхнего уровня**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.png').default} size="40%" align="center" />
+
+        * При первом подключении появится это окно, нажмите `Accept`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.png').default} size="40%" align="center" />
+
+        * Появится запрос на ввод пароля, введите пароль верхнего уровня и нажмите Enter
+
+        **Внимание: Введенный пароль не будет виден, просто нажмите Enter после ввода**
+
+        По умолчанию для системы FLY, имя пользователя: `fly`, пароль: `mellow`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.png').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.png').default} size="40%" align="center" />
+
+        * Успешный вход
+
+    </TabItem>
+</Tabs>
+
+----

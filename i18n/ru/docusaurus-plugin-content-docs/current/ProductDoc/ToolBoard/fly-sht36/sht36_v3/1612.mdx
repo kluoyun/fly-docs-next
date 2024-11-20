@@ -1,0 +1,75 @@
+---
+sidebar_position: 7
+sidebar_label: Использование Eddy
+---
+
+import ImageView from '@site/src/components/ImageView';
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# Использование Eddy
+
+    :::info
+
+    * Обратите внимание, что для сканирования платформы рекомендуется использовать отдельный Z-ограничитель, не рекомендуется использовать сканирование платформы как Z-ограничитель
+    * При установке Eddy, его основание должно находиться на 1-2 мм выше сопла
+    * При калибровке частоты Eddy, катушка PCB должна быть удалена от нагревательной платформы на расстояние не менее 5 мм
+    * Пожалуйста, не тестируйте всю платформу при комнатной температуре и не включайте платформу во время тестирования
+
+    :::
+
+
+## Схема подключения
+
+    * Термистор направлен вниз
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.png').default} size="100%" align="left" />
+
+
+## Пример настройки и руководство по использованию
+
+    ### Конфигурация сканирования платформы
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 43
+        i2c_mcu: SHT36
+        i2c_bus: i2c1e
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+        * Обратите внимание, что в настоящее время внешний модуль 1612 не выпускается, поэтому данная конфигурация временно не может быть использована
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 42
+        i2c_mcu: SHT36
+        i2c_bus: i2c1e
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### Конфигурация температурной компенсации
+
+        ```cfg
+        [temperature_probe fly_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SHT36:gpio28
+        ```
+
+### Конфигурация bed_mesh
+
+    * В параметре `horizontal_move_z` в [bed_mesh], рекомендуется установить значение 2, чтобы Eddy был как можно ближе к платформе во время сканирования
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+
+    <LDC1612 />

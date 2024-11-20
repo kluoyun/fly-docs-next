@@ -1,0 +1,90 @@
+---
+sidebar_position: 4
+sidebar_label: Подключение материнской платы
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Подключение материнской платы
+
+## Схема интерфейсов
+
+### Описание интерфейсов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Описание пинов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Подключение питания
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/power.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fuse.png').default} size="40%" align="center" />
+
+----
+
+## Установка драйверов
+
+### Переключатели на материнской плате
+
+* **Режим STEP/DIR.** В этом режиме используются джамперы для установки микрошага, а ток регулируется потенциометром. Чаще всего используются драйверы A4988, для их настройки нужно использовать таблицу конфигурации микрошага от производителя.
+* **Режим UART.** Обычно используется для драйверов TMC2208, TMC2209, TMC2226 и т.д. Эти драйверы могут общаться с контроллером через асинхронный последовательный интерфейс UART, позволяя настраивать микрошаги, ток и тихий режим через конфигурационный файл.
+* **Режим SPI.** Чаще всего используется для драйверов TMC5160, TMC2230 и т.д. Эти драйверы общаются с контроллером через синхронный последовательный интерфейс SPI, также позволяя настраивать микрошаги, ток и тихий режим через конфигурационный файл.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Установка драйверов
+
+* Перед установкой драйвера нужно провести необходимые проверки, чтобы избежать повреждения драйвера или материнской платы.
+* **FLY драйверы:** Если не используется функция бесконечного возврата в исходное положение, установите переключатель на позиции 1; в противном случае, если вы хотите использовать эту функцию, установите переключатель на положение ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Внимание!!! Убедитесь, что при установке модуля драйвера направление вставки правильное, то есть вывод EN находится в левом верхнем углу, иначе драйвер и даже материнская плата могут быть повреждены!!! Обязательно прикрепите радиатор к драйверу!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## Подключение шаговых двигателей
+
+* В 3D-принтерах чаще всего используются двухфазные четырехпроводные шаговые двигатели, принцип работы которых показан на схеме. Существует два метода определения последовательности проводов двигателя:
+    1. Короткое замыкание любых двух проводов двигателя, если вращение вала затруднено, то это одна пара обмоток, то есть A+ и B+ или A- и B-. Если вращение легкое, значит это разные пары обмоток.
+    2. Используйте мультиметр в режиме зуммера, чтобы проверить, звонит ли он между любыми двумя проводами, если да, то это одна пара обмоток.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Подключение нагревательного элемента
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Подключение нагревательной платформы
+
+* **AC Hotbed:** При подключении твердотельного реле обратите внимание на правильное подключение входа и выхода.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **DC Hotbed:** При подключении нагревательной платформы к встроенному MOSFET, убедитесь, что используете правильную мощность, максимальный ток не должен превышать 10A. Если превышает, рекомендуется использовать внешний модуль MOSFET, иначе возможно повреждение материнской платы.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
