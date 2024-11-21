@@ -1,0 +1,82 @@
+---
+sidebar_position: 1
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 2209
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209.png').default} size="80%" align="center" />
+
+## Основные параметры
+
+    * Входное напряжение: 12В-24В
+    * Подходит для: прошивок Marlin/Klipper/RRF
+    * Электродвигатель не легко теряет шаги
+    * Поддержка тихого режима
+    * Большая площадь теплоотвода вентилятора, снижает температуру работы драйвера
+    * Поддержка режимов управления: TMC: UART
+    * Поддержка обнаружения блокировки двигателя
+
+## Объяснение джамперов на материнской плате
+
+    * TMC2209 использует джампер UART
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+    * UART-пин драйвера FLY находится на четвёртом пине снизу слева, PDN-пин - это UART-пин. Если пины на материнской плате не соответствуют, UART использовать нельзя
+    * Если другие драйверы используют пятый пин, на нашей материнской плате можно использовать этот метод для решения проблемы <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">Метод решения проблемы с UART</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/uart1.png').default} size="80%" align="center" />
+
+## Ссылка на конфигурацию TMC2209
+
+    :::danger
+
+    Сопротивление сэмплирования драйвера 0.110, пожалуйста, не устанавливайте неверное значение
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0.8                    # Значение тока работы двигателя (ед. изм.: мА)
+    sense_resistor: 0.110               # Не изменяйте сопротивление сэмплирования драйвера
+    stealthchop_threshold: 0
+    ```
+
+## Инструкция по использованию безграничного положения
+
+    <DIAG />
+
+    :::tip Советы по использованию безграничного положения
+
+    * Необходимо закомментировать или удалить оригинальный `endstop_pin:`, добавить `endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * После настройки `diag_pin:` состояние концевого выключателя будет неактивным
+    * Необходимо самостоятельно протестировать подходящее значение для `driver_SGTHRS:`
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209diag.png').default} size="80%" align="center" />
+
+    * Пример конфигурации
+
+    :::tip
+
+    * На задней стороне FLY 2209 есть переключатель, его нужно перевести в другую сторону
+    * Для FLY 2209C прямое подключение DIAG драйвера не требует этой процедуры
+
+    :::
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Если установить возврат не в 0, это может привести к сбою при возвращении в домашнее положение
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```

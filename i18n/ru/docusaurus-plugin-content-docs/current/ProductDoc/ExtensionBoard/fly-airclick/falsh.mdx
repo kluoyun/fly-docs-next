@@ -1,0 +1,50 @@
+---
+sidebar_position: 2
+sidebar_label: Обновление прошивки
+---
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+
+# Обновление прошивки и запись
+
+    :::danger Важно
+
+    * Из завода уже предустановлена прошивка
+
+    :::
+
+## Загрузка прошивки
+
+    * Описание прошивки
+    * `wbtn-vX.X.X-X-XXXXXX-full.bin` - полная прошивка, необходима запись с адреса 0x0, после записи все настройки будут удалены
+    * `wbtn-vX.X.X-X-XXXXXX-delta.bin` - инкрементная прошивка, необходима запись с адреса 0x10000, обновляет только прошивку, не влияет на исходные настройки
+    * `wbtn-vX.X.X-X-XXXXXX-www.bin` - прошивка UI, необходима запись с адреса 0x290000, обновляет только веб-интерфейс, не влияет на исходную прошивку и настройки
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/airclick.zip">Скачать пакет прошивки</Button>
+
+## Обновление прошивки
+    * Необходимо отключить питание `AirClick`, подключить ESP32 к компьютеру через порт BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/host.png').default} size="80%" align="Center" />
+
+    1. Скачать и распаковать инструмент для записи USB <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/Utils/flash_download_tool_3.9.4.zip">Скачать</Button>
+    2. Запустить `flash_download_tool_3.9.4.exe`, обратите внимание: после запуска инструмента сначала откроется окно CMD, затем появится интерфейс инструмента, не закрывайте окно CMD
+    3. В инструменте выберите ``ChipType:`` - ``ESP32-C3``
+    4. В инструменте выберите ``WorkMode:`` - ``Develop``
+    5. В инструменте выберите ``LoadMode:`` - ``USB``
+    6. Наконец, нажмите ``OK``, можно ориентироваться на следующую картинку
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/flash.png').default} size="50%" align="Center" />
+    7. После нажатия появится изображение ниже
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/flash-1.png').default} size="50%" align="Center" />
+
+    :::tip
+
+    * Области, выделенные зеленым на изображении выше, должны соответствовать картинке, изменения не допускаются
+
+    :::
+
+    8. Подключите AirClick к компьютеру через кабель USB-Typec
+    9. Нажмите на кнопку в синей области 1 на изображении выше для выбора прошивки
+    10. Нажмите на кнопку в синей области 2 на изображении выше для ввода адреса записи
+    11. Нажмите на кнопку в синей области 3 на изображении выше для выбора порта AirClick (если его нет, удерживайте кнопку записи AirClick, затем подключите к компьютеру)
+    12. Нажмите на кнопку в синей области 4 на изображении выше и выберите максимальную скорость `921600`
+    13. Нажмите на кнопку в синей области 5 на изображении выше для начала записи, дождитесь завершения записи, после чего AirClick будет обновлен (не отключайте кабель данных AirClick до завершения записи)
+

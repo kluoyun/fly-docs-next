@@ -1,0 +1,192 @@
+---
+sidebar_position: 4
+sidebar_label: Подключение материнской платы
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Подключение материнской платы
+
+## Схема интерфейсов
+
+### Описание интерфейсов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Описание контактов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Подключение питания
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/power.png').default} size="40%" align="center" />
+----
+
+## Установка драйверов
+
+### Перемычки драйверов на материнской плате
+
+* **Режим STEP/DIR.** В этом режиме микрошаги настраиваются с помощью перемычек, а ток регулируется потенциометром. Наиболее распространённым является драйвер A4988, для его использования необходимо свериться с таблицей микрошагов производителя и установить перемычки.
+* **Режим UART.** Наиболее распространённые драйверы, использующие этот режим: TMC2208, TMC2209, TMC2226 и т.д. Эти чипы могут общаться с контроллером через асинхронный последовательный интерфейс UART, что позволяет настраивать микрошаги, ток работы, тихий режим и т.д. через конфигурационный файл.
+* **Режим SPI.** Наиболее распространённые драйверы, использующие этот режим: TMC5160, TMC2230 и т.д. Эти чипы общаются с контроллером через синхронный последовательный интерфейс SPI, что также позволяет настраивать микрошаги, ток работы, тихий режим и т.д. через конфигурационный файл.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Установка драйверов
+
+* Перед установкой драйверов необходимо провести соответствующую проверку, чтобы избежать повреждения драйверов или материнской платы.
+* **Драйверы FLY:** Если не используется функция бесконечного позиционирования, переведите переключатель в положение 1; наоборот, если хотите использовать эту функцию, переведите переключатель в положение ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Внимание!!! При установке драйверов обязательно убедитесь, что направление вставки правильное, то есть пин EN находится в левом верхнем углу, иначе могут повредиться драйверы и даже материнская плата!!! Не забудьте установить на драйверы радиаторы!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## Подключение шаговых двигателей
+
+:::info
+* Независимо от производителя двухфазных шаговых двигателей, они все имеют четыре провода. Не важно, какие цвета - черный, белый, зеленый, желтый и т.д., всегда есть четыре провода. Поэтому нам нужно сгруппировать провода на две группы: A и B.
+* Для двухфазных четырехпроводных шаговых двигателей нам не нужно знать, какая группа A, а какая B, главное - определить, что это одна группа, и в конфигурации изменить направление двигателя.
+:::
+
+* В 3D-принтерах наиболее часто используются двухфазные четырехпроводные шаговые двигатели, их принцип работы изображен на схеме. Существует два способа определения последовательности проводов шагового двигателя:
+    * Соедините любые два провода фазы, поверните вал двигателя вручную, если почувствуете явное сопротивление, значит, эти два провода являются одной группой. Если нет, проверьте другие провода.
+    * Используйте мультиметр, установив его на режим проверки проводимости, проверьте любые два провода фазы, если они соединены, то это одна группа; если нет, проверьте другие провода.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Подключение нагревателей
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Подключение термостата
+
+* **Альтернативный ток термостата:** При подключении твердотельного реле обратите внимание, чтобы вход и выход не перепутались.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **Постоянный ток термостата:** При подключении нагревателя к встроенному MOSFET обратите внимание на потребляемую мощность, максимальный ток не должен превышать 10A. Если превышает, рекомендуется использовать внешний модуль MOSFET для нагревателя, иначе может быть необратимо повреждена материнская плата.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Подключение термометра
+
+### Введение в типы термометров
+
+* Способы подключения термометра показаны на следующих изображениях. Уточните тип терморезистора у продавца.
+
+* Если вы покупаете у fly (как показано на изображении), установите параметр sensor_type на: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* Если это обычный NTC 100K (как показано на изображении), установите параметр sensor_type на: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Подключение термометра к материнской плате
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-4.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-5.png').default} size="40%" align="center" />
+
+
+
+----
+
+## Подключение вентиляторов
+
+* **Подключение вентиляторов**
+
+    :::tip
+
+    * Не забудьте установить MOSFET
+
+    :::
+
+    * Подключение вентиляторов
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## Подключение концевиков
+
+* Концевики могут быть нормально открытыми (NO) и нормально закрытыми (NC). Обычно в 3D-принтерах рекомендуется использовать **нормально закрытые (NC)** концевики, так как в случае проблемы с проводкой системы выдаст ошибку, что поможет избежать ненужных столкновений и повреждений принтера.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## Подключение датчиков выравнивания
+
+
+
+### Подключение BL-Touch
+
+* BL-touch имеет пять проводов, три из которых образуют первую группу, отвечающую за питание датчика и управление зондом, вторая группа - это земля и сигнальный провод, выводящий сигнал концевика. При подключении BL-touch внимательно проверьте последовательность проводов, неправильное подключение может привести к постоянному повреждению датчика и материнской платы!!! Способы подключения показаны на следующих изображениях.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Подключение Klicky
+
+* Klicky - это сторонний датчик выравнивания, который можно изготовить самостоятельно с минимальными затратами, обеспечивая при этом стабильную работу и высокую ценность. Рекомендуется к использованию. Способы подключения показаны на следующих изображениях.
+* Адрес проекта: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Адрес проекта, щелкните, чтобы перейти")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Подключение Voron Tap
+
+* Tap - это z-зонд, основанный на сопле, подходящий для дизайнов принтеров V2 и Trident. Весь инструментальный блок перемещается для активации светового переключателя, что обеспечивает большую точность, чем обычные концевики, и может использоваться с большинством печатных платформ.
+
+    :::warning
+
+    Voron Tap не рекомендуется подключать к **24В**, так как некоторые версии при использовании **24В** могут привести к повреждению датчика Tap, что не является проблемой продукции Fly, а является конструктивной особенностью Voron Tap, пожалуйста, имейте это в виду!!!
+
+    :::
+
+    :::danger
+
+    Внимание: 5В и GND нельзя перепутать, иначе будет поврежден датчик Tap и даже материнская плата!!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+
+
+## Подключение к верхнему компьютеру
+
+* Материнская плата подключается к USB-порту верхнего компьютера через интерфейс Type-B, также можно подключить через последовательный порт. Здесь описывается только первый способ.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----

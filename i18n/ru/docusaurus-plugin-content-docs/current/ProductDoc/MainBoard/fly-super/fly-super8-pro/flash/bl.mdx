@@ -1,0 +1,67 @@
+---
+sidebar_position: 6
+sidebar_label: BL прошивка, пожалуйста, игнорируйте
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL прошивка
+
+    :::tip
+
+    * Обратите внимание, что заводская установка `bootloader` уже выполнена, не нужно его перепрошивать.
+
+    :::
+## Вход в режим прошивки
+
+
+    * Существует два способа входа в режим прошивки
+    * Первый: полностью отключите питание платы, коротко замкните BOOT и подключите кабель с передачей данных к плате и вашему устройству
+    * Второй: подключите кабель с передачей данных к плате и вашему устройству, коротко замкните BOOT, затем нажмите кнопку RST, отпустите RST и разомкните BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.png').default} size="100%" align="center" />
+
+## Прошивка прошивки
+    <Tabs>
+        <TabItem value="win" label="Руководство по прошивке для Windows" default>
+
+            * Прошивка bootloader для SUPER8 PRO <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">Нажмите для автоматической загрузки прошивки</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Руководство по прошивке с использованием хоста">
+            
+            <Katapult />
+
+            4. Прошивка прошивки
+
+            :::tip
+
+            Требуется прошить только одну прошивку.
+
+            :::
+
+
+            * Ниже приведены команды для прошивки:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER8PRO.bin
+                ```
+
+            5. Если появится сообщение ``File downloaded successfully``, как указано на рисунке ниже, прошивка прошла успешно
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

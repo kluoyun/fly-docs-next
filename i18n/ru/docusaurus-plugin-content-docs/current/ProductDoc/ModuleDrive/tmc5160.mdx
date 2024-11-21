@@ -1,0 +1,91 @@
+---
+sidebar_position: 3
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160.png').default} size="80%" align="center" />
+
+## Основные параметры
+
+    * Входное напряжение: 12В-24В
+    * Максимальный ток: 4.4А
+    * Совместимость: Marlin/Klipper/RRF прошивки
+    * Поддерживаемые режимы работы: TMC：SPI
+    * Интерфейс шаг/направление с интерполяцией микрошагов microPlyer
+    * Максимальное разрешение - 256 микрошагов
+    * Поддержка бесшумной работы и плавных движений stealthChop2
+    * Поддержка подавления резонанса средних частот
+    * Поддержка spreadCycle высокодинамичного управления двигателем
+    * Поддержка dcStep управления скоростью в зависимости от нагрузки
+    * Поддержка stallGuard2 высокоточного бесконтактного обнаружения нагрузки двигателя
+    * Поддержка coolStep управления током с экономией до 75%
+
+## Описание джамперов на плате
+
+    * TMC5160 использует SPI-джамперы
+    * SPI-пин для FLY драйвера находится слева, четвертый сверху вниз, CS-пин совпадает с SPI-пином. Если пины на плате не соответствуют, SPI не будет работать
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+
+## Пример конфигурации TMC5160
+
+    :::danger
+
+    * Сопротивление датчика тока установлено на `sense_resistor: 0.075`, пожалуйста, не устанавливайте неправильное значение
+    * Выбор между spi_bus и spi_software
+    
+    :::
+
+### Пример конфигурации в режиме SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Значение тока для работы двигателя
+    interpolate: False                  # Включить интерполяцию на 256 микрошагов (True для включения, False для выключения)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Использование безконечного стопа
+
+    <DIAG />
+
+    :::tip Советы по использованию безконечного стопа
+
+    * Для использования этой функции необходимо самостоятельно припаять DIAG пин
+    * Старый `endstop_pin:` нужно закомментировать или удалить, добавить `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * После настройки `diag1_pin:` убедитесь, что статус конечного стопа не активирован
+    * Значение `driver_SGT: :` необходимо определить экспериментально
+
+    :::
+
+    * Пример конфигурации
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Нулевое значение может привести к неудаче при возврате домой
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   Убедитесь, что статус конечного стопа не активирован
+    #   Этот пин обычно использует префикс "^" для включения внутреннего подтягивающего резистора
+    #   Чувствительность зависит от натяжения ремня, требуется настройка
+    #  (Убедитесь, что установлено driver_SGTHRS на подходящую чувствительность)
+
+    ```

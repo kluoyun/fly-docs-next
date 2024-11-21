@@ -1,0 +1,63 @@
+---
+sidebar_position: 4
+sidebar_label: Компиляция прошивки RS232
+---
+
+import USBFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+# Компиляция прошивки RS232
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Выберите GPIO pins to set at micro-controller startup, введите: gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/can.png').default} size="100%" align="center" />
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите клавишу `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться к командной строке
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Если в конце выводится следующее сообщение, компиляция успешно завершена
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
+
+
+## Вход в режим прошивки
+
+    :::tip
+
+    Кругом обозначена кнопка `BOOT`
+
+    :::
+
+    * Для входа в режим DFU необходимо полностью отключить питание платы, затем нажать и удерживать кнопку BOOT, и подключить кабель данных к плате и компьютеру
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Подтверждение входа в режим прошивки
+
+    <LS />
+
+
+## Прошивка 
+
+    <USBFLASH />
+    
+
+
+## Проверка запуска прошивки
+
+    * Если прошивка запущена успешно, светодиод загорится
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

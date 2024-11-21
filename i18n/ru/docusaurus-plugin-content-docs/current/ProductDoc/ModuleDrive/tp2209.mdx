@@ -1,0 +1,78 @@
+---
+sidebar_position: 8
+---
+
+import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 2209
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp2209.png').default} size="60%" align="center" />
+
+
+## Основные параметры
+
+    * Входное напряжение: 12В-24В
+    * Подходит для: прошивки Marlin/Klipper/RRF
+    * Мотор редко пропускает шаги
+    * Поддержка тихого режима
+    * Большая площадь вентилятора и термопрокладки, снижает рабочую температуру привода
+    * Поддержка режимов привода: TMC: UART
+    * Поддержка обнаружения заклинивания мотора
+
+
+## Прыжки на материнской плате FLY
+
+    :::tip
+
+    * TP2209 использует режим UART
+    * TP2209 не требует прыжковых колпачков привода, нужно только настроить
+    
+    :::
+
+
+## Пример конфигурации TP2209
+
+    :::danger
+
+    Сопротивление выборки привода - 0.110, пожалуйста, не устанавливайте неверно
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0.8                    # Значение тока работы мотора (в мА)
+    sense_resistor: 0.110               # Не изменяйте сопротивление выборки привода
+    stealthchop_threshold: 0
+    ```
+
+
+
+## Инструкция по использованию бесконечного концевого выключателя
+
+    <DIAG />
+
+    :::tip Подсказки по использованию бесконечного концевого выключателя
+
+    * Старый `endstop_pin:` нужно закомментировать или удалить, добавить `endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * После настройки `diag_pin:` состояние концевого выключателя будет неактивным
+    * Настройка `driver_SGTHRS:` требует тестирования подходящего значения
+
+    :::
+
+
+    * Пример конфигурации
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Настройка на 0 может привести к ошибке возвращения домой
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```

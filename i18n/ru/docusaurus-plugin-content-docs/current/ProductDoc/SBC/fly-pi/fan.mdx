@@ -1,0 +1,35 @@
+---
+sidebar_position: 8
+sidebar_label: Встроенный разъём вентилятора 5В
+---
+import ImageView from '@site/src/components/ImageView';
+
+# Встроенный разъём вентилятора 5В
+
+## На плате Pi имеется контролируемый интерфейс на 5В для охлаждения основного контроллера, способ подключения показан на следующем рисунке
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/corefan.png').default} size="80%" align="center" />
+
+## Рекомендуемая конфигурация
+
+    ```cfg
+    [mcu host]                      # FlyOS уже создал для вас MCU Linux, просто определите и используйте           
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor FLY-π]      # Температура верхнего уровня
+    sensor_type: temperature_host
+
+
+    [temperature_fan core_fan]      # Вентилятор охлаждения верхнего уровня
+    pin: host:gpiochip1/gpio103     # Пин вентилятора верхнего уровня
+    max_power: 1.0
+    sensor_type: temperature_host   # Установлено как температура основного контроллера верхнего уровня
+    control:watermark               # Способ управления
+    target_temp: 48                 # Температура запуска вентилятора верхнего уровня
+    min_temp: 0                     # Минимальная температура, ниже которой будет выдаваться ошибка
+    max_temp: 90                    # Максимальная температура, выше которой будет выдаваться ошибка
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                  # Максимальная скорость, 80% от полной мощности
+    min_speed: 0.3                  # Минимальная скорость, 30% от полной мощности
+    ```

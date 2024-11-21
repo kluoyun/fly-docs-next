@@ -1,0 +1,36 @@
+---
+sidebar_position: 4
+sidebar_label: Компиляция прошивки
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+# Демонстрация функций
+
+    <ImageView image={require('@site/docs/ToolsDoc/fly-tools/img/home.gif').default} size="100%" align="left" />
+
+    * Поддержка копирования ID устройства одним нажатием, автоматическое распознавание ID и добавление соответствующих конфигураций **serial:**, **canbus_uuid:**, **device:**
+    * Поддержка изменения скорости CAN и буфера CAN, что позволяет игрокам настраивать CAN по своему усмотрению
+    * Поддержка поиска устройств камеры, избегая хлопот с поиском камер
+
+    :::tip Подсказка
+
+    * Обратите внимание, что FLY-Tools не создает автоматически конфигурацию CAN, вам нужно самостоятельно создать конфигурацию CAN для использования изменения скорости и буфера CAN
+
+    :::
+
+
+    * Пожалуйста, предоставьте SSH для использования сетевого подключения к вашему пользователю и выполните следующую команду
+    * Ubuntu временно не поддерживает эту функцию
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 1000000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 1000000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```

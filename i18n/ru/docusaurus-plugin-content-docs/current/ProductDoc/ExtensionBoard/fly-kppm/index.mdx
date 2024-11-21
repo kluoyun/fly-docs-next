@@ -1,0 +1,157 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+
+# Введение в продукт
+
+  Модуль установки и отключения FLY-KPPM разработан специально для плат разработки, таких как Raspberry Pi, с целью предотвращения потери данных при отключении электричества. Используя передовые технологии, модуль автоматически переключается на питание от конденсатора при отключении электроэнергии, что позволяет плате стабильно работать ещё 15 секунд, обеспечивая сохранение данных. Компактный и удобный в установке.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.png').default} size="100%" align="left" />
+
+
+## Внимание к продукту
+
+  :::danger Обратите внимание
+  Питание должно быть DC12-24V, при подключении обратите внимание на полярность, подключение должно производиться в отключенном состоянии, убедитесь в правильности подключения перед подачей питания; компания не несет ответственности за ущерб, вызванный неправильным подключением.
+  :::
+
+  :::danger Обратите внимание
+  На разъеме 5V OUT +5V предназначен для аварийного питания, не используйте его для обычного питания, используйте USB-OUT или SIG/IO для питания верхнего уровня.
+  :::
+
+  :::danger Обратите внимание
+  При использовании вместе с модулем безопасного отключения необходимо использовать источник питания 12V-24V, чтобы обеспечить нормальную работу модуля, выходное напряжение 5V на плате безопасного отключения не должно быть ниже 4.9V, иначе модуль безопасного отключения будет питаться от внутреннего повышения напряжения, конденсаторы будут постоянно заряжаться, что приведет к постоянному нагреву модуля
+  :::
+
+
+## Объяснение содержимого экрана продукта
+
+
+    | Пояснение содержимого экрана |       Пояснение слева       |     Параметры справа      |        Пояснение справа     |
+    | :------------------------ | :------------------------: | :----------------------: | :------------------------: |
+    | `IN:`                       |  Напряжение на входе         |  `OUT:`                   |  Напряжение на выходе        |
+    | `CA:`                       |  Общее напряжение конденсатора |  `OI:`                    |  Ток нагрузки на выходе      |
+    | `C1:`                       |  Напряжение на конденсаторе C1 |  ` C2:`                    |  Напряжение на конденсаторе C2 | 
+    | `Temp:`                     |  Температура модуля безопасного отключения | ` E:`        |  Индикатор состояния, см. ниже   | 
+
+
+    | Содержимое отображения      |       Пояснение состояния   |
+    | :------------------------ | :------------------------: | 
+    | ` Ready!`                    |  Нормальный запуск           |
+    | ` IN LOW!`                   |  Низкое входное напряжение   |
+    | ` IN OVR!`                   |  Превышен ток на выходе      |
+    | ` OV LOE!`                   |  Низкое выходное напряжение  |
+    | ` OV OVR`                    |  Превышен ток на выходе      |
+    | ` TP OVR!`                   |  Высокая температура         |
+    | ` NONE `                     |  Неизвестная ошибка          |
+    | ` R: XX Sec `                |  Если в течение 10 секунд произошло отключение питания и затем включение, отобразится это сообщение, после окончания обратного отсчета будет перезагружена верхняя машина           |
+
+## Загрузка модели корпуса
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/KPPM.zip
+    ```
+
+## Объяснение контактов
+
+  * OUT-RST Сброс
+  * OUT-PDN Отключение
+
+  * IN-PIN 
+
+    По умолчанию подтягивается к высокому уровню, модуль при включении автоматически определяет время последнего отключения питания, 
+  если время отключения менее 10 секунд, он будет ждать 10 секунд и затем автоматически включит/отключит выход 5V (чтобы убедиться, что верхний уровень завершил отключение и сможет снова перезапуститься)
+  Если подключено к GND, функция автоматического определения времени отключения будет отключена
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.png').default} size="100%" align="left" />
+
+## Руководство по использованию FLY верхнего уровня
+
+  :::info
+  Применимо только к FLY-Pi FLY-Pi-V2 FLY-C8
+  :::
+
+  Для использования FLY верхнего уровня необходимо выполнить следующие команды через SSH:
+
+  ```bash
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
+  ```
+
+  Перезагрузить систему
+
+  ```bash
+  sudo reboot
+  ```
+  
+### Руководство по подключению FLY верхнего уровня
+
+  <Tabs>
+      <TabItem value="serial" label="Руководство по подключению FLY верхнего уровня" default>
+
+          <Tabs>
+              <TabItem value="1" label="Использование 5V для FLY-C8" default>
+                  * Использование 5V для FLY-C8
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Использование USB для FLY-C8" default>
+                  * Использование USB для FLY-C8
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="3" label="Использование 5V для FLY-Pi(π)" default>
+                  * Использование 5V для FLY-Pi
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="4" label="Использование USB для FLY-Pi(π)" default>
+                  * Использование USB для FLY-Pi
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="5" label="Использование 5V для FLY-Pi-V2" default>
+                  * Использование 5V для FLY-Pi-V2
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="6" label="Использование USB для FLY-Pi-V2" default>
+                  * Использование USB для FLY-Pi-V2
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.png').default} size="80%" align="center" />
+              </TabItem>
+            
+          </Tabs>
+      </TabItem>
+  </Tabs>
+
+## Руководство по использованию верхнего уровня Raspberry Pi
+
+  Процедура для Raspberry Pi аналогична вышеописанной. Вставьте SD-карту с установленным образом системы в компьютер, добавьте строку `dtoverlay=gpio-shutdown,gpio_pin=21` в файл config.txt, затем сохраните и выйдите.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.png').default} size="80%" align="left" />
+
+  
+
+  <Tabs>
+      <TabItem value="serial" label="Руководство по подключению верхнего уровня Raspberry Pi" default>
+
+          <Tabs>
+              <TabItem value="1" label="Использование 5V для Raspberry Pi" default>
+                  * Использование 5V для Raspberry Pi
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Использование USB для Raspberry Pi" default>
+                  * Использование USB для Raspberry Pi
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.png').default} size="80%" align="center" />
+              </TabItem>
+          </Tabs>
+      </TabItem>
+  </Tabs>

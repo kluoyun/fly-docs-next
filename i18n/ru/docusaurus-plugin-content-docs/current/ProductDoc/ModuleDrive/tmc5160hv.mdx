@@ -1,0 +1,90 @@
+---
+sidebar_position: 4
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160HV
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160hv.png').default} size="80%" align="center" />
+
+## Основные параметры
+
+    * Входное напряжение: 12В-48В
+    * Максимальный ток: 4.4A
+    * Подходит для: прошивки Marlin/Klipper/RRF
+    * Поддерживаемые режимы работы: TMC：SPI
+    * Интерфейс шаг/направление с микрошаговой интерполяцией microPlyer
+    * Максимальное разрешение до 256 микрошагов
+    * Поддержка тихой работы stealthChop2 и плавных движений
+    * Поддержка подавления резонанса при средних частотах
+    * Поддержка высокодинамичного режима управления двигателем spreadCycle
+    * Поддержка управления скоростью в зависимости от нагрузки dcStep
+    * Поддержка высокоточного бесконтактного определения нагрузки двигателя stallGuard2
+    * Поддержка контроля тока coolStep с возможностью экономии до 75%
+
+## Объяснение джамперов на плате
+
+    * TMC5160 использует джамперы SPI
+    * Контакты SPI на драйвере FLY находятся с левой стороны, четвёртый вниз. Контакт CS совпадает с контактом SPI. Если на плате нет соответствующих контактов, SPI не будет работать.
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+
+## Справочная конфигурация TMC5160
+
+    :::danger
+
+    * Сопротивление датчика тока драйвера `sense_resistor: 0.075`, пожалуйста, не устанавливайте неправильное значение
+    * Можно выбрать только один из spi_bus или spi_software
+    
+    :::
+
+### Пример конфигурации в режиме SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Значение тока при работе двигателя
+    interpolate: False                  # Включение интерполяции на 256 микрошагов (True - включено, False - выключено)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Инструкции по использованию без концевых выключателей
+
+    <DIAG />
+
+    :::tip Советы по использованию без концевых выключателей
+
+    * Необходимо закомментировать или удалить `endstop_pin:`, и добавить `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * После настройки `diag1_pin:` состояние концевого выключателя должно быть "не активировано"
+    * Значение `driver_SGT:` нужно подбирать самостоятельно
+
+    :::
+
+    * Пример конфигурации
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Если не установить 0, возможен отказ в калибровке
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   Убедитесь, что после настройки состояние концевого выключателя "не активировано"
+    #   Обычно этот контакт использует префикс "^" для активации внутреннего подтягивающего резистора
+    #   Чувствительность зависит от натяжения ремня, требует самостоятельной настройки
+    #   (Убедитесь, что одновременно установлен `driver_SGTHRS` с подходящей чувствительностью)
+
+    ```

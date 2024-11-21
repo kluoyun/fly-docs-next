@@ -1,0 +1,83 @@
+---
+sidebar_position: 6
+sidebar_label: BL прошивка, пожалуйста, игнорируйте
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import ImageView from '@site/src/components/ImageView';
+import APM from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Прошивка Katapult
+
+## Описание прошивки Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36/42 поддерживает CAN
+    * Здесь предоставляются только CAN прошивки на скорости 500K и 1M
+    :::
+
+## Вход в режим прошивки
+
+    :::tip
+
+    В круге находится кнопка `BOOT`
+
+    :::
+
+    * При полностью отключенном питании платы, закоротите кнопку BOOT и подключите кабель для передачи данных к плате и вашему устройству
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot.png').default} size="50%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot1.png').default} size="50%" align="center" />
+
+## Прошивка
+
+    <Tabs>
+        <TabItem value="win" label="Инструкция по прошивке STM32F072 на Windows" default>
+
+            * Прошивка Katapult для SHT36 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36.zip">Нажмите для автоматической загрузки прошивки</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по прошивке STM32F072 с помощью хоста">
+
+            <Katapult />
+
+            4. Прошивка
+
+            :::tip
+
+            Необходимо прошить только одну прошивку
+
+            :::
+
+            * Ниже приведена команда для прошивки прошивки на скорости 500K CAN:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_500K.BIN
+                ```
+                       
+            * Ниже приведена команда для прошивки прошивки на скорости 1M CAN:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_1M.BIN
+                ```
+
+
+            5. Если появится сообщение ``File downloaded successfully`` как показано на изображении ниже, то прошивка прошла успешно
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

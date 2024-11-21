@@ -1,0 +1,100 @@
+---
+sidebar_position: 4
+sidebar_label: Подключение материнской платы
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Подключение материнской платы
+
+:::info
+* Радиатор приклеивается к приводу!
+:::
+
+
+## Описание пинов
+
+### SB2040 V1
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/pin.png').default} size="50%" align="center" />
+
+### SB2040 V2
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/pin1.png').default} size="50%" align="center" />
+
+---
+
+## Подключение питания
+
+:::info
+* SB2040 не поддерживает функцию защиты от обратного подключения питания, перед подачей питания убедитесь, что провода питания подключены правильно!!! Иначе это может привести к повреждению платы инструментов SB2040!!!
+:::
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/power.png').default} size="40%" align="center" />
+
+    * Цвет проводов CAN и их функции
+
+    | Цвет | Функция                 |
+    | :--: | :-------------------|
+    | Красный | ***Вход постоянного тока 12/24В*** |
+    | Черный | ***Минус постоянного тока (GND)***  |
+    | Желтый | ***CAN H***         |
+    | Белый | ***CAN L***         |
+
+
+## Подключение нагревательного элемента
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/heater.png').default} size="40%" align="center" />
+
+## Подключение термистора
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/ntc.png').default} size="40%" align="center" />
+
+## Подключение PT100
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/pt100.png').default} size="40%" align="center" />
+
+## Подключение вентилятора
+:::info
+* SB2040 поддерживает до двух управляемых вентиляторов, напряжение вентилятора может быть 24В или 5В, поддерживаются вентиляторы с 2, 3 или 4 проводами, метод подключения следующий.
+* Трехпроводные вентиляторы обычно имеют третью проволоку для измерения скорости, её можно не подключать, просто подключите два провода питания, метод подключения такой же, как и для двухпроводных вентиляторов.
+:::
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/fan.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/fan1.png').default} size="40%" align="center" />
+
+## Подключение RGB
+    * Плюс и минус RGB светодиодов ни в коем случае нельзя подключать наоборот, иначе это может привести к повреждению платы инструментов CAN.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/rgb.png').default} size="40%" align="center" />
+
+
+## Подключение экструдера
+    * После завершения подключения экструдера, пожалуйста, настройте ток привода и проверьте направление вращения мотора экструдера.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/extruder.png').default} size="40%" align="center" />
+
+
+## Подключение концевых выключателей
+
+    * Концевые выключатели бывают нормально открытыми (NO) и нормально закрытыми (NC). В 3D-принтерах рекомендуется использовать нормально закрытые (NC), чтобы в случае проблем с линией концевых выключателей система могла своевременно сообщить об ошибке и избежать ненужных столкновений и повреждений принтера.
+    * Если у вас принтер типа VORON, можно рассмотреть возможность изменения мест установки концевых выключателей, установив X-концевой выключатель на каретке печатной головки, а Y-концевой выключатель на корпусе двигателя A. Кроме того, на SB2040 рекомендуется перед концевым выключателем добавить ^, чтобы подтянуть сигнал. Например:
+        ```cfg
+        [stepper_x]
+        endstop_pin: ^sb2040:PA0  # Добавьте ^ в начале, чтобы подтянуть сигнал
+        ```
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/endstop.png').default} size="40%" align="center" />
+
+## Датчики выравнивания
+
+### Датчик приближения
+    * Официальное рекомендация VORON - использовать датчик Omron TL-Q5MC (ранее рекомендовался PL08N, принцип работы одинаков, отличается только расстояние срабатывания) для выравнивания печатного стола.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/pl08.png').default} size="40%" align="center" />
+
+### klicky
+    * Klicky - это сторонний датчик выравнивания, который можно сделать самостоятельно дома с минимальными затратами, он стабильно работает и обладает высокой стоимостью, рекомендуется к использованию. Метод подключения показан на следующем рисунке.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/klicky.png').default} size="40%" align="center" />
+
+### TAP
+:::tip
+* Voron Tap не рекомендуется подключать к **24V**, некоторые версии при использовании **24V** имеют вероятность повреждения датчика Tap, это не проблема продукции Fly, а конструктивный недостаток Voron Tap, пожалуйста, имейте это в виду!!!
+:::
+
+    * Voron Tap - это последняя разработка Voron, которая обладает высокой точностью, стабильностью и хорошей адаптацией. При подключении обратите внимание на полярность, чтобы избежать повреждения датчика Tap или инструментальной платы.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/img/wiring/tap.png').default} size="40%" align="center" />

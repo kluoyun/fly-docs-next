@@ -1,0 +1,138 @@
+---
+sidebar_position: 4
+sidebar_label: Подключение материнской платы
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Подключение материнской платы
+
+## Схема интерфейсов
+
+### Описание интерфейсов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Описание выводов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Подключение питания
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/power.png').default} size="40%" align="center" />
+
+----
+
+## Установка драйверов
+
+### Перемычки драйверов на материнской плате
+    * DP5 не требует установки перемычек драйверов
+
+
+### Бесконечные выводы
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/sensorless.png').default} size="40%" align="center" />
+
+----
+
+## Подключение шаговых двигателей
+
+:::info
+* Независимо от производителя двухфазных шаговых двигателей, их конечное исполнение соответствует 4 проводам. Неважно, какого они цвета, черного, белого, зеленого или желтого, они соответствуют 4 проводам. Поэтому нам нужно разделить провода на группы A и B.
+* Для двухфазных четырехпроводных шаговых двигателей нам не нужно знать, какая группа A, а какая B, главное определить, что это одна группа, в настройках можно изменить направление двигателя.
+:::
+
+* В 3D-принтерах чаще всего используются двухфазные четырехпроводные шаговые двигатели, их принцип работы показан на схеме. Для определения порядка проводов шагового двигателя есть два метода:
+    * Соедините любые два провода, вращайте вал двигателя вручную, если возникает явное сопротивление, то эти два провода являются одной группой. В противном случае, это не одна группа, нужно тестировать другие провода.
+    * Используйте мультиметр, установите на режим проверки проводимости, проверьте любые два провода шагового двигателя, если они проводят ток, то они составляют одну группу; если нет, то это не одна группа, нужно тестировать другие провода.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Подключение нагревателя
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Подключение термокровати
+
+* **Термокровать переменного тока:** При подключении твердотельного реле обратите внимание на вход и выход, чтобы не перепутать их.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **Термокровать постоянного тока:** При подключении термокровати к встроенному MOSFET обратите внимание на мощность, максимальный ток термокровати не должен превышать 10А. Если он превышает 10А, рекомендуется использовать внешний модуль MOSFET, иначе это может привести к необратимому повреждению материнской платы.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Подключение термодатчика
+
+### Типы термодатчиков
+
+* Способы подключения термодатчиков показаны на рисунке. Узнайте у продавца тип термодатчика.
+
+* Если вы купили у Fly (как показано на рисунке), настройте sensor_type на: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* Если это обычный NTC 100K (как показано на рисунке), настройте sensor_type на: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Подключение термодатчика к материнской плате
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-4.png').default} size="40%" align="center" />
+
+----
+
+## Подключение вентиляторов
+
+* **Подключение вентиляторов**
+
+    :::tip
+
+    На рисунке красным квадратом выделены интерфейсы, верхний и нижний интерфейсы управляются одним и тем же выводом, что позволяет подключить два вентилятора к одному управляющему выводу
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## Подключение концевых выключателей
+
+* Концевые выключатели бывают нормально открытые (NO) и нормально закрытые (NC). В 3D-принтерах рекомендуется использовать **нормально закрытые (NC)**, чтобы в случае проблем с проводкой концевого выключателя система вовремя выдавала ошибку, что позволяет избежать ненужных столкновений и повреждений принтера.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## Подключение датчика выравнивания
+
+### Подключение индуктивного датчика
+
+* VORON рекомендует использовать датчик Omron TL-Q5MC (ранее рекомендовался PL08N, принцип работы одинаков, но разные расстояния обнаружения) для выравнивания термокровати. Схема подключения показана на рисунке.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/pl08.png').default} size="40%" align="center" />
+
+----
+
+### Подключение BL-Touch
+
+* У BL-touch всего пять проводов, три из них составляют первую группу, отвечающую за питание датчика и подъем/опускание щупа, вторая группа - это земля и сигнальный провод, выводящий сигнал концевого выключателя. При подключении BL-touch внимательно проверьте порядок проводов, неправильное подключение может привести к постоянному повреждению датчика и материнской платы!!! Способы подключения показаны на рисунке.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----

@@ -1,0 +1,49 @@
+---
+sidebar_position: 1
+sidebar_label: Пояснение по прошивке прошивки
+---
+
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * SB2040 PRO V3 поставляется с предустановленной прошивкой Katapult для CAN-соединения со скоростью 1M
+    * Прошивка Katapult для CAN-соединения SB2040 PRO V3 может иметь скорость 500K или 1M, при необходимости можно прошить самостоятельно
+    * <Button variant="contained" disableElevation href="./bl">Прошивка Katapult</Button>
+
+
+    :::
+
+# Пояснение по прошивке прошивки
+
+    * SB2040 PRO V3 может подключаться к ПК через RS232 и CAN
+    * Для подключения RS232 и CAN требуется использовать `XT30(2+2)-F`
+    * Ниже представлен вид кабеля `XT30(2+2)-F`
+    <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Обратите внимание
+* Прошивка платы требует использования Katapult для прошивки Klipper
+* Если плата уже прошита Katapult, не нужно выполнять последний этап прошивки Katapult, это необходимо только в случае, если прошивка Katapult не удалась
+* Можно быстро нажать кнопку сброса дважды, чтобы проверить, загорится ли светодиод на плате, что указывает на то, что плата перешла в режим Katapult
+:::
+
+## Как определить, какую прошивку вам нужно
+
+    * SB2040 PRO V3 может подключаться к ПК следующим образом:
+    * <Button variant="contained" disableElevation href="./can">Прошивка CAN</Button>
+        * Преимущества: Если прошита прошивка `Katapult`, можно обновлять прошивку без физического доступа к плате, а также поддерживается подключение по шине
+        * Недостатки: Возможны ошибки, такие как тайм-ауты при использовании с `KlipperScreen`.
+        * Подсказка: Для использования CAN убедитесь, что ПК поддерживает CAN, и требуется использование UTOC или платы с прошитым мостовым прошивкой
+    * <Button variant="contained" disableElevation href="./rs232">Прошивка RS232</Button>
+        * Преимущества: Не требует специального ПО, надежная и стабильная связь
+        * Недостатки: Для обновления прошивки необходимо вручную войти в режим DFU или дважды нажать кнопку RST для входа в `Katapult`
+        * Подсказка: Требуется использование G2T или UTOR
+
+## Пояснение по прошивке Katapult
+
+    
+    <CANBOOT />

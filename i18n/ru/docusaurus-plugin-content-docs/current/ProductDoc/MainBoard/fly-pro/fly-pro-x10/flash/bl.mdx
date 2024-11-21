@@ -1,0 +1,73 @@
+---
+sidebar_position: 6
+sidebar_label: BL прошивка, пожалуйста, игнорируйте
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL прошивка
+
+    :::tip
+
+    * Обратите внимание, что заводская прошивка `bootloader` уже установлена, перепрошивка не требуется
+
+    :::
+
+## Вход в режим прошивки
+
+
+    * Существует два способа входа в режим прошивки
+    * Первый: при полном отключении питания платы, замкнуть BOOT, затем подключить кабель с передачей данных к плате и устройству
+    * Второй: после подключения кабеля с передачей данных к плате и устройству, замкнуть BOOT, нажать кнопку RST, затем отпустить RST и разомкнуть BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-pro/fly-pro-x10/flash/img/boot.png').default} size="100%" align="center" />
+
+## Прошивка
+
+    <Tabs>
+        <TabItem value="win" label="Инструкция по прошивке для Windows" default>
+
+            * Прошивка bootloader для PRO X10 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ProX10.zip">Нажмите для автоматической загрузки прошивки</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по прошивке с помощью хост-машины">
+            
+            <Katapult />
+
+            4. Прошивка
+
+            :::tip
+
+            Требуется прошить только одну прошивку
+
+            :::
+
+
+            * Ниже приведена команда для прошивки katapult
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            * Ниже приведена команда для прошивки bootloader
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            5. Если вы видите сообщение, указанное стрелкой на рисунке ниже ``File downloaded successfully``, прошивка завершена успешно
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

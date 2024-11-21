@@ -1,0 +1,89 @@
+---
+sidebar_position: 6
+sidebar_label: BL прошивка, игнорируйте
+
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+import ImageView from '@site/src/components/ImageView';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Прошивка Katapult
+
+## Описание прошивки Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * ERCF поддерживает CAN и USB
+    * Здесь предоставлены CAN-прошивки с частотами 500K и 1M
+    :::
+
+## Вход в режим прошивки
+
+    :::tip
+
+    В кружке - кнопка `BOOT`
+
+    :::
+
+    * Для входа в режим прошивки необходимо полностью отключить питание основной платы, удерживая кнопку BOOT, затем подключить кабель с передачей данных к плате и компьютеру
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/boot.png').default} size="100%" align="center" />
+
+## Прошивка
+
+    <Tabs>
+        <TabItem value="win" label="Инструкция по прошивке для Windows" default>
+        
+            * Прошивка Katapult для ERCF <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ERCF.zip">Нажмите для автоматической загрузки прошивки</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по прошивке для Linux">
+            
+            <Katapult />
+
+            4. Прошивка
+
+            :::tip
+
+            Требуется прошить только один из файлов прошивки
+
+            :::
+
+            * Ниже приведена команда для прошивки с частотой CAN 500K
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCF_CANBOOT_CAN_500K.uf2
+                ```
+                       
+            * Ниже приведена команда для прошивки с частотой CAN 1M
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCF_CANBOOT_CAN_1M.uf2
+                ```
+            * Ниже приведена команда для прошивки через USB
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/FLY_ERCF_CANBOOT_USB.uf2
+                ```
+
+            5. Если появится следующее сообщение, прошивка прошла успешно
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Проверка запуска прошивки
+
+    * Если прошивка успешно запустится, светодиод начнет мигать
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.png').default} size="100%" align="center" />
