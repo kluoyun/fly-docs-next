@@ -1,0 +1,194 @@
+---
+sidebar_position: 2
+---
+import ImageView from '@site/src/components/ImageView';
+import Button from "@mui/material/Button";
+
+# Общие отладочные команды
+
+    :::tip
+
+    * Данное руководство в основном ориентировано на веб-страницу Fuiidd
+    * Данное руководство предполагает, что принтер уже подключен и используется для отладки
+    * Данное руководство предоставляет часто используемые команды, но возможно не все они включены из-за различных проблем
+
+    :::
+
+## Относящиеся к драйверам
+
+    :::danger Обратите внимание
+
+    * Пожалуйста, обратите внимание, что если драйвер не настроен или имеет проблемы, его нельзя проверить
+    * Пожалуйста, убедитесь, что все драйверы получают питание, питание на материнской плате, джамперы и конфигурация драйверов нормальные！！
+
+    :::
+
+
+### Проверка состояния драйвера
+
+    * Эта команда проверяет состояние драйвера TMC в режиме SPI/UART
+        ```bash
+        DUMP_TMC STEPPER=stepper_x
+        DUMP_TMC STEPPER=stepper_x1
+        DUMP_TMC STEPPER=stepper_y
+        DUMP_TMC STEPPER=stepper_y1
+        DUMP_TMC STEPPER=stepper_z
+        DUMP_TMC STEPPER=stepper_z1
+        DUMP_TMC STEPPER=stepper_z2
+        DUMP_TMC STEPPER=stepper_z3
+        DUMP_TMC STEPPER=extruder
+        ```
+
+### Принудительное перемещение драйвера
+
+    * Добавьте следующую команду в `printer.cfg`
+        ```bash
+        [force_move]
+        enable_force_move: true
+        ```
+
+    * Команда для принудительного перемещения на 1 мм туда и обратно
+        ```bash
+        STEPPER_BUZZ STEPPER=stepper_x
+        STEPPER_BUZZ STEPPER=stepper_x1
+        STEPPER_BUZZ STEPPER=stepper_y
+        STEPPER_BUZZ STEPPER=stepper_y1
+        STEPPER_BUZZ STEPPER=stepper_z
+        STEPPER_BUZZ STEPPER=stepper_z1
+        STEPPER_BUZZ STEPPER=stepper_z2
+        STEPPER_BUZZ STEPPER=stepper_z3
+        STEPPER_BUZZ STEPPER=extruder
+        ```
+
+    * Активировав эту опцию, можно принудительно перемещать через управление перемещением
+    * Обратите внимание, что за один раз можно перемещать только один мотор
+    * Если у вас несколько осей, например, два Z-оси, их нужно сначала вернуть в начальную позицию, чтобы их можно было контролировать
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/force.png').default} size="80%" align="center" />
+
+### Принудительная установка расстояния печатающей головки
+
+    * Введите следующую команду в консоль, чтобы принудительно установить положение печатающей головки, после чего можно будет контролировать ее перемещение
+        ```bash
+        SET_KINEMATIC_POSITION x=100 y=100 z=100
+        ```
+### Калибровка шага шагового двигателя
+    * Сначала убедитесь, что экструдер работает нормально, затем проверьте, правильно ли установлены `full_steps_per_rotation` и `gear_ratio`, иначе не удастся откалибровать шаги экструдера
+    * Получив новое значение `rotation_distance`, округлите его до трех знаков после запятой
+    * Калибровка шагов: rotation_distance=старое rotation_distance * фактическая длина экструзии / запрошенная длина экструзии
+    
+        ```bash
+        full_steps_per_rotation: 200        # Количество импульсов на оборот (200 для 1.8 градусов, 400 для 0.9 градусов)
+        gear_ratio: 50:10                   # Передаточное отношение (Галилео 7.5:1 и эта строка закомментирована; BMG 50:17, выходной вал впереди, входной вал сзади)
+        rotation_distance: 22.522           # Длина окружности ведущего шкива в мм
+        ```
+## Относящиеся к нагреву
+
+### PID
+    :::tip
+    * В команде `TARGET=` указывается целевая температура, установите температуру, которую обычно используете для печати
+    * Если у вас несколько нагревательных устройств, вы можете использовать эту команду для настройки PID
+    :::
+
+    * Экструдер
+        ```bash
+        PID_CALIBRATE HEATER=extruder TARGET=245
+        ```
+
+    * Нагревательная платформа
+        ```bash
+        PID_CALIBRATE HEATER=heater_bed TARGET=100
+        ```
+
+    * PTC
+        ```bash
+        PID_CALIBRATE HEATER=PTC TARGET=70
+        ```
+
+### Ошибки температуры
+
+    :::tip
+    * Если нагрев занимает слишком много времени, можно использовать этот метод <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">Перейти</Button>
+    * Обратите внимание, что если температура нестабильна, можно использовать этот метод для устранения ошибок, вызванных нестабильностью температуры <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">Перейти</Button>
+    :::
+
+## Относящиеся к концевым выключателям
+
+    :::tip
+    * Обновляется
+    :::
+
+### Обычные концевые выключатели
+    * Команда для проверки концевых выключателей
+    * Убедитесь, что концевой выключатель двухпроводный, если трехпроводный, проверьте правильность подключения проводов, иначе возможно повреждение материнской платы！！！
+    * Убедитесь, что концевой выключатель находится в нормально открытом состоянии и не касается ничего
+    * Введите следующую команду в консоль, если все в порядке, вы получите следующий ответ
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+    * Убедитесь, что концевые выключатели находятся в открытом состоянии, затем вручную нажмите на них и введите `QUERY_ENDSTOPS`
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query1.png').default} size="80%" align="center" />
+    * Если состояние концевых выключателей изменилось, это означает, что подключение правильное
+
+### Бесконечные концевые выключатели
+    * Обратите внимание, что состояние бесконечных концевых выключателей должно быть открытым, иначе проблема в конфигурации или подключении
+    * Введите следующую команду в консоль, если все в порядке, вы получите следующий ответ
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+
+## Относящиеся к датчикам
+
+### BL-TOUCH
+
+    * pin_down: датчик выдвинут
+    * pin_up: датчик убран
+    * touch_mode: проверка датчика
+        ```bash
+        BLTOUCH_DEBUG COMMAND=pin_down
+        BLTOUCH_DEBUG COMMAND=pin_up
+        BLTOUCH_DEBUG COMMAND=touch_mode
+        ```
+
+### Probe & TAP
+
+    * Нормальное состояние - неактивный
+    * Рекомендуется при настройке пина добавить `^`
+        ```bash
+        QUERY_PROBE
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/probe.png').default} size="80%" align="center" />
+
+### Повторяемость
+
+    * Десять раз
+        ```bash
+        probe_accuracy
+        ```
+    * Сто раз
+        ```bash
+        probe_accuracy samples=100
+        ```
+
+## Специальные типы
+
+### Сервопривод
+
+    :::tip
+    * Сервоприводы бывают на 180 и 360 градусов, обратите на это внимание
+    :::
+
+    * Пример конфигурации
+        ```cfg
+        [servo my_servo]
+        pin:PE6
+        ```
+
+    * Пример команды
+        ```bash
+        SET_SERVO SERVO=my_servo ANGLE=360
+        SET_SERVO SERVO=my_servo ANGLE=180
+        SET_SERVO SERVO=my_servo ANGLE=0
+        ```
+

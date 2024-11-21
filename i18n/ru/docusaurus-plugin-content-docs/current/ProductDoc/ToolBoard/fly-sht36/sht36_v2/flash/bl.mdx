@@ -1,6 +1,6 @@
 ---
 sidebar_position: 6
-sidebar_label: BL прошивка, игнорируйте
+sidebar_label: BL прошивка, пожалуйста, игнорируйте
 ---
 
 import Tabs from "@theme/Tabs";
@@ -21,16 +21,16 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * SHT36 V2 может использоваться только с подключением CAN
-    * Здесь предоставляются прошивки CAN с частотами 500K и 1M
+    * SHT36 V2 может подключаться только через CAN
+    * Здесь предоставлены прошивки CAN с скоростью 500K и 1M
 
     :::
 
 
     :::warning Внимание
 
-    * APMF072 можно прошивать только с помощью компьютера
-    * STM32F103 можно обновлять прошивку только с помощью верхнего уровня
+    * APMF072 может быть прошит только с компьютера
+    * STM32F103 может обновлять прошивку только через хост-машину
 
     :::
 
@@ -39,47 +39,48 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    В круге находится переключатель BOOT
+    Выделен BOOT переключатель
 
     :::
 
     * STM32F103 не требует выполнения этого шага!!!
-    * При полностью отключенной плате, нажмите и удерживайте кнопку BOOT, затем подключите кабель данных к плате и к вашему устройству
+    * При полностью отключенном питании платы, зажмите кнопку BOOT и подключите кабель с передачей данных сначала к плате, а затем к вашему устройству
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/boot.png').default} size="100%" align="center" />
 
-## Прошивка прошивки
+## Прошивка
+
     <Tabs>
-        <TabItem value="win" label="Инструкция по прошивке STM32F072 с использованием Windows" default>
+        <TabItem value="win" label="Инструкция по прошивке STM32F072 через Windows" default>
 
             * Прошивка Katapult для SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Нажмите для автоматической загрузки прошивки</Button>
 
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="Инструкция по прошивке STM32F072 с использованием верхнего уровня">
+        <TabItem value="linux" label="Инструкция по прошивке STM32F072 через хост-машину">
             
             <Katapult />
 
-            4. Прошивка прошивки
+            4. Прошивка
 
             :::tip
 
-            Необходимо прошить только один файл прошивки
+            Нужно прошить только один файл прошивки
 
             :::
 
-            * Ниже приведена команда для прошивки прошивки с частотой CAN 500K
+            * Ниже приведена команда для прошивки с CAN скоростью 500K
             ```bash
             sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_500K.BIN
             ```
                        
-            * Ниже приведена команда для прошивки прошивки с частотой CAN 1M
+            * Ниже приведена команда для прошивки с CAN скоростью 1M
             ```bash
             sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_1M.BIN
             ```
 
 
-            5. Если появится сообщение, как указано стрелкой на изображении ниже, ``File downloaded successfully``, прошивка выполнена успешно
+            5. Если на экране появляется текст ``File downloaded successfully``, то прошивка успешно завершена
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
 
@@ -90,41 +91,41 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
             :::
 
         </TabItem>
-        <TabItem value="apm" label="Инструкция по прошивке APM32F072 с использованием Windows" default>
+        <TabItem value="apm" label="Инструкция по прошивке APM32F072 через Windows" default>
 
            * Прошивка Katapult для SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Нажмите для автоматической загрузки прошивки</Button>
 
             <APM />
             
         </TabItem>
-        <TabItem value="103" label="Инструкция по обновлению прошивки STM32F103 с использованием klipper" default>
+        <TabItem value="103" label="Инструкция по обновлению прошивки STM32F103 через Klipper" default>
 
             <LS />
 
-            * Скачайте заранее скомпилированную прошивку
-            * Здесь собраны заранее скомпилированные прошивки
-            * Обратите внимание, что для установки необходимо подключение к интернету
-            * На верхнем уровне необходимо выполнить следующие команды для загрузки пакета прошивки
+            * Загрузка предварительно скомпилированной прошивки
+            * Здесь представлены предварительно скомпилированные прошивки
+            * Обратите внимание, что для установки хост-машина должна иметь доступ в интернет
+            * Хост-машина должна выполнить следующую команду для загрузки пакета прошивки
 
             ```bash
             cd && git clone https://github.com/FengHua741/FLY_Katapult.git
             ```
 
-            * Если вы уже скачали пакет прошивки, рекомендуется обновить его перед выполнением оставшихся шагов
+            * Если пакет прошивки уже был загружен, рекомендуется обновить его перед продолжением
 
             ```bash
             cd ~/FLY_Katapult && git pull
             ```
 
-            * Этот метод позволяет напрямую обновить прошивку Katapult на плате через CAN
-            * Необходимо заменить `<Toolboard ID>` на CAN ID платы управления STM32F103
-            * Ниже приведена команда для обновления прошивки с частотой CAN 1M
+            * Этот метод позволяет напрямую обновить прошивку Katapult через CAN
+            * Замените `<Toolboard ID>` на CAN ID контроллера STM32F103
+            * Ниже приведена команда для обновления прошивки версии 103 с CAN скоростью 1M
 
             ```bash
             ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_1M.BIN  -u <Toolboard ID>
             ```
 
-            * Ниже приведена команда для обновления прошивки с частотой CAN 500K
+            * Ниже приведена команда для обновления прошивки версии 072 с CAN скоростью 500K
             ```bash
             ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_500K.BIN  -u <Toolboard ID>
             ```
@@ -132,7 +133,7 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
                 </TabItem>
             </Tabs>
 
-## Подтверждение запуска прошивки
+## Проверка запуска прошивки
 
-    * Если прошивка запустилась нормально, LED начнет мигать
+    * Если прошивка запустилась успешно, светодиод начнет мигать
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.png').default} size="100%" align="center" />
