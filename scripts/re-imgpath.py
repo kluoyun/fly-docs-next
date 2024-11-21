@@ -12,7 +12,7 @@ def main():
             if not file.endswith(".mdx"):
                 continue
             src_mdx_list.append(os.path.join(root, file))
-            logger.debug(f"找到文件：{os.path.join(root, file)}")
+            logger.debug(f"找到文件: {os.path.join(root, file)}")
     if len(src_mdx_list) < 1:
         raise logger.error("没有找到.mdx文件")
 
@@ -24,7 +24,7 @@ def main():
                 directory_path = os.path.dirname(mdx_file)
                 directory_path = directory_path.replace(os.sep, "/")
                 directory_path = directory_path.replace("docs/", "@site/docs/")
-                logger.info(f"正在处理文件：{mdx_file} => {directory_path}")
+                logger.info(f"正在处理文件: {mdx_file} => {directory_path}")
 
                 content = content.replace(
                     "image={require('./", f"image={{require('{directory_path}/"
