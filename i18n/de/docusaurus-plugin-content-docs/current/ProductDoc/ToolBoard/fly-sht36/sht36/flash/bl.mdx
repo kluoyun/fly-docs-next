@@ -1,0 +1,85 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import APM from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult-Firmware
+
+## Katapult-Firmware Beschreibung
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36/42 unterstützt CAN
+    * Hier wird nur die CAN-Firmware in den Geschwindigkeiten 500K und 1M bereitgestellt
+    :::
+
+## Betreten des Flash-Modus
+
+    :::tip
+
+    Der eingekreiste Bereich ist der `BOOT-Schalter`
+
+    :::
+
+    * Bei vollständig unterbrochener Stromversorgung der Hauptplatine, die BOOT-Taste kurzschließen und dann das Datenkabel einstecken, ein Ende an die Hauptplatine, das andere an Ihr Gerät
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot.png').default} size="50%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot1.png').default} size="50%" align="center" />
+
+## Firmware flashen
+    <Tabs>
+        <TabItem value="win" label="STM32F072 Flash-Tutorial für Windows" default>
+
+            * Katapult-Firmware für SHT36 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="STM32F072 Flash-Tutorial für Host-Maschine">
+            
+            <Katapult />
+
+            4. Firmware flashen
+
+            :::tip
+
+            Es muss nur eine der Firmwares geflasht werden
+
+            :::
+
+            * Hier sind die Flash-Befehle für die 500K CAN-Geschwindigkeit
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_500K.BIN
+                ```
+                       
+            * Hier sind die Flash-Befehle für die 1M CAN-Geschwindigkeit
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_1M.BIN
+                ```
+
+
+            5. Wenn die Meldung ``File downloaded successfully`` wie im Bild mit dem Pfeil angezeigt wird, war das Flashen erfolgreich
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach Abschluss des Flashvorgangs muss die Hauptplatine einmal vollständig vom Strom getrennt werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+

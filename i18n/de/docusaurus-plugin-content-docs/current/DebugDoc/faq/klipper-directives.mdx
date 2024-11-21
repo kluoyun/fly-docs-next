@@ -1,0 +1,197 @@
+---
+sidebar_position: 2
+---
+
+
+import ImageView from '@site/src/components/ImageView';
+
+import Button from "@mui/material/Button";
+
+
+# Häufig verwendete Debug-Befehle
+
+    :::tip
+
+    * Diese Anleitung bezieht sich hauptsächlich auf die Fuiidd-Webseite
+    * Diese Anleitung geht davon aus, dass der Drucker bereits korrekt angeschlossen ist und für Debugging verwendet wird
+    * Diese Anleitung bietet häufig verwendete Befehle, aber es kann aufgrund verschiedener Probleme zu unvollständigen Aufzeichnungen kommen
+
+    :::
+
+## Treiberbezogen
+
+    :::danger Hinweis
+
+    * Bitte beachten Sie, dass Treiber ohne Konfiguration oder mit Problemen nicht überprüft werden können
+    * Bitte alle Treiber mit Strom versorgen, das Motherboard mit Strom versorgen, die Treiber-Jumper und -Konfigurationen sollten normal sein!!
+
+    :::
+
+
+### Überprüfung des Treiberzustands
+
+    * Dieser Befehl verifiziert den Zustand des TMC-Treibers im SPI/UART-Modus
+        ```bash
+        DUMP_TMC STEPPER=stepper_x
+        DUMP_TMC STEPPER=stepper_x1
+        DUMP_TMC STEPPER=stepper_y
+        DUMP_TMC STEPPER=stepper_y1
+        DUMP_TMC STEPPER=stepper_z
+        DUMP_TMC STEPPER=stepper_z1
+        DUMP_TMC STEPPER=stepper_z2
+        DUMP_TMC STEPPER=stepper_z3
+        DUMP_TMC STEPPER=extruder
+        ```
+
+### Erzwungene Bewegung des Treibers
+
+    * Fügen Sie in `printer.cfg` die folgenden Befehle hinzu
+        ```bash
+        [force_move]
+        enable_force_move: true
+        ```
+
+    * Befehl zum erzwungenen Hin- und Herrbewegen um 1mm
+        ```bash
+        STEPPER_BUZZ STEPPER=stepper_x
+        STEPPER_BUZZ STEPPER=stepper_x1
+        STEPPER_BUZZ STEPPER=stepper_y
+        STEPPER_BUZZ STEPPER=stepper_y1
+        STEPPER_BUZZ STEPPER=stepper_z
+        STEPPER_BUZZ STEPPER=stepper_z1
+        STEPPER_BUZZ STEPPER=stepper_z2
+        STEPPER_BUZZ STEPPER=stepper_z3
+        STEPPER_BUZZ STEPPER=extruder
+        ```
+
+    * Diese Option aktiviert die erzwungene Bewegung durch die Steuerung
+    * Bitte beachten Sie, dass nur ein Motor gleichzeitig bewegt werden kann
+    * Wenn es mehrere Achsen gibt, wie zwei Z-Achsen, müssen diese zurückgesetzt werden, bevor sie kontrolliert werden können
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/force.png').default} size="80%" align="center" />
+
+### Erzwungene Einstellung der Druckkopfdistanz
+
+    * Geben Sie den folgenden Befehl in der Konsole ein, um die Position des Druckkopfs zu erzwingen. Nach der Einstellung kann die Bewegung direkt gesteuert werden
+        ```bash
+        SET_KINEMATIC_POSITION x=100 y=100 z=100
+        ```
+### Kalibrierung der Schrittwerte des Schrittmotors
+    * Zuerst muss überprüft werden, ob der Extruder normal arbeitet, und dann muss `full_steps_per_rotation` und `gear_ratio` korrekt eingestellt sein, sonst kann der Extruder nicht kalibriert werden
+    * Der neue `rotation_distance` muss auf drei Dezimalstellen gerundet werden
+    * Kalibrierung der Schrittwerte: rotation_distance=alte rotation_distance * tatsächliche Extrusionslänge / angeforderte Extrusionslänge
+    
+        ```bash
+        full_steps_per_rotation: 200        # Anzahl der Pulse pro Umdrehung (200 für 1.8 Grad, 400 für 0.9 Grad)
+        gear_ratio: 50:10                   # Übersetzungsverhältnis (Galileo Zahnradverhältnis 7.5:1 und diese Zeile auskommentiert; BMG ist 50:17, Ausgangswelle vorne, Eingabewelle hinten)
+        rotation_distance: 22.522           # Umfang des Antriebsritzes in mm
+        ```
+## Heizung bezogen
+
+### PID
+    :::tip
+    * Der `TARGET=` in den Befehlen ist die Einstelltemperatur, bitte setzen Sie diese auf Ihre übliche Drucktemperatur
+    * Wenn Sie mehrere Heizeinheiten haben, können Sie diesen Befehl verwenden, um den PID zu kalibrieren
+    :::
+
+    * Extruder
+        ```bash
+        PID_CALIBRATE HEATER=extruder TARGET=245
+        ```
+
+    * Heizbett
+        ```bash
+        PID_CALIBRATE HEATER=heater_bed TARGET=100
+        ```
+
+    * PTC
+        ```bash
+        PID_CALIBRATE HEATER=PTC TARGET=70
+        ```
+
+### Temperaturfehlerbezogen
+
+    :::tip
+    * Wenn die Heizung zu lange wartet, können Sie diese Methode verwenden <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">Hier klicken</Button>
+    * Bitte beachten Sie, dass bei instabiler Temperatur diese Methode verwendet werden kann, um Fehler durch instabile Temperaturen zu beheben <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">Hier klicken</Button>
+    :::
+
+## Endschalterbezogen
+
+    :::tip
+    * Wird aktualisiert
+    :::
+
+### Normaler Endschalter
+    * Endschalterüberprüfungsbefehl
+    * Bitte stellen Sie sicher, dass der Endschalter zweileitig ist, wenn er dreileitig ist, müssen Sie die Reihenfolge der Leitungen überprüfen, ansonsten könnte dies zu Schäden an der Platine führen!!!
+    * Bitte stellen Sie sicher, dass der Endschalter in einem normal geöffneten Zustand ist und nichts berührt
+    * Geben Sie den folgenden Befehl in der Konsole ein, bei normalem Verhalten wird die folgende Information zurückgegeben
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+    * Bitte stellen Sie sicher, dass alle Endschalter in geöffnetem Zustand sind, dann drücken Sie manuell den Endschalter und geben Sie `QUERY_ENDSTOPS` ein
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query1.png').default} size="80%" align="center" />
+    * Wenn der Zustand des Endschalters sich ändert, ist die Verkabelung korrekt
+
+### Endschalter ohne Begrenzung
+    * Bitte beachten Sie, dass der Zustand eines unbeschränkten Endschalters immer geöffnet sein sollte, andernfalls gibt es ein Problem mit der Konfiguration oder der Verkabelung
+    * Geben Sie den folgenden Befehl in der Konsole ein, bei normalem Verhalten wird die folgende Information zurückgegeben
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+
+## Sondierungsbezogen
+
+### BL-TOUCH
+
+    * pin_down: Sonde ausfahren
+    * pin_up: Sonde einfahren
+    * touch_mode: Sensor überprüfen
+        ```bash
+        BLTOUCH_DEBUG COMMAND=pin_down
+        BLTOUCH_DEBUG COMMAND=pin_up
+        BLTOUCH_DEBUG COMMAND=touch_mode
+        ```
+
+### Probe & TAP
+
+    * Normalerweise ist der Zustand nicht ausgelöst
+    * Es wird empfohlen, beim Konfigurieren der Pin `^` hinzuzufügen
+        ```bash
+        QUERY_PROBE
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/probe.png').default} size="80%" align="center" />
+
+### Wiederholgenauigkeit
+    * Zehnmal
+        ```bash
+        probe_accuracy
+        ```
+    * Hundertmal
+        ```bash
+        probe_accuracy samples=100
+        ```
+
+## Spezielle Typen
+
+### Servo
+
+    :::tip
+    * Bitte beachten Sie, dass es Servomotoren mit 180 Grad und 360 Grad gibt
+    :::
+
+    * Beispielkonfiguration
+        ```cfg
+        [servo my_servo]
+        pin:PE6
+        ```
+
+    * Beispielbefehl
+        ```bash
+        SET_SERVO SERVO=my_servo ANGLE=360
+        SET_SERVO SERVO=my_servo ANGLE=180
+        SET_SERVO SERVO=my_servo ANGLE=0
+        ```
+

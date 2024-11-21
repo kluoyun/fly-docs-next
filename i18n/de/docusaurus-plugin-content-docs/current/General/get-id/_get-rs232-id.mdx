@@ -1,0 +1,86 @@
+## Suchen der RS232-ID
+
+### Vor der Gerätesuche zu beachtende Punkte
+
+    * Vor der Suche nach der RS232-ID, bitte zuerst [verbinden Sie sich mit SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Klicken Sie hier, um weiterzuleiten")
+    * Bitte achten Sie darauf, dass Sie über das Netzwerk und nicht über die serielle Schnittstelle zu SSH anmelden
+    * Bitte stellen Sie sicher, dass der UTOR angeschlossen ist und dass das Verbindungskabel zur Oberstation Datenübertragungsfähigkeiten besitzt
+    * Wenn Sie G2T verwenden, stellen Sie sicher, dass das System die Verwendung einer UART-Verbindung unterstützt
+
+### Gerätesuche
+
+    * Nun, da Sie sich erfolgreich bei der Oberstation angemeldet haben, können Sie `lsusb` eingeben, um das Gerät zu suchen. Es gibt folgende Möglichkeiten:
+        * Wenn `lsusb` nicht funktioniert und `ls` nicht gefunden wird, können Sie den folgenden Befehl verwenden, um das Programm zu installieren:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * Wenn `lsusb` eingegeben wird und nichts passiert, liegt das am Systemproblem, und wir können nichts tun. Sie müssen das System wechseln oder ein funktionierendes System verwenden
+        * Wenn die Informationen wie im unteren Bild erscheinen, beachten Sie, dass dies nur ein Beispiel ist. Sie müssen nur die Zeichen nach der ID bestimmen
+        <ImageView image={require('@site/docs/General/get-id/img/7523.png').default} size="100%" align="left" />
+    * `1a86:7523` gehört zu dem Gerät, das Sie dieses Mal verwenden werden. Die nachfolgenden Hinweise können Sie ignorieren, da Systemprobleme dazu führen können, dass diese unvollständig angezeigt werden oder gar nicht angezeigt werden.
+    * Wenn nichts angezeigt wird, überprüfen Sie bitte selbst, ob das Datenkabel ordnungsgemäß angeschlossen ist und ob die Firmware korrekt aktualisiert wurde.
+
+    :::warning Beachten Sie
+
+    Nur wenn `1a86:7523` vorhanden ist, können Sie den folgenden Befehl zur Suche der RS232-ID verwenden
+
+    :::
+
+
+### Suche nach der RS232-ID
+
+    ```bash
+    ls /dev/serial/by-path/*
+    ```
+
+    <ImageView image={require('@site/docs/General/get-id/img/rs232-id.png').default} size="100%" align="left" />
+    * Wenn nach Eingabe von `ls /dev/serial/by-path/*` keine ID angezeigt wird, aber `lsusb` ein Gerät aufzeigt, wechseln Sie bitte die Oberstation oder das System der Oberstation
+    * Achten Sie darauf, dass beim Einsatz von UTOR drei IDs ausgegeben werden und wenn Sie ein anderes UTOR-System verwendet haben, dieses die IDs gespeichert hat, was zu mehreren IDs bei der Suche führen kann
+    * Stellen Sie sicher, dass die ID auf `-port0` endet, andernfalls kann sie nicht verwendet werden
+
+    :::warning Beachten Sie
+
+    Achten Sie darauf, dass die Werkzeugplatte und UTOR unbedingt geerdet sein müssen!!! Andernfalls kann keine Verbindung zur Werkzeugplatte hergestellt werden!!!
+
+    :::
+
+### Die RS232-ID in die Konfiguration einfügen
+
+    * Öffnen Sie die Drucker-Weboberfläche, suchen Sie in der linken Seitenleiste nach den Konfigurationsoptionen: für Fluidd: `{…}`; für Mainsail: `Maschine`, klicken Sie darauf, um `printer.cfg` zu finden
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.png').default} size="50%" align="left" />
+
+    * Kopieren Sie die blaue ID und fügen Sie sie in die `printer.cfg`-Konfiguration unter dem Knoten `[mcu]` bei `serial:` ein. Speichern und neu starten, um die Verbindung zur Hauptplatine herzustellen. Wenn Klipper ``ADC out of range`` meldet, ist das normal. Verbinden Sie die Heizplatte und den Temperatursensor, konfigurieren Sie die Pins für die Düse und die Heizplatte und speichern und neu starten Sie danach erneut.
+
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.png').default} size="50%" align="left" />
+
+    :::warning Beachten Sie
+
+    * Die RS232-ID benötigt die Konfiguration von `baud:` und `restart_method:command`
+    * Hier ist eine Beispielkonfiguration
+
+    :::
+
+        ```cfg
+        [mcu SHT36]
+        serial: /dev/serial/by-path/platform-1c1c000.usb-usb-0:1.2:1.0-port0
+        baud: 250000
+        restart_method:command
+        ```
+
+    :::danger
+
+    Hinweis: Alle in diesem Dokument genannten IDs sind Beispiele. Die tatsächliche ID jeder Hauptplatine ist unterschiedlich, bitte ändern Sie diese entsprechend der tatsächlich erhaltenen ID.
+
+    :::
+
+    :::danger
+
+    Beachten Sie, dass die untenstehende ID nicht verwendet werden darf!!!
+
+    :::
+
+        ```cfg
+        serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        ```
+----

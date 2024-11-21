@@ -1,0 +1,191 @@
+---
+sidebar_position: 4
+sidebar_label: Anschluss der Hauptplatine
+---
+
+
+import ImageView from '@site/src/components/ImageView';
+
+# Anschluss der Hauptplatine
+
+## Schnittstellenbild
+
+### Schnittstellenbeschreibung
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Pin-Beschreibung
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Stromanschluss
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/power.png').default} size="40%" align="center" />
+----
+
+## Treiberinstallation
+
+### Hauptplatine Treiber-Jumper
+
+* **STEP/DIR-Modus.** In diesem Modus wird die Unterteilung durch das Setzen von Jumper-Hüten und der Strom durch das Einstellen eines Potentiometers eingestellt. Der am häufigsten verwendete Treiber ist der A4988. Bei der Verwendung solcher Treiber muss die Unterteilungstabelle des Herstellers konsultiert und die Unterteilung über Jumper-Hüte eingestellt werden.
+* **UART-Modus.** Die am häufigsten verwendeten Treiber in diesem Modus sind: TMC2208, TMC2209, TMC2226 usw. Diese Treiberchips können eine UART asynchrone Seriellen Kommunikation mit dem Hauptcontroller durchführen und die Unterteilung, Betriebsstrom, Ruhemodus usw. durch Änderung der Konfigurationsdatei einstellen.
+* **SPI-Modus.** Die am häufigsten verwendeten Treiber in diesem Modus sind: TMC5160, TMC2230 usw. Diese Treiberchips kommunizieren synchron über SPI mit dem Hauptcontroller und können ebenfalls durch Änderung der Konfigurationsdatei die Unterteilung, Betriebsstrom, Ruhemodus usw. einstellen.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Installation des Treibers
+
+* Der Treiber muss vor der Installation auf Schäden geprüft werden, um Schäden am Treiber oder der Hauptplatine zu vermeiden.
+* **FLY Treiber:** Wenn die Funktion der unendlichen Nullposition nicht verwendet wird, stellen Sie den DIP-Schalter auf Position 1; wenn die Funktion der unendlichen Nullposition verwendet werden soll, stellen Sie den DIP-Schalter auf ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Achtung!!! Beim Einstecken des Treibermoduls muss sichergestellt werden, dass die Einführungsrichtung korrekt ist, d.h. der EN-Anschluss befindet sich in der oberen linken Ecke, sonst kann es zu Schäden am Treiber oder sogar der Hauptplatine kommen!!! Achten Sie darauf, dass Sie den Treiber mit einem Kühlkörper versehen!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## Anschluss der Schrittmotoren
+
+:::info
+* Egal von welchem Hersteller die zweiphasigen Schrittmotoren produziert werden, sie haben letztlich 4 Leitungen. Egal welche Farben sie haben, Schwarz, Weiß, Grün, Gelb, es sind immer 4 Leitungen. Daher müssen wir die Leitungen in Gruppen aufteilen, nämlich Gruppe A und B.
+* Für zweiphasige Vierleitungsschrittmotoren müssen wir nicht wissen, welche Gruppe A und welche Gruppe B ist; es ist wichtig, dass sie als Gruppe erkannt werden können, und die Motordrehung kann in der Konfiguration geändert werden.
+:::
+
+* In 3D-Druckern werden am häufigsten zweiphasige Vierleitungsschrittmotoren verwendet, deren Prinzip wie in der Abbildung dargestellt ist. Es gibt zwei Methoden, um die Reihenfolge der Schrittmotorenleitungen zu identifizieren:
+    * Verbinden Sie beliebig zwei Phasenleitungen und drehen Sie die Motordrehung von Hand. Wenn ein spürbarer Widerstand entsteht, sind die beiden Phasenleitungen in einer Gruppe. Andernfalls sind sie nicht in einer Gruppe und müssen andere Phasenleitungen getestet werden.
+    * Verwenden Sie ein Multimeter im Durchgangstestmodus, um die Schrittmotorenleitungen zu testen. Wenn sie durchgängig sind, sind sie in einer Gruppe; andernfalls sind sie nicht in einer Gruppe und müssen andere Phasenleitungen getestet werden.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Anschluss der Heizpatrone
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Anschluss der Heizplatte
+
+* **Wechselstromheizplatte:** Bei der Verkabelung des Festkörperrelais achten Sie darauf, dass Ein- und Ausgang nicht verwechselt werden.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **Gleichstromheizplatte:** Bei der Verkabelung der MOS-FET an die Gleichstromheizplatte achten Sie auf die Leistung. Der maximale Strom der Gleichstromheizplatte darf 10A nicht überschreiten. Wenn mehr als 10A erforderlich sind, wird empfohlen, ein externes MOS-FET-Modul zu verwenden, um die Heizplatte zu betreiben, da andernfalls unumkehrbare Schäden an der Hauptplatine entstehen können.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Anschluss der Temperaturfühler
+
+### Einführung in die Temperaturfühler
+
+* Die Anschlussmethode der Temperaturfühler ist in der Abbildung dargestellt. Fragen Sie den Lieferanten nach dem Typ des NTC-Widerstandes.
+
+* Wenn Sie von fly gekauft haben (wie in der Abbildung gezeigt), konfigurieren Sie den sensor_type auf: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* Wenn es sich um einen herkömmlichen NTC 100K handelt (wie in der Abbildung gezeigt), konfigurieren Sie den sensor_type auf: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Anschluss der Hauptplatine an den Temperaturfühler
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-4.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-5.png').default} size="40%" align="center" />
+
+
+
+----
+
+## Anschluss der Lüfter
+
+* **Anschluss der Lüfter**
+
+    :::tip
+
+    * Der MOS-FET muss installiert werden
+
+    :::
+
+    * Anschluss der Lüfter
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## Anschluss der Endschalter
+
+* Endschalter gibt es in zwei Arten: Normal offen (NO) und Normal geschlossen (NC). Generell wird in 3D-Druckern **Normal geschlossen (NC)** empfohlen, da das System bei Problemen mit der Endschalterleitung rechtzeitig eine Fehlermeldung ausgibt, um unnötige Kollisionen zu vermeiden und den Drucker zu schützen.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## Anschluss des Nivellierungssensors
+
+### BL-Touch Anschluss
+
+* Der BL-Touch hat insgesamt fünf Drähte, drei für die erste Gruppe, die für die Stromversorgung und das Ein- und Ausfahren des Sensors zuständig sind, und die zweite Gruppe für Erdung und Signalleitung, die das Endschalt-Signal ausgibt. Beim Anschluss des BL-Touch achten Sie darauf, die Reihenfolge der Drähte genau zu prüfen, da falsche Verkabelung den Sensor und die Hauptplatine dauerhaft beschädigen kann!!! Die Verkabelung ist in der Abbildung dargestellt.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Klicky-Anschluss
+
+* Klicky ist ein dritter Nivellierungssensor, der mit sehr geringen Kosten zu Hause hergestellt werden kann und dennoch eine stabile Leistung und ein gutes Preis-Leistungs-Verhältnis bietet, daher wird er empfohlen. Die Verkabelung ist in der Abbildung dargestellt.
+* Projektadresse: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Projektadresse, klicken Sie hier, um zu springen")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Voron Tap Anschluss
+
+* Tap ist ein auf der Düse basierender Z-Probe, der für die V2- und Trident-Druckerdesigns geeignet ist. Der gesamte Werkzeugkopf bewegt sich, um den Lichtschalter auszulösen, was eine höhere Genauigkeit als normale Endschalter bietet und fast alle Druckplattformen auf dem Markt verwenden kann.
+
+    :::warning
+
+    Es wird nicht empfohlen, den Voron Tap an **24V** anzuschließen, da bestimmte Versionen mit **24V** eine gewisse Wahrscheinlichkeit haben, den Tap-Sensor zu beschädigen. Dies ist kein Problem der Fly-Produkte, sondern ein Designfehler des Voron Tap, bitte beachten Sie dies!!!
+
+    :::
+
+    :::danger
+
+    Achtung: 5V und GND dürfen nicht verwechselt werden, da dies den Tap-Sensor oder sogar die Hauptplatine beschädigen kann!!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+
+
+## Verbindung zur Host-Maschine
+
+* Die Hauptplatine wird über eine Type-B-Schnittstelle an den USB-Anschluss der Host-Maschine angeschlossen oder kann über eine serielle Schnittstelle verbunden werden. Hier wird nur die erstere Methode beschrieben.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----

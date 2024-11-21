@@ -1,0 +1,102 @@
+## Hinweise
+
+    1. Es ist verboten, Geräte außer USB während des Betriebes abzuziehen oder anzuschließen.
+    2. Die Type-C-Schnittstelle kann sowohl zur Stromversorgung als auch als USB-SLAVE-Schnittstelle für das Brennen von Images verwendet werden.
+    3. Um eine ordnungsgemäße Stromversorgung des CM4 zu gewährleisten, verbinden Sie bitte keine anderen Geräte, wenn Sie über die Type-C-Schnittstelle ein Image brennen.
+    4. Das Modul hat keinen Schutz, bitte kurzschließen Sie nicht die Stromquelle.
+    5. Das FLY-Motherboard unterstützt keine POE-Funktion! Bitte verwenden Sie keine POE-Stromversorgung.
+
+:::danger Wichtig
+* Hinweis: EMMC-Versionen können keine SD-Karte verwenden.
+* Hinweis: Versionen ohne EMMC starten mit einer MICRO SD-Karte und benötigen einen Kartenleser zum Brennen des Images.
+* Es wird empfohlen, dass die Übertragungsgeschwindigkeit der Speicherkarte mindestens `Klasse 10` oder höher ist, empfohlen sind Marken wie SanDisk.
+:::
+
+    <ImageView image={require('@site/docs/General/rpi/img/emmc.png').default} size="100%" align="left" />
+
+## Download-Link für das vorinstallierte TFTV2-System für Raspberry Pi
+
+    * Image für Raspberry Pi 3B/3B+/4B/CM4/5B
+    * Dieses Image enthält vorinstalliert klipper, moonraker, mainsail, fulidd, klipper-screen usw.
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## Image-Download
+
+    * Laden Sie das System herunter [Hier klicken zum Herunterladen](https://www.raspberrypi.org/downloads/raspberry-pi-os/) oder wie abgebildet.
+    * Wenn Sie eine Torrent-Datei heruntergeladen haben, verwenden Sie Thunder oder Comet usw., um das System herunterzuladen.
+
+    <ImageView image={require('@site/docs/General/rpi/img/rpi.png').default} size="70%" align="left" />
+
+
+    * Das Image mit Desktop und empfohlener Software `(Raspberry Pi OS with desktop and recommended software)` wird für EMMC 16G oder CM4 Lite mit 16G Speicherkarte oder mehr empfohlen.
+
+:::danger Wichtig
+EMMC-Versionen müssen bei ausgeschaltetem Strom auf den CM4-Brennmodus umgeschaltet werden, Lite-Versionen können das Image direkt auf die Systemkarte brennen.
+:::
+
+:::danger Wichtig
+* EMMC-Versionen müssen in den Brennmodus wechseln, um zu starten, unten finden Sie die Methode, um in den Brennmodus zu gelangen.
+* Lite-Versionen müssen nicht in den Brennmodus wechseln, formatieren Sie einfach und brennen Sie das Image.
+:::
+
+## rpiboot (Bootloader) Download
+
+    * Laden Sie die Software rpiboot herunter und öffnen Sie sie mit Administratorrechten [Hier klicken zum Herunterladen](https://files.waveshare.net/wiki/w/upload/f/f3/Rpiboot_setup.zip)
+    * Installieren Sie die Treiber und starten Sie das Tool. Nach erfolgreicher Installation finden Sie die Anwendung rpiboot.exe im Installationsverzeichnis.
+
+    <ImageView image={require('@site/docs/General/rpi/img/boot.png').default} size="80%" align="left" />
+
+## In den Brennmodus wechseln
+
+    * Verbinden Sie nun den Computer und versorgen Sie das Motherboard mit Strom, im Geräte-Manager des Computers wird ein BCMxxx-Gerät erkannt.
+
+        <ImageView image={require('@site/docs/General/rpi/img/bcm2711.png').default} size="80%" align="left" />
+
+
+    * Führen Sie dann rpiboot aus
+
+        <ImageView image={require('@site/docs/General/rpi/img/rpiboot.png').default} size="80%" align="left" />
+
+
+    * Warten Sie, bis die Ausführung abgeschlossen ist, auf dem Computer wird ein USB-Laufwerk angezeigt.
+
+:::danger Wichtig
+Hinweis: Wenn der Computer kein BCMxxx-Gerät erkennt, könnte ein Schritt fehlerhaft sein. Der BCMxxx muss erkannt werden, damit rpiboot funktioniert, sonst ist es ungültig.
+:::
+
+
+## EMMC oder SD-Karte formatieren
+
+    * Verwenden Sie SDFormatter.exe [Hier klicken zum Herunterladen](https://www.waveshare.net/w/upload/d/d7/Panasonic_SDFormatter.zip) zum Formatieren der SD-Karte.
+
+        <ImageView image={require('@site/docs/General/rpi/img/sdformatter.png').default} size="80%" align="left" />
+
+
+    * Oder verwenden Sie die integrierte Datenträgerverwaltung von Windows, um Partitionen zu löschen. Nach dem Löschen der Partitionen erstellen Sie einfach eine neue Partition.
+    * Rechtsklick auf Diesen PC -> Verwaltung -> Datenträgerverwaltung -> Finden Sie das neu hinzugefügte Laufwerk (wählen Sie das falsche aus und es ist vorbei) -> Löschen Sie alle Partitionen -> Erstellen Sie eine Partition (beliebiges Dateisystem). Wenn das System bereits gebrannt wurde, gibt es zwei Laufwerke, ignorieren Sie es einfach und formatieren oder löschen Sie die Partition.
+
+## Image brennen
+
+    1. Brennen Sie das Image mit Raspberry Pi Imager [Hier klicken zum Herunterladen](https://www.raspberrypi.com/software/) .
+    2. Vor dem Brennen müssen Sie das Konto und das Passwort konfigurieren und SSH aktivieren.
+
+            <ImageView image={require('@site/docs/General/rpi/img/imager.png').default} size="80%" align="left" />
+
+
+    3. Nach dem Brennen wird auf dem Computer ein USB-Laufwerk angezeigt.
+
+## Brennen abgeschlossen und Neustart
+
+    * Nachdem das Brennen abgeschlossen ist, trennen Sie die Stromversorgung, trennen Sie die Verbindung zum Computer, stellen Sie die BOOT-DIP-Schalter zurück und starten Sie das Gerät neu.
+
+## Hinweise für Raspberry Pi Zero2 und Zero2W
+
+    * Diese Hinweise beziehen sich auf die Verwendung des FLY-TFT-Bildschirms in Verbindung mit G2T.
+    * Raspberry Pi Zero2 und Zero2W müssen das Standardanzeigegerät ändern, Sie können den unten stehenden Code direkt ausführen, um die Änderungen vorzunehmen.
+    * Beachten Sie, dass Sie nach der Ausführung neu starten müssen, damit es wirksam wird.
+    ```cfg
+    sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+    ```

@@ -1,0 +1,46 @@
+---
+sidebar_position: 4
+sidebar_label: USB-Brücke CAN-Firmware-Brennen
+---
+
+import CANFLASH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_utoc.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import TF from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# USB-Brücke CAN-Firmware-Brennen
+
+## Kompilierung starten
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann die `Y`-Taste drücken
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Nun sollte die Konfiguration gespeichert und das Terminal verlassen worden sein
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen, dies kann etwas Zeit in Anspruch nehmen
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Bei erfolgreicher Kompilierung wird der folgende Text ausgegeben:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Firmware-Brennen
+
+:::tip
+Führen Sie den folgenden Befehl aus, um die Firmware zu brennen
+:::
+
+    ```bash
+    sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
+    ```

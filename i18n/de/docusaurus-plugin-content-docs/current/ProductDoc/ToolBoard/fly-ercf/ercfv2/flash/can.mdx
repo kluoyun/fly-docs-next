@@ -1,0 +1,56 @@
+---
+sidebar_position: 3
+sidebar_label: CAN-Firmware-Programmierung
+---
+
+import CANFLASH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN-Firmware-Kompilierung
+
+## Kompilierung beginnen
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Wählen Sie GPIO Pins aus, die beim Start des Mikrocontrollers gesetzt werden sollen, Eingabe: gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/can.png').default} size="100%" align="center" />
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann drücken Sie die `Y`-Taste
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Jetzt sollte die Konfiguration gespeichert und die Rückkehr zur Kommandozeile erfolgt
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen, dies kann etwas Zeit in Anspruch nehmen
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn am Ende der folgende Inhalt ausgegeben wird, war die Kompilierung erfolgreich
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Gerät suchen
+
+    <LS />
+
+
+## Firmware programmieren
+
+    * Vor dem Programmieren der Firmware verbinden Sie die Toolboard mit dem UTOC oder einem Mainboard mit Bridge-Firmware, hier ist ein Referenzanschlussdiagramm
+    * Achten Sie darauf, ob die Dip-Schalter in der richtigen Position sind
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Stellen Sie sicher, dass der Widerstandswert zwischen CAN H und CAN L bei Stromausfall mit einem Multimeter etwa `60Ω` beträgt. Wenn der Widerstand `120Ω` beträgt, müssen Sie den `120Ω`-Jumper hinzufügen, wenn er etwa `40Ω` beträgt, müssen Sie den Jumper entfernen
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Überprüfen, ob die Firmware gestartet ist
+
+    * Wenn die Firmware normal startet, leuchtet die LED auf
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

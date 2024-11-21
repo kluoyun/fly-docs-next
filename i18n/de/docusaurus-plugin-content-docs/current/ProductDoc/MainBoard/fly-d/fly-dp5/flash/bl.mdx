@@ -1,0 +1,76 @@
+---
+sidebar_position: 6
+sidebar_label: Katapult-Firmware einspielen
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult-Firmware
+
+## Beschreibung der Katapult-Firmware
+
+    <CANBOOT />
+
+    :::tip
+
+    * D5 nutzt eine USB-Verbindung
+
+    :::
+
+## Betreten des Flash-Modus
+
+    :::tip
+
+    Links ist der `BOOT-Schalter`, rechts der `RESET-Schalter`
+
+    :::
+
+    * Es gibt zwei Methoden, um den Flash-Modus zu betreten
+    * Erste Methode: Wenn das Mainboard vollständig stromlos ist, drücken Sie die BOOT-Taste und verbinden Sie das Datenkabel mit dem Mainboard und Ihrem Gerät.
+    * Zweite Methode: Nachdem Sie das Datenkabel an das Mainboard und Ihr Gerät angeschlossen haben, drücken Sie die BOOT-Taste, dann die RST-Taste, lassen Sie die RST-Taste los und schließlich die BOOT-Taste.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/flash/img/boot.png').default} size="50%" align="center" />
+
+## Firmware einspielen
+    <Tabs>
+        <TabItem value="win" label="Windows-Anleitung zum Einspielen" default>
+            * Katapult-Firmware für DP5 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Anleitung zum Einspielen über Host">
+
+            <Katapult />
+
+            4. Firmware einspielen
+
+            :::tip
+
+            Es muss nur eine der Firmwares eingespielt werden.
+
+            :::
+
+            * Hier ist der Befehl zum Einspielen der Firmware:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_DP5.bin
+                ```
+
+            5. Wenn die folgende Nachricht angezeigt wird, ist das Einspielen erfolgreich: ``File downloaded successfully``
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach dem Einspielen muss das Mainboard einmal vollständig vom Strom getrennt werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>

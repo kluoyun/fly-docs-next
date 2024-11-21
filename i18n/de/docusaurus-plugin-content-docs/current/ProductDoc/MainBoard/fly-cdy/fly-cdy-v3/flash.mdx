@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+sidebar_label: Firmware-Kompilierung und -Flash
+
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+
+# Firmware-Kompilierung und -Flash
+
+    :::tip
+
+    * CDV verwendet standardmäßig eine TF-Karte zum Flashen des Firmware
+    * Bereiten Sie eine TF-Karte mit einer Kapazität von nicht mehr als `32G` vor
+    * No-Name-Speicherkarten können das Flashen fehlschlagen lassen, verwenden Sie bitte möglichst die unten empfohlenen Speicherkarten zum Aktualisieren der Firmware
+    * Die Übertragungsgeschwindigkeit der TF-Karte sollte idealerweise `class10` oder höher sein, empfehlenswert sind Marken wie SanDisk
+
+    :::
+
+
+
+## Vorbereitungen
+
+    <SSH />
+
+## Kompilieren des Klipper-Firmware
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann drücken Sie die `Y`-Taste
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Die Konfiguration sollte jetzt gespeichert und die Konsole verlassen sein
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen, dies kann etwas dauern
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn die folgende Ausgabe erfolgt, war die Kompilierung erfolgreich
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * Das folgende Bild zeigt ein Beispiel für eine erfolgreiche Kompilierung
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## Flashen der Firmware
+
+:::danger Wichtig
+* CDV ist standardmäßig mit einer TF-Karten-Firmware geflasht
+:::
+
+    <TF />

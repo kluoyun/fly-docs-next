@@ -1,0 +1,140 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import APM from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult-Firmware
+
+## Katapult-Firmware-Erklärung
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 V2 kann nur über CAN angeschlossen werden
+    * Hier werden CAN-Firmware mit 500K und 1M Bitrate bereitgestellt
+
+    :::
+
+
+    :::warning Wichtiger Hinweis
+
+    * APMF072 kann nur über den Computer mit Firmware geflasht werden
+    * STM32F103 kann nur über die Host-Software die Firmware aktualisieren
+
+    :::
+
+
+## Flash-Modus betreten
+
+    :::tip
+
+    Der markierte Bereich ist der BOOT-Schalter
+
+    :::
+
+    * STM32F103 benötigt diesen Schritt nicht!!!
+    * Bei vollständig ausgeschalteter Hauptplatine, den BOOT-Knopf gedrückt halten und dann das Datenkabel an die Hauptplatine und Ihr Gerät anschließen
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Firmware flashen
+    <Tabs>
+        <TabItem value="win" label="STM32F072 mit Windows flashen" default>
+
+            * Katapult-Firmware für SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="STM32F072 mit Host-Software flashen">
+            
+            <Katapult />
+
+            4. Firmware flashen
+
+            :::tip
+
+            Es muss nur eine der Firmwares geflasht werden
+
+            :::
+
+            * Untenstehend ist der Befehl zum Flashen der Firmware mit einer CAN-Bitrate von 500K
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_500K.BIN
+            ```
+                       
+            * Untenstehend ist der Befehl zum Flashen der Firmware mit einer CAN-Bitrate von 1M
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_1M.BIN
+            ```
+
+
+            5. Wenn die untenstehende Abbildung den Text "File downloaded successfully" zeigt, war das Flashen erfolgreich
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach dem Flashen muss die Hauptplatine vollständig einmal ausgeschaltet werden.
+
+            :::
+
+        </TabItem>
+        <TabItem value="apm" label="APM32F072 mit Windows flashen" default>
+
+           * Katapult-Firmware für SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+
+            <APM />
+            
+        </TabItem>
+        <TabItem value="103" label="STM32F103 mit Klipper Firmware aktualisieren" default>
+
+            <LS />
+
+            * Vorab kompilierte Firmware herunterladen
+            * Hier sind alle vorab kompilierte Firmwares
+            * Beachten Sie, dass die Host-Software eine Internetverbindung benötigt, um die Firmware zu installieren
+            * Die Host-Software muss die folgenden Befehle ausführen, um das Firmware-Paket herunterzuladen
+
+            ```bash
+            cd && git clone https://github.com/FengHua741/FLY_Katapult.git
+            ```
+
+            * Wenn Sie das Firmware-Paket bereits heruntergeladen haben, wird empfohlen, es zu aktualisieren, bevor Sie die weiteren Schritte ausführen
+
+            ```bash
+            cd ~/FLY_Katapult && git pull
+            ```
+
+            * Diese Methode aktualisiert direkt die Katapult-Firmware der Toolboard über CAN
+            * Ersetzen Sie `<Toolboard ID>` durch die CAN-ID der STM32F103-Hauptplatine
+            * Untenstehend ist der Befehl zum Aktualisieren der Firmware mit einer CAN-Bitrate von 1M für die Version 103
+
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_1M.BIN  -u <Toolboard ID>
+            ```
+
+            * Untenstehend ist der Befehl zum Aktualisieren der Firmware mit einer CAN-Bitrate von 500K für die Version 072
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_500K.BIN  -u <Toolboard ID>
+            ```
+                    
+                </TabItem>
+            </Tabs>
+
+## Bestätigen Sie, ob die Firmware gestartet ist
+
+    * Wenn die Firmware korrekt startet, blinkt die LED
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.png').default} size="100%" align="center" />

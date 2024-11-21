@@ -1,0 +1,89 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, ignorieren Sie bitte
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult-Firmware
+
+## Beschreibung der Katapult-Firmware
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 LIS3DH unterstützt CAN
+    * Hier wird nur die CAN-Firmware in 500K und 1M Bitrate bereitgestellt
+    :::
+
+## Betreten des Programmiermodus
+
+    :::tip
+
+    Der markierte Bereich ist der `BOOT-Knopf`
+
+    :::
+
+    * Bei vollständig ausgeschaltetem Hauptboard, kurzschließen Sie den BOOT-Knopf und verbinden Sie dann das Datenkabel mit dem Hauptboard und Ihrem Gerät
+    * Dann lösen Sie die Kurzschlussverbindung des BOOT-Knopfes
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/boot.png').default} size="50%" align="center" />
+
+## Firmware programmieren
+    <Tabs>
+        <TabItem value="win" label="Windows-Programmieranleitung" default>
+
+            * Katapult-Firmware für SHT36_LIS3DH <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_LIS3DH.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Host-Programmieranleitung">
+            
+            <Katapult />
+
+            4. Firmware programmieren
+
+            :::tip
+
+            Sie müssen nur eine Firmware programmieren
+
+            :::
+
+            * Hier ist der Befehl zum Programmieren der Firmware mit 500K CAN-Bitrate
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_500K.uf2
+                ```
+                        
+                * Hier ist der Befehl zum Programmieren der Firmware mit 1M CAN-Bitrate
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_1M.uf2
+                ```
+
+
+            5. Wenn die folgende Meldung erscheint, war das Programmieren erfolgreich
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+
+            :::tip
+
+            Nach Abschluss des Programmierens muss das Hauptboard einmal vollständig von der Stromversorgung getrennt werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Überprüfen, ob die Firmware gestartet ist
+
+    * Wenn die Firmware normal startet, wird die LED blinken
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.png').default} size="100%" align="center" />

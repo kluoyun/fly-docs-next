@@ -1,0 +1,51 @@
+---
+sidebar_position: 1
+sidebar_label: Anleitung zur Firmware-Flashen
+
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+    :::tip
+
+    * MMU bietet Katapult-Firmware mit USB- und CAN-Verbindung an, die bei Bedarf selbst geblinkt werden kann
+    * MMU wird werkseitig mit der Katapult-Firmware für CAN-Verbindung geliefert, die Geschwindigkeit beträgt 1M
+    * <Button variant="contained" disableElevation href="./bl">Katapult-Firmware flashen</Button>
+
+    :::
+
+# Anleitung zur Firmware-Flashen
+
+    * MMU kann über drei Verbindungsarten mit dem Host-PC verbunden werden: RS232, CAN, USB
+    * Dabei werden RS232 und CAN über `XT30(2+2)-F` verbunden, USB über ein `TYPE-C`-Kabel mit Datenübertragungsfunktion
+    * Hier ist das Aussehen des `XT30(2+2)-F`-Kabels
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Wichtig
+* Die Firmware des Hauptboards muss über Katapult geblinkt werden
+* Wenn das Hauptboard bereits mit Katapult geblinkt wurde, ist der letzte Schritt zum Flashen der Katapult-Firmware nicht erforderlich, dies dient nur als Sicherheitsmaßnahme, falls die Katapult-Firmware des Hauptboards nicht erfolgreich geblinkt wurde
+* Man kann zweimal schnell hintereinander den Reset-Taster drücken und prüfen, ob eine LED am Hauptboard blinkt. Wenn ja, bedeutet dies, dass das Hauptboard sich im Katapult-Modus befindet
+:::
+
+## Wie erkenne ich, welche Firmware ich benötige
+
+    * MMU kann auf folgende Weise mit dem Host-PC verbunden werden
+    * <Button variant="contained" disableElevation href="./can">CAN-Firmware flashen</Button>
+        * Vorteil: Wenn die `Katapult`-Firmware geblinkt wurde, kann die Firmware ohne Berührung des Hauptboards aktualisiert werden und unterstützt Bus-Verbindungen
+        * Nachteil: Könnte bei gleichzeitiger Nutzung von `KlipperScreen` zu Home-Timeout-Fehlern führen.
+        * Hinweis: Wenn CAN verwendet werden soll, stellen Sie sicher, dass der Host-PC CAN unterstützt und dass ein UTOC oder ein Hauptboard mit Bridge-Firmware verwendet wird
+    * <Button variant="contained" disableElevation href="./rs232">RS232-Firmware flashen</Button>
+        * Vorteil: Keine spezielle Software erforderlich, zuverlässige und stabile Kommunikation
+        * Nachteil: Zum Aktualisieren der Firmware muss manuell in den DFU-Modus gewechselt werden oder zweimal den RST-Taster drücken, um in den `Katapult`-Modus zu gelangen
+        * Hinweis: Erfordert eine Verbindung mit G2T oder UTOR
+    * <Button variant="contained" disableElevation href="./usb">USB-Firmware flashen</Button>
+        * Vorteil: Wenn die Katapult-Firmware geblinkt wurde, kann die Firmware ohne Berührung des Hauptboards aktualisiert werden. Bei Verwendung von Speicherkarten oder DFU-Flashen muss die Firmware nach altem Schema aktualisiert werden, zuverlässige und stabile Kommunikation
+        * Nachteil: Mehrere USB-Geräte könnten die Datenübertragung beeinträchtigen
+
+## Erklärung der Katapult-Firmware
+
+    <CANBOOT />

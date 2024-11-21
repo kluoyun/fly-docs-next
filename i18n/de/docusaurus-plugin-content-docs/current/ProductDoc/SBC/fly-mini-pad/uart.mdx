@@ -1,0 +1,36 @@
+---
+sidebar_position: 9
+sidebar_label: Verbindung des Mainboards über UART
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Konfigurationsmethode
+
+:::danger Wichtiger Hinweis
+Bitte beachten Sie, dass nach Verwendung dieser Methode kein externer Beschleunigungssensor über die Beschleunigungsschnittstelle des mini-pad angeschlossen werden kann.
+:::
+
+    * Öffnen Sie den BOOT-Laufwerk und suchen Sie die Datei `armbianEnv.txt` und öffnen Sie sie
+    * Ändern Sie **uart2** in `overlays=usbhost2 usbhost3 uart2` zu **uart3** und speichern Sie die Änderung
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart.png').default} size="80%" align="center" />
+
+## Anschlussmethode
+
+    * Beachten Sie, dass der TX des mini-pad an den RX des mit der seriellen Firmware geflashten Mainboards angeschlossen werden muss
+    * Beachten Sie, dass der RX des mini-pad an den TX des mit der seriellen Firmware geflashten Mainboards angeschlossen werden muss
+    * Beachten Sie, dass eine gemeinsame Erdung erforderlich ist
+    * Andernfalls kann keine Verbindung zum mit der seriellen Firmware geflashten Mainboard hergestellt werden
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart1.png').default} size="80%" align="center" />
+
+## Klipper-Referenzkonfiguration
+
+    ```cfg
+    [mcu]
+    serial: /dev/ttyS3
+    baud: 250000
+    #   Verwenden Sie diese Baudrate. Standardwert ist 250000
+    restart_method:command
+    ```

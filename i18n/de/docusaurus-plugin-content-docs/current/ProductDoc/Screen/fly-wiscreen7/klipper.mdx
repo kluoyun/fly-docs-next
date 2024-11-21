@@ -1,0 +1,114 @@
+---
+sidebar_position: 4
+sidebar_label: WIFI-Verbindung und Klipper-Konfiguration
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+import Button from "@mui/material/Button";
+
+
+
+
+## WIFI-Verbindung und grundlegende Operationen
+
+    [7-Zoll-WiFi-Kapazitivbildschirm zur Steuerung mehrerer Maschinen](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
+
+## Klipper-Konfiguration
+
+### LED-Konfiguration
+
+    ```cfg
+    [led LED]
+    white_pin:PA15
+    ```
+
+### PTC-Konfiguration
+
+    ```cfg
+    [heater_generic warehouse]
+    heater_pin:E_CS
+    sensor_type:ATC Semitec 104GT-2
+    sensor_pin:PA1
+    min_temp:-270
+    max_temp:600
+    control = pid
+    pid_kp = 16.804
+    pid_ki = 0.794
+    pid_kd = 88.854
+    ```
+
+### FAN-Konfiguration
+
+    ```cfg
+    [fan_generic fan1]
+    pin: FAN1
+    ```
+
+
+    ```cfg
+    [fan_generic fan2]
+    pin: FAN2
+    ```
+
+ 
+
+### Benutzerdefinierter Gcode
+
+    * Nach dem Herunterziehen des Bildschirms erscheint benutzerdefinierter Gcode,
+    * Ein Button sendet mehrere Gcode-Formate:
+    * Beispiel:
+
+    ```cfg
+    G91 
+    G1 X10 F6000
+    G90
+    ```
+
+    * Eingabeformat auf dem Bildschirm: (ab der zweiten Zeile, jedes Kommando vorangestellt mit \n)
+
+    ```cfg
+    G91\nG1 X10 F6000\nG90
+    ```
+
+
+
+## Verwendung von Objektausnahmen
+
+    * Ersetzen Sie moonraker
+
+    * Verbinden Sie sich zuerst über SSH und stellen Sie sicher, dass Sie normales Internet haben
+
+    1. Sichern Sie die Moonraker-Datei
+
+    ```bash
+    mv ~/moonraker ~/moonraker-bak
+    ```
+
+    2. Stoppen Sie den Moonraker-Dienst
+
+    ```bash
+    sudo systemctl restart moonraker
+    ```
+
+    3. Ziehen Sie Moonraker
+
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
+    ```
+
+    4. Greifen Sie im Browser auf die Oberstation zu, finden Sie `moonraker.conf`, fügen Sie es hinzu und starten Sie das System neu
+
+    ```bash
+    [network]
+    ```
+
+    5. Geben Sie dann im Browser die untenstehende Adresse ein, wobei die IP durch die IP der Oberstation ersetzt werden muss
+
+    ```bash
+    http://ip:7125/server/network/wifi/scan
+    ```
+
+* Dieser Schritt zeigt, dass der Vorgang abgeschlossen ist
+    
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.png').default} size="100%" align="left" />

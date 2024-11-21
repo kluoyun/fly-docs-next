@@ -1,0 +1,79 @@
+---
+sidebar_position: 3
+sidebar_label: FLY PI Benutzerhandbuch
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# Benutzerhandbuch für FLY-Hauptgerät
+
+## Hinweise:
+
+    * Stellen Sie sicher, dass das Hauptgerät vor dem Installieren der Erweiterungsplatine ausgeschaltet ist.
+    * Vermeiden Sie die Verwendung der Erweiterungsplatine in feuchter oder staubiger Umgebung.
+    * Beim Installieren des Bildschirms darauf achten, keine Stromzufuhr zu haben und die Richtung der Bildschirmleitung zu beachten, um Schäden zu vermeiden.
+    * Beim Installieren des Lüfters auf die Strom- und Spannungsangaben des Lüfters achten, um Schäden zu vermeiden.
+    * Das FLY-Hauptgerät kann nur die mittlere RS232-Schnittstelle, den FAN-Anschluss und die FPC-Bildschirm-Schnittstelle verwenden!!!
+    * Im FLY-Hauptgerät können die G2T-Hauptgeräte `PI V2`, `C8`, `PRO X10` verwendet werden
+    * Die Serie `Gemini` und `PI V1` können nicht verwendet werden
+
+## Installation von G2T
+
+    * Nachfolgend ein Beispiel:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.png').default} size="60%" align="left" />
+    * Verdrahtungsbeispiel:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## Methode zur Verbindung des Werkzeugboards über die eingebaute RS232-Schnittstelle
+
+    * Nach dem Flashen des neuesten Systems auf das FLY-Hauptgerät müssen Sie auf **die IP-Adresse des Hauptgeräts + :9999** zugreifen
+    * Das FLY-Hauptgerät kann nur die mittlere RS232-Schnittstelle, den FAN-Anschluss und die FPC-Bildschirm-Schnittstelle verwenden!!!
+    * Gehen Sie in die Systemeinstellungen und suchen Sie **UART1** und speichern und neustarten
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.png').default} size="100%" align="left" />
+
+    * Nachfolgend eine Beispielkonfiguration
+
+        ```cfg
+        [mcu] 
+        serial: /dev/ttyS1
+        baud: 250000
+        restart_method:command
+        ```
+
+## Verwendung des eingebauten 5V-Lüfters
+
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+        ```cfg
+        [mcu host]         
+        serial: /tmp/klipper_host_mcu 
+
+        [temperature_sensor FLY Pi]
+        sensor_type: temperature_host
+
+        [temperature_fan core_fan]      # Lüfter für das Hauptgerät
+        pin: host:gpiochip1/gpio102     # Pin für den Lüfter des Hauptgeräts
+        max_power: 1.0
+        sensor_type: temperature_host   # Setze auf die Hauptgerät-Temperatur
+        control:watermark               # Kontrollmethode
+        target_temp: 48                 # Starttemperatur des Lüfters des Hauptgeräts
+        min_temp: 0                     # Minimale Temperatur, unterhalb derer ein Fehler angezeigt wird
+        max_temp: 90                    # Maximale Temperatur, oberhalb derer ein Fehler angezeigt wird
+        off_below: 0.10
+        kick_start_time: 0.50
+        max_speed: 0.8                  # Maximale Geschwindigkeit, 80% der Maximalleistung
+        min_speed: 0.3                  # Minimale Geschwindigkeit, 30% der Maximalleistung
+
+        ```
+
+## Bildschirmverwendung
+
+    * Nach dem Flashen des neuesten Systems auf das FLY-Hauptgerät müssen Sie auf **die IP-Adresse des Hauptgeräts + :9999** zugreifen
+        * fly-tft-v2-c ist die Auswahl für den 3,5-Zoll-TFT-Kapazitätstouchscreen
+        * fly-tft-v2-r ist die Auswahl für den 3,5-Zoll-TFT-Resistivtouchscreen
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.png').default} size="100%" align="left" />
+
+### Bildschirminstallation
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.png').default} size="60%" align="left" />

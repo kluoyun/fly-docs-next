@@ -1,0 +1,62 @@
+---
+sidebar_position: 11
+sidebar_label: I2C-Verwendung
+---
+
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+# I2C-Verwendung
+
+    * Verwenden Sie die I2C-Schnittstelle des Host-PCs mit 40 PIN
+    * Dieser Kurs verwendet den I2C-Sensor FLY-PI V2LM75 und I2C2 als Beispiel!!!
+    * Beachten Sie, dass I2C1 nicht verwendet werden kann, wenn es bereits von anderen Geräten belegt ist!!!
+    * Stellen Sie sicher, dass die Verkabelung fest und stabil ist!!!
+
+## Öffnen von I2C über FLY Tools
+
+    * Suchen Sie nach Overlays und wählen Sie hinterher i2c2 und i2c0
+    * Beachten Sie, dass I2C1 nicht verwendet werden kann, wenn es bereits von anderen Geräten belegt ist!!!
+    * Speichern Sie und starten Sie neu
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c.png').default} size="80%" align="center" />
+
+
+## Verkabelung und Suche
+    * Dieser Kurs verwendet PI V2 als Referenz
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c2.png').default} size="80%" align="center" />
+
+    * Nach dem Herstellen einer SSH-Verbindung zum Host-PC geben Sie den untenstehenden Befehl ein, um die folgende Ausgabe zu erhalten
+    * Wenn Sie `I2C0` verwenden, müssen Sie die `2` im folgenden Befehl durch `0` ersetzen
+
+    ```cfg
+    sudo i2cdetect -y -r 2
+    ```
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c1.png').default} size="80%" align="center" />
+
+    * Beachten Sie, dass bei normalem Betrieb nach dem Drücken der Eingabetaste sofort der obige Inhalt mit einer Adresse angezeigt wird
+    * Beachten Sie, dass die Adresse zufällig ist
+    * Beachten Sie, dass bei falscher Verkabelung, umgekehrter Verkabelung, nicht geöffneter Konfiguration oder beschädigtem Modul die Ausgabe nicht normal ist
+    * Die Adresse muss von Hexadezimal in Dezimal umgerechnet und dann hinter `i2c_address:` in die Konfiguration eingetragen werden
+    * Sie können einen Online-Formatkonverter im Browser verwenden, um die Konvertierung durchzuführen
+
+## Konfiguration
+
+    ```cfg
+    [mcu host]
+    serial: /tmp/klipper_host_mcu
+
+    [temperature_sensor my_sensor]
+    sensor_type: LM75
+    i2c_address:72
+    # #   Standard ist 72 (0x48). Normaler Bereich ist 72-79 (0x48-0x4F) und die 3
+    # #   niedrigsten Bits der Adresse werden über Pins auf dem Chip konfiguriert
+    # #   (normalerweise mit Jumpern oder festverdrahtet).
+    i2c_mcu:host
+    i2c_bus:i2c.2
+    # i2c_software_scl
+
+    ```

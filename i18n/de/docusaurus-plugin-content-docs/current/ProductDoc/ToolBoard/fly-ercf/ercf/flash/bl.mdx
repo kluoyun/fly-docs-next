@@ -1,0 +1,89 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult-Firmware
+
+## Katapult-Firmware-Beschreibung
+
+    <CANBOOT />
+
+    :::tip
+
+    * ERCF unterstützt CAN und USB
+    * Hier werden CAN-Firmware für 500K und 1M Bitrate angeboten
+    :::
+
+## Betriebsmodus aufrufen
+
+    :::tip
+
+    Der markierte Bereich ist die `BOOT-Taste`
+
+    :::
+
+    * Um in den Betriebsmodus zu gelangen, muss die Hauptplatine vollständig stromlos gemacht werden. Drücken Sie die BOOT-Taste und verbinden Sie dann das Datenkabel mit der Hauptplatine und dem Host.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/boot.png').default} size="100%" align="center" />
+
+## Firmware aufspielen
+    <Tabs>
+        <TabItem value="win" label="Windows-Firmware-Tutorial" default>
+        
+            * Katapult-Firmware für ERCF <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ERCF.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Host-Firmware-Tutorial">
+            
+            <Katapult />
+
+            4. Firmware aufspielen
+
+            :::tip
+
+            Sie müssen nur eine der Firmwares aufspielen
+
+            :::
+
+            * Unten ist der Befehl zum Aufspielen der Firmware mit 500K CAN-Bitrate
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCF_CANBOOT_CAN_500K.uf2
+                ```
+                       
+            * Unten ist der Befehl zum Aufspielen der Firmware mit 1M CAN-Bitrate
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCF_CANBOOT_CAN_1M.uf2
+                ```
+            * Unten ist der Befehl zum Aufspielen der USB-Firmware
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/FLY_ERCF_CANBOOT_USB.uf2
+                ```
+
+            5. Wenn die folgende Nachricht erscheint, war das Aufspielen erfolgreich
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach dem Aufspielen der Firmware muss die Hauptplatine einmal vollständig stromlos gemacht werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Überprüfen, ob die Firmware gestartet ist
+
+    * Wenn die Firmware normal startet, wird die LED blinken
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.png').default} size="100%" align="center" />

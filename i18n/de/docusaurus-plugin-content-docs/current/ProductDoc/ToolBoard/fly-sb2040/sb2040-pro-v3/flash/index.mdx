@@ -1,0 +1,51 @@
+---
+sidebar_position: 1
+sidebar_label: Anleitung zur Firmware-Flashen
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * SB2040 PRO V3 wird mit vorgeflashter CAN-Katapult-Firmware ausgeliefert, mit einer Geschwindigkeit von 1M.
+    * Die CAN-Katapult-Firmware des SB2040 PRO V3 hat Geschwindigkeiten von 500K und 1M. Diese kann bei Bedarf selbst geändert werden.
+    * <Button variant="contained" disableElevation href="./bl">Katapult-Firmware flashen</Button>
+
+
+    :::
+
+# Anleitung zur Firmware-Flashen
+
+    * SB2040 PRO V3 kann über RS232 oder CAN mit dem Host-PC verbunden werden.
+    * RS232 und CAN benötigen eine Verbindung mit `XT30(2+2)-F`.
+    * Unten ist das Design des `XT30(2+2)-F` Datenkabels dargestellt
+    <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Zu beachten
+* Das Flashen der Hauptplatine-Firmware erfordert das Flashen von Klipper über Katapult.
+* Wenn sicher ist, dass die Hauptplatine bereits mit Katapult geflasht wurde, ist das Flashen der Katapult-Firmware am Ende nicht notwendig. Dies ist nur zur Sicherheit, falls das Flashen der Katapult-Firmware auf der Hauptplatine fehlgeschlagen ist.
+* Es kann schnell zweimal zurückgesetzt werden, um zu überprüfen, ob eine LED auf der Hauptplatine aufleuchtet. Wenn ja, bedeutet dies, dass die Hauptplatine in den Katapult-Modus gewechselt hat.
+:::
+
+## Wie man herausfindet, welche Firmware benötigt wird
+
+    * SB2040 PRO V3 kann auf folgende Weise mit dem Host-PC verbunden werden
+    * <Button variant="contained" disableElevation href="./can">CAN-Firmware flashen</Button>
+        * Vorteile: Wenn die `Katapult`-Firmware geflasht wurde, kann die Firmware ohne Berührung der Hauptplatine aktualisiert werden und unterstützt Bus-Verbindungen.
+        * Nachteile: Kann Fehler wie Timeout bei der Homing-Funktion verursachen, wenn zusammen mit `KlipperScreen` verwendet wird.
+        * Hinweis: Um CAN zu verwenden, muss sichergestellt werden, dass der Host-PC CAN unterstützt und ein UTOC oder eine Hauptplatine mit Bridge-Firmware verwendet wird.
+    * <Button variant="contained" disableElevation href="./rs232">RS232-Firmware flashen</Button>
+        * Vorteile: Keine spezielle Software erforderlich, zuverlässige Kommunikation, stabil.
+        * Nachteile: Um die Firmware zu aktualisieren, muss manuell in den DFU-Modus gewechselt werden oder durch Doppelklicken auf RST in den `Katapult`-Modus kommen.
+        * Hinweis: Erfordert die Verwendung von G2T oder UTOR.
+
+## Katapult-Firmware-Erklärung
+
+    
+    <CANBOOT />

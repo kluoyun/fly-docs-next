@@ -1,0 +1,33 @@
+import ImageView from '@site/src/components/ImageView';
+
+## Vorsichtsmaßnahmen vor der Gerätesuche
+
+    * Bitte verbinden Sie sich vor dem Abrufen der ID [über SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Klicken Sie hier, um zu springen")
+    * Stellen Sie sicher, dass das Kabel zwischen dem unteren und dem oberen Gerät eine Datenübertragungsfunktion hat
+    * Nach dem Verbinden über SSH zum oberen Gerät geben Sie `lsusb` ein und drücken Sie die Eingabetaste. Es könnten folgende Geräte angezeigt werden:
+    * Falls das System `lsusb` nicht unterstützt, führen Sie den unten stehenden Befehl zur Installation aus:
+    * Wenn nach `lsusb` kein Gerät angezeigt wird, wechseln Sie das obere Gerät!
+    ```
+    sudo apt-get install usbutils
+    ```
+        <ImageView image={require('@site/docs/General/get-id/img/lsusb.png').default} size="100%" align="left" />
+        <ImageView image={require('@site/docs/General/get-id/img/rs232.png').default} size="100%" align="left" />
+    * Vergewissern Sie sich, dass die Firmware des Hauptboards die richtige Firmware hat
+    * Wenn es sich um eine USB-Firmware handelt, sollte nach `lsusb` `1d50:614e` angezeigt werden
+    * Wenn es sich um eine USB-Brücke-CAN-Firmware handelt, sollte nach `lsusb` `1d50:606f` angezeigt werden
+    * Wenn es sich um eine RS232-Firmware handelt, benötigen Sie UTOR oder G2T, wobei G2T keine Firmware-Suche erfordert, und UTOR nach `lsusb` `1a86:7523` anzeigen sollte
+
+## Vorsichtsmaßnahmen beim Suchen nach Geräten
+
+:::danger Zu beachten
+Die Befehle zum Suchen nach IDs dürfen nicht gemischt werden!!!
+:::
+
+    * Achten Sie darauf, dass USB-Firmware nur mit der USB-ID-Suchmethode verwendet werden kann
+    * Achten Sie darauf, dass USB-Brücke-CAN-Firmware nur mit der CAN-ID-Suchmethode verwendet werden kann
+    * Achten Sie darauf, dass RS232-Firmware nur mit der RS232-ID-Suchmethode verwendet werden kann
+    * Wenn `0483:df11` angezeigt wird, könnte es sein, dass die Firmware gebrannt wurde, aber das Hauptboard nicht abgeschaltet und neu gestartet wurde. Falls dies nach einem erneuten Einschalten des Hauptboards weiterhin der Fall ist, überprüfen Sie, ob DFU (Jumper/Schalter/Knopf) getrennt ist
+    * Wenn `2e8a:0003` angezeigt wird, könnte die falsche Firmware gebrannt worden sein. Beachten Sie, dass RP2040 nur die kompilierten UF2-Firmware-Dateien brennen kann, nicht andere Firmware-Dateien. Nach dem Auftreten von `2e8a:0003` muss der BOOT (Jumper/Schalter/Knopf) getrennt werden, sonst wird das Brennen fehlschlagen!!!
+    * Die UF2-Firmware für RP2040 wird nur beim Auswählen von `No bootloader` während des Kompilierens erstellt
+```
+

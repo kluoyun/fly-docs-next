@@ -1,0 +1,66 @@
+---
+sidebar_position: 5
+sidebar_label: Methode zur Sicherung der Systemkonfiguration bei einem Absturz
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+# Methode zur Sicherung der Konfiguration
+
+:::danger Wichtig
+
+* Diese Anleitung gilt für FLY-Pi, Raspberry Pi, Orange Pi und andere Host-Computer.
+* Wenn Sie EMMC verwenden, müssen Sie in den Brennmodus eintreten können, sonst ist diese Anleitung nicht anwendbar.
+* Diese Anleitung basiert auf dem Betrieb unter Windows. Formatieren Sie keine unbekannten Laufwerke!!!
+* Formatieren Sie nicht!!!  Formatieren Sie nicht!!! Formatieren Sie nicht!!!
+
+:::
+
+## Herunterladen der benötigten Software
+
+    * Klicken Sie auf den Link zum Herunterladen. Die Webseite wird Ihnen anzeigen, welche Version für Ihren Computer geeignet ist.
+    * Die Software ist eine grüne Version und muss nicht installiert werden. Nach dem Herunterladen kann sie entpackt und verwendet werden.
+    * <Button variant="contained" disableElevation href="https://www.diskgenius.cn/download.php">DG Festplattenwerkzeug</Button>
+
+## Backup starten
+
+    :::info
+    * Formatieren Sie nicht!!!
+    * Nach dem Formatieren gibt es keine Möglichkeit zur Wiederherstellung!!!
+    * Wenn es sich um eine TF-Karte handelt, können Sie diese direkt an den Computer anschließen.
+    * Wenn es sich um EMMC handelt, müssen Sie manuell in den Brennmodus eintreten!!!
+    :::
+
+### Verbindung
+
+    * Schließen Sie das zu sichernde System an den Computer an.
+    * Öffnen Sie `DiskGenius.exe`.
+    * Wenn alles normal ist, wird die zu sichernde Festplatte angezeigt.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/backup/boot.png').default} size="80%" align="center" />
+    
+### Suche
+
+    * Klicken Sie links auf die Hauptpartition, dann oben auf „Dateien durchsuchen“, und es werden unten Dateien angezeigt.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/backup/home.png').default} size="80%" align="center" />
+    * Doppelklicken Sie auf `home`, um hineinzugehen.
+    * Normalerweise gibt es nur einen Ordner, und der Name ist der Name Ihres Systembenutzers.
+    * Wenn es zwei oder mehr gibt, müssen Sie selbst feststellen, welcher Ihre Systemkonfiguration enthält.
+    * Doppelklicken Sie dann darauf.
+    * Suchen Sie nach `printer_data`.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/backup/printer-data.png').default} size="80%" align="center" />
+    * Der Ordner `printer_data` enthält Ihre Druckdateien, Klipper-Konfigurationen, Klipper-Protokolle usw. und kann vollständig exportiert werden.
+
+### Konfiguration exportieren
+
+    * Rechtsklicken Sie auf `printer_data`, und es wird die folgende Eingabeaufforderung angezeigt.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/backup/export.png').default} size="40%" align="center" />
+    * Wählen Sie das Verzeichnis, in das Sie speichern möchten, oder exportieren Sie direkt.
+    * Bestätigen Sie den Export.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/backup/export1.png').default} size="80%" align="center" />
+    * Öffnen Sie die exportierten Dateien und finden Sie `config`. Hier befinden sich Ihre Systemkonfigurationen.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/backup/export2.png').default} size="80%" align="center" />
+    * Der Export der Konfiguration ist abgeschlossen.
+    * Achten Sie darauf, dass die `moonraker`-Datei nicht willkürlich auf andere Systeme hochgeladen wird, da Unterschiede im System dazu führen können, dass Klipper keine Verbindung herstellen kann.
+

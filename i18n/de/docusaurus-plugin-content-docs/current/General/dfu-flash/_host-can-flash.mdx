@@ -1,0 +1,66 @@
+import ImageView from '@site/src/components/ImageView';
+
+import Button from "@mui/material/Button";
+
+
+    :::tip
+
+    * Es wird empfohlen, während des Druckvorgangs weder nach der ID zu suchen noch Firmware zu aktualisieren
+    * Die CAN-Firmware von Katapult und die CAN-Firmware von Klipper haben für das gleiche Hauptboard oder Werkzeugboard völlig identische IDs
+
+    :::
+
+    :::warning
+
+    * Stellen Sie sicher, dass das CAN-Netzwerk des Host-Computers bereits konfiguriert ist
+    * Nach `lsusb` kann der Befehl zur Suche nach der CAN-ID erst verwendet werden, wenn `1d50:606f` angezeigt wird
+    * Die CAN-Geschwindigkeit des Werkzeugboards muss mit der des Host-Computers übereinstimmen, sonst kann die ID nicht gefunden und das Flashing nicht durchgeführt werden
+
+    :::
+
+
+* Führen Sie den folgenden Befehl aus, um die CANBus UUID abzufragen:
+
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+
+    * Nach der Eingabe werden je nach Ihrem Gerät die folgenden Situationen auftreten, untenstehend sind Referenzen:
+        * Erstens: Hauptboard mit gebrückter Firmware, eine ID wird angezeigt und es wird `Application: Klipper` angezeigt
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.png').default} size="100%" align="left" />  
+        * Zweitens: Hauptboard mit gebrückter Firmware und Werkzeugboard, das Firmware benötigt, zwei IDs werden angezeigt
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.png').default} size="100%" align="left" />  
+        * Drittens: Verwendung von UTOC zusammen mit einem Werkzeugboard, das Firmware benötigt
+        * Hinweis: UTOC zeigt keine ID an
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.png').default} size="100%" align="left" />  
+        * Viertens: Keine ID-Anzeige, normalerweise wird sie von Klipper verwendet, falsche CAN0-Geschwindigkeit des Host-Computers, ungewöhnliche Verkabelung
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.png').default} size="100%" align="left" />  
+
+    * Normalerweise, wenn das Werkzeugboard im CANBOOT-Modus ist, wird `Application: CanBoot` angezeigt und die entsprechende Firmwareleuchte blinkt. In diesem Fall müssen Sie die Klipper-Firmware flashen, sonst kann keine Verbindung hergestellt werden!!!
+    * Hinweis: Wenn es sich um Klipper-Firmware handelt und die ID bereits in die Konfiguration eingetragen wurde, wird die ID nicht angezeigt und von Klipper verwendet. Sie müssen die entsprechende ID blockieren und das Hauptboard vollständig von der Stromversorgung trennen und neu starten.
+
+    :::warning
+
+    * Wenn keine UUID gefunden wurde, lesen Sie bitte das folgende Dokument  
+    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN-Probleme Sammlung</Button>
+
+    :::
+
+* Firmware flashen
+
+    * Ersetzen Sie in dem folgenden Befehl `241696050c56` durch die gefundene UUID aus der UUID-Suche, beachten Sie den Leerraum nach `-u`
+        ```bash
+        python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
+        ```
+
+    * Wie im Bild unten gezeigt, wenn `CAN Flash Success` angezeigt wird, war das Flashing erfolgreich 
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.png').default} size="100%" align="left" />  
+
+
+
+* Wenn Sie die Firmware aktualisieren möchten, kompilieren Sie die neue Firmware und führen Sie den Flash-Befehl erneut aus, um die Firmware zu aktualisieren, aber stellen Sie sicher, dass die ID gefunden werden kann oder dass Klipper bereits verbunden ist
+
+        ```bash
+        python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash1.png').default} size="100%" align="left" />

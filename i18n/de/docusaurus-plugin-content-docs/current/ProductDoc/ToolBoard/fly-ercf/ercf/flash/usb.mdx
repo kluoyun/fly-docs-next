@@ -1,0 +1,63 @@
+---
+sidebar_position: 4
+sidebar_label: USB-Firmware-Programmierung
+---
+
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import Button from "@mui/material/Button";
+
+
+# USB-Firmware-Programmierung
+
+    :::tip
+
+    * ERCF wird mit der CAN-Katapult-Firmware vorkonfiguriert ausgeliefert
+    * Wenn Sie die USB-Firmware programmieren möchten, müssen Sie die USB-Katapult-Firmware programmieren
+    * Nach einmaliger Programmierung ist keine erneute Programmierung erforderlich
+    * <Button variant="contained" disableElevation href="./bl">Katapult-Firmware-Programmierung</Button>
+
+    :::
+
+## Kompilierung starten
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Wählen Sie GPIO-Pins zur Einstellung beim Mikrocontroller-Start, Eingabe: gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/usb.png').default} size="100%" align="center" />
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann drücken Sie die `Y`-Taste
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Jetzt sollte die Konfiguration gespeichert und die Konsole verlassen sein
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen, dies dauert eine Weile
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn die Kompilierung erfolgreich war, wird der folgende Text ausgegeben:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Überprüfen, ob der Programmiermodus aktiv ist
+
+    <LS />
+
+
+## Firmware programmieren
+    
+    <Katapult />
+
+## Überprüfen, ob die Firmware gestartet ist
+
+    * Wenn die Firmware ordnungsgemäß startet, leuchtet die LED
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.png').default} size="100%" align="center" />
+
+

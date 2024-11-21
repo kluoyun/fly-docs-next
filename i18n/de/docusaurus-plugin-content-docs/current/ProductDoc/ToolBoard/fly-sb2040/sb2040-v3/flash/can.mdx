@@ -1,0 +1,56 @@
+---
+sidebar_position: 3
+sidebar_label: CAN-Firmware-Programmierung
+---
+
+import CANFLASH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN-Firmware-Programmierung
+
+## Start der Programmierung
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Wählen Sie GPIO-Pins zum Setzen beim Mikrocontroller-Start, Eingabe: !gpio5 Bitte beachten Sie, dass ! großgeschrieben ist
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.png').default} size="100%" align="center" />
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann die `Y`-Taste drücken
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Jetzt sollte die Konfiguration gespeichert und die Konsole verlassen sein
+    * Geben Sie `make -j4` ein, um die Programmierung zu starten, dies dauert etwas länger
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Bei erfolgreicher Programmierung wird am Ende folgendes ausgegeben:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Gerätesuche
+
+    <LS />
+
+
+## Firmware-Programmierung
+
+    * Vor dem Programmieren der Firmware, verbinden Sie das Werkzeugboard mit einem UTOC oder einer Hauptplatine, die mit der Brückenfirmware programmiert wurde, über ein XT30-Datenkabel. Hier ist das Referenz-Verkabelungsdiagramm
+    * Achten Sie darauf, dass der DIP-Schalter in der richtigen Position ist
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Stellen Sie sicher, dass CAN H und CAN L bei ausgeschalteter Stromversorgung mit einem Multimeter gemessen einen Widerstand von etwa `60Ω` haben. Wenn es `120Ω` ist, muss der `120Ω`-DIP-Schalter geöffnet werden. Bei etwa `40Ω` muss der Schalter geschlossen werden.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Überprüfen, ob die Firmware gestartet wurde
+
+    * Wenn die Firmware normal startet, leuchtet die LED auf
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.png').default} size="100%" align="center" />

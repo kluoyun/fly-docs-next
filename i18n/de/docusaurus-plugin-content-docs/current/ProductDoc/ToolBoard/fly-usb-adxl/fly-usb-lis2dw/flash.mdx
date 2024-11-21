@@ -1,0 +1,59 @@
+---
+sidebar_position: 2
+sidebar_label: Firmware-Flashing
+---
+
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+
+# USB-Firmware-Kompilierung
+
+    :::tip
+
+    * USB-Beschleunigungssensoren werden mit Katapult-Firmware für USB-Verbindung ausgeliefert
+    * Falls diese nicht geflasht sind, kann man sie selbst flashen
+    * [Katapult-Firmware-Flash](./bl.mdx "Klicken Sie hier, um zu springen")
+
+    :::
+
+## Kompilierung beginnen
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+    * Wählen Sie GPIO-Pins zur Festlegung beim Start des Mikrocontrollers, Eingabe: gpio24
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-usb-adxl/fly-usb-lis2dw/img/usb.png').default} size="100%" align="center" />
+    * Drücken Sie die `Q`-Taste, **Save configuration** erscheint, dann die `Y`-Taste drücken
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Nun sollte die Konfiguration gespeichert sein und Sie sollten zurück zur Kommandozeile gelangt sein
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen, dies dauert etwas länger
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn die Kompilierung erfolgreich war, wird folgender Text angezeigt:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Gerät suchen
+
+    <LS />
+
+
+## Firmware flashen
+
+
+    <Katapult />
+
+
+## Firmware-Start bestätigen
+
+    * Wenn die Firmware normal startet, leuchtet die LED auf
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-usb-adxl/fly-usb-lis2dw/img/led.png').default} size="100%" align="center" />

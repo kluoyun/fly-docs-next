@@ -1,0 +1,196 @@
+---
+sidebar_position: 4
+sidebar_label: Mainboard-Verkabelung
+---
+
+
+import ImageView from '@site/src/components/ImageView';
+
+# Mainboard-Verkabelung
+
+## Schnittstellenübersicht
+
+### Schnittstellenerklärung
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Pin-Erklärung
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Stromversorgung
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/power.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fuse.png').default} size="40%" align="center" />
+
+----
+
+## Treiberinstallation
+
+### Mainboard-Treiberjumper
+
+* **STEP/DIR-Modus.** In diesem Modus wird die Auflösung durch das Setzen von Jumper-Kappen eingestellt und der Strom durch Einstellen des Potentiometers angepasst. Am häufigsten wird der A4988-Treiber verwendet. Für die Verwendung solcher Treiber ist es notwendig, die Subdivision-Konfigurationstabelle des Herstellers zu konsultieren und die Auflösung durch Jumper-Kappen einzustellen.
+* **UART-Modus.** Die häufigsten Treiber, die diesen Modus verwenden, sind: TMC2208, TMC2209, TMC2226 usw. Diese Treiberchips können über UART asynchrone serielle Kommunikation mit dem Hauptcontroller durchführen und können durch die Änderung der Konfigurationsdatei die Auflösung, Betriebsstrom, Stille-Modus usw. des Treibers einstellen.
+* **SPI-Modus.** Die häufigsten Treiber, die diesen Modus verwenden, sind: TMC5160, TMC2230 usw. Diese Treiberchips kommunizieren synchron und seriell über SPI mit dem Hauptcontroller. Ebenso können durch die Änderung der Konfigurationsdatei die Auflösung, Betriebsstrom, Stille-Modus usw. des Treibers eingestellt werden.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Installation des Treibers
+
+* Vor der Installation des Treibers müssen entsprechende Prüfungen durchgeführt werden, um Schäden am Treiber oder Mainboard zu vermeiden.
+* **FLY-Treiber:** Wenn die Funktion der unbegrenzten Nullstellung nicht verwendet wird, setzen Sie den DIP-Schalter auf Position 1; im Gegenteil, wenn Sie die Funktion der unbegrenzten Nullstellung verwenden möchten, setzen Sie den DIP-Schalter auf ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Achtung!!! Beim Einstecken des Treiber-Moduls muss sichergestellt werden, dass die Richtung korrekt ist, d.h. der EN-Anschluss befindet sich in der oberen linken Ecke, andernfalls kann der Treiber oder sogar das Mainboard beschädigt werden!!! Achten Sie darauf, die Kühlkörper am Treiber anzubringen!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## Schrittmotor-Anschlüsse
+
+* In 3D-Druckern wird am häufigsten ein Zwei-Phasen-Vier-Leiter-Schrittmotor verwendet, dessen Prinzip in der Abbildung dargestellt ist. Es gibt zwei Methoden zur Identifizierung der Abfolge der Schrittmotorleitungen:
+    1. Kurzschließen Sie zwei der vier Leitungen des Schrittmotors, drehen Sie dann die Motorachse mit der Hand. Wenn der Widerstand beim Drehen groß ist, sind diese beiden Leitungen zu einem Spulenpaar verbunden, d.h. A+ und B+ oder A- und B-. Wenn es sich leicht dreht wie ohne Kurzschluss, sind diese beiden Leitungen nicht zu einem Spulenpaar verbunden.
+    2. Verwenden Sie die Diode-Prüffunktion eines Multimeters, um zwei der vier Leitungen zu messen. Wenn der Piepton ertönt, sind diese beiden Leitungen zu einem Spulenpaar verbunden. Andernfalls sind sie es nicht und müssen Sie eine andere Leitung erneut testen.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Heizpatronenanschluss
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Heizbettanschluss
+
+* **Wechselstrom-Heizbett:** Achten Sie beim Anschließen des festen Relais darauf, dass die Eingangs- und Ausgangsleitungen nicht verwechselt werden.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **Gleichstrom-Heizbett:** Beachten Sie beim Anschließen des MOS an das Gleichstrom-Heizbett die Leistung. Die maximale Stromstärke des Gleichstrom-Heizbetts darf 10A nicht überschreiten. Wenn sie 10A überschreitet, wird empfohlen, ein externes MOS-Modul zu verwenden, um das Heizbett zu betreiben, ansonsten könnte es zu irreparablen Schäden am Mainboard kommen.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Temperaturfühleranschlüsse
+
+### Einführung in Temperaturfühler
+
+* Die Anschlussmethode der Temperaturfühler ist in der folgenden Abbildung dargestellt. Bitte konsultieren Sie den Händler bezüglich des Typs des NTC-Widerstandes.
+
+* Wenn Sie bei Fly kauften (siehe Abbildung), konfigurieren Sie den sensor_type auf: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* Wenn es sich um einen konventionellen NTC 100K handelt (siehe Abbildung), konfigurieren Sie den sensor_type auf: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Mainboard-Temperaturfühler
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/nozzle.png').default} size="40%" align="center" />
+
+
+
+----
+
+## Lüfteranschlüsse
+
+* **Lüfteranschlüsse**
+
+    :::tip
+
+    * MOS muss installiert werden
+
+    :::
+
+    * Lüfteranschlüsse
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fan.png').default} size="30%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fanmos1.png').default} size="30%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fan-voltage.png').default} size="30%" align="center" />
+
+----
+
+## Endschalteranschlüsse
+
+* Es gibt zwei Arten von Endschaltern: normal offen (NO) und normal geschlossen (NC). Im Allgemeinen wird bei 3D-Druckern **normal geschlossen (NC)** empfohlen, so dass das System bei Problemen mit der Endschalterleitung rechtzeitig einen Fehler meldet und unnötige Kollisionen vermeiden kann, um den Drucker vor Schäden zu schützen.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## Nivellierungssensorenanschluss
+
+### BL-Touch-Anschluss
+
+* Der BL-Touch hat insgesamt fünf Leitungen, drei in der ersten Gruppe für die Stromversorgung des Sensors und das Ein- und Ausfahren der Sonde, die zweite Gruppe besteht aus Erdleitung und Signalleitung, die das Endschalter-Signal ausgibt. Achten Sie beim Anschließen des BL-Touch sorgfältig auf die Reihenfolge der Leitungen, da falsche Verkabelung den Sensor und das Mainboard dauerhaft beschädigen kann!!! Die Anschlussmethode ist in der folgenden Abbildung dargestellt.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Klicky-Anschluss
+
+* Klicky ist ein dritter Nivellierungssensor, der mit sehr geringen Kosten selbst hergestellt werden kann, stabil ist und ein gutes Preis-Leistungs-Verhältnis bietet, wird daher empfohlen. Die Anschlussmethode ist in der folgenden Abbildung dargestellt.
+* Projektadresse: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Projektadresse, klicken Sie, um dorthin zu gelangen")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Voron Tap-Anschluss
+
+* Tap ist eine Düsen-basierte Z-Sonde, die für die V2- und Trident-Drucker-Designs geeignet ist. Der gesamte Druckkopf bewegt sich, um den Lichtschalter auszulösen, was eine höhere Genauigkeit als konventionelle Endschalter bietet und fast alle Druckplattformen auf dem Markt nutzen kann.
+
+    :::warning
+
+    Es wird nicht empfohlen, Voron Tap an **24V** anzuschließen, da bestimmte Versionen bei **24V** mit einer gewissen Wahrscheinlichkeit beschädigt werden können. Dies ist kein Problem der Fly-Produkte, sondern ein Designfehler des Voron Taps, bitte beachten Sie dies!!!
+
+    :::
+
+    :::danger
+
+    Beachten Sie: 5V und GND dürfen nicht vertauscht werden, ansonsten kann der Tap-Sensor oder sogar das Mainboard beschädigt werden!!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+## FLY-Mini12864 LCD-Anschluss
+
+* Die folgende Abbildung zeigt die Anschlussweise des FLY mini12864, für Bildschirme anderer Hersteller bitte den jeweiligen Hersteller konsultieren. Ein falsches oder verkehrtes Anschließen des mini12864-Bildschirms kann dazu führen, dass die Verbindung zum MCU nicht möglich ist. Wenn der mini12864-Bildschirm vorher nicht verwendet wurde und die Verbindung zum MCU funktionierte, aber nach dem Anschließen des mini12864 nicht mehr, versuchen Sie, das Kabel des mini12864 zu entfernen!!!
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/mini12864.png').default} size="30%" align="center" />
+
+----
+
+## Verbindung zum Host
+
+* Das Mainboard wird über die TypeC-Schnittstelle an den USB-Anschluss des Hosts angeschlossen und kann auch über eine serielle Schnittstelle mit dem Host verbunden werden. Hier wird nur die erste Option erläutert.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----

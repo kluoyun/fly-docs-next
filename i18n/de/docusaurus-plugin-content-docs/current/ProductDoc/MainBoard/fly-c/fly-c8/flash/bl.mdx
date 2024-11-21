@@ -1,0 +1,69 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL-Firmware
+
+    :::tip
+
+    * Bitte beachten Sie, dass der `Bootloader` bereits im Werk vorinstalliert ist und nicht erneut installiert werden muss.
+
+    :::
+
+## In den Programmiermodus wechseln
+
+
+    * Es gibt zwei Methoden, um in den Programmiermodus zu wechseln:
+    * Erste Methode: Schalten Sie das Hauptboard vollständig aus, halten Sie BOOT gedrückt und verbinden Sie dann das Hauptboard und Ihr Gerät mit einem Datenkabel. Geeignet für Windows.
+    * Zweite Methode: Nachdem Sie das Hauptboard und Ihr Gerät mit einem Datenkabel verbunden haben, halten Sie BOOT gedrückt und geben Sie den Befehl ein. Geeignet für den Host-PC.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.png').default} size="100%" align="center" />
+
+## Firmware programmieren
+    <Tabs>
+        <TabItem value="win" label="Windows-Programmieranleitung" default>
+
+            * Bootloader-Firmware für C8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+
+
+            * Schalter `3`, `4` nach rechts schieben, um das Hauptboard über die integrierte USB-Verbindung mit dem Host-PC zu verbinden
+            * Schalter `1`, `2` nach links schieben, andernfalls könnte die Verbindung zwischen Hauptboard und Host-PC beeinträchtigt werden
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.png').default} size="100%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Host-PC-Programmieranleitung">
+
+            * Schalter `1`, `2` nach rechts schieben, um das Hauptboard über die integrierte USB-Verbindung mit dem Host-PC zu verbinden
+            * Schalter `3`, `4` nach links schieben, andernfalls könnte die Verbindung zwischen Hauptboard und Host-PC beeinträchtigt werden
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.png').default} size="100%" align="center" />
+            * Nach dem Schalten der Schalter wird die untere USB-Buchse vom Hauptboard belegt, bitte schließen Sie keine anderen Geräte an
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.png').default} size="50%" align="center" />
+
+            * Stellen Sie sicher, dass der Host-PC eine funktionierende Internetverbindung hat
+
+
+                ```bash
+                sudo wget https://cdn.mellow.klipper.cn/BL/HIDBL.bin -O ~/HIDBL.bin && sudo fly-flash -d c8 -u -f ~/HIDBL.bin
+                ```
+            * Wenn die folgende Nachricht erscheint, drücken Sie die BOOT-Taste des Hauptboards und drücken Sie dann die Eingabetaste
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.png').default} size="80%" align="center" />
+
+            * Wenn das folgende Bild erscheint, bedeutet dies, dass die Programmierung erfolgreich war und Sie die BOOT-Taste loslassen können
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.png').default} size="80%" align="center" />
+
+
+        </TabItem>
+    </Tabs>
+

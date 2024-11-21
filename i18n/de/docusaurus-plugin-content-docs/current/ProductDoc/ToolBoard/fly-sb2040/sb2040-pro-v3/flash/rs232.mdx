@@ -1,0 +1,65 @@
+---
+sidebar_position: 4
+sidebar_label: RS232 Firmware-Brennen
+---
+
+import USBFLASH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+# RS232 Firmware-Compilation
+
+## Kompilierung starten
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Wählen Sie GPIO-Pins aus, die beim Start des Mikrocontrollers gesetzt werden sollen. Geben Sie ein: !gpio5 Achten Sie darauf, dass ! großgeschrieben ist
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/rs232.png').default} size="100%" align="center" />
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann drücken Sie die `Y`-Taste
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Nun sollte die Konfiguration gespeichert und der Befehlseingabe zurückgekehrt sein
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen, dies kann etwas dauern
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn am Ende der folgende Inhalt ausgegeben wird, war die Kompilierung erfolgreich
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
+
+
+## Flash-Modus betreten
+
+    :::tip
+
+    Links befindet sich die `RESET-Taste`, rechts die `BOOT-Taste`
+
+    :::
+
+    * Es gibt zwei Methoden, um in den DFU-Modus zu gelangen
+    * Erste Methode: Schalten Sie die Hauptplatine vollständig ab, drücken Sie die BOOT-Taste und verbinden Sie dann das Datenkabel mit der Hauptplatine und dem Host-Rechner
+    * Zweite Methode: Verbinden Sie das Datenkabel mit der Hauptplatine und dem Host-Rechner, drücken Sie die BOOT-Taste, dann die RST-Taste, lassen Sie die RST-Taste los und dann die BOOT-Taste
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## Bestätigen Sie, ob der Flash-Modus betreten wurde
+
+    <LS />
+
+
+## Firmware brennen
+
+    <USBFLASH />
+
+
+## Überprüfen Sie, ob die Firmware gestartet ist
+
+    * Wenn die Firmware normal startet, leuchtet die LED auf
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.png').default} size="100%" align="center" />

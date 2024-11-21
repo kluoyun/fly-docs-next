@@ -1,0 +1,87 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult-Firmware
+
+## Beschreibung der Katapult-Firmware
+
+    <CANBOOT />
+
+    :::tip
+
+    * SB2040 unterstützt CAN
+    * Hier werden nur CAN-Firmware-Versionen mit 500K und 1M Bitrate bereitgestellt
+    :::
+
+## Betriebsmodus für das Einspielen
+
+    :::tip
+
+    Der markierte Bereich ist der `BOOT-Knopf`
+
+    :::
+
+    * Trennen Sie die Hauptplatine vollständig vom Stromnetz, drücken Sie den BOOT-Knopf und schließen Sie dann das Datenkabel an die Hauptplatine und Ihr Gerät an
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/boot.png').default} size="50%" align="center" />
+
+## Firmware einspielen
+    <Tabs>
+        <TabItem value="win" label="Windows-Anleitung zum Einspielen" default>
+
+            * Katapult-Firmware für SB2040 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SB2040.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Host-Anleitung zum Einspielen">
+            
+            <Katapult />
+
+            4. Firmware einspielen
+
+            :::tip
+
+            Es ist nur eine der Firmwares erforderlich
+
+            :::
+
+            * Untenstehend sind die Befehle zum Einspielen der Firmware mit 500K CAN-Bitrate
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040_CANBOOT_500K.uf2
+                ```
+                       
+            * Untenstehend sind die Befehle zum Einspielen der Firmware mit 1M CAN-Bitrate
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040_CANBOOT_1M.uf2
+                ```
+
+
+            5. Wenn die folgende Nachricht angezeigt wird, war das Einspielen erfolgreich
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach dem Einspielen muss die Hauptplatine einmal vollständig vom Stromnetz getrennt werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Überprüfen, ob die Firmware gestartet ist
+
+    * Wenn die Firmware ordnungsgemäß startet, blinkt die LED
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/led.png').default} size="50%" align="center" />

@@ -1,0 +1,56 @@
+---
+sidebar_position: 3
+sidebar_label: 072 Version CAN-Firmware-Compilation und -Programmierung
+---
+
+import CANFLASH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_can.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# 072 Version CAN-Firmware-Compilation
+
+## Kompilierung beginnen
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Wählen Sie **GPIO Pins to set at micro-controller startup**, geben Sie: !PC13 (beachten Sie die Großschreibung)
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/072.png').default} size="100%" align="center" />
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann drücken Sie die `Y`-Taste
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Nun sollte die Konfiguration gespeichert und die Kommandozeile wieder angezeigt werden
+    * Geben Sie `make -j4` ein, um die Kompilierung zu starten, dies dauert etwas länger
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn die Kompilierung erfolgreich ist, wird folgender Inhalt ausgegeben:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Geräte suchen
+
+    <LS />
+
+
+## Firmware programmieren
+
+    * Verbinden Sie das Werkzeugboard vor der Firmwareprogrammierung mit dem UTOC oder einer Hauptplatine, die eine Brückenfirmware installiert hat, über ein XT30-Datenkabel. Unten finden Sie eine Referenzverdrahtung
+    * Achten Sie darauf, ob die Jumper auf der richtigen Position stehen
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.png').default} size="80%" align="left" />
+    * Vergewissern Sie sich, dass der Widerstand zwischen CAN H und CAN L bei ausgeschaltetem Strom mit einem Multimeter etwa `60Ω` beträgt. Wenn der Widerstand `120Ω` beträgt, müssen Sie den `120Ω`-Jumper anbringen, wenn er etwa `40Ω` beträgt, muss der Jumper entfernt werden
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/120.png').default} size="50%" align="center" />
+
+    <CANFLASH />
+
+## Überprüfen, ob die Firmware gestartet ist
+
+    * Wenn die Firmware korrekt startet, leuchtet die LED auf
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.png').default} size="70%" align="center" />

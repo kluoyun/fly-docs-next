@@ -1,0 +1,103 @@
+---
+sidebar_position: 2
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import DIAG from '@site/i18n/de/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 2240
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240.png').default} size="80%" align="center" />
+
+## Grundlegende Parameter
+
+    * Eingangsspannung: 12V-36V
+    * Geeignet für: Klipper/RRF Firmware
+    * Unterstützte Treibermodi: TMC: SPI/UART
+    * Integrierte Temperaturüberwachung
+    * Universeller analoger Eingangs-Überstrom- und Diagnoseschutz
+    * Vollständig integrierte verlustfreie Strommessung (ICS)
+    * Schritt-/Richtungs-Schnittstelle mit Mikroschritt-Interpolation microPlyer
+    * Schutz gegen Kurzschluss, Unterspannungssperre, Chip-Überhitzungsschutz (Thermische Abschaltung)
+    * Unterstützt stallGuard2 für hochpräzise Sensorlose Motorlast-Erkennung
+    * Integrierte StallGuard2 und StallGuard4 für sensorlose Motorlast-Erkennung
+    * Ruckelfreie Kombination aus StealthChop und SpreadCycle, die das Problem des Motorsprungs an den Schnittpunkten der Chopping-Geschwindigkeit löst.
+    * Größere Leistung, geringere Wärmeabgabe. (Unterstützt höhere Spannungen, 3.0A MAX, geeignet für höhere Bereiche der 3D-Druckarbeit und längeres Arbeiten ohne Überhitzung und Beschädigung.)
+
+## Erklärung der Hauptplatine-Jumper
+
+    * TMC2240 verwendet standardmäßig den SPI-Jumper
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+    * TMC2240 verwendet die UART-Jumper-Methode
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240uart.png').default} size="100%" align="center" />
+
+
+## TMC2240 Referenzkonfiguration
+
+    :::danger
+
+    Der Treibersamplingwiderstand ist `rref: 12300`, bitte nicht falsch einstellen
+
+    :::
+
+### SPI-Modus Referenzkonfiguration
+
+    ```cfg
+    [tmc2240 stepper_x]
+    cs_pin: 
+    spi_bus: 
+    run_current: 0.65                   # Motorlaufstromwert
+    interpolate: False                  # Ob 256-Mikroschritt-Interpolation aktiviert werden soll (nicht empfohlen)
+    rref: 12300
+    stealthchop_threshold: 0           # Lautlos-Schwellenwert (wenn kein Lautlos-Modus benötigt wird, ändern Sie den Wert auf 0)
+    ```
+
+### UART-Modus Referenzkonfiguration
+
+    ```cfg
+    [tmc2240 stepper_x]
+    uart_pin:
+    run_current: 0.65                   # Motorlaufstromwert
+    interpolate: False                  # Ob 256-Mikroschritt-Interpolation aktiviert werden soll (nicht empfohlen)
+    rref: 12300                         # Treibersamplingwiderstand
+    stealthchop_threshold: 0            # Lautlos-Schwellenwert (wenn kein Lautlos-Modus benötigt wird, ändern Sie den Wert auf 0)
+    ```
+
+    * Wenn die folgende Fehlermeldung auftritt
+        
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240error.png').default} size="80%" align="center" />
+
+    * Sie müssen sich in einem SSH-Terminal als der Benutzer anmelden, der Klipper installiert hat, und dann diesen Code ausführen
+
+        ```bash
+        sed -i 's/"uart_pin"/\'"'"'uart_pin'\''/g' ~/klipper/klippy/extras/tmc2240.py
+        ```
+
+## Unbegrenzte Nutzungshinweise
+
+    <DIAG />
+
+    :::tip Hinweise zur unbegrenzten Nutzung
+
+    * Der ursprüngliche `endstop_pin:` muss auskommentiert oder gelöscht werden, fügen Sie `endstop_pin: tmc2240_stepper_x:virtual_endstop` hinzu
+    * Nach der Konfiguration von `diag0_pin:` wird der Endstopp-Status als nicht ausgelöst angezeigt
+    * Die Konfiguration von `driver_SGT:` erfordert eine Selbsttestung für einen geeigneten Wert, normalerweise `1`
+
+    :::
+
+    * Referenzkonfiguration
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3   # Der ursprüngliche Endstopp-Anschluss muss auskommentiert oder gelöscht werden
+    endstop_pin: tmc2240_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Rückzug nicht auf 0 ändern, dies könnte zu einem Fehler beim Homing führen
+
+    [tmc2240 stepper_x]
+    diag0_pin: ^!PG12
+    driver_SGT: 1
+
+    ```

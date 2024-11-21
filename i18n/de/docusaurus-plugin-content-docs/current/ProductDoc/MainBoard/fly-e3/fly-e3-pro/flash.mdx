@@ -1,0 +1,63 @@
+---
+sidebar_position: 2
+sidebar_label: Firmware-Kompilierung und -Einspeisung
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# Firmware-Kompilierung und -Einspeisung
+
+    :::tip
+
+    * E3 Pro verwendet standardmäßig eine TF-Karte für die Firmware-Einspeisung
+    * Bitte bereiten Sie eine TF-Karte mit einer Kapazität von nicht mehr als `32G` vor
+    * No-Name-Speicherkarten können zu Fehlern beim Einspeisen führen. Verwenden Sie bitte nach Möglichkeit die unten empfohlenen Speicherkarten für das Firmware-Update
+    * Die Übertragungsgeschwindigkeit der TF-Karte sollte idealerweise `class10` oder höher sein. Es wird empfohlen, Marken wie SanDisk zu verwenden
+
+    :::
+
+## Vorbereitung
+
+    <SSH />
+
+## Klipper-Firmware kompilieren
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Drücken Sie die `Q`-Taste und dann die `Y`-Taste, wenn **Save configuration** erscheint
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Jetzt sollte die Konfiguration gespeichert und die Shell wieder sichtbar sein
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen. Dies kann etwas dauern
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Beim erfolgreichen Abschluss wird folgender Text angezeigt:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * Die folgende Abbildung zeigt ein Beispiel für eine erfolgreiche Kompilierung
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## Firmware einspeisen
+
+:::danger Hinweis
+* F404ZG hat standardmäßig die TF-Karten-BL-Firmware vorinstalliert
+:::
+
+    <TF />

@@ -1,0 +1,87 @@
+import ImageView from '@site/src/components/ImageView';
+
+:::tip
+
+Mit der Katapult-Firmware können Sie später einfach über SSH die Firmware aktualisieren, ohne in den DFU-Modus wechseln zu müssen, um die Firmware zu flashen.
+:::
+
+## Installation des Flashtools
+
+:::tip
+Beachten Sie, dass die Installation des Flashtools eine Internetverbindung des Host-Systems erfordert.
+Wenn das Tool bereits installiert ist, ist eine erneute Installation nicht nötig.
+:::
+
+    * Installieren Sie `pip install pyserial`
+
+        ```bash
+        pip install pyserial
+        ```
+
+    * Wenn die Meldung `-bash: pip: command not found` angezeigt wird, führen Sie aus:
+
+        ```bash
+        sudo apt-get install pip
+        ```
+
+    * Bei einem Fehler wie unten gezeigt führen Sie aus:
+
+        <ImageView image={require('@site/docs/General/get-id/img/pyserial.png').default} size="100%" align="left" />
+
+        ```bash
+        pip install pyserial --break-system-packages
+        ```
+
+## Flashen der Firmware
+
+    * Verwenden Sie den folgenden Befehl, um die serielle Schnittstellenadresse Ihres Geräts zu suchen:
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+
+    * Hier ist ein Beispiel:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult1.png').default} size="100%" align="left" />
+
+
+    * Verwenden Sie den folgenden Code, um die Firmware zu flashen. Stellen Sie sicher, dass die Firmware bereits kompiliert wurde. Achten Sie darauf, dass kein Leerzeichen nach `=` steht.
+    * Beachten Sie, dass Sie sich im Klipper-Verzeichnis befinden müssen, um die Firmware zu flashen:
+
+        ```bash
+        make flash FLASH_DEVICE=
+        ```
+
+    * Hier ist ein Beispiel:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult2.png').default} size="100%" align="left" />
+
+    * Nach Abschluss des Flashvorgangs:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.png').default} size="100%" align="left" />
+
+## Aktualisierungsmethode für die Firmware
+
+
+    * Um die USB-Firmware zu aktualisieren, führen Sie nach der Kompilierung der neuesten Firmware den folgenden Befehl aus. Achten Sie darauf, dass kein Leerzeichen nach `=` steht:
+
+        ```bash
+        make flash FLASH_DEVICE=
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.png').default} size="100%" align="left" />
+
+    * Um die USB-Brücke-CAN-Firmware zu aktualisieren, führen Sie nach der Kompilierung der neuesten Firmware den folgenden Befehl aus, um in den Katapult-Modus zu wechseln.
+    * Beachten Sie, dass dieser Befehl nur für die USB-Brücke-CAN-Klipper-Firmware ausgeführt werden kann. Andere Firmwares werden Fehler verursachen:
+
+        ```bash
+        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <MCU ID>
+        ```
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.png').default} size="100%" align="left" />
+    * Nachdem Sie in den Katapult-Modus gewechselt sind, führen Sie den folgenden Befehl aus, um die Firmware zu aktualisieren:
+
+        ```bash
+        make flash FLASH_DEVICE=<Ihre Geräteschnittstellenadresse>
+        ```
+
+## Lösung für falsche Firmwareinstallation
+
+    * Trennen Sie die Stromversorgung der Hauptplatine, und verbinden Sie sie erneut. Klicken Sie dann schnell zweimal auf den Reset-Knopf der Hauptplatine.
+    * Alternativ können Sie mit WINDOWS die Firmware reinigen und dann das BL neu flashen.

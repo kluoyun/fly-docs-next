@@ -1,0 +1,56 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL-Firmware
+
+    :::tip
+
+    * Beachte, dass das `Bootloader` bereits werkseitig installiert wurde und nicht erneut geflasht werden muss.
+
+    :::
+
+## Flash-Modus betreten
+
+    * Es gibt zwei Methoden, um in den Flash-Modus zu gelangen:
+    * Erste Methode: Bei völlig ausgeschalteter Hauptplatine, BOOT kurzschließen und das Datenkabel an die Hauptplatine und dein Gerät anschließen.
+    * Zweite Methode: Nachdem das Datenkabel an die Hauptplatine und dein Gerät angeschlossen wurde, BOOT kurzschließen, dann die RST-Taste drücken, danach die RST-Taste loslassen und schließlich die BOOT-Verbindung unterbrechen.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/flash/img/boot.png').default} size="100%" align="center" />
+
+## Firmware flashen
+
+    <Tabs>
+        <TabItem value="win" label="Windows-Flash-Tutorial" default>
+            * SUPER8-Bootloader-Firmware <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Flash-Tutorial für die Host-Software">
+            
+            <Katapult />
+            4. Firmware flashen
+            :::tip
+            Es muss nur eine der Firmwares geflasht werden.
+            :::
+            * Hier ist der Befehl zum Flashen der Firmware:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER8.bin
+                ```
+            5. Wenn der Text "File downloaded successfully" (siehe Pfeil) angezeigt wird, war das Flashen erfolgreich.
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+            :::tip
+            Nach dem Flashen muss die Hauptplatine vollständig einmal ohne Strom bleiben.
+            :::
+        </TabItem>
+    </Tabs>

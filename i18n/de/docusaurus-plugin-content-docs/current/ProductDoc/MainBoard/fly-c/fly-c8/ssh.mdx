@@ -1,0 +1,97 @@
+---
+sidebar_position: 4
+sidebar_label: SSH-Verbindung zur Oberflächenkontrollstation
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+# Verbindung zur Oberflächenkontrollstation über SSH
+
+* Sie können eine serielle Schnittstelle oder WIFI verwenden, um eine Verbindung zum Gerät herzustellen
+* Bitte bereiten Sie im Voraus **MobaXterm_Personal** oder ein anderes **SSH-Terminaltool** vor
+* Stellen Sie sicher, dass auf der SD-Karte oder dem M2WE das **entsprechende System für die Oberflächenkontrollstation** gebrannt ist
+* **Falls die Oberflächenkontrollstation nicht ordnungsgemäß startet, entfernen Sie Treiber, Endschalter, Lüfter und andere Peripheriegeräte!!!**
+* **Stellen Sie abschließend eine Netzwerkverbindung zu SSH her, um das Firmware-Update zu erleichtern!!!**
+* **Für die Firmware-Kompilierung lesen Sie bitte den Leitfaden zur Verbindung der Oberflächenkontrollstation über WIFI oder Netzwerkkabel**
+
+<Tabs>
+    <TabItem value="serial" label="Serielle Verbindung" default>
+        ## Verwendung einer seriellen Verbindung zur Oberflächenkontrollstation über SSH
+
+        * Verbinden Sie die Oberflächenkontrollstation von FLY mit einem Computer über ein USB Type-c-Kabel
+        * Für andere Oberflächenkontrollstationen, suchen Sie bitte selbstständig nach der Verbindungsweise!!
+
+        <Tabs>
+            <TabItem value="c8" label="FLY-C8" default>
+                * FLY-C8 Anschlüsse
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c8-port.png').default} size="40%" align="center" />
+            </TabItem>
+        </Tabs>
+
+        * Wenn die Hauptplatine ordnungsgemäß mit dem Computer verbunden ist, können Sie im Geräte-Manager den CH340-Port sehen
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.png').default} size="40%" align="center" />
+
+        * Öffnen Sie `MobaXterm` und nehmen Sie die folgenden Einstellungen vor, wählen Sie den Port, den Sie vorher im Geräte-Manager gesehen haben
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.png').default} size="40%" align="center" />
+
+        * Wenn alles normal verläuft, sollten Sie den Startbildschirm sehen
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.png').default} size="40%" align="center" />
+
+        * Warten Sie einen Moment, wenn dieses Bild erscheint, ist das System gestartet
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.png').default} size="40%" align="center" />
+
+        **Falls Sie nach einigen Minuten wie unten gezeigt keinen Bildschirm sehen, drücken Sie mehrmals die Eingabetaste**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.png').default} size="40%" align="center" />
+
+        **Nach dem Drücken der Eingabetaste erscheinen folgende Inhalte**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.png').default} size="40%" align="center" />
+
+        * Um die IP-Adresse zu überprüfen, geben Sie im SSH-Fenster ein: `ip a | grep inet` und drücken Sie die Eingabetaste, suchen Sie in den Rückgabewerten nach der IP-Adresse, die im gleichen Segment wie Ihr Router ist
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.png').default} size="40%" align="center" />
+
+    </TabItem>
+    <TabItem value="net" label="Netzwerkverbindung" default>
+        ## Verwendung einer Netzwerk-IP-Verbindung zur Oberflächenkontrollstation über SSH
+
+        * Melden Sie sich im **Backend des Routers** an, zu dem die Oberflächenkontrollstation verbunden ist
+        * Stellen Sie sicher, dass das System **ordnungsgemäß gestartet** ist
+        * Stellen Sie sicher, dass **Sie den Benutzernamen und das Passwort der Oberflächenkontrollstation kennen**. Standardmäßig ist der Benutzername **fly** und das Passwort **mellow**
+        * Wenn die Hauptplatine gestartet ist und mit dem Netzwerk verbunden ist, können Sie die SSH-Verbindung über die IP-Adresse herstellen
+        * Öffnen Sie MobaXterm und nehmen Sie die folgenden Einstellungen vor, füllen Sie die IP-Adresse aus, die Sie vorher überprüft haben, oder schauen Sie im Router-Backend nach
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+
+        **Hinweis: Hier geben Sie den Benutzernamen der Oberflächenkontrollstation ein**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.png').default} size="40%" align="center" />
+
+        * Beim ersten Verbindungsversuch erscheint dieses Fenster, klicken Sie auf `Accept`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.png').default} size="40%" align="center" />
+
+        * Es wird zur Eingabe des Passworts aufgefordert, geben Sie das Passwort der Oberflächenkontrollstation ein und drücken Sie die Eingabetaste
+
+        **Hinweis: Das Passwort wird hier nicht angezeigt, geben Sie es ein und drücken Sie die Eingabetaste**
+
+        Standardmäßig ist der Benutzername `fly` und das Passwort `mellow`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.png').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.png').default} size="40%" align="center" />
+
+        * Erfolgreiche Anmeldung
+
+    </TabItem>
+</Tabs>
+
+----

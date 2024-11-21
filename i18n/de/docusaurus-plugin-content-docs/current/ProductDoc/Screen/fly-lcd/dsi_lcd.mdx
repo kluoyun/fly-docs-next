@@ -1,0 +1,98 @@
+---
+sidebar_position: 5
+sidebar_label: DSI-LCD5
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import DSI from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/rpi/_dsi.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import Button from "@mui/material/Button";
+
+
+# DSI-LCD5
+
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-lcd/img/dsi_lcd5.png').default} size="50%" align="left" />
+
+## Produkteinführung
+
+    * Bildschirmgröße: 120.7mm*76.0mm
+    * Anzeigefläche des Bildschirms: 108mm*66.2mm
+    * Auflösung: 800*480
+    * Bildschirmtyp: IPS
+    * Kommunikationsart: DSI/Mipi
+    * Eingebaute Schnittstelle: 15 pin DSI / 22pin Mipi
+    * Stabile Arbeitsbedingungen: 0°-60°C
+    * Berührungstyp: Kapazitiv
+    * Logikspannung: 3.3V
+    * Gewicht: 135.5g
+
+## Raspberry Pi System
+    * Hier gibt es vorkonfigurierte Systemabbilder, die DSI-Bildschirm und Touchscreen getestet haben
+    * Hinweis: Bildschirmkonfiguration erforderlich
+      <Button variant="contained" disableElevation href="/docs/ResDownload/system-img/rpi">Systemabbilder</Button>
+
+## Eingebaute Schalter
+
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-lcd/img/dip.png').default} size="50%" align="left" />
+
+## Raspberry Pi Installation
+
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-lcd/img/rpi.png').default} size="50%" align="left" />
+
+## Raspberry Pi Konfiguration
+
+    :::warning Wichtige Hinweise
+
+    * Es wird empfohlen, die `bookworm`-Version des Raspberry Pi Systems zu verwenden
+
+    :::
+
+    <Tabs>
+        <TabItem value="Raspberry Pi 4B/3B mit DSI-Schnittstelle" default>
+        
+        <DSI />
+        * Bezugskabelverbindung
+            <ImageView image={require('@site/docs/ProductDoc/Screen/fly-lcd/img/dsi.png').default} size="100%" align="left" />
+        </TabItem>
+
+
+        <TabItem value="Raspberry Pi 5B mit Mipi-Schnittstelle" default>
+
+        :::danger Wichtige Informationen
+
+        * Die DSI- und CSI-Schnittstellen des Raspberry Pi 5 heißen jetzt MIPI
+        * Die MIPI-Schnittstelle kann durch Konfiguration direkt für CSI-Kameras oder DSI-Bildschirme verwendet werden
+        * Beachten Sie die Richtung der Goldfinger
+
+        :::
+
+        * Der Raspberry Pi 5 hat jetzt zwei MIPI-Schnittstellen, wenn man von vorne schaut, kann man die Markierungen 1 und 0 sehen
+
+        * DSI-Bildschirmanschluss
+
+
+            * Wenn Sie die Schnittstelle Nr. 1 verwenden, müssen Sie den Bildschirm wie folgt konfigurieren
+
+            ```bash
+            dtoverlay=vc4-kms-dsi-7inch,dsi1
+            ```
+
+            * Wenn Sie die Schnittstelle Nr. 0 verwenden, müssen Sie den Bildschirm wie folgt konfigurieren
+
+            ```bash
+            dtoverlay=vc4-kms-dsi-7inch,dsi0
+            ```
+            * Bezugskabelverbindung
+                <ImageView image={require('@site/docs/ProductDoc/Screen/fly-lcd/img/mipi.png').default} size="100%" align="left" />
+
+        </TabItem>
+    </Tabs>
+
+
+## 3D-Modell herunterladen
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/FLY-DSI-LCD5.step
+    ```

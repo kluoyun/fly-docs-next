@@ -1,0 +1,86 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL-Firmware
+
+    :::tip
+
+    * Beachten Sie, dass der `Bootloader` bereits im Werk programmiert ist und nicht erneut programmiert werden muss.
+
+    :::
+
+## In den Programmiermodus wechseln
+
+
+    * Es gibt zwei Methoden, um in den Programmiermodus zu wechseln:
+    * Erste Methode: Bei vollständig ausgeschaltetem Hauptbrett, die Pins BOOT und BOOT1 kurzschließen, dann das Datenkabel an das Hauptbrett und das Gerät anschließen.
+    * Zweite Methode: Nachdem das Datenkabel an das Hauptbrett und das Gerät angeschlossen wurde, die Pins BOOT und BOOT1 kurzschließen, dann die RST-Taste drücken, RST-Taste loslassen und schließlich die BOOT-Kurzschlussbrücke entfernen.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## Firmware programmieren
+    <Tabs>
+        <TabItem value="win" label="Windows-Programmieranleitung" default>
+
+            * Gemini-Bootloader-Firmware <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+
+            * Schalter `3`,`4` nach rechts schalten, um das untere Gerät mit dem oberen Gerät über USB zu verbinden.
+            * Schalter `1`,`2` nach links schalten, andernfalls beeinflusst dies die Verbindung zwischen unterem und oberem Gerät.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip3.png').default} size="50%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Host-Programmieranleitung">
+
+            * Schalter `1`,`2` nach rechts schalten, um das untere Gerät mit dem oberen Gerät über USB zu verbinden.
+            * Schalter `3`,`4` nach links schalten, andernfalls beeinflusst dies die Verbindung zwischen unterem und oberen Gerät.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip1.png').default} size="50%" align="center" />
+            * Nach dem Umstellen der Schalter nach dieser Methode wird der untere USB-Anschluss vom unteren Gerät belegt, bitte schließen Sie keine anderen Geräte an.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.png').default} size="50%" align="center" />
+
+            <Katapult />
+
+            4. Firmware programmieren
+
+            :::tip
+
+            Es muss nur eine Firmware programmiert werden.
+
+            :::
+
+
+            * Hier ist der Befehl zum Programmieren der Bootloader-Firmware:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/Gemini/GeminiV3.bin
+                ```
+
+            5. Wenn der Text wie in der Abbildung gezeigt unter dem Pfeil ``File downloaded successfully`` erscheint, war das Programmieren erfolgreich.
+
+            :::warning
+
+            Bitte ignorieren Sie den **Fehler** nach der roten Pfeilmarkierung in dieser Zeile!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach Abschluss des Programmiervorgangs muss das Hauptbrett einmal vollständig vom Strom getrennt werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+

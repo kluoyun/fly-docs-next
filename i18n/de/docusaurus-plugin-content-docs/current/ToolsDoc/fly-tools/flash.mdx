@@ -1,0 +1,36 @@
+---
+sidebar_position: 4
+sidebar_label: Firmware-Kompilierung
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+# Funktionen-Demo
+
+    <ImageView image={require('@site/docs/ToolsDoc/fly-tools/img/home.gif').default} size="100%" align="left" />
+
+    * Unterstützt das Ein-Klick-Kopieren der Geräte-ID, erkennt automatisch die ID und fügt vor der entsprechenden Konfiguration **serial:**, **canbus_uuid:**, **device:** hinzu
+    * Unterstützt die Änderung der CAN-Geschwindigkeit und des CAN-Caches, ermöglicht es den Spielern, CAN nach Belieben anzupassen
+    * Unterstützt die Abfrage von Kamerageräten, um den Spielern die Mühe des Suchen nach Kameras zu ersparen
+
+    :::tip Hinweis
+
+    * Bitte beachten Sie, dass FLY-Tools nicht automatisch die CAN-Konfiguration erstellt. Diese muss manuell erstellt werden, um die CAN-Geschwindigkeit und den CAN-Cache ändern zu können.
+
+    :::
+
+
+    * Bitte stellen Sie eine SSH-Verbindung über das Netzwerk zu Ihrem Benutzer her und führen Sie dann den folgenden Befehl aus
+    * Ubuntu unterstützt diese Funktion vorläufig nicht
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 1000000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 1000000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```

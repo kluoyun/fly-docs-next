@@ -1,0 +1,142 @@
+---
+sidebar_position: 4
+sidebar_label: Hauptplatine Verkabelung
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+# SHT36/42 Verkabelung
+
+:::tip
+Bitte kleben Sie das mitgelieferte blaue Kühlkörper auf den 2209-Treiber!!!
+:::
+
+    SHT36 und SHT42 unterscheiden sich nur in Aussehen und Installationsabmessungen, sonst gibt es keine Unterschiede. Die Verwendung von SHT42 ist identisch mit SHT36, daher wird hier nur SHT36 vorgestellt.
+
+## Endwiderstandskonfiguration
+
+:::tip
+Bitte konfigurieren Sie den CANBUS-Endwiderstand korrekt, bevor Sie CAN verwenden.
+:::
+    * Im CANBUS-Bus-Protokoll muss und darf es nur zwei 120-Ohm-Widerstände in einer Buslinie geben.
+    * Egal, wie viele USB-Geräte Sie anschließen, solange sie sich in einer Buslinie befinden, konfigurieren Sie nur zwei 120-Ohm-Widerstände. Es ist nicht nötig, für jedes Gerät einen Widerstand hinzuzufügen.
+    * Nach dem Anschließen der CAN H- und CAN L-Signalleitungen sollten Sie mit einem Multimeter den Widerstand zwischen CAN H und CAN L messen, der sollte etwa 60 Ohm betragen.
+    
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/can7.png').default} size="80%" align="center" />
+
+## Stromversorgungsverkabelung
+
+:::tip
+FLY SHT36/42 unterstützt keine Schutzfunktion gegen falsche Polarität!!! Überprüfen Sie vor dem Einschalten sorgfältig die Stromversorgungsverkabelung, um eine falsche Anschaltung zu vermeiden!!!! Andernfalls kann es zur Beschädigung der SHT36/42-Werkzeugplatte kommen!!!
+:::
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/power.png').default} size="80%" align="center" />
+
+## Lüfter-MOS
+
+Der Lüfter-MOS hat keine Polung, stellen Sie einfach sicher, dass er fest angeschlossen ist.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/fanmos.png').default} size="80%" align="center" />
+
+## Lüfterverkabelung
+
+SHT36 unterstützt bis zu zwei steuerbare Lüfter, die Spannung der Lüfter entspricht der Versorgungsspannung. Die Verkabelungsmethode ist wie folgt:
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/fan.png').default} size="80%" align="center" />
+
+## Heizstabverkabelung
+
+Der Heizstab unterstützt einen maximalen Strom von 5A, achten Sie bitte auf die Leistung des Heizstabs bei der Verwendung!
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/heat.png').default} size="80%" align="center" />
+
+## Temperaturfühlerverkabelung
+
+Die nachfolgende Abbildung zeigt die Verkabelungsmethoden für normale Temperaturfühler und PT1000.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/nozzle_thermistor.png').default} size="80%" align="center" />
+
+Die nachfolgende Abbildung zeigt die Verkabelungsmethode für PT100. Standardmäßig für zweileitiges PT100, nur die Pins von links nach rechts 2 und 3 verbinden.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/pt100.png').default} size="80%" align="center" />
+
+## RGB-Verkabelung
+
+Die Plus- und Minuspolung der RGB-LEDs darf auf keinen Fall vertauscht werden, sonst kann es zur Beschädigung der SHT-Werkzeugplatte kommen.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/rgb.png').default} size="80%" align="center" />
+
+## Extruder-Verkabelung
+
+Nach der Fertigstellung der Extruder-Verkabelung, achten Sie darauf, den Treiberstrom richtig zu konfigurieren und die Drehung des Extruder-Motors zu kalibrieren.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/extruder.png').default} size="80%" align="center" />
+
+## Endschalter
+
+    Es gibt zwei Arten von Endschaltern: Normal offen (NO) und Normal geschlossen (NC). Generell wird bei 3D-Druckern die Verwendung von Normal geschlossen (NC) empfohlen, damit das System im Falle eines Problems mit der Endschalterleitung rechtzeitig eine Fehlermeldung ausgibt, um unnötige Kollisionen und Schäden am Drucker zu vermeiden.
+
+    Wenn Sie ein VORON-Modell haben, können Sie die Position des Endschalters ändern, indem Sie den X-Endschalter am Wagen des Druckkopfes und den Y-Endschalter am A-Motorenhalter installieren. Außerdem wird auf der SHT36 empfohlen, das Signal vor dem Endschalter mit ``^`` zu versehen, um es hochzuziehen. Beispiel:
+
+    ```cfg
+    [stepper_x]
+    endstop_pin: ^sht36:PA0  # Fügen Sie vorne ein ^ hinzu, um das Signal hochzuziehen, besonders bei der Verwendung von PA1, fügen Sie bitte unbedingt das Hochziehen hinzu ^
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/endstop.png').default} size="80%" align="center" />
+
+## Ebnungs-Sensor-Verkabelung
+
+:::danger Zu beachten
+PB1 unterstützt nur PWM-Signal-Ausgang, keine Signal-Eingabe!!! Es kann daher nicht als Eingabe für Ebnungssensoren oder Endschalter verwendet werden!!!
+:::
+
+### Näherungsschalter
+
+    Die offizielle Empfehlung von VORON ist die Verwendung des Omron TL-Q5MC-Sensors (zuvor PL08N empfohlen, beide haben denselben Mechanismus, nur unterschiedliche Erkennungsreichweiten) für die Ebnung des Heizbetts.
+
+    Für SHT36/42 wird die Verwendung von Näherungsschaltern nicht empfohlen, da eine separate 12V- oder 24V-Stromversorgung für den Schalter erforderlich ist.
+    
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/pl08.png').default} size="80%" align="center" />
+
+
+### Klicky
+
+    Klicky ist ein von Drittanbietern entwickelter Ebnungssensor, der zu Hause mit geringen Kosten hergestellt werden kann und eine stabile Leistung sowie ein gutes Preis-Leistungs-Verhältnis bietet. Die Verkabelungsmethode ist in der nachfolgenden Abbildung dargestellt.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/klicky.png').default} size="80%" align="center" />
+
+### Voron Tap
+
+    Voron Tap ist die neueste von Voron veröffentlichte Ebnungssensorlösung, die sich durch hohe Präzision, Stabilität und Anpassungsfähigkeit auszeichnet. Achten Sie beim Verkabeln darauf, dass die Polarität nicht vertauscht wird, da dies sonst den Tap-Sensor oder sogar die SHT-Werkzeugplatte beschädigen kann.
+
+:::tip
+Voron Tap wird nicht empfohlen für **24V** zu verbinden, da einige Versionen bei **24V** eine gewisse Wahrscheinlichkeit haben, dass der Tap-Sensor durchbrennt, dies ist kein Problem der Fly-Produkte, sondern ein Designfehler des Voron Tap, bitte beachten Sie dies!!!
+:::
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/tappng.png').default} size="80%" align="center" />
+
+### Bltouch
+
+    Der BL-touch hat insgesamt fünf Leitungen, drei davon für die erste Gruppe, die für die Stromversorgung des Sensors und das Ein- und Ausfahren des Sondenstiftes zuständig ist, und die zweite Gruppe für Masse- und Signalleitung, die das Endschaltersignal liefert. Bitte achten Sie beim Anschließen des BL-touch auf die richtige Reihenfolge der Verkabelung, da eine falsche Verkabelung den Sensor und die Hauptplatine dauerhaft beschädigen kann!!! Die Verkabelungsmethode ist in der nachfolgenden Abbildung dargestellt.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/bltouch.png').default} size="80%" align="center" />
+
+
+## SHT36/42 mit UTOC verbinden
+
+    FLY UTOC ist ein Modul, das USB in CAN-Bus umwandelt. Durch dieses Modul wird der USB-Port des FLY π in einen CAN-Bus umgewandelt, um 3D-Druck-Hauptplatinen, SHT36/42 und andere CAN-Bus-Produkte zu verbinden. Die UTOC-Platine verfügt über verschiedene Anschlussmöglichkeiten, die eine flexible Verwendung ermöglichen und sich an verschiedene Anwendungsszenarien anpassen können. **Zusätzlich ist die UTOC beim Ausliefern bereits mit Firmware bestückt, sodass sie sofort verwendbar ist, ohne dass eine Firmware-Neuprogrammierung erforderlich ist.**
+
+    Beide Verbindungsarten in den nachfolgenden Abbildungen sind möglich und unterscheiden sich im Wesentlichen nur durch die verwendeten Anschlüsse.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/utoc.png').default} size="100%" align="left" />
+
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/utoc1.png').default} size="100%" align="left" />
+
+
+    **USB-IN:** USB-to-CAN Eingangsschnittstelle, verbinden Sie sie mit dem Host-Computer
+
+    **12-24v & GND:** Stromversorgungsschnittstelle
+
+    **CANBUS:** CAN-Schnittstelle, verbinden Sie sie mit Erweiterungshauptplatinen und Werkzeugplatinen (Verbindung zu Geräten mit eingebautem CAN-Transceiver-Chip)
+
+    **CANBUS*:** CAN-Schnittstelle, verbinden Sie sie mit Erweiterungshauptplatinen und Werkzeugplatinen (nur für die Verbindung zu USB-Schnittstellen von STM32-Geräten [PA11,PA12], achten Sie darauf, die entsprechende Version von UTOC zu kaufen)

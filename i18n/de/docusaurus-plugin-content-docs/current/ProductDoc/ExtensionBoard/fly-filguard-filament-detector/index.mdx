@@ -1,0 +1,147 @@
+---
+sidebar_position: 1
+---
+
+import ImageView from '@site/src/components/ImageView';
+
+
+# Produkteinführung
+
+  FilGuard Filament-Detektor ist kompatibel mit der VZ-Hextrudort-Low-Extruder, unterstützt die Erkennung von Materialausfall, Verstopfung und bietet anpassbare, editierbare Schaltflächen.
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament_1.png').default} size="60%" align="left" />
+ 
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament.png').default} size="40%" align="left" />
+
+## Anschlussanleitung
+
+* Der Bordanstecker PH2.0 5P macht die Verkabelung einfacher
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/connection.png').default} size="80%" align="left" />
+
+## Erklärung der Firmware-LED-Status
+
+* Materialmangel: Rotes Blinken
+* Materialzuführung: Blaues Blinken (je schneller die Zuführung, desto höher die Blinkfrequenz)
+* Materialrückzug: Grünes Blinken (wie oben)
+* Material vorhanden, aber keine Zuführung oder Rückzug: Oranges Atmen
+
+## Klipper-Konfiguration für Materialausfall und Verstopfung
+
+:::warning
+In der Konfiguration für die Verstopfungserkennung `detection_length: 2.0`
+
+2.0mm ist die minimale Erkennungslänge, die dieses intelligente Materialerkennungsmodul benötigt, um normal zu funktionieren. Wenn du Probleme mit Fehltriggerungen hast, versuche, die Erkennungslänge um 1 mm zu erhöhen, bis das Problem gelöst ist.
+:::
+
+        ```cfg
+        [respond]
+        default_type: echo
+
+        [force_move]
+        enable_force_move: True
+
+        [filament_switch_sensor Materialausfall-Erkennung]
+        pause_on_runout: False
+        switch_pin: ^!PG12
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 Materialmangel
+                # filament_unload
+        insert_gcode:
+                M118 Material nachgeladen
+                FORCE_MOVE STEPPER=extruder DISTANCE=8 VELOCITY=5 ACCEL=60
+                {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                        M118 Warten auf Erhitzung!
+                        SET_HEATER_TEMPERATURE HEATER=extruder TARGET=200
+                        TEMPERATURE_WAIT SENSOR=extruder MINIMUM=190
+                {% endif %}
+                M83
+                G92 E0
+                G0 E50 F500
+                G0 E10 F200
+
+        [filament_motion_sensor Verstopfungserkennung]
+        extruder: extruder
+        detection_length: 2.0
+        switch_pin: ^!PG10
+        pause_on_runout: False
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 Verstopfung
+        insert_gcode:
+                M118 Verstopfung beseitigt
+        #event_delay:
+        #pause_delay:
+
+        ```
+
+:::info
+Zuführung und Rückzug können nur einer verwendet werden
+:::
+
+## Klipper-Rückzugsschaltfläche Konfiguration
+
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 Warten auf Erhitzung!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E10 F300
+                        G0 E-20 F200
+                        G0 E-50 F500
+                {% else %}
+                        M118 Während des Druckens wird kein Rückzug durchgeführt!
+                {% endif %}
+        ```
+
+
+## Klipper-Zuführungsschaltfläche Konfiguration
+
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 Warten auf Erhitzung!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E20 F300
+                {% else %}
+                        M118 Während des Druckens wird kein Rückzug durchgeführt!
+                {% endif %}
+        ```
+
+
+## 3D-Modell-Download-Link
+
+        ```
+        https://cdn.mellow.klipper.cn/STEP/%E8%80%97%E6%9D%90%E6%96%AD%E6%96%99%E5%A0%B5%E6%96%99%E6%A3%80%E6%B5%8B%E6%A8%A1%E5%9D%97.7z
+        ```

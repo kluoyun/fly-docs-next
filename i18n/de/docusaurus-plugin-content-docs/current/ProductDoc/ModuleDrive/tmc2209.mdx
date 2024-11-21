@@ -1,0 +1,84 @@
+---
+sidebar_position: 1
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import DIAG from '@site/i18n/de/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 2209
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209.png').default} size="80%" align="center" />
+
+## Grundlegende Parameter
+
+    * Eingangsspannung: 12V-24V
+    * Geeignet für: Marlin/Klipper/RRF Firmware
+    * Motor verliert nicht leicht Schritte
+    * Unterstützt Ruhemodus
+    * Großer Ventilator-Hitzeschild, um die Arbeitstemperatur des Treibers zu senken
+    * Treibermodus Unterstützung: TMC：UART
+    * Unterstützt Motorblockierungserkennung
+
+## Erklärung der Hauptplatine
+
+    * TMC2209 verwendet UART-Jumper
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+    * Die UART-Pins des FLY-Treibers befinden sich auf der linken Seite, vom oberen Rand an der vierten Position, der PDN-Pin ist der UART-Pin. Wenn die Hauptplatine nicht die entsprechenden Pins hat, kann UART nicht verwendet werden.
+    * Wenn ein anderer Treiber auf dem fünften Pin verwendet wird, können Sie dieses Verfahren zur Behebung anwenden <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">Lösung, wenn UART nicht verwendet werden kann</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/uart1.png').default} size="80%" align="center" />
+
+## TMC2209 Referenzkonfiguration
+
+    :::danger
+
+    Der Shunt-Widerstand des Treibers beträgt 0,110, bitte nicht falsch einstellen.
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0.8                    # Motorlaufstromwert (in mA)
+    sense_resistor: 0.110               # Treiber-Shunt-Widerstand nicht ändern
+    stealthchop_threshold: 0
+    ```
+
+## Gebrauchsanweisung ohne Endschalter
+
+    <DIAG />
+
+    :::tip Hinweis zur Nutzung ohne Endschalter
+
+    * Der ursprüngliche `endstop_pin:` muss deaktiviert oder gelöscht werden, und `endstop_pin: tmc2209_stepper_x:virtual_endstop` muss hinzugefügt werden
+    * Nach der Konfiguration von `diag_pin:` wird der Endschalterstatus als nicht ausgelöst angezeigt
+    * Die Konfiguration von `driver_SGTHRS:` erfordert das Testen eines geeigneten Werts
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209diag.png').default} size="80%" align="center" />
+
+    * Referenzkonfiguration
+
+    :::tip
+
+    * Die Rückseite von FLY 2209 hat einen DIP-Schalter, der auf die andere Seite geschaltet werden muss
+    * FLY 2209C ist ein direkter Treiber-DIAG und erfordert diesen Schritt nicht
+
+    :::
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Rückzug nicht ändern, sonst kann Homing fehlschlagen
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```

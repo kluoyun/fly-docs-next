@@ -1,0 +1,61 @@
+---
+sidebar_position: 5
+sidebar_label: Kabelverbindungskonfiguration
+---
+
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_usb1.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_rs232.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
+import GetUsbID from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/get-id/_get-usb-id.mdx';
+
+# Kabelverbindungskonfiguration
+
+:::danger Wichtig
+
+* Nach dem Flashen des STM32F072 mit der Firmware muss eine Verbindung zu Klipper hergestellt werden, sonst wird der Betrieb über eine Kabelverbindung nicht unterstützt.
+
+:::
+
+## Beginnen Sie mit der Kompilierung
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Drücken Sie die `Q` Taste, um **Save configuration** anzuzeigen, und dann die `Y` Taste
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Jetzt sollte die Konfiguration gespeichert und die Befehlszeile verlassen sein
+    * Geben Sie `make -j4` ein, um mit der Kompilierung zu beginnen, die etwas Zeit in Anspruch nehmen kann
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn die Kompilierung erfolgreich war, wird der folgende Text ausgegeben:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## In den Programmiermodus wechseln
+
+    * Halten Sie beim abgeschalteten AirClick die BOOT-Taste des STM32 gedrückt und verbinden Sie das Programmierinterface des STM32 über Type-C mit dem Host
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/boot.png').default} size="100%" align="center" />
+
+## Überprüfen, ob der Programmiermodus erreicht wurde
+
+    <LS />
+
+## Firmware flashen
+    
+    <CANBOOT />
+
+## USB-ID suchen
+    * Verbinden Sie den Programmieranschluss des AirClick mit der USB-Buchse des Hosts, drücken Sie aber nicht die BOOT-Taste, sonst kann die ID nicht gefunden werden
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper.png').default} size="80%" align="center" />
+
+    <GetUsbID />

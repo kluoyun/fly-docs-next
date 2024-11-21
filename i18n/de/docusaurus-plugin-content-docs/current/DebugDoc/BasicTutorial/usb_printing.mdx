@@ -1,0 +1,44 @@
+---
+sidebar_position: 3
+---
+
+# USB-Druck
+
+Dieses Tutorial gilt nur für die FLY Hostsoftware
+
+    :::danger Hinweise
+
+    * Muss eigenständig installiert werden
+    * Dieses Tutorial ersetzt die Datei `klipper/klippy/extras/virtual_sdcard.py` von Klipper.
+    * Ermöglicht das automatische Kopieren von Dateien vom USB-Stick in das `/tmp`-Verzeichnis des Systems nach der Auswahl.
+    * Nach Abschluss des Kopierens wird im Web-Befehlsprompt `File selected` angezeigt.
+    * Diese Datei überprüft den Ordner `sdaX`, wenn dieser nicht existiert, wird nichts ausgeführt (wobei X für A-Z und 0-9 steht).
+    * Bisher wurde nur die FLY Hostsoftware getestet, andere Hostsoftware wurde nicht getestet.
+
+    :::
+
+## Bedienungsanleitung
+
+* Verbinden Sie sich nach dem Einloggen über SSH mit der Hostsoftware und führen Sie die folgenden Befehle aus
+* Beachten Sie, dass dieser Befehl die Hostsoftware neu starten lässt! !!
+* Dieser Schritt aktiviert die USB-Druckfunktion
+    ```bash
+    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://upyun.pan.zxkxz.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
+    ```
+
+## USB-Druckverfahren
+
+### Sicherung und Herunterladen der Datei
+
+* Beachten Sie, dass dieser Befehl Klipper stoppt
+* Dieser Schritt aktiviert die automatische Kopierfunktion von USB-Dateien in das `/tmp`-Verzeichnis des Systems bei der Auswahl
+    ```bash
+    sudo systemctl stop klipper && mv ~/klipper/klippy/extras/virtual_sdcard.py ~/virtual_sdcard.py && curl -kfsSL https://cdn.mellow.klipper.cn/firmware/virtual_sdcard.py -o ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```
+
+### Dieser Schritt stellt die ursprüngliche Datei wieder her
+
+* Beachten Sie, dass dieser Befehl Klipper wiederherstellt
+    ```bash
+    sudo systemctl stop klipper && mv ~/virtual_sdcard.py ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```

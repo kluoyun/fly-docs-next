@@ -1,0 +1,92 @@
+---
+sidebar_position: 4
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import DIAG from '@site/i18n/de/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160HV
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160hv.png').default} size="80%" align="center" />
+
+## Grundlegende Parameter
+
+    * Eingangsspannung ：12V-48V
+    * Maximaler Strom ：4.4A
+    * Geeignet für ： Marlin/Klipper/RRF Firmware
+    * Unterstützte Betriebsmodi：TMC：SPI
+    * Schritt-/Richtungs-Schnittstelle mit Mikroschrittinterpolation microPlyer
+    * Höchste Auflösung von 256 Schritten
+    * Unterstützt stealthChop2 für leise Betriebsmodus und flüssige Bewegungen
+    * Unterstützt Dämpfung von Resonanzen bei mittleren Frequenzen
+    * Unterstützt spreadCycle für hochdynamische Motorsteuerung
+    * Unterstützt dcStep für lastabhängige Geschwindigkeitskontrolle
+    * Unterstützt stallGuard2 für präzise sensorslose Motorlast-Erkennung
+    * Unterstützt coolStep für Stromkontrolle, spart bis zu 75% Energie
+
+## Erklärung der Hauptplatinenjumper
+
+    * TMC5160 verwendet SPI-Jumper
+    * Der SPI-Anschluss des FLY-Treibers ist der vierte Pin von oben nach unten auf der linken Seite, der CS-Pin ist der SPI-Pin. Wenn die Hauptplatine nicht den entsprechenden Pin hat, kann SPI nicht verwendet werden.
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+
+## TMC5160 Referenzkonfiguration
+
+    :::danger
+
+    * Die Musterwiderstände des Treibers sind `sense_resistor: 0.075`, bitte setzen Sie dies nicht falsch
+    * spi_bus und spi_software können nur ein Option gewählt werden
+    
+    :::
+
+### SPI-Modus Referenzkonfiguration
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Motorlaufstromwert
+    interpolate: False                  # Mikroschrittinterpolation bei 256 aktivieren (True aktiviert, False deaktiviert)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Anleitung zur Nutzung ohne Endschalter
+
+    <DIAG />
+
+    :::tip Hinweise zur Nutzung ohne Endschalter
+
+    * Der ursprüngliche `endstop_pin:` muss deaktiviert oder gelöscht werden, fügen Sie `endstop_pin: tmc5160_stepper_x:virtual_endstop` hinzu
+    * Nach der Konfiguration von `diag1_pin:` sollte der Endschalterstatus als nicht ausgelöst angezeigt werden
+    * Der Wert für `driver_SGT:` muss individuell getestet werden, um einen geeigneten Wert zu finden
+
+    :::
+
+    * Referenzkonfiguration
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Rückzug auf 0 ändern, könnte sonst zur Fehlfunktion beim Home-Vorgang führen
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   Stellen Sie sicher, dass der Endschalterstatus als nicht ausgelöst angezeigt wird
+    #   Dieser Pin verwendet normalerweise das Präfix "^" um den internen Pull-up zu aktivieren
+    #   Die Empfindlichkeit hängt von der Spannung des Riemens ab und muss individuell angepasst werden
+    #  (Stellen Sie sicher, dass auch driver_SGTHRS auf einen geeigneten Empfindlichkeitswert gesetzt ist)
+
+    ```

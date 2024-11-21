@@ -1,0 +1,51 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware-Flashen Anleitung
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * SHT36 V3 wird werkseitig mit Katapult-Firmware für CAN-Verbindungen, mit einer Geschwindigkeit von 1M, ausgeliefert.
+    * Die Katapult-Firmware für CAN-Verbindungen der SHT36 V3 hat die Geschwindigkeiten 500K und 1M, falls gewünscht, kann sie selbstständig gebrannt werden.
+    * <Button variant="contained" disableElevation href="./bl">Katapult Firmware-Flashen</Button>
+
+
+    :::
+
+# Firmware-Flashen Anleitung
+    
+    * Für das Kompilieren und Flashen der Firmware ist eine Host-Anwendung erforderlich.
+    * SHT36 V3 kann über RS232 oder CAN mit der Host-Anwendung verbunden werden.
+    * RS232 und CAN müssen über `XT30(2+2)-F` verbunden werden.
+    * Hier ist das Aussehen des `XT30(2+2)-F` Datenkabels:
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Wichtig
+* Das Flashen des Hauptplatinen-Firmware erfordert das Flashen von Klipper über Katapult.
+* Wenn sicher ist, dass die Hauptplatine bereits mit Katapult geflasht ist, ist das Flashen der Katapult-Firmware am Ende nicht erforderlich, dies dient nur als Sicherheitsvorkehrung, falls das Flashen der Katapult-Firmware auf der Hauptplatine nicht erfolgreich war.
+* Es kann schnell zweimal auf Reset gedrückt werden, um zu sehen, ob eine LED auf der Hauptplatine aufleuchtet, was bedeutet, dass die Hauptplatine in die Katapult-Firmware eingetreten ist.
+:::
+
+## Wie entscheidet man, welche Art von Firmware benötigt wird
+
+    * SHT36 V3 kann auf folgende Weise mit der Host-Anwendung verbunden werden:
+    * <Button variant="contained" disableElevation href="./can">CAN-Firmware</Button>
+        * Vorteile: Wenn die `Katapult`-Firmware geflasht ist, kann die Firmware ohne Berührung der Hauptplatine aktualisiert werden und unterstützt eine Bus-Verbindung.
+        * Nachteile: Kann bei Verwendung mit `KlipperScreen` zu Fehlern wie Zeitüberschreitung beim Homing führen.
+        * Hinweis: Wenn CAN benötigt wird, stellen Sie sicher, dass die Host-Anwendung CAN unterstützt und ein UTOC oder eine Hauptplatine mit gebrückter Firmware erforderlich ist.
+    * <Button variant="contained" disableElevation href="./rs232">RS232-Firmware</Button>
+        * Vorteile: Keine spezielle Software erforderlich, zuverlässige Kommunikation, stabil.
+        * Nachteile: Für das Aktualisieren der Firmware muss manuell in den DFU-Modus wechseln oder zweimal auf RST klicken, um in `Katapult` zu gelangen, um die Firmware zu aktualisieren.
+        * Hinweis: Erfordert G2T oder UTOR zur Nutzung.
+
+## Katapult-Firmware Anleitung
+
+    <CANBOOT />

@@ -1,0 +1,74 @@
+---
+sidebar_position: 6
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL-Firmware
+
+    :::tip
+
+    * Beachte bitte, dass das `Bootloader` bereits im Werk installiert wurde und nicht erneut installiert werden muss.
+
+    :::
+
+## In den Programmiermodus wechseln
+
+    :::tip
+
+    Rechts befindet sich der `BOOT-Jumper`, links der `RESET-Knopf`.
+
+    :::
+
+    * Es gibt zwei Methoden, um in den Programmiermodus zu wechseln:
+    * Erste Methode: Wenn die Hauptplatine vollständig vom Strom getrennt ist, drücke die BOOT-Taste und verbinde dann das Datenkabel mit der Hauptplatine und deinem Gerät.
+    * Zweite Methode: Nachdem du das Datenkabel mit der Hauptplatine und deinem Gerät verbunden hast, drücke die BOOT-Taste, dann die RST-Taste, lass dann die RST-Taste los und schließlich die BOOT-Taste.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/flash/img/boot.png').default} size="100%" align="center" />
+
+## Firmware programmieren
+    <Tabs>
+        <TabItem value="win" label="Windows-Programmieranleitung" default>
+
+            * Bootloader-Firmware für SUPER5 PRO <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">Klicken Sie hier, um die Firmware automatisch herunterzuladen</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Host-Programmieranleitung">
+            
+            <Katapult />
+
+            4. Firmware programmieren
+
+            :::tip
+
+            Nur eine Firmware muss programmiert werden.
+
+            :::
+
+
+            * Hier sind die Befehle zum Programmieren der Firmware:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER5PRO.bin
+                ```
+
+            5. Wenn der Pfeil wie in der Abbildung unten angezeigt wird, wurde die Firmware erfolgreich programmiert.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach dem Programmieren muss die Hauptplatine vollständig einmal vom Strom getrennt werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>

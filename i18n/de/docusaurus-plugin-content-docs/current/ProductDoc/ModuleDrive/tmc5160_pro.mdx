@@ -1,0 +1,65 @@
+---
+sidebar_position: 5
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import DIAG from '@site/i18n/de/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.2
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro.png').default} size="80%" align="center" />
+
+## Grundlegende Parameter
+
+    * Eingangsspannung: 24-48V
+    * Maximaler Strom: 6A
+    * Geeignet für: Marlin/Klipper/RRF Firmware
+    * Unterstützung für Treibermodus: TMC: SPI
+    * Schritt-/Richtungs-Schnittstelle mit Mikroschritt-Interpolation microPlyer
+    * Höchste Auflösung von 256 Mikroschritten
+    * Unterstützung für stealthChop2 für leise Betriebsweise und flüssige Bewegungen
+    * Unterstützung für Dämpfung von Mittelfrequenz-Resonanz
+    * Unterstützung für spreadCycle Hochdynamik-Motorsteuerung
+    * Unterstützung für dcStep lastabhängige Geschwindigkeitskontrolle
+    * Unterstützung für stallGuard2 präzise sensorlose Motorlast-Erkennung
+    * Unterstützung für coolStep Stromkontrolle, bis zu 75% Energieeinsparung
+
+## Erklärung der Hauptplatine-Jumper
+
+    * TMC5160 Pro verwendet SPI-Jumper
+    * Der SPI-Pin des FLY-Treibers ist der vierte Pin von oben nach unten auf der linken Seite, der CS-Pin ist der SPI-Pin. Wenn die Hauptplatine nicht die entsprechenden Pins hat, kann SPI nicht verwendet werden.
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+## 12V FAN-Anschluss
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.png').default} size="80%" align="center" />
+
+
+## TMC5160 Pro Referenzkonfiguration
+
+    :::danger
+
+    * Die Messwiderstandseinstellung des Treibers ist `sense_resistor: 0.033`, bitte setzen Sie diesen nicht falsch
+    * `spi_bus` und `spi_software` können nur eine Option ausgewählt werden
+    
+    :::
+
+### SPI-Modus Referenzkonfiguration
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Motorlaufstromwert
+    interpolate: False                  # Mikroschritt-Interpolation aktivieren (True für aktiviert, False für deaktiviert)
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```

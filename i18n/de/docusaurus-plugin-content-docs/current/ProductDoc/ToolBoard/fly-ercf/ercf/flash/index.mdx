@@ -1,0 +1,50 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware-Brennhinweise
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * ERCF wird werkseitig mit Katapult-Firmware für CAN-Verbindung und einer Rate von 1M geliefert
+    * ERCF CAN-Verbindung Katapult-Firmware hat eine Rate von 500K und 1M, kann bei Bedarf selbst gebrannt werden
+    * <Button variant="contained" disableElevation href="./bl">Katapult-Firmware brennen</Button>
+
+
+
+    :::
+
+# Firmware-Brennhinweise
+
+    * ERCF kann über eine CAN-Verbindung mit dem Host verbunden werden
+    * CAN benötigt eine Verbindung mit `XT30(2+2)-F`
+    * Unten ist das Aussehen des `XT30(2+2)-F`-Datenkabels
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Beachten
+* Das Hauptplatine-Firmware brennen erfordert das Brennen von Klipper über Katapult
+* Wenn die Hauptplatine bereits Katapult gebrannt hat, ist der letzte Brennvorgang der Katapult-Firmware nicht erforderlich, das ist nur eine Vorsichtsmaßnahme für den Fall, dass das Brennen der Katapult-Firmware auf der Hauptplatine fehlgeschlagen ist
+* Man kann schnell zweimal auf Reset drücken und überprüfen, ob eine LED auf der Hauptplatine zu blinken beginnt, wenn ja, bedeutet das, dass die Hauptplatine in die Katapult-Firmware eingetreten ist
+:::
+
+## Wie man herausfindet, welche Art von Firmware benötigt wird
+
+    * ERCF kann auf folgende Weise mit dem Host verbunden werden
+    * <Button variant="contained" disableElevation href="./can">CAN-Firmware brennen</Button>
+        * Vorteile: Wenn die `Katapult`-Firmware gebrannt wurde, kann die Firmware ohne Berührung der Hauptplatine aktualisiert werden, unterstützt Busverbindungen
+        * Nachteile: Kann bei Verwendung mit `KlipperScreen` zu Fehlern wie Timeout bei der Homing führen.
+        * Hinweis: Wenn CAN verwendet werden soll, stellen Sie sicher, dass der Host CAN unterstützt und ein UTOC oder eine Hauptplatine mit gebrannter Brückenfirmware vorhanden ist
+    * <Button variant="contained" disableElevation href="./usb">USB-Firmware brennen</Button>
+        * Vorteile: Wenn die Katapult-Firmware gebrannt wurde, kann die Firmware ohne Berührung der Hauptplatine aktualisiert werden, wenn SD-Karte oder DFU-Brennen verwendet wird, muss die Firmware wie gewohnt aktualisiert werden, Kommunikation zuverlässig, stabil
+        * Nachteile: Mehrere USB-Geräte können die Datenübertragung beeinträchtigen
+
+## Katapult-Firmware-Erklärung
+
+    <CANBOOT />

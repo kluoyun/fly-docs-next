@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+---
+
+# Klipper Fortsetzung nach Stromausfall
+
+:::danger Hinweis
+
+* Nur für einige Geräte geeignet
+
+:::
+
+## Wechseln des Branches
+    * Erfordert die Verwendung von SS über eine Netzwerkverbindung zum Host, stellen Sie sicher, dass der Host mit dem Internet verbunden ist
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/klipper-dev.git -b fly-dev klipper
+    ```
+
+## Referenz-Konfiguration
+
+    ```cfg
+    [power_resume]
+    power_pin: PA10
+    is_shutdown: True # Soll der Shutdown-Vorgang ausgeführt werden, standardmäßig aktiviert
+    start_gcode:
+        # Gcode, der vor dem Fortsetzen des Drucks ausgeführt wird
+        # Alle Parameter, die vor dem Stromausfall gespeichert wurden, können durch {PR} abgerufen werden
+        # Verfügbare Parameter können mit M118 {PR} ausgegeben werden
+        M118 Start Fortsetzung: {PR.print_stats.filename}
+        {% if PR.print_stats.info.total_layer %}
+            M118 Gesamtlayer: {PR.print_stats.info.total_layer}
+            M118 Unterbrochener Layer: {PR.print_stats.info.current_layer}
+        {% endif %}
+        M118 Unterbrochene Position: X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
+        M140 S{PR.bed.target}      ; Heizbett-Temperatur setzen
+        # M104 S180                ; Extruder-Temperatur setzen
+        # M109 S180                ; Warten, bis Extruder die eingestellte Temperatur erreicht
+        G91                        ; Relative Koordinaten
+        G1 Z2 F100                 ; Z-Achse anheben, um X,Y Nullpunkt zu finden
+        G90                        ; Absolute Koordinaten
+        G28 X Y                    ; XY Nullpunkt setzen
+        M140 S{PR.bed.target}      ; Heizbett-Temperatur setzen
+        M104 S{PR.extruder.target} ; Extruder-Temperatur setzen
+        M190 S{PR.bed.target}      ; Warten, bis Heizbett die eingestellte Temperatur erreicht
+        M109 S{PR.extruder.target} ; Warten, bis Extruder die eingestellte Temperatur erreicht
+        M106 S255                  ; Lüfter einschalten
+        M83                        ; Relative Extrusion
+        G1 E10 F400                ; Ein wenig extrudieren
+        G90                        ; Absolute Koordinaten
+        G1 F{PR.gcode_move.speed}  ; Bewegungsgeschwindigkeit setzen
+        G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; Auf Startposition bewegen
+        {% if PR.gcode_move.absolute_coordinates %}
+            G90 ; Absolute Bewegung
+        {% else %}
+            G91 ; Relative Bewegung
+        {% endif %}
+        {% if PR.gcode_move.absolute_extrude %}
+            M82 ; Absolute Extrusion
+        {% else %}
+            M83 ; Relative Extrusion
+        {% endif %}
+        G92 E{PR.POS_E} ; Extruder-Position setzen
+    shutdown_gcode:
+        # Gcode, der vor dem Herunterfahren ausgeführt wird
+        M118 Spannung zu niedrig, Herunterfahren
+        # M112 ; Notfallstopp
+    ```

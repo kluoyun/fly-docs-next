@@ -1,0 +1,61 @@
+---
+sidebar_position: 5
+sidebar_label: USB-Firmware-Flash
+
+---
+
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb1.mdx';
+import SSH from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import ImageView from '@site/src/components/ImageView';
+
+import LS from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import Button from "@mui/material/Button";
+
+
+# USB-Firmware-Kompilierung
+
+    :::tip
+
+    * Die MMU hat von Werk aus das CAN-verbundene Katapult-Firmware vorgeflasht
+    * Wenn Sie das USB-Firmware-Flashen verwenden möchten, müssen Sie die USB-Version des Katapult-Firmware flashen
+    * Nach einmaligem Flashen ist ein erneutes Flashen nicht erforderlich
+    * <Button variant="contained" disableElevation href="./bl">Katapult-Firmware-Flashen</Button>
+
+    :::
+
+## Kompilierung beginnen
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Wählen Sie GPIO-Pins zum Setzen beim Mikrocontroller-Start, Eingabe: !PA15 Bitte beachten Sie, dass ! großgeschrieben ist
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/usb.png').default} size="100%" align="center" />
+    * Drücken Sie die `Q`-Taste, es erscheint **Save configuration**, dann die `Y`-Taste drücken
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * Nun sollte die Konfiguration gespeichert und die Eingabeaufforderung geschlossen sein
+    * Geben Sie `make -j4` ein, um die Kompilierung zu starten, die etwas Zeit in Anspruch nimmt
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Wenn am Ende die folgenden Inhalte ausgegeben werden, war die Kompilierung erfolgreich
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Bestätigen Sie, ob der Flash-Modus aktiviert ist
+
+    <LS />
+
+## Firmware flashen
+    
+    <Katapult />
+
+## Bestätigen Sie, ob die Firmware gestartet ist
+
+    * Wenn die Firmware normal startet, leuchtet die LED auf
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />

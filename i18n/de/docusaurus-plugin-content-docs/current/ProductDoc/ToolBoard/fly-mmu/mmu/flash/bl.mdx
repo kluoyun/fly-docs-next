@@ -1,0 +1,93 @@
+---
+sidebar_position: 7
+sidebar_label: BL-Firmware, bitte ignorieren
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import WIN from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult-Firmware
+
+## Beschreibung der Katapult-Firmware
+
+    <CANBOOT />
+
+    :::tip
+
+    * Alle drei MMU-Varianten werden unterstützt
+    * Hier werden nur CAN-Firmware und USB-Firmware bereitgestellt
+    :::
+
+## Betreten des Programmiermodus
+
+    :::tip
+
+    Oben ist die `RESET-Taste`, unten die `BOOT-Taste`
+
+    :::
+
+    * Es gibt zwei Methoden, um den Programmiermodus zu betreten
+    * Erste Methode: Wenn das Hauptplatine vollständig stromlos ist, drücken Sie die BOOT-Taste und verbinden Sie dann das Datenkabel mit dem Hauptplatine und Ihrem Gerät
+    * Zweite Methode: Nachdem Sie das Datenkabel mit dem Hauptplatine und Ihrem Gerät verbunden haben, drücken Sie die BOOT-Taste, dann die RST-Taste, lassen Sie die RST-Taste los und schließlich die BOOT-Taste los
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.png').default} size="100%" align="center" />
+
+## Firmware programmieren
+    <Tabs>
+        <TabItem value="win" label="Windows-Programmieranleitung" default>
+        
+            * MMU-Katapult-Firmware <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">Automatisch herunterladen</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Host-Programmieranleitung">
+            
+            <Katapult />
+
+            4. Firmware programmieren
+
+            :::tip
+
+            Es muss nur eine Firmware programmiert werden
+
+            :::
+
+            * Hier ist der Befehl zum Programmieren der Firmware mit einer CAN-Geschwindigkeit von 500K
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+                       
+            * Hier ist der Befehl zum Programmieren der Firmware mit einer CAN-Geschwindigkeit von 1M
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+
+            * Hier ist der Befehl zum Programmieren der USB-Firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_USB.bin
+                ```
+
+            5. Wenn der Pfeil wie unten gezeigt erscheint, ``File downloaded successfully``, war das Programmieren erfolgreich
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Nach dem Programmieren muss das Hauptplatine vollständig einmal vom Strom getrennt werden.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Überprüfen, ob die Firmware gestartet ist
+
+    * Wenn die Firmware normal startet, wird die LED blinken
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />
+

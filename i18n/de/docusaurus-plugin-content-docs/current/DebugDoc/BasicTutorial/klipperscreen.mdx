@@ -1,0 +1,55 @@
+---
+sidebar_position: 7
+sidebar_label: KlipperScreen-Erweiterungen
+---
+
+
+import ImageView from '@site/src/components/ImageView';
+
+# KlipperScreen-Erweiterungen
+
+## Methode zum Aktivieren des KlipperScreen-Mauszeigers
+
+    * Öffnen Sie die Drucker-Konfigurationsdatei `KlipperScreen.conf`, die nach der Installation von KlipperScreen automatisch erstellt wird. Falls sie nicht vorhanden ist, erstellen Sie sie bitte selbst.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf.png').default} size="100%" align="center" />
+    * Fügen Sie den folgenden Code am Anfang der Konfiguration hinzu:
+    ```cfg
+    [main]
+    show_cursor: True
+    ```
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf-1.png').default} size="80%" align="center" />
+    * Speichern und Neustarten
+
+## Remote-Verbindung zu anderen Host-Maschinen
+
+    * Öffnen Sie die Drucker-Konfigurationsdatei `KlipperScreen.conf`, die nach der Installation von KlipperScreen automatisch erstellt wird. Falls sie nicht vorhanden ist, erstellen Sie sie bitte selbst.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf.png').default} size="100%" align="center" />
+    * Fügen Sie den folgenden Code am Anfang der Konfiguration hinzu:
+    * Sie können den Druckernamen `VORON-300` und die IP-Adresse `192.168.6.217` der zu verbindenden Maschine ändern.
+    * Beachten Sie bitte, dass das zweite `[printer KlipperScreen]` zur Verbindung mit der entfernten erweiterten Maschine dient. Sie können diese Konfiguration zum Debuggen oder Ausschalten verwenden.
+    :::danger Wichtig
+
+    * Stellen Sie sicher, dass Sie in einem lokalen Netzwerk sind.
+
+    :::
+
+    ```cfg
+    # Definieren Sie den Drucker und den Namen. Der Name ist alles nach dem ersten Wort "printer"
+    [printer VORON-300]
+    # Definieren Sie den Moonraker-Host/Port, falls dieser nicht 127.0.0.1 und 7125 ist
+    moonraker_host: 192.168.6.217
+    # Ports 443 und 7130 verwenden https/wss
+    moonraker_port: 7125
+    # Moonraker API-Schlüssel, falls nicht von einer vertrauenswürdigen Client-IP aus verbunden wird
+    moonraker_api_key: False
+
+    # Definieren Sie den Drucker und den Namen. Der Name ist alles nach dem ersten Wort "printer"
+    [printer KlipperScreen]
+    # Definieren Sie den Moonraker-Host/Port, falls dieser nicht 127.0.0.1 und 7125 ist
+    moonraker_host: 127.0.0.1
+    # Ports 443 und 7130 verwenden https/wss
+    moonraker_port: 7125
+    # Moonraker API-Schlüssel, falls nicht von einer vertrauenswürdigen Client-IP aus verbunden wird
+    moonraker_api_key: False
+
+    ```

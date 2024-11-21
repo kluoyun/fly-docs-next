@@ -1,0 +1,88 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ImageView from '@site/src/components/ImageView';
+
+import WIN32 from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
+
+# Über USB auf M2WE flashen
+
+### Vorbereitung
+
+    * Installiere zuerst die Software `Win32DiskImager`
+    * Es wird nicht empfohlen, `balenaetcher` zur Systeminstallation zu verwenden
+    * Entpacke das System, nach dem Entpacken sollte die Dateiendung `.img` lauten
+    * Lade den [M2WE BOOT-Treiber](/docs/ResDownload/auxiliary_software/ "Klicken zum Weiterleiten") herunter
+
+### Treiber installieren
+
+    * Öffne die `Zadig` Software
+    * Außer dem ersten `Zadig` muss nichts installiert werden, die anderen beiden müssen installiert werden. Im Installationsprozess immer auf `Weiter` oder `Next` klicken
+    * Öffne `Zadig`, im oberen Menü `Options` das Häkchen bei `List All Devices` setzen
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig.png').default} size="80%" align="left" />
+
+:::tip
+Stelle sicher, dass du das Gerät erst an den Computer anschließt, wenn die Taste gedrückt ist
+:::
+
+    * Nachdem der M2WE installiert ist und du die BOOT-Taste gedrückt hältst, schließe das doppelseitige USB-Kabel an den Computer an
+
+    <ImageView image={require('@site/docs/General/fly-os/img/usb-boot.png').default} size="80%" align="center" />
+            <Tabs>
+                <TabItem value="c8" label="FLY-C8" default>
+                    * FLY-C8 Port
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/c8-boot.png').default} size="80%" align="center" />
+                </TabItem>
+                <TabItem value="piv2" label="FLY-Pi v2" default>
+                    * FLY-Pi v2 Port
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/piv2-boot.png').default} size="80%" align="center" />
+                </TabItem>
+                <TabItem value="piv1" label="FLY-Pi(π)" default>
+                    * FLY-Pi Port
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.png').default} size="80%" align="center" />
+                </TabItem>
+                <TabItem value="gemini" label="FLY-Gemini" default>
+                    * FLY-Gemini Port
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.png').default} size="80%" align="center" />
+
+                </TabItem>
+            </Tabs>
+
+    * Öffne Zadig
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig1.png').default} size="80%" align="left" />
+
+    * Wenn alles normal ist, wird in Zadig ein `Unbekanntes Gerät #x` oder `USB-Gerät(VID_1f3a_PID_efe8)` erscheinen, wähle es aus
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig2.png').default} size="80%" align="left" />
+
+    * Nach der Geräteauswahl überprüfe, ob die USB-ID mit dem Bild übereinstimmt, wenn nicht, wähle ein anderes Gerät aus
+    * In der zweiten Stelle auf dem Bild kann nur `WinUSB(vxxxxxxx)` gewählt werden, die Versionsnummer ist egal
+    * Klicke auf `Treiber installieren`, um den Treiber zu installieren
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig3.png').default} size="80%" align="left" />
+
+    * USB-Treiber erfolgreich installiert (Der Treiber muss nur einmal installiert werden, bei zukünftigen Flashvorgängen ist keine erneute Installation erforderlich)
+    * Öffne das installierte FLY-BOOT und klicke auf `Gerät überprüfen`
+    * Wenn die vorherigen Schritte korrekt durchgeführt wurden, wird angezeigt, dass ein verfügbares Gerät gefunden wurde
+    * Klicke auf `BOOT starten`, wenn alles normal ist, wird angezeigt, dass `BOOT` erfolgreich aktiviert wurde
+
+### Formatiere M2WE
+
+    * Verwende die `TFFormatter.exe` Software, um die `BOOT` Disk zu formatieren
+
+    <ImageView image={require('@site/docs/General/fly-os/img/sdformatter.png').default} size="80%" align="left" />
+
+    * Alternativ kannst du auch das integrierte Windows-Disk-Management verwenden, um die Partition zu löschen und neu zu erstellen.
+    * Jetzt sollte im Datei-Explorer ein USB-Laufwerk mit 14,5GB erscheinen (16GB eMMC zeigt als 14,5GB an)
+    * Nun kannst du das Systemabbild direkt mit Win32diskimager auf das 14,5GB USB-Laufwerk flashen
+
+### Auf M2WE flashen
+
+<WIN32 />
+```
+

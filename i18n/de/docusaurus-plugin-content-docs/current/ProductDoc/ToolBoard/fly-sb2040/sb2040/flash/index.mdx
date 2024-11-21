@@ -1,0 +1,46 @@
+---
+sidebar_position: 1
+sidebar_label: Firmware-Flash-Anleitung
+---
+
+import Button from "@mui/material/Button";
+
+import ImageView from '@site/src/components/ImageView';
+
+import CANBOOT from '@site/i18n/de/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * Der SB2040 wird werkseitig mit Katapult-Firmware für CAN-Verbindung mit einer Geschwindigkeit von 1M geliefert
+    * Die Katapult-Firmware für CAN-Verbindung des SB2040 ist in 500K und 1M verfügbar, falls benötigt, kann sie selbst gebrannt werden
+    * <Button variant="contained" disableElevation href="./bl">Katapult-Firmware-Flash</Button>
+    
+    :::
+
+# Firmware-Flash-Anleitung
+
+    * Der SB2040 kann über eine CAN-Verbindung mit dem Host-PC verbunden werden
+    * CAN erfordert die Verwendung von `XT30(2+2)-F` zur Verbindung
+    * Unten ist das Aussehen des `XT30(2+2)-F` Datenkabels
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Beachten Sie
+* Das Flashen der Hauptplatinenfirmware erfordert das Flashen von Klipper über Katapult
+* Wenn sicher ist, dass die Hauptplatine bereits Katapult geflasht hat, ist das Flashen der Katapult-Firmware am Ende nicht nötig, dies dient nur als Sicherheitsmaßnahme für den Fall, dass das Flashen der Katapult-Firmware auf der Hauptplatine nicht erfolgreich war
+* Man kann schnell zweimal auf Reset drücken und schauen, ob eine LED auf der Hauptplatine aufblinkt, wenn ja, bedeutet dies, dass die Hauptplatine in die Katapult-Firmware übergegangen ist
+:::
+
+## Wie man ermittelt, welche Art von Firmware benötigt wird
+
+    * Der SB2040 kann nur über eine CAN-Verbindung mit dem Host-PC verbunden werden
+    * <Button variant="contained" disableElevation href="./can">CAN-Firmware-Flash</Button>
+        * Vorteil: Wenn die `Katapult`-Firmware geflasht wurde, kann die Firmware ohne Berührung der Hauptplatine aktualisiert werden und unterstützt Bus-Verbindungen
+        * Nachteil: Kann bei gleichzeitiger Verwendung mit `KlipperScreen` zu Home-Timeout-Fehlern führen.
+        * Hinweis: Wenn CAN verwendet werden soll, stellen Sie sicher, dass der Host-PC CAN unterstützt und benötigen Sie entweder ein UTOC oder eine Hauptplatine mit gebrückter Firmware
+
+
+## Katapult-Firmware-Anleitung
+
+    <CANBOOT />
