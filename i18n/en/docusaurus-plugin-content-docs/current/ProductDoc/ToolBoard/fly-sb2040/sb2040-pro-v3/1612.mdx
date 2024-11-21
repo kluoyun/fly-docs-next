@@ -1,34 +1,31 @@
 ---
 sidebar_position: 7
 sidebar_label: Eddy Usage
-
 ---
 
 import ImageView from '@site/src/components/ImageView';
-
-
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddy Usage
 
     :::info
 
-    * Please note that it is recommended to use a separate Z limit for sweeping the bed, and it is not recommended to use the sweeping bed as the Z limit.
-    * When installing Eddy, the bottom of the nozzle should be at least 1-2 mm above the nozzle.
-    * When calibrating the Eddy frequency, keep the coil PCB at least 5 mm away from the heated bed.
-    * Please do not test on a heated bed at room temperature, and do not turn on the heated bed during testing.
+    * Please note that it is recommended to use a separate Z limit for bed leveling, not to use the bed leveling as the Z limit.
+    * When installing Eddy, the bottom should be at least 1-2 mm above the nozzle.
+    * When calibrating Eddy's frequency, keep the coil PCB at least 5 mm away from the bed.
+    * Please ensure the entire bed is at room temperature during testing, and do not turn on the bed during the test.
 
     :::
 
 ## Wiring Diagram
 
-    * The thermistor should face downward.
+    * Thermistor facing down
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.png').default} size="100%" align="left" />
 
 
 ## Reference Configuration and Usage Instructions
 
-    ### Bed Sweeping Configuration
+    ### Bed Leveling Configuration
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -43,7 +40,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * Please note that there is currently no external 1612 module available, so this configuration cannot be used temporarily.
+        * Please note that currently there is no external 1612 module available, so this configuration is temporarily unusable.
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -61,17 +58,17 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
         ```cfg
         [temperature_probe fly_probe]
-        sensor_type: Generic 3950
-        sensor_pin: SB2040:gpio28
+        sensor_type:Generic 3950
+        sensor_pin:SB2040:gpio28
         ```
 
 ### bed_mesh Configuration
 
-    * In the `[bed_mesh]` section, set the `horizontal_move_z` parameter to 2, so that when scanning the platform, Eddy is as close to the platform as possible.
+    * In [bed_mesh], the `horizontal_move_z` parameter should be set to 2, allowing Eddy to get as close to the platform as possible during scanning.
 
     ```cfg
     [bed_mesh]
     horizontal_move_z: 2
     ```
 
-<LDC1612 />
+    <LDC1612 />
