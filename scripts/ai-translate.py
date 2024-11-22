@@ -12,8 +12,7 @@ from logger import logger
 
 DOCS_DIR = "docs"
 SRC_LANG = "zh-Hans"
-TARGET_LANGS = ["en", "de", "fr", "ja", "ko", "ru"]
-#
+TARGET_LANGS = ["en", "ja", "fr", "ja", "ko"]
 I18N_DIR = "i18n"
 TRANSLATE_DIR = f"docusaurus-plugin-content-docs{os.sep}current"
 
@@ -23,8 +22,8 @@ class Translater:
         self.running = True
         self.file_list = file_list
         self.client = OpenAI(
-            api_key=os.getenv("AI_SKEY"),
-            base_url="https://openai.zxkxz.cn/v1",
+            api_key=os.getenv("OPENAI_API_KEY"),
+            base_url="https://api.x.ai/v1",
         )
 
     def stop(self) -> None:
@@ -32,24 +31,26 @@ class Translater:
 
     def translate(self, text: str, src_language: str, target_language: str) -> str:
         sys_prompt = f"""你是一个专业的翻译工具，任务是翻译用户输入的内容。
-源语言为{src_language}，目标语言为{target_language}。请确保翻译结果符合目标语言的语法，并保持原文结构不要做任何修改。
+        源语言为{src_language}，目标语言为{target_language}。请确保翻译结果符合目标语言的语法，并保持原文结构不要做任何修改。
 
-要求：(重要：你返回的内容只能是翻译结果，不需要添加任何注释或代码块符号)
-1. 翻译结果必须符合目标语言的语法。例如，将中文翻译为英文句子，而不是逐字翻译。
-2. 保持原文结构，包括标题、列表、代码块等。
-3. 保持原文语义，确保代码和公式等内容不变。
-4. 原文中的链接、图片、表格、JSX和Markdown代码需保持原样。
-5. 英文关键字、产品名称和型号等内容应保持原样。
-6. 所有缩进必须保持不变。
-7. 翻译结果尾部需保留或添加一个空行。
-8. 文件路径和链接需保持原样。
-9. 原文中的半角字符保持原样。
-10. 返回结果不要添加前缀或后缀，直接给出翻译结果。
-11. 翻译结果开头和结尾不得添加```.
-12. 保持原文中的空行、换行符、空格和制表符等格式不变。
-13. 翻译结果中不能添加原文中不存在的代码、标签或其他内容，包括但不限于<br>。
-14. 须严格遵循上述要求，否则翻译结果可能会有误。
-"""
+        要求：(重要：你返回的内容只能是翻译结果，不需要添加任何注释或代码块符号)
+        1. 翻译结果必须符合目标语言的语法。例如，将中文翻译为英文句子，而不是逐字翻译。
+        2. 保持原文结构，包括标题、列表、代码块等。
+        3. 保持原文语义，确保代码和公式等内容不变。
+        4. 原文中的链接、图片、表格、JSX和Markdown代码需保持原样。
+        5. 英文关键字、产品名称和型号等内容应保持原样。
+        6. 所有缩进必须保持不变。
+        7. 翻译结果尾部需保留或添加一个空行。
+        8. 文件路径和链接需保持原样。
+        9. 原文中的半角字符保持原样。
+        10. 返回结果不要添加前缀或后缀，直接给出翻译结果。
+        11. 翻译结果开头和结尾不得添加```.
+        12. 保持原文中的空行、换行符、空格和制表符等格式不变。
+        13. 翻译结果中不能添加原文中不存在的代码、标签或其他内容，包括但不限于<br>。
+        14. 不能修改原文中的空格和制表符。不能替换为非断行空格等。
+        15. 绝对不能删除原文中的import语句。
+        16. 须严格遵循上述要求，否则翻译结果可能会有误。
+        """
         user_prompt = text
         ret = None
         assistant = ""
@@ -73,7 +74,7 @@ class Translater:
                         }
                     )
                 completion: ChatCompletion = self.client.chat.completions.create(
-                    model="gpt-4",
+                    model="grok-beta",
                     messages=msg,
                     timeout=60,
                 )
@@ -87,6 +88,8 @@ class Translater:
                     time.sleep(2)
                     continue
                 ret = completion.choices[0].message.content
+                if ret.startswith("```markdown") and ret.endswith("```"):
+                    ret = ret[len("```markdown") + 1 : len(ret) - len("```")]
                 if not text.startswith("```") and ret.startswith("```"):
                     logger.debug(f"翻译结果有误：{ret}")
                     assistant = ret
@@ -122,7 +125,7 @@ class Translater:
             if os.path.exists(target_file):
                 # 已存在翻译文件，跳过
                 continue
-            if file.endswith("cfg.mdx"):
+            if file.endswith("cfg.mdx") or file.endswith("voron0.mdx"):
                 # 暂不翻译cfg，跳过
                 continue
             tr_file_list.append({"src_file": file, "target_file": target_file})
@@ -130,6 +133,7 @@ class Translater:
             logger.info("没有需要翻译的文件")
             return
         logger.info(f"需要翻译的文件数: {len(tr_file_list)}")
+        tr_count = 0
         for f in tr_file_list:
             file = f["src_file"]
             target_file = f["target_file"]
@@ -142,6 +146,10 @@ class Translater:
                     with open(target_file, "w", encoding="utf-8") as f:
                         f.write("")
                     continue
+                content = content.replace(
+                    "from '@site/docs/",
+                    f"from '@site/{I18N_DIR}/{target_language}/docusaurus-plugin-content-docs/current/",
+                )
                 tr_str = self.translate(content, src_language, target_language)
                 if tr_str is not None and tr_str != "":
                     # 确保目标目录存在
@@ -149,9 +157,14 @@ class Translater:
                     os.makedirs(
                         target_dir, exist_ok=True
                     )  # exist_ok=True 防止已存在目录引发错误
+                    tr_str = tr_str.replace(b"\xc2\xa0".decode(), " ")
+                    tr_str = tr_str.replace(b"\xe2\x80\x8b".decode(), " ")
                     with open(target_file, "w", encoding="utf-8") as f:
                         f.write(tr_str)
-                        logger.info(f"翻译成功: {target_file}")
+                        tr_count += 1
+                        logger.info(
+                            f"翻译成功 [{tr_count}/{len(tr_file_list)}]: {target_file}"
+                        )
                 else:
                     logger.error(f"翻译失败: {file}")
             except Exception as e:
@@ -192,6 +205,31 @@ class Translater:
         sys.exit(0)
 
 
+def split_list(lst, num_parts):
+    """将列表 lst 分成 num_parts 个子列表，允许最后一个子列表大小不同"""
+    total_length = len(lst)
+    part_size = total_length // num_parts  # 每个子列表的基本大小
+    remainder = total_length % num_parts  # 剩余的元素数量
+
+    sub_lists = []
+    start_index = 0
+
+    for i in range(num_parts):
+        # 计算当前子列表的结束索引
+        if i < remainder:
+            end_index = start_index + part_size + 1
+        else:
+            end_index = start_index + part_size
+
+        # 添加子列表
+        sub_lists.append(lst[start_index:end_index])
+
+        # 更新起始索引
+        start_index = end_index
+
+    return sub_lists
+
+
 def main():
     # 遍历docs目录中的所有.mdx文件
     src_mdx_list = []
@@ -206,20 +244,21 @@ def main():
     tr = Translater(src_mdx_list)
     signal.signal(signal.SIGINT, tr._handle_interrupt)  # 注册信号处理函数
     # 每个语言开一个线程
-    threads = []
-    for lang in TARGET_LANGS:
-        thread = threading.Thread(target=tr.task_translate, args=(SRC_LANG, lang))
-        thread.daemon = True  # 设置为守护线程
-        threads.append(thread)
-        thread.start()
+    slis = split_list(src_mdx_list, len(src_mdx_list) // 50)
+    for fl in slis:
 
-    try:
-        # 等待所有线程完成
-        for thread in threads:
-            thread.join()
-    except KeyboardInterrupt:
-        print("正在停止线程...")
-        tr.stop()
+        tr = Translater(fl)
+
+        # 每个语言开一个线程
+        threads = []
+        for lang in TARGET_LANGS:
+            thread = threading.Thread(target=tr.task_translate, args=(SRC_LANG, lang))
+            thread.daemon = True  # 设置为守护线程
+            threads.append(thread)
+            thread.start()
+
+    while True:
+        pass
 
 
 if __name__ == "__main__":
