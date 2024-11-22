@@ -1,0 +1,96 @@
+---
+sidebar_position: 4
+sidebar_label: Branchement de la carte mère
+---
+
+# Branchement SHT36/42
+
+:::tip
+Veuillez coller la plaque de refroidissement bleue fournie sur le driver 2209 !!!
+:::
+
+    SHT36 et SHT42 ne diffèrent que par leur apparence et leurs dimensions d'installation, sinon ils sont identiques. La méthode d'utilisation du SHT42 est la même que celle du SHT36, ici nous ne présentons que le SHT36.
+
+## Configuration de la résistance de terminaison
+
+:::tip
+Avant d'utiliser le CAN, veuillez configurer correctement la résistance de terminaison CANBUS.
+:::
+    * Le protocole CANBUS nécessite et ne doit avoir que deux résistances de 120 ohms sur une ligne de bus
+    * Peu importe le nombre de périphériques USB connectés, tant qu'ils sont sur une même ligne de bus, configurez seulement deux résistances de 120 ohms. Il n'est pas nécessaire d'ajouter une résistance pour chaque périphérique
+    * Après avoir connecté les fils CAN H et CAN L, utilisez un multimètre pour mesurer entre CAN H et CAN L, la résistance entre les deux devrait être d'environ 60 ohms
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/can7.png').default} size="80%" align="center" />
+
+## Branchement de l'alimentation
+
+:::tip
+FLY SHT36/42 ne supporte pas la fonction de protection contre l'inversion de polarité de l'alimentation !!! Veuillez vérifier attentivement le branchement de l'alimentation avant de l'alimenter, ne l'inversez pas !!!! Sinon, cela pourrait endommager la carte outil SHT36/42 !!!
+:::
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/power.png').default} size="80%" align="center" />
+
+## MOS du ventilateur
+
+Le MOS du ventilateur n'a pas de sens de branchement, assurez-vous simplement qu'il soit bien inséré.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/fanmos.png').default} size="80%" align="center" />
+
+## Branchement du ventilateur
+
+Le SHT36 supporte jusqu'à deux ventilateurs contrôlables, la tension des ventilateurs est la même que celle de l'alimentation, la méthode de branchement est la suivante.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/fan.png').default} size="80%" align="center" />
+
+## Branchement de la cartouche chauffante
+
+La cartouche chauffante supporte un courant maximum de 5A, veuillez faire attention à la puissance de la cartouche lors de son utilisation !
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/heat.png').default} size="80%" align="center" />
+
+## Branchement du thermistor
+
+Le schéma ci-dessous montre la méthode de branchement pour un thermistor standard et un PT1000.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/nozzle_thermistor.png').default} size="80%" align="center" />
+
+Le schéma ci-dessous montre la méthode de branchement pour un PT100. Par défaut, le PT100 à deux fils doit être connecté aux broches 2 et 3 de gauche à droite.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/pt100.png').default} size="80%" align="center" />
+
+## Branchement RGB
+
+Les LED RGB doivent absolument avoir leurs polarités respectées, sinon elles pourraient endommager la carte outil SHT.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/rgb.png').default} size="80%" align="center" />
+
+## Branchement de l'extrudeur
+
+Après avoir terminé le branchement de l'extrudeur, assurez-vous de configurer correctement le courant du driver et de calibrer la direction de rotation du moteur de l'extrudeur.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/extruder.png').default} size="80%" align="center" />
+
+## Fin de course
+
+    Il existe deux types de fin de course : normalement ouvert (NO) et normalement fermé (NC). En général, sur une imprimante 3D, il est recommandé d'utiliser le type normalement fermé (NC), de cette manière, si un problème survient avec le câblage du fin de course, le système signalera une erreur à temps, évitant ainsi des collisions inutiles et prévenant les dommages à l'imprimante.
+
+    Pour les modèles de type VORON, envisagez de changer l'emplacement d'installation des fins de course, en installant le fin de course X sur le chariot de la tête d'impression et le fin de course Y sur le support du moteur A. De plus, sur le SHT36, il est recommandé d'ajouter un ``^`` avant le fin de course pour tirer le signal vers le haut. Par exemple :
+
+    ```cfg
+    [stepper_x]
+    endstop_pin: ^sht36:PA0  # Ajouter ^ avant, pour tirer le signal vers le haut, particulièrement lors de l'utilisation de PA1, assurez-vous d'ajouter le tirage vers le haut ^
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/endstop.png').default} size="80%" align="center" />
+
+## Branchement du capteur de nivellement
+
+:::danger À savoir
+PB1 ne supporte que la sortie de signaux PWM, il ne supporte pas l'entrée de signaux !!! Par conséquent, il ne peut pas être utilisé comme entrée pour un capteur de nivellement ou un fin de course !!!
+:::
+
+### Capteur de proximité
+
+    La recommandation officielle de VORON est d'utiliser le capteur Omron TL-Q5MC (anciennement recommandé le PL08N, les deux fonctionnent sur le même principe, mais avec des distances de détection différentes) pour le nivellement du lit chauffant.
+
+    Le SHT36/42 ne recommande pas l'utilisation de capteurs de proximité, il est nécessaire de connecter une ligne d'alimentation de 12V ou 24V séparée pour alimenter le capteur de proximité.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/pl08.png').default} size="80%" align="center" />

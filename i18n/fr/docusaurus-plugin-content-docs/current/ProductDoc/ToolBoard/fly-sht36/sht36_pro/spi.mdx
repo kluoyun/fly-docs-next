@@ -1,0 +1,34 @@
+---
+sidebar_position: 8
+sidebar_label: Méthode de résolution des problèmes de SPI inutilisable
+---
+
+# Problème d'utilisation du pilote intégré 5160
+
+    ```bash
+    Unable to write tmc spi 'extruder' register IHOLD_IRUN
+    ```
+
+## Raisons spécifiques
+
+    * Si l'erreur ci-dessous apparaît lors de l'utilisation du 5160, c'est dû à une version problématique de la chaîne d'outils Arm sur l'ordinateur hôte `arm-none-eabi-gcc`
+
+## Méthodes de résolution
+    Il y a trois méthodes pour résoudre ce problème
+
+    * Changer la chaîne d'outils de compilation `arm-none-eabi-gcc` de `gcc10` à `gcc8`
+    * Changer le système de l'ordinateur hôte
+    * Flasher un firmware normal
+
+    Pour le téléchargement et le flashage du firmware, assurez-vous que la carte d'outils peut se connecter correctement au CAN et qu'elle possède CANBOOT
+
+    * Téléchargement
+
+    ```bash
+    cd ~/ && git clone https://github.com/FengHua741/FLY_Katapult.git
+    ```
+    * Flashage
+
+    ```
+    python3 ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/Klipper/SHT36PRO/SHT36PRO_KLIPPER_CAN-1M_v0.12.0-229-g589bd64c.bin -u <SHT36PRO_canid>
+    ```

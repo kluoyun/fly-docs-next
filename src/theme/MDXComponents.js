@@ -16,7 +16,7 @@ export default {
     Tabs,
     TabItem,
     Button,
-    
+
     ImageView,
     PdfView,
 };

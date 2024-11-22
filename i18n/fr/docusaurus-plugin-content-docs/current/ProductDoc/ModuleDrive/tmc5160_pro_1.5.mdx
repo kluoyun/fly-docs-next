@@ -1,0 +1,99 @@
+---
+sidebar_position: 5
+---
+
+
+
+import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.5
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-1.5.png').default} size="80%" align="center" />
+
+## Paramètres de base
+
+    * Tension d'entrée : 24-48V
+    * Courant maximum : 6A
+    * Adapté pour : Firmware Marlin/Klipper/RRF
+    * Modes de pilotage pris en charge : TMC : SPI
+    * Interface pas à pas/direction avec interpolation microPlyer
+    * Résolution maximale de 256 micro-pas
+    * Prend en charge le fonctionnement silencieux stealthChop2 et des mouvements fluides
+    * Prend en charge la suppression des résonances à fréquence moyenne
+    * Prend en charge le contrôleur de moteur dynamique spreadCycle
+    * Prend en charge le contrôle de vitesse dcStep dépendant de la charge
+    * Prend en charge la détection de charge du moteur sans capteur stallGuard2 de haute précision
+    * Prend en charge le contrôle de courant coolStep, économisant jusqu'à 75% d'énergie
+
+## Explication des cavaliers de la carte mère
+
+    * TMC5160 Pro utilise des cavaliers SPI
+    * Les broches SPI du pilote FLY se trouvent sur le quatrième pied en partant du haut à gauche, la broche CS est la broche SPI. Si la carte mère n'a pas les broches correspondantes, le SPI ne peut pas être utilisé
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+## Installation FPC de la carte mère
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/line.png').default} size="80%" align="center" />
+
+## Connexion du ventilateur 12V
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.png').default} size="80%" align="center" />
+
+
+## Configuration de référence pour TMC5160 Pro
+
+    :::danger
+
+    * La résistance d'échantillonnage du pilote est `sense_resistor: 0.033`, veuillez ne pas la configurer incorrectement
+    * Il faut choisir entre spi_bus et spi_software
+    
+    :::
+
+### Configuration de référence pour le mode SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Valeur du courant de fonctionnement du moteur
+    interpolate: False                  # Activer ou non l'interpolation de 256 micro-pas (True pour activer, False pour désactiver)
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Instructions pour l'utilisation sans fin de course
+
+    <DIAG />
+
+    :::tip Conseils pour l'utilisation sans fin de course
+
+    * Ce pilote nécessite l'installation du FPC à 4 broches pour fonctionner
+    * L'ancienne `endstop_pin:` doit être masquée ou supprimée, et ajouter `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * Après configuration de `diag0_pin:`, l'état du fin de course doit être non déclenché
+    * La configuration de `driver_SGT: :` nécessite de tester une valeur appropriée
+
+    :::
+
+    * Configuration de référence
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # La rétractation ne doit pas être modifiée en 0, sinon cela peut entraîner un échec du retour à la position d'origine
+
+    [tmc5160 stepper_x]
+    diag0_pin: ^!
+    driver_SGT: 1
+
+    #   Assurez-vous que l'état du fin de course est non déclenché après configuration
+    #   Cette broche utilise généralement le préfixe "^" pour activer la résistance de tirage interne
+    #   La sensibilité dépend de la tension de la courroie et doit être ajustée
+    #  (Assurez-vous également d'avoir configuré driver_SGTHRS avec une sensibilité appropriée)
+
+    ```

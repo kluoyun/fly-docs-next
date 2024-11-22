@@ -1,0 +1,51 @@
+---
+sidebar_position: 2
+sidebar_label: Mise à jour du firmware
+---
+
+
+
+
+
+# Mise à jour du firmware et flashage
+
+    :::danger À savoir
+
+    * Le firmware est préinstallé en usine
+
+    :::
+
+## Téléchargement du firmware
+
+    * Description du firmware
+    * `wbtn-vX.X.X-X-XXXXXX-full.bin` est le firmware complet, il doit être flashé à partir de l'adresse 0x0, toutes les configurations seront perdues après le flashage
+    * `wbtn-vX.X.X-X-XXXXXX-delta.bin` est le firmware incrémental, il doit être flashé à partir de l'adresse 0x10000, il ne met à jour que le firmware, sans affecter les configurations existantes
+    * `wbtn-vX.X.X-X-XXXXXX-www.bin` est le firmware de l'interface utilisateur, il doit être flashé à partir de l'adresse 0x290000, il met à jour uniquement l'interface utilisateur web, sans affecter le firmware existant et les configurations
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/airclick.zip">Télécharger le package du firmware</Button>
+
+## Mise à jour du firmware
+    * Il est nécessaire de débrancher l'`AirClick` et de connecter le port de flashage de l'ESP32 de l'`AirClick` à l'ordinateur en mode BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/host.png').default} size="80%" align="Center" />
+
+    1. Téléchargez et décompressez l'outil de flashage USB <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/Utils/flash_download_tool_3.9.4.zip">Cliquez pour télécharger</Button>
+    2. Ouvrez `flash_download_tool_3.9.4.exe`, attention : après l'ouverture de l'outil de flashage, une fenêtre CMD apparaîtra d'abord, puis l'interface de l'outil de flashage, ne fermez pas la fenêtre CMD
+    3. Dans l'outil de flashage, sélectionnez `ESP32-C3` pour `ChipType:`
+    4. Dans l'outil de flashage, sélectionnez `Develop` pour `WorkMode:`
+    5. Dans l'outil de flashage, sélectionnez `USB` pour `LoadMode:`
+    6. Cliquez enfin sur `OK`, vous pouvez vous référer à l'image ci-dessous
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/flash.png').default} size="50%" align="Center" />
+    7. Après le clic, l'image suivante apparaîtra
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/flash-1.png').default} size="50%" align="Center" />
+
+    :::tip
+
+    * La zone encadrée en vert sur l'image ci-dessus doit correspondre exactement à l'image, ne modifiez pas vous-même
+
+    :::
+
+    8. Connectez l'AirClick à l'ordinateur via un câble USB-Typec
+    9. Cliquez sur le bouton de la zone bleue 1 dans l'image ci-dessus pour sélectionner le firmware à flasher
+    10. Cliquez sur la zone bleue 2 dans l'image ci-dessus pour entrer l'adresse de flashage
+    11. Cliquez sur la zone bleue 3 dans l'image ci-dessus pour sélectionner le port série de l'AirClick (s'il n'apparaît pas, maintenez le bouton de flashage de l'AirClick enfoncé puis reconnectez l'ordinateur)
+    12. Cliquez sur la zone bleue 4 dans l'image ci-dessus pour sélectionner le débit en bauds maximum `921600`
+    13. Cliquez sur la zone bleue 5 dans l'image ci-dessus pour commencer le flashage, attendez que le flashage soit terminé pour que l'AirClick soit mis à jour (vous devez attendre que le message de fin de flashage apparaisse avant de débrancher le câble de données de l'AirClick)

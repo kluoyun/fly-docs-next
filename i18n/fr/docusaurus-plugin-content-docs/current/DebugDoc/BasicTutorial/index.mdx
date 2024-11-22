@@ -1,0 +1,129 @@
+---
+sidebar_position: 1
+---
+
+
+
+
+
+# Connexion à l'hôte SSH
+
+:::danger
+
+* Ce document s'applique uniquement à l'hôte FLY. Les autres dispositifs ne sont donnés qu'à titre indicatif.
+* Si vous compilez et flashez le firmware, consultez le tutoriel de connexion réseau plutôt que celui de connexion série.
+
+:::
+
+* Vous pouvez vous connecter à l'appareil via un port série ou par WIFI
+* Préparez à l'avance **MobaXterm_Personal** ou un autre **outil de terminal SSH**
+* Assurez-vous que la carte SD ou le M2WE a été flashé avec **le système correspondant à l'hôte**
+* **Si l'hôte ne démarre pas correctement, retirez les périphériques externes comme les drivers, les fins de course, les ventilateurs, etc. !!**
+* **Enfin, connectez-vous par réseau à SSH pour faciliter la compilation du firmware !!**
+* **Pour compiler le firmware, consultez le tutoriel de connexion à l'hôte via WIFI ou câble Ethernet**
+
+<Tabs>
+    <TabItem value="serial" label="Connexion série" default>
+        ## Connexion à l'hôte SSH via le port série
+
+        * Connectez l'hôte FLY à l'ordinateur avec un câble USB Type-C
+        * Pour les autres hôtes, veuillez consulter les méthodes de connexion appropriées !!
+
+        <Tabs>
+            <TabItem value="c8" label="FLY-C8" default>
+                * Port FLY-C8
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c8-port.png').default} size="40%" align="center" />
+            </TabItem>
+            <TabItem value="piv2" label="FLY-Pi v2" default>
+                * Port FLY-Pi v2
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.png').default} size="20%" align="center" />
+            </TabItem>
+            <TabItem value="piv1" label="FLY-Pi(π)" default>
+                * Port FLY-Pi
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pi-port.png').default} size="20%" align="center" />
+            </TabItem>
+            <TabItem value="gemini" label="FLY-Gemini" default>
+                * Port FLY-Gemini
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/gemini-port.png').default} size="20%" align="center" />
+            </TabItem>
+            <TabItem value="minipad" label="FLY-MiniPad" default>
+                * Port FLY-MiniPad
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/minipad-port.png').default} size="30%" align="center" />
+            </TabItem>
+            <TabItem value="pilite2" label="FLY-Pi Lite2" default>
+                * Port FLY-Pi Lite2
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pilite2-port.png').default} size="40%" align="center" />
+            </TabItem>
+        </Tabs>
+
+        * Si la carte mère est correctement connectée à l'ordinateur, ouvrez le gestionnaire de périphériques pour voir le port CH340
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.png').default} size="40%" align="center" />
+
+        * Ouvrez `MobaXterm` et configurez-le comme suit, en sélectionnant le port vu précédemment dans le gestionnaire de périphériques
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.png').default} size="40%" align="center" />
+
+        * Si tout est normal, vous devriez voir l'écran de démarrage
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.png').default} size="40%" align="center" />
+
+        * Attendez quelques instants, et quand vous voyez cet écran, le système a démarré
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.png').default} size="40%" align="center" />
+
+        **Si après quelques minutes, l'écran est toujours vide, appuyez plusieurs fois sur la touche Entrée**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.png').default} size="40%" align="center" />
+
+        **Après avoir appuyé sur Entrée, vous verrez le contenu suivant**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.png').default} size="40%" align="center" />
+
+        * Pour voir l'IP, dans le terminal SSH, tapez : `ip a | grep inet` et appuyez sur Entrée. Dans la sortie, trouvez l'IP qui correspond au même segment de votre routeur pour y accéder
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.png').default} size="40%" align="center" />
+
+    </TabItem>
+    <TabItem value="net" label="Connexion réseau" default>
+        ## Connexion à l'hôte SSH via l'IP réseau
+
+        * Assurez-vous que le système **est démarré correctement**
+        * Connectez-vous à l'interface de gestion du **routeur** auquel l'hôte est connecté, sauf si vous connaissez déjà l'adresse IP de l'hôte
+        * Assurez-vous de **connaître le nom d'utilisateur et le mot de passe de l'hôte**. Par défaut, pour le système FLY, le nom d'utilisateur est **fly** et le mot de passe **mellow**
+        * Si la carte mère a démarré et est connectée au réseau, vous pouvez utiliser les méthodes suivantes pour vous connecter à SSH
+        * Ouvrez MobaXterm et configurez comme suit, en entrant l'IP que vous avez vue précédemment ou que vous pouvez vérifier dans l'interface du routeur
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+
+        **Notez : ici, à l'étape 4, entrez le nom d'utilisateur de l'hôte**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.png').default} size="40%" align="center" />
+
+        * Lors de la première connexion, une fenêtre pop-up apparaîtra, cliquez sur `Accept`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.png').default} size="40%" align="center" />
+
+        * Un message vous demandera d'entrer le mot de passe, entrez le mot de passe de l'hôte et appuyez sur Entrée
+
+        **Notez : le mot de passe ne sera pas visible à l'écran. Tapez-le et appuyez directement sur Entrée**
+
+        Pour le système FLY par défaut, le nom d'utilisateur est : `fly` et le mot de passe est : `mellow`
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.png').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.png').default} size="40%" align="center" />
+
+        * La connexion est réussie
+
+    </TabItem>
+</Tabs>
+
+----

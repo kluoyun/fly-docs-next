@@ -1,0 +1,77 @@
+---
+sidebar_position: 6
+sidebar_label: Firmware BL, ignorez s'il vous plaît
+---
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware BL
+
+    :::tip
+
+    * Veuillez noter que l'usine a déjà pré-flashé le `bootloader`, pas besoin de le reflasher
+
+    :::
+
+## Entrer en mode de programmation
+
+    * Il y a deux méthodes pour entrer en mode de programmation
+    * La première : avec la carte mère complètement déconnectée, court-circuitez BOOT et BOOT1 puis connectez un câble de données à la carte mère et à votre appareil
+    * La deuxième : après avoir connecté un câble de données à la carte mère et à votre appareil, court-circuitez BOOT et BOOT1, puis appuyez sur la touche RST, relâchez la touche RST et enfin débranchez le court-circuit BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## Programmation du firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
+
+            * Firmware bootloader pour Gemini <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">Cliquez pour télécharger automatiquement le firmware</Button>
+
+            * Déplacez les commutateurs DIP `3`, `4` vers la droite pour connecter l'appareil de commande avec l'appareil hôte via USB intégré
+            * Déplacez les commutateurs DIP `1`, `2` vers la gauche, sinon cela affectera la connexion entre l'appareil de commande et l'appareil hôte
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip3.png').default} size="50%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de programmation depuis l'hôte">
+
+            * Déplacez les commutateurs DIP `1`, `2` vers la droite pour connecter l'appareil de commande avec l'appareil hôte via USB intégré
+            * Déplacez les commutateurs DIP `3`, `4` vers la gauche, sinon cela affectera la connexion entre l'appareil de commande et l'appareil hôte
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip1.png').default} size="50%" align="center" />
+            * Après avoir déplacé les commutateurs DIP comme indiqué ci-dessus, le port USB ci-dessous sera occupé par l'appareil de commande, ne connectez pas d'autres appareils
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.png').default} size="50%" align="center" />
+
+            <Katapult />
+
+            4. Programmation du firmware
+
+            :::tip
+
+            Il suffit de programmer un seul firmware
+
+            :::
+
+            * Voici la commande pour flasher le firmware bootloader
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/Gemini/GeminiV3.bin
+                ```
+
+            5. Si le message suivant apparaît, la programmation a réussi : ``File downloaded successfully``
+
+            :::warning
+
+            Ignorez l'erreur **après** la ligne indiquée par la flèche rouge !!!
+
+            :::
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Une fois la programmation terminée, il est nécessaire de couper complètement l'alimentation de la carte mère une fois.
+
+            :::
+
+        </TabItem>
+    </Tabs>

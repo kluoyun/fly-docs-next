@@ -1,0 +1,75 @@
+---
+sidebar_position: 7
+sidebar_label: Eddy 사용
+---
+
+
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# Eddy 사용
+
+    :::info
+
+    * 주의: 스캔 베드 사용 시 별도의 Z 리미트 사용을 권장하며, 스캔 베드를 Z 리미트로 사용하지 않는 것이 좋습니다.
+    * Eddy 설치 시, 노즐 위치에서 바닥까지 최소 1-2 mm 이상의 간격을 두어야 합니다.
+    * Eddy 주파수 보정 시, 코일 PCB를 히트베드에서 최소 5mm 이상 떨어지게 해야 합니다.
+    * 히트베드가 실온 상태에서 테스트를 진행하고, 테스트 중 히트베드를 켜지 마세요.
+
+    :::
+
+
+## 접선 도면
+
+    * 열저항기 아래로
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.png').default} size="100%" align="left" />
+
+
+## 참조 설정 및 사용 설명
+
+    ### 스캔 베드 설정
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 43
+        i2c_mcu: SHT36
+        i2c_bus: i2c1e
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+        * 주의: 현재 외장 1612 모듈이 출시되지 않았으므로 이 설정은 일시적으로 사용할 수 없습니다.
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 42
+        i2c_mcu: SHT36
+        i2c_bus: i2c1e
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### 온도 보정 설정
+
+        ```cfg
+        [temperature_probe fly_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SHT36:gpio28
+        ```
+
+### bed_mesh 설정
+
+    * [bed_mesh]의 `horizontal_move_z` 매개변수를 2로 설정하여 스캔 플랫폼 시 Eddy가 플랫폼에 최대한 가까워지도록 권장합니다.
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+
+    <LDC1612 />

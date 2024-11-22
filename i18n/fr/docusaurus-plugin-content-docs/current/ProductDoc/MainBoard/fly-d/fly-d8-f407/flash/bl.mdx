@@ -1,0 +1,71 @@
+---
+sidebar_position: 6
+sidebar_label: BL firmware, ignorez s'il vous plaît
+---
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware Katapult
+
+## Description du firmware Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * D8 utilise une connexion USB
+
+    :::
+
+## Entrer en mode flash
+
+    :::tip
+
+    À gauche, le bouton `RST`, à droite, le bouton `BOOT`
+
+    :::
+
+    * Il y a deux méthodes pour entrer en mode flash
+    * Première méthode : lorsque la carte mère est complètement déconnectée, maintenez enfoncé le bouton BOOT puis connectez un câble de données d'un côté à la carte mère et de l'autre à votre appareil
+    * Deuxième méthode : après avoir connecté un câble de données d'un côté à la carte mère et de l'autre à votre appareil, maintenez le bouton BOOT enfoncé puis appuyez sur le bouton RST, relâchez ensuite le bouton RST et enfin relâchez le bouton BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d8-f407/flash/img/boot.png').default} size="50%" align="center" />
+
+## Flasher le firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de flash sous Windows" default>
+
+            * Firmware Katapult pour D8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Cliquez pour télécharger automatiquement le firmware</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de flash pour hôte">
+
+            <Katapult />
+
+            4. Flasher le firmware
+
+            :::tip
+
+            Il suffit de flasher un seul firmware
+
+            :::
+
+            * Voici la commande pour flasher le firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D8_F407.bin
+                ```
+
+            5. Si le message ``File downloaded successfully`` apparaît comme indiqué par la flèche sur l'image ci-dessous, alors le flashage a réussi
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Une fois le flashage terminé, il est nécessaire de débrancher complètement la carte mère une fois.
+
+            :::
+
+        </TabItem>
+    </Tabs>

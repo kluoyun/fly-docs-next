@@ -1,0 +1,60 @@
+---
+sidebar_position: 4
+sidebar_label: Gravure du firmware USB
+---
+
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+
+
+# Compilation du firmware USB
+
+    :::tip
+
+    * Le firmware Katapult pré-flashé en usine pour la connexion CAN de l'ERCF
+    * Si vous utilisez la gravure du firmware USB, vous devez flasher le firmware Katapult pour USB
+    * Une fois gravé, il n'est pas nécessaire de le refaire
+    * <Button variant="contained" disableElevation href="./bl">Gravure du firmware Katapult</Button>
+
+    :::
+
+## Commencer la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Sélectionnez les broches GPIO à définir au démarrage du micro-contrôleur, entrez : gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/usb.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, puis **Save configuration** apparaît, appuyez ensuite sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela prendra un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation est réussie, vous verrez le message suivant :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Vérification de l'entrée en mode de gravure
+
+
+    <LS />
+
+
+## Gravure du firmware
+    
+    <Katapult />
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

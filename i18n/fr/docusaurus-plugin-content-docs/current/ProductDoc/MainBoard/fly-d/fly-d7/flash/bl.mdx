@@ -1,0 +1,72 @@
+---
+sidebar_position: 6
+sidebar_label: Flasher le firmware Katapult
+---
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware Katapult
+
+## Description du firmware Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * D7 utilise une connexion USB
+    * D7 est préchargé avec le firmware Katapult à partir du 1er septembre 2024
+
+    :::
+
+## Entrer en mode flash
+
+    :::tip
+
+    À gauche se trouve le bouton `BOOT`, à droite le bouton `RESET`
+
+    :::
+
+    * Il existe deux méthodes pour entrer en mode flash
+    * Première méthode : lorsque la carte mère est complètement déconnectée, maintenez enfoncé le bouton BOOT puis connectez le câble de données à la carte mère et à votre appareil
+    * Deuxième méthode : après avoir connecté le câble de données à la carte mère et à votre appareil, maintenez enfoncé le bouton BOOT puis appuyez sur le bouton RST, relâchez ensuite le bouton RST et enfin relâchez le bouton BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/boot.png').default} size="50%" align="center" />
+
+## Flasher le firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de flash pour Windows" default>
+
+            * Firmware Katapult pour D7 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Télécharger automatiquement le firmware</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de flash pour l'hôte">
+
+            <Katapult />
+
+            4. Flasher le firmware
+
+            :::tip
+
+            Vous ne devez flasher qu'un seul firmware
+
+            :::
+
+            * Voici la commande pour flasher le firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D7.bin
+                ```
+
+            5. Si le message `File downloaded successfully` apparaît comme indiqué par la flèche ci-dessous, le flashage est réussi
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Après le flashage, il est nécessaire de déconnecter complètement la carte mère une fois.
+
+            :::
+
+        </TabItem>
+    </Tabs>

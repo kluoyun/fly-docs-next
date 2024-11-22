@@ -1,0 +1,136 @@
+---
+sidebar_position: 2
+sidebar_label: 라즈베리 파이 사용 가이드
+---
+
+# 라즈베리 파이 사용 설명서
+
+## 주의 사항:
+
+    * 확장 보드를 설치하기 전에 상위 컴퓨터의 전원을 꺼주세요.
+    * 확장 보드를 습기나 먼지가 많은 환경에서 사용하지 마세요.
+    * 화면을 설치할 때, 전원이 켜진 상태에서 연결선을 꽂거나 뽑지 말고 화면 방향에 주의하세요.
+    * 팬을 설치할 때, 팬의 전류와 전압 사양에 주의하세요.
+    * UART1은 기본적으로 활성화되어 있어 추가 설정이 필요 없습니다.
+    * 최신 이미지를 플래시하세요. 예: `mainsailos`, 커널 업그레이드가 아닙니다.
+    * **라즈베리 파이는 모든 인터페이스를 사용할 수 있습니다!!**
+    * **주의: 라즈베리 파이의 시스템 커널 버전은 `5.17.x` 이상이어야 하며, `uname -r` 명령어로 커널 버전을 확인하세요.**
+
+## 라즈베리 파이 사전 설치 TFTV2 시스템 다운로드 링크
+
+    * 라즈베리 파이 zero2/zero2W/2B/3B/3B+/4B/CM4/5B에 적합한 시스템 이미지
+    * 이 이미지는 klipper, moonraker, mainsail, fluidd, klipper-screen 등이 미리 설치되어 있습니다.
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## G2T 설치
+
+    * 아래는 참고 자료입니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi.png').default} size="60%" align="left" />
+    * 참고 배선도
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## 온보드 RS232 연결 도구 사용 방법
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi1.png').default} size="60%" align="left" />
+
+    * 라즈베리 파이에 최신 시스템을 설치한 후 **boot 디스크의 config.txt 파일을 편집**해야 합니다.
+    * UART1은 기본적으로 활성화되어 있어 시스템 내에서 설정할 필요가 없으며, UART3는 아래 단계를 따르세요.
+    * **config.txt** 파일에 아래 내용을 추가하세요.
+
+    ```bash
+    dtoverlay=uart3
+    ```
+
+    * UART1을 사용하는 경우, 아래는 참고 사항입니다.
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA0
+    baud: 250000
+    restart_method:command
+    ```
+
+    * UART3을 사용하는 경우, 아래는 참고 사항입니다.
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA1
+    baud: 250000
+    restart_method:command
+    ```
+
+## 온보드 5V 팬 사용
+
+    * 라즈베리 파이 40핀을 통해 장치를 제어하려면 Klipper 가이드에 따라 설치해야 합니다. <Button variant="contained" disableElevation href="https://www.klipper3d.org/zh/RPi_microcontroller.html?h=rpi">RPi 마이크로컨트롤러</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+    ```cfg
+    [mcu host]       
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor Raspberry Pi]
+    sensor_type: temperature_host
+
+    [temperature_fan core_fan] 
+    pin: host:gpio12
+    max_power: 1.0
+    sensor_type: temperature_host   # 상위 컴퓨터의 주 컨트롤러 온도 설정
+    control:watermark                  # 제어 방식
+    target_temp: 48                   # 상위 컴퓨터의 팬 작동 온도
+    min_temp: 0                     # 최저 온도, 이 온도 이하로 떨어지면 오류 발생
+    max_temp: 90                    # 최고 온도, 이 온도 이상으로 올라가면 오류 발생
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                   # 최대 속도, 전체 전력의 80%
+    min_speed: 0.3                    # 최소 속도, 전체 전력의 30%
+    ```
+
+## 화면 사용 방법
+
+    * Github 주소 <Button variant="contained" disableElevation href="https://github.com/kluoyun/FLY-TFT">FLY-TFT</Button>
+
+### 1. 소개
+
+    FLY-TFT-V2는 st7796 기반의 TFT 액정 화면으로, 정전식 터치와 저항식 터치 두 가지를 지원하며, 해상도는 320x480입니다. SPI 인터페이스를 사용합니다.
+
+### 2. 시스템 설치
+
+    :::tip
+
+    * 주의: 라즈베리 파이의 시스템 커널 버전은 `5.17.x` 이상이어야 하며, `uname -r` 명령어로 커널 버전을 확인하세요.
+    * 최신 이미지를 플래시하세요. 예: `mainsailos`, 커널 업그레이드가 아닙니다.
+    * KlipperScreen을 직접 설치해야 합니다. <Button variant="contained" disableElevation href="ttps://klipperscreen.readthedocs.io/en/latest/Installation/">KlipperScreen</Button>
+
+    :::
+
+    * [Raspberry Imager](https://www.raspberrypi.com/software/)를 사용하여 최신 **MainsailOS**를 설치합니다.
+        * [Raspberry Imager](https://www.raspberrypi.com/software/)를 다운로드 및 설치합니다.
+        * **Raspberry Imager**를 엽니다.
+        * **CHOOSE DEVICE**를 클릭합니다.
+        * 장치에 맞는 모델을 선택합니다.
+        * **CHOOSE OS**를 클릭합니다.
+        * **Other specific-purpose OS**를 선택합니다.
+        * **3D printing**을 선택합니다.
+        * **Mainsail OS**를 선택합니다.
+        * 최신 버전을 선택합니다. 64비트 시스템을 지원하는 경우 **rpi64**를 선택합니다.
+        * **CHOOSE STORAGE**를 클릭합니다.
+        * SD 카드와 같은 저장 장치를 선택합니다.
+        * **NEXT**를 클릭하고 설치가 완료될 때까지 기다립니다.
+
+### 4. 드라이버 설치
+
+    * FLY-TFT-V2 드라이버 설치
+    
+        ```bash
+        git clone https://github.com/kluoyun/FLY-TFT.git
+        cd FLY-TFT
+        sudo chmod +x ./scripts/install.sh
+        ./scripts/install.sh
+        ```
+        
+   

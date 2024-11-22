@@ -1,0 +1,146 @@
+---
+sidebar_position: 1
+---
+
+
+
+
+# Introduction au produit
+
+  Le détecteur de filament FilGuard est compatible avec l'extrudeur VZ-Hextrudort-Low, il prend en charge la détection de rupture de filament, la détection d'obstruction et dispose de boutons personnalisables.
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament_1.png').default} size="60%" align="left" />
+ 
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament.png').default} size="40%" align="left" />
+
+## Guide de connexion
+
+* La connexion au terminal PH2.0 5P embarqué est plus facile
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/connection.png').default} size="80%" align="left" />
+
+## Introduction à l'état des LED du firmware
+
+* Rupture de filament : clignotement rouge
+* Chargement du filament : clignotement bleu (plus la vitesse est élevée, plus la fréquence de clignotement est rapide)
+* Retrait du filament : clignotement vert (idem)
+* Filament présent mais sans chargement ni retrait : lumière orange respiratoire
+
+## Configuration de référence pour la détection de rupture et d'obstruction avec Klipper
+
+:::warning
+Dans la configuration de détection d'obstruction `detection_length: 2.0`
+
+2.0mm est la longueur de détection minimale requise pour que ce module de détection de consommables fonctionne normalement. Si vous rencontrez des problèmes de déclenchement incorrect, essayez d'augmenter la longueur de détection de 1 mm jusqu'à ce que le problème soit résolu.
+:::
+
+        ```cfg
+        [respond]
+        default_type: echo
+
+        [force_move]
+        enable_force_move: True
+
+        [filament_switch_sensor 断料检测]
+        pause_on_runout: False
+        switch_pin: ^!PG12
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 缺料
+                # filament_unload
+        insert_gcode:
+                M118 上料
+                FORCE_MOVE STEPPER=extruder DISTANCE=8 VELOCITY=5 ACCEL=60
+                {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                        M118 等待加热!
+                        SET_HEATER_TEMPERATURE HEATER=extruder TARGET=200
+                        TEMPERATURE_WAIT SENSOR=extruder MINIMUM=190
+                {% endif %}
+                M83
+                G92 E0
+                G0 E50 F500
+                G0 E10 F200
+
+        [filament_motion_sensor 堵料检测]
+        extruder: extruder
+        detection_length: 2.0
+        switch_pin: ^!PG10
+        pause_on_runout: False
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 堵料
+        insert_gcode:
+                M118 堵料恢复
+        #event_delay:
+        #pause_delay:
+
+        ```
+
+:::info
+Le chargement et le retrait du filament ne peuvent utiliser qu'une seule méthode
+:::
+
+## Configuration de référence pour le bouton de retrait de filament avec Klipper
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 等待加热!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E10 F300
+                        G0 E-20 F200
+                        G0 E-50 F500
+                {% else %}
+                        M118 打印中，不会回抽操作!
+                {% endif %}
+        ```
+
+
+## Configuration de référence pour le bouton de chargement de filament avec Klipper
+
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 等待加热!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E20 F300
+                {% else %}
+                        M118 打印中，不会回抽操作!
+                {% endif %}
+        ```
+
+
+## Lien de téléchargement du modèle 3D
+
+        ```
+        https://cdn.mellow.klipper.cn/STEP/%E8%80%97%E6%9D%90%E6%96%AD%E6%96%99%E5%A0%B5%E6%96%99%E6%A3%80%E6%B5%8B%E6%A8%A1%E5%9D%97.7z
+        ```

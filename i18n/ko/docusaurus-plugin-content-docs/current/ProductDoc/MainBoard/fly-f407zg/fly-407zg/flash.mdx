@@ -1,0 +1,64 @@
+---
+sidebar_position: 2
+sidebar_label: 펌웨어 컴파일 및 플래싱
+---
+
+
+
+
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# 펌웨어 컴파일 및 플래싱
+
+    :::tip
+
+    * 407ZG는 기본적으로 TF 카드를 사용하여 펌웨어를 플래싱합니다.
+    * 용량이 `32G`를 초과하지 않는 TF 카드를 준비하십시오.
+    * 브랜드가 명확하지 않은 메모리 카드는 플래싱 실패를 유발할 수 있으니, 가능한 한 아래 추천 메모리 카드를 사용하여 펌웨어를 업데이트하십시오.
+    * TF 카드의 전송 속도는 `class10` 이상인 것이 좋으며, 샌디스크 등의 브랜드를 사용하는 것이 좋습니다.
+
+    :::
+
+
+
+## 준비 작업
+
+    <SSH />
+
+## Klipper 펌웨어 컴파일
+
+    <MakeOperate/>
+
+    <USB />
+
+    * `Q` 키를 누르면 **Save configuration**이 나타납니다. 이때 `Y` 키를 다시 누릅니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아갑니다.
+    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸릴 수 있습니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 마지막으로 아래 내용이 출력되면 컴파일이 성공적으로 완료된 것입니다.
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * 아래 이미지는 컴파일 성공 예시입니다.
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## 펌웨어 플래싱
+
+:::danger 주의사항
+* F404ZG는 TF 카드 플래싱을 위한 BL 펌웨어가 미리 설치되어 있습니다.
+:::
+
+    <TF />

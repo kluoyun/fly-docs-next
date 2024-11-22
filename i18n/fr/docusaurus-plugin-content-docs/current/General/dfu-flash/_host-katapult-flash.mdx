@@ -1,0 +1,85 @@
+:::tip
+
+L'utilisation du firmware Katapult permet de mettre à jour le firmware directement par SSH à l'avenir, sans avoir besoin d'entrer en mode DFU pour flasher le firmware.
+:::
+
+## Installation du plugin de flashage
+
+:::tip
+Veuillez noter que l'installation du plugin de flashage nécessite que l'hôte soit connecté à Internet.
+Si le plugin est déjà installé, il n'est pas nécessaire de l'installer à nouveau.
+:::
+
+    * Installer `pip install pyserial`
+
+        ```bash
+        pip install pyserial
+        ```
+
+    * Si l'erreur `-bash: pip: command not found` apparaît, exécutez
+
+        ```bash
+        sudo apt-get install pip
+        ```
+
+    * Si l'erreur ci-dessous apparaît, exécutez
+
+        <ImageView image={require('@site/docs/General/get-id/img/pyserial.png').default} size="100%" align="left" />
+
+        ```bash
+        pip install pyserial --break-system-packages
+        ```
+
+## Début du flashage du firmware
+
+    * Utilisez la commande ci-dessous pour rechercher l'adresse de votre port série
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+
+    * Voici une référence
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult1.png').default} size="100%" align="left" />
+
+
+    * Pour flasher le firmware, utilisez le code ci-dessous, assurez-vous que le firmware est déjà compilé, notez qu'il n'y a pas d'espace après `=`
+    * Veuillez noter que vous devez être dans le répertoire klipper pour flasher le firmware
+
+        ```bash
+        make flash FLASH_DEVICE=
+        ```
+
+    * Voici une référence
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult2.png').default} size="100%" align="left" />
+
+    * Référence après le flashage
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.png').default} size="100%" align="left" />
+
+## Méthode de mise à jour du firmware
+
+
+    * Pour mettre à jour le firmware USB, après avoir compilé le dernier firmware, entrez la commande ci-dessous pour la mise à jour, notez qu'il n'y a pas d'espace après `=`
+
+        ```bash
+        make flash FLASH_DEVICE=
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.png').default} size="100%" align="left" />
+
+    * Pour mettre à jour le firmware USB vers CAN, après avoir compilé le dernier firmware, entrez la commande ci-dessous pour réinitialiser et entrer dans Katapult
+    * Notez que cette commande ne peut être exécutée que pour le firmware klipper de l'USB vers CAN, l'exécution sur d'autres firmwares entraînera une erreur
+
+        ```bash
+        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <MCU ID>
+        ```
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.png').default} size="100%" align="left" />
+    * Après la réinitialisation dans Katapult, exécutez la mise à jour du firmware avec la commande suivante
+
+        ```bash
+        make flash FLASH_DEVICE=<votre adresse de port série>
+        ```
+
+## Solution pour résoudre les problèmes de flashage de firmware incorrect
+
+    * Débranchez la carte mère, rebranchez-la et cliquez rapidement deux fois sur le bouton de réinitialisation de la carte mère
+    * Ou utilisez WINDOWS pour nettoyer le firmware et reflasher le BL

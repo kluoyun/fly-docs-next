@@ -1,0 +1,65 @@
+---
+sidebar_position: 4
+sidebar_label: Programmation du firmware RS232
+---
+
+import USBFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+# Compilation du firmware RS232
+
+## Débuter la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Sélectionnez les broches GPIO à définir au démarrage du microcontrôleur, entrez : !gpio5 Veuillez noter que ! est en majuscule
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/rs232.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, **Save configuration** apparaît, puis appuyez sur la touche `Y`
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez revenir à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation est réussie, vous verrez la sortie suivante :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
+
+
+## Entrer en mode de programmation
+
+    :::tip
+
+    À gauche se trouve le bouton `RESET`, à droite se trouve le bouton `BOOT`
+
+    :::
+
+    * Il y a deux méthodes pour entrer en mode DFU
+    * La première : avec la carte mère complètement déconnectée, maintenez le bouton BOOT enfoncé, puis connectez le câble de données d'un côté à la carte mère et de l'autre à l'ordinateur
+    * La deuxième : connectez le câble de données d'un côté à la carte mère et de l'autre à l'ordinateur, maintenez le bouton BOOT enfoncé, appuyez sur le bouton RST, relâchez le bouton RST et enfin relâchez le bouton BOOT
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## Confirmer l'entrée en mode de programmation
+
+    <LS />
+
+
+## Programmer le firmware 
+    
+    <USBFLASH />
+    
+
+
+## Vérifier le démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.png').default} size="100%" align="center" />

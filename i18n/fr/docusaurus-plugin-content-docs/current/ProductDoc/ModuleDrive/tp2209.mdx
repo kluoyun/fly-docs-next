@@ -1,0 +1,78 @@
+---
+sidebar_position: 8
+---
+
+
+import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 2209
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp2209.png').default} size="60%" align="center" />
+
+
+## Paramètres de base
+
+    * Tension d'entrée : 12V-24V
+    * Adapté pour : Firmware Marlin/Klipper/RRF
+    * Le moteur ne perd pas facilement de pas
+    * Supporte le mode silencieux
+    * Coussin thermique à grande surface pour ventilateur, réduit la température de fonctionnement du driver
+    * Mode de pilotage supporté : TMC : UART
+    * Supporte la détection de blocage du moteur
+
+
+## Jumper de la carte mère FLY
+
+    :::tip
+
+    * Le TP2209 utilise le mode UART
+    * Le TP2209 n'a pas besoin de jumper de driver, il suffit de configurer simplement
+    
+    :::
+
+
+## Configuration de référence pour le TP2209
+
+    :::danger
+
+    La résistance de détection du driver est de 0,110, veuillez ne pas la configurer incorrectement
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0,8                    # Valeur du courant de fonctionnement du moteur (unité : mA)
+    sense_resistor: 0,110               # Ne modifiez pas la résistance de détection du driver
+    stealthchop_threshold: 0
+    ```
+
+
+
+## Instructions pour l'utilisation sans fin de course
+
+    <DIAG />
+
+    :::tip Conseils pour l'utilisation sans fin de course
+
+    * Le `endstop_pin:` original doit être masqué ou supprimé, puis ajoutez `endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * Après avoir configuré `diag_pin:`, l'état de la limite est non déclenché
+    * La configuration de `driver_SGTHRS:` nécessite de tester une valeur appropriée
+
+    :::
+
+
+    * Configuration de référence
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Le retour en arrière ne modifie pas 0, cela peut entraîner un échec du retour à l'origine
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```

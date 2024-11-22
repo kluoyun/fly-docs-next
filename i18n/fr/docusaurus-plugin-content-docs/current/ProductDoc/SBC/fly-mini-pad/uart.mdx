@@ -1,0 +1,36 @@
+---
+sidebar_position: 9
+sidebar_label: Connexion de la carte mère par UART
+---
+
+
+
+# Méthode de configuration
+
+:::danger À savoir
+Veuillez noter qu'après avoir utilisé cette méthode, il ne sera pas possible d'utiliser l'interface d'accéléromètre externe du mini pad.
+:::
+
+    * Ouvrez le disque BOOT, trouvez `armbianEnv.txt` et ouvrez-le
+    * Modifiez **uart2** en **uart3** dans `overlays=usbhost2 usbhost3 uart2` et enregistrez
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart.png').default} size="80%" align="center" />
+
+## Méthode de connexion
+
+    * Veuillez noter que le TX du mini-pad doit être connecté au RX de la carte mère avec le firmware série
+    * Veuillez noter que le RX du mini-pad doit être connecté au TX de la carte mère avec le firmware série
+    * Veuillez noter qu'une mise à la terre commune est nécessaire
+    * Sinon, il ne sera pas possible de se connecter à la carte mère avec le firmware série
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart1.png').default} size="80%" align="center" />
+
+## Configuration de référence Klipper
+
+    ```cfg
+    [mcu]
+    serial: /dev/ttyS3
+    baud：250000
+    #   Vitesse de transmission utilisée. Par défaut, c'est 250000
+    restart_method:command
+    ```

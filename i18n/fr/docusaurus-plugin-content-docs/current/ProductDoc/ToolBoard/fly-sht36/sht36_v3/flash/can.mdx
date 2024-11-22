@@ -1,0 +1,55 @@
+---
+sidebar_position: 3
+sidebar_label: Compilation et enregistrement du firmware CAN
+---
+
+import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# Compilation du firmware CAN
+
+## Début de la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Choisissez les broches GPIO à définir au démarrage du microcontrôleur, entrez : !gpio5 Veuillez noter que ! est en majuscule
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/can.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, lorsque **Save configuration** apparaît, appuyez ensuite sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être retourné à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation est réussie, le résultat final affichera :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Recherche de l'appareil
+
+    <LS />
+
+
+## Enregistrement du firmware
+         
+    * Avant d'enregistrer le firmware, connectez la carte outil à l'UTOC ou à la carte mère avec le firmware de pontage à l'aide d'un câble de données XT30, ci-dessous se trouve le schéma de câblage de référence
+    * Veuillez vérifier que le commutateur DIP est bien positionné
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Assurez-vous que la résistance entre CAN H et CAN L, mesurée avec un multimètre lorsque l'alimentation est coupée, est d'environ `60Ω`. Si elle est de `120Ω`, vous devez connecter un shunt de `120Ω`. Si elle est d'environ `40Ω`, vous devez retirer le shunt
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.png').default} size="50%" align="center" />

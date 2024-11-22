@@ -1,0 +1,86 @@
+---
+sidebar_position: 9
+---
+
+
+import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 5160
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.png').default} size="60%" align="center" />
+
+## TMC-5160
+
+    * 입력 전압 : 12V-48V
+    * 최대 전류 : 4.4A
+    * 적합한 펌웨어 : Marlin/Klipper/RRF
+    * 드라이브 모드 지원 : TMC : SPI
+    * 마이크로스텝 보간 microPlyer가 있는 스텝/방향 인터페이스
+    * 최대 분해능 256 마이크로스텝
+    * stealthChop2 저소음 작동 및 부드러운 동작 지원
+    * 중간 주파수 공진 억제 지원
+    * spreadCycle 고동적 모터 제어 촙퍼 지원
+    * dcStep 로드 관련 속도 제어 지원
+    * stallGuard2 고정밀 센서 없는 모터 로드 감지 지원
+    * coolStep 전류 제어 지원, 최대 75% 에너지 절약 가능
+
+
+
+## TP5160 참조 설정
+
+    :::danger
+
+    * 드라이버 샘플링 저항은 `sense_resistor: 0.075`로 설정해야 하며, 잘못된 설정하지 마십시오
+    * spi_bus와 spi_software는 둘 중 하나만 선택 가능합니다
+    
+    :::
+
+### SPI 모드 참조 설정
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # 모터 작동 전류 값
+    interpolate: False                  # 256 마이크로스텝 보간 활성화 여부 (활성화는 True, 비활성화는 False)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## 무한위치 사용 설명
+
+    <DIAG />
+
+    :::tip 무한위치 사용 팁
+    
+    * TP5160의 무한위치를 사용하려면 메인보드의 DIAG 점퍼를 연결해야 합니다
+    * 기존의 `endstop_pin:`을 비활성화하거나 삭제하고 `endstop_pin: tmc5160_stepper_x:virtual_endstop` 추가
+    * `diag1_pin:`을 설정한 후 한계 상태를 새로고침하면 트리거되지 않습니다
+    * `driver_SGT:`에 적합한 값을 테스트해야 합니다
+
+    :::
+
+    * 참조 설정
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 이 값을 0으로 설정하지 않으면 홈 위치로 돌아갈 때 실패할 수 있습니다
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   설정 후 한계 상태가 트리거되지 않았는지 확인하십시오
+    #   이 핀은 보통 내부 풀업을 활성화하기 위해 "^" 접두사를 사용합니다
+    #   민감도는 벨트의 긴장 상태와 관련이 있으므로 조절이 필요합니다
+    #   (driver_SGTHRS에 적합한 민감도를 설정했는지 확인)
+
+    ```
+

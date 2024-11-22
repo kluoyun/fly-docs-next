@@ -1,0 +1,79 @@
+---
+sidebar_position: 4
+sidebar_label: RS232 Flasher le firmware
+---
+
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_rs232.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_rs232.mdx';
+
+# Compilation du firmware RS232
+
+## Début de la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Sélectionnez GPIO pins to set at micro-controller startup, entrez : !PA15 Veuillez noter que ! est en majuscule
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/rs232.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, une invite **Save configuration** apparaît, puis appuyez sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation est réussie, le message suivant sera affiché :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+
+## Entrer en mode de flashage
+
+    :::tip
+
+    Le bouton du haut est le bouton `RESET`, celui du bas est le bouton `BOOT`
+
+    :::
+
+    * Il y a deux méthodes pour entrer en mode DFU
+    * La première méthode : avec la carte complètement déconnectée, maintenez le bouton BOOT enfoncé puis connectez le câble de données à la carte et à l'ordinateur
+    * La deuxième méthode : avec le câble de données connecté à la carte et à l'ordinateur, maintenez le bouton BOOT enfoncé puis appuyez sur le bouton RST, relâchez le bouton RST et ensuite relâchez le bouton BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.png').default} size="100%" align="center" />
+
+## Confirmer si le mode de flashage est activé
+
+    <LS />
+
+
+## Flasher le firmware 
+    
+    <Katapult />
+    
+    3. Flasher le firmware
+    
+        ```bash
+        sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/kliper/out/klipper.bin
+        ```
+
+    4. Si le message `File downloaded successfully` apparaît, comme indiqué par la flèche sur l'image ci-dessous, alors le flashage est réussi
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+    :::tip
+
+    Une fois le flashage terminé, il est nécessaire de couper complètement l'alimentation de la carte.
+
+    :::
+
+## Confirmer si le firmware a démarré
+
+    * Si le firmware démarre correctement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />

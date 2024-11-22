@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+sidebar_label: Compilation et flashage du firmware CAN
+---
+
+import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# Compilation du firmware CAN
+
+## Commencer la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Sélectionnez GPIO pins to set at micro-controller startup, entrez : !gpio13 Veuillez noter que ! est en majuscule
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/can.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, puis sur **Save configuration**, ensuite appuyez sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez revenir à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation est réussie, vous verrez le message suivant :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Recherche de l'appareil
+
+    <LS />
+
+
+## Flashage du firmware
+
+    * Avant de flasher le firmware, connectez la carte d'outil à l'UTOC ou à la carte mère avec un câble de données XT30, voici un schéma de connexion de référence
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` lorsque l'alimentation est coupée. Si elle est de `120Ω`, vous devez connecter le jumper de `120Ω`. Si elle est d'environ `40Ω`, vous devez retirer le jumper.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED restera allumée
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/led.png').default} size="100%" align="center" />

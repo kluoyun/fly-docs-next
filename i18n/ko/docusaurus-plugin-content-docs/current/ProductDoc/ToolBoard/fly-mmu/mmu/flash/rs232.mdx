@@ -1,0 +1,79 @@
+---
+sidebar_position: 4
+sidebar_label: RS232 펌웨어 플래시
+---
+
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_rs232.mdx';
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_rs232.mdx';
+
+# RS232 펌웨어 컴파일
+
+## 컴파일 시작
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * GPIO 핀을 선택하여 마이크로 컨트롤러 시작 시 설정, 입력: !PA15 주의: !는 대문자입니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/rs232.png').default} size="100%" align="center" />
+    * `Q` 키를 눌러 **Save configuration**이 나타나면, `Y` 키를 눌러 저장
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아왔어야 합니다
+    * `make -j4` 입력하여 컴파일 시작, 시간이 좀 걸립니다
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 마지막으로 아래 내용이 출력되면 컴파일 성공
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+
+## 플래시 모드 진입
+
+    :::tip
+
+    위쪽은 `RESET 버튼`, 아래쪽은 `BOOT 버튼`입니다
+
+    :::
+
+    * DFU 모드로 진입하는 두 가지 방법
+    * 첫 번째: 완전히 전원이 꺼진 상태에서, BOOT 버튼을 누른 상태로 데이터 전송 가능한 케이블을 메인보드와 호스트에 연결
+    * 두 번째: 데이터 전송 가능한 케이블을 메인보드와 호스트에 연결한 상태에서, BOOT 버튼을 누른 채로 RST 버튼을 누르고, RST 버튼을 놓은 후 BOOT 버튼을 놓습니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.png').default} size="100%" align="center" />
+
+## 플래시 모드 진입 확인
+
+    <LS />
+
+
+## 펌웨어 플래시 
+    
+    <Katapult />
+    
+    3. 펌웨어 플래시
+    
+        ```bash
+        sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/kliper/out/klipper.bin
+        ```
+
+    4. 아래 그림의 화살표 부분에 `File downloaded successfully`가 나타나면 플래시 성공
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+    :::tip
+
+    플래시가 완료된 후, 메인보드에 완전히 전원을 껐다가 다시 켜야 합니다.
+
+    :::
+
+## 펌웨어가 정상적으로 시작했는지 확인
+
+    * 펌웨어가 정상적으로 시작되면 LED가 켜집니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />

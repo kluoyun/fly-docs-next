@@ -1,0 +1,92 @@
+---
+sidebar_position: 3
+---
+
+# Erreurs liées à TMC
+
+## `Impossible de lire le registre IFCNT de l'UART tmc 'stepper_x'` ou `Impossible de lire le registre SPI tmc 'stepper_x'`
+
+    1. Détails de l'erreur
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart.png').default} size="80%" align="center" />
+
+    2. Causes de l'erreur
+
+        * Impossible de communiquer avec le driver
+
+    3. Principales solutions
+
+        * Vérifiez si les broches UART du driver correspondant sont correctement configurées
+        * Vérifiez si les cavaliers UART sont corrects
+        * Vérifiez si le driver est alimenté
+        * Changez le driver ou reconfigurez le port du driver pour diagnostiquer
+        * Si c'est un driver d'une autre marque, vérifiez si les broches UART correspondent à celles de FLY. Les broches UART du driver FLY sont la quatrième en partant du haut à gauche.
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/2209uart.png').default} size="80%" align="center" />
+        * Si votre driver a la broche UART sur la cinquième, vous pouvez résoudre le problème en suivant le schéma de cavaliers ci-dessous
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart1.png').default} size="80%" align="center" />
+
+## `TMC XXXX signale une erreur : GSTAT: 00000001 reset=1(Reset) `
+
+    1. Détails de l'erreur
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/reset.png').default} size="80%" align="center" />
+
+    2. Causes de l'erreur
+
+        * Le driver a été réinitialisé
+
+    3. Principales solutions
+
+        * Mauvais contact des câbles d'alimentation
+        * Fil de moteur débranché
+        * Vous pouvez connecter la coque métallique du moteur au GND de la carte mère ou de la carte d'outils
+
+## `TMC 'extruder' signale une erreur : DRV_STATUS: c00d0103 otpw=1(Avertissement de surchauffe!) `
+
+    1. Détails de l'erreur
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/overtemperror.png').default} size="80%" align="center" />
+
+    2. Causes de l'erreur
+
+        * Le driver surchauffe !
+        * Ce n'est pas le moteur qui surchauffe !
+
+    3. Principales solutions
+
+        * Réduire le courant de fonctionnement
+        * Supprimer le courant de maintien
+        * Vérifier la résistance d'échantillonnage du driver
+        * Améliorer la dissipation thermique du driver, par exemple en ajoutant un ventilateur
+
+## `TMC 'extruder' signale une erreur : DRV_STATUS: 601f1000 s2vsa=1(Court-circuit sur l'alimentation_A!) csactual=31 ola=1(Charge ouverte_A!) olb=1(Charge ouverte_B!)`
+
+    1. Détails de l'erreur
+
+        * Aucune image pour le moment
+
+    2. Causes de l'erreur
+
+        * Vérifiez si le courant du driver est incorrect
+
+    3. Principales solutions
+
+        * Vérifiez si les résistances des deux bobines AB du moteur pas à pas sont identiques
+        * Vérifiez si les fils à l'intérieur du moteur pas à pas ou des composants sont desserrés ou en court-circuit
+        * Désactivez le mode silencieux
+
+## `TMC 'extruder' signale une erreur : DRV_STATUS: 00190060 s2vsb=1(Court-circuit sur l'alimentation_B!) ola=1(Charge ouverte_A!) cs_actual-25`
+
+    1. Détails de l'erreur
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/ab.png').default} size="80%" align="center" />
+
+    2. Causes de l'erreur
+
+        * Erreur de connexion ou problème avec le moteur lui-même
+
+    3. Principales solutions
+
+        * Vérifiez si les résistances des deux bobines AB du moteur pas à pas sont identiques
+        * Vérifiez votre moteur pas à pas et ses connexions
+        * Vérifiez l'ordre des fils du moteur, s'ils sont groupés à gauche et à droite

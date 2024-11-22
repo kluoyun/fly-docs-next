@@ -1,0 +1,29 @@
+## 장치 검색 전 주의사항
+
+    * ID를 가져오기 전에 먼저 [SSH에 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하면 이동") 
+    * 하위 장치가 상위 장치와 데이터 전송 기능을 갖춘 데이터 케이블로 연결되어 있는지 확인하세요
+    * SSH 연결 후 상위 장치에 `lsusb`를 입력하고 엔터를 누르면 다음과 같은 장치가 나타날 수 있습니다
+    * 시스템이 `lsusb`를 지원하지 않으면 아래 명령어를 실행하여 설치할 수 있습니다
+    * `lsusb` 후 장치가 없으면 상위 장치를 교체하세요!
+    ```
+    sudo apt-get install usbutils
+    ```
+        <ImageView image={require('@site/docs/General/get-id/img/lsusb.png').default} size="100%" align="left" />
+        <ImageView image={require('@site/docs/General/get-id/img/rs232.png').default} size="100%" align="left" />
+    * 메인보드 펌웨어가 올바른 펌웨어로 업데이트되었는지 확인하세요
+    * USB 펌웨어일 경우 `lsusb` 후 `1d50:614e`가 나타나야 합니다
+    * USB를 CAN으로 브리징하는 펌웨어일 경우 `lsusb` 후 `1d50:606f`가 나타나야 합니다
+    * RS232일 경우 UTOR 또는 G2T와 함께 사용해야 하며, G2T는 펌웨어 검색이 필요 없고, UTOR는 `lsusb` 후 `1a86:7523`가 나타나야 합니다
+
+## 장치 검색 시 주의사항
+
+:::danger 알아두세요
+ID 검색 명령을 혼용할 수 없습니다!!!
+:::
+
+    * USB 펌웨어는 USB ID 검색 방식만 사용할 수 있습니다
+    * USB 브리징 CAN 펌웨어는 CAN ID 검색 방식만 사용할 수 있습니다
+    * RS232 펌웨어는 RS232 ID 검색 방식만 사용할 수 있습니다
+    * `0483:df11`이 나타나면 펌웨어를 업데이트했지만 메인보드의 전원을 껐다 켜지 않았을 수 있습니다. 전원을 껐다 켜도 동일하면 DFU(점퍼/스위치/버튼)가 분리되었는지 확인하세요
+    * `2e8a:0003`이 나타나면 잘못된 펌웨어를 설치한 것일 수 있습니다. RP2040은 컴파일된 UF2 펌웨어만 설치할 수 있으며, 다른 펌웨어는 설치할 수 없습니다. `2e8a:0003`이 나타난 후에는 BOOT(점퍼/스위치/버튼)를 분리하지 않으면 프로그래밍이 실패할 수 있습니다!!!
+    * RP2040의 UF2 펌웨어는 컴파일 시 `No bootloader`를 선택해야 UF2 펌웨어가 컴파일됩니다

@@ -1,0 +1,62 @@
+---
+sidebar_position: 2
+sidebar_label: Compilation et programmation du firmware
+---
+
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+
+# Compilation et programmation du firmware
+
+    :::tip
+
+    * CDV utilise par défaut une carte TF pour la programmation du firmware
+    * Veuillez préparer une carte TF d'une capacité ne dépassant pas `32G`
+    * Les cartes mémoire de marques inconnues peuvent entraîner un échec de programmation, veuillez utiliser de préférence les cartes mémoire recommandées ci-dessous pour mettre à jour le firmware
+    * La vitesse de transfert de la carte TF devrait être de `class10` ou supérieure, il est recommandé d'utiliser des marques comme SanDisk pour les cartes TF
+
+    :::
+
+
+
+## Préparation
+
+    <SSH />
+
+## Compilation du firmware Klipper
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Appuyez sur la touche `Q`, lorsqu'apparaît **Save configuration**, appuyez ensuite sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez revenir à l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation se termine avec succès, le message suivant sera affiché :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * L'image ci-dessous montre un exemple de compilation réussie
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## Programmation du firmware
+
+:::danger À savoir
+* CDV est préprogrammé avec le BL firmware pour la programmation par carte TF
+:::
+
+    <TF />

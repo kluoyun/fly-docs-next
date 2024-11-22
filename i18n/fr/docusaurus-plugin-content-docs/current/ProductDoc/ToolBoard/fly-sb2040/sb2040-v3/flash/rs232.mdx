@@ -1,0 +1,66 @@
+---
+sidebar_position: 4
+sidebar_label: Firmware RS232
+
+---
+
+import USBFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+# Compilation du firmware RS232
+
+## Début de la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Sélectionnez les broches GPIO à définir au démarrage du microcontrôleur, entrez : !gpio5 Veuillez noter que ! est en majuscule
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/rs232.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, lorsque **Save configuration** apparaît, appuyez sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si vous voyez le message suivant, la compilation a réussi
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
+
+
+## Entrez en mode flashage
+
+    :::tip
+
+    À gauche se trouve le bouton `RESET`, à droite le bouton `BOOT`
+
+    :::
+
+    * Il y a deux méthodes pour entrer en mode DFU
+    * Première méthode : Avec la carte complètement déconnectée, maintenez le bouton BOOT enfoncé, puis connectez le câble de données à la carte et à l'ordinateur hôte
+    * Deuxième méthode : Avec le câble de données déjà connecté à la carte et à l'ordinateur hôte, maintenez le bouton BOOT enfoncé, appuyez sur le bouton RST, relâchez RST puis relâchez BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## Confirmer l'entrée en mode flashage
+
+    <LS />
+
+
+## Flashage du firmware 
+    
+    <USBFLASH />
+    
+
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.png').default} size="100%" align="center" />

@@ -1,0 +1,102 @@
+## Points à noter
+
+    1. Il est interdit de débrancher ou de brancher tout appareil autre que USB sous tension
+    2. L'interface Type C peut être utilisée pour l'alimentation ou comme interface USB SLAVE pour la gravure d'image
+    3. Pour garantir une alimentation normale du CM4, lors de la gravure d'image via l'interface Type C, veuillez ne pas connecter d'autres appareils.
+    4. Le module n'a aucune protection, ne court-circuitez pas l'alimentation.
+    5. La carte mère FLY ne supporte pas la fonction POE ! Veuillez ne pas utiliser l'alimentation POE
+
+:::danger À savoir
+* Attention : La version EMMC ne peut pas utiliser de carte SD
+* Attention : La version sans EMMC démarre avec une carte MICRO SD, nécessite un lecteur de carte pour graver l'image
+* Il est recommandé que la vitesse de transfert de la carte TF soit de `class10` ou supérieure, il est recommandé d'utiliser des marques comme SanDisk pour les cartes TF
+:::
+
+    <ImageView image={require('@site/docs/General/rpi/img/emmc.png').default} size="100%" align="left" />
+
+## Lien de téléchargement du système TFTV2 préinstallé pour Raspberry Pi
+
+    * Image système adaptée pour Raspberry Pi 3B/3B+/4B/CM4/5B
+    * Cette image préinstalle klipper, moonraker, mainsail, fulidd, klipper-screen, etc.
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## Téléchargement de l'image
+
+    * Téléchargez le système le plus récent [cliquez ici pour télécharger](https://www.raspberrypi.org/downloads/raspberry-pi-os/) (ou comme illustré).
+    * Si vous téléchargez un fichier torrent, utilisez Thunder ou Comet pour télécharger
+
+    <ImageView image={require('@site/docs/General/rpi/img/rpi.png').default} size="70%" align="left" />
+
+
+    * Image avec bureau et logiciels recommandés `(Raspberry Pi OS with desktop and recommended software)`, recommandé pour EMMC 16G ou CM4 lite avec une capacité de stockage de carte mémoire de 16G ou plus
+
+:::danger À savoir
+La version EMMC nécessite de passer en mode de gravure CM4 en coupant l'alimentation et en changeant le commutateur, la version Lite peut directement graver l'image sur la carte système
+:::
+
+:::danger À savoir
+* La version EMMC doit entrer en mode de gravure pour démarrer, la méthode pour entrer en mode de gravure est ci-dessous
+* La version Lite n'a pas besoin d'entrer en mode de gravure, il suffit de formater et de graver directement
+:::
+
+## Téléchargement de rpiboot (programme de chargement)
+
+    * Téléchargez et ouvrez le logiciel rpiboot avec des privilèges d'administrateur [cliquez ici pour télécharger](https://files.waveshare.net/wiki/w/upload/f/f3/Rpiboot_setup.zip)
+    * Pour installer les pilotes et lancer l'outil. Après une installation réussie, une application rpiboot.exe se trouve dans le répertoire d'installation
+
+    <ImageView image={require('@site/docs/General/rpi/img/boot.png').default} size="80%" align="left" />
+
+## Entrer en mode de gravure
+
+    * À ce moment, connectez l'ordinateur et alimentez la carte mère, le gestionnaire de périphériques de l'ordinateur reconnaîtra un dispositif BCMxxx
+
+        <ImageView image={require('@site/docs/General/rpi/img/bcm2711.png').default} size="80%" align="left" />
+
+
+    * Puis exécutez rpiboot
+
+        <ImageView image={require('@site/docs/General/rpi/img/rpiboot.png').default} size="80%" align="left" />
+
+
+    * Attendez la fin de l'exécution, un lecteur de disque USB apparaîtra sur "Mon ordinateur"
+
+:::danger À savoir
+Attention : Si l'ordinateur ne reconnaît pas le dispositif BCMxxx, il peut y avoir un problème avec l'une des étapes ci-dessus. Il est impératif de reconnaître le dispositif BCMxxx pour que l'exécution de rpiboot soit efficace, sinon elle sera inefficace.
+:::
+
+
+## Formater EMMC ou carte SD
+
+    * Utilisez SDFormatter.exe [cliquez ici pour télécharger](https://www.waveshare.net/w/upload/d/d7/Panasonic_SDFormatter.zip) pour formater la carte SD
+
+        <ImageView image={require('@site/docs/General/rpi/img/sdformatter.png').default} size="80%" align="left" />
+
+
+    * Ou utilisez la gestion des disques intégrée de Windows pour supprimer les partitions, puis recréer une partition après suppression.
+    * Ce PC clic droit -> Gérer -> Gestion des disques -> Trouvez le nouveau lecteur de disque ajouté (attention à ne pas se tromper) -> Supprimez toutes les partitions -> Créez une partition (quel que soit le système de fichiers) Si un système a déjà été gravé, il y aura deux lecteurs de disque, ne vous en occupez pas, formatez-les ou supprimez simplement les partitions
+
+## Graver l'image
+
+    1. Utilisez Raspberry Pi Imager [cliquez ici pour télécharger](https://www.raspberrypi.com/software/) pour graver l'image.
+    2. Avant la gravure, configurez le nom d'utilisateur et le mot de passe et activez SSH
+
+            <ImageView image={require('@site/docs/General/rpi/img/imager.png').default} size="80%" align="left" />
+
+
+    3. Une fois la gravure terminée, un lecteur de disque USB apparaîtra sur "Mon ordinateur"
+
+## Graver terminé et redémarrer
+
+    * Une fois la gravure terminée, débranchez l'alimentation, débranchez le câble de connexion à l'ordinateur, remettez le commutateur BOOT. Rebranchez l'alimentation
+
+## Points à noter pour Raspberry Pi zero2 et zero2W
+
+    * Cette note concerne l'utilisation de l'écran FLY-TFT avec G2T
+    * Raspberry Pi zero2 et zero2w doivent modifier l'appareil d'affichage par défaut, vous pouvez exécuter le code ci-dessous pour le faire directement\
+    * Veuillez noter que vous devez redémarrer après l'exécution pour que cela fonctionne
+    ```cfg
+    sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+    ```

@@ -1,0 +1,61 @@
+---
+sidebar_position: 11
+sidebar_label: I2C 사용
+---
+
+
+
+
+
+
+# I2C 사용
+
+    * 상위기기 40PIN의 I2C 인터페이스 사용
+    * 이번 튜토리얼에서는 FLY-PI V2LM75의 I2C 센서와 I2C2를 예시로 사용합니다!!!
+    * I2C1이 다른 장치에 의해 이미 점유된 경우 사용할 수 없습니다!!!
+    * 연결이 단단하고 안정적으로 연결되었는지 확인하세요!!!
+
+## FLY Tools를 통해 I2C 활성화
+
+    * Overlays를 찾아서 뒤에 i2c2와 i2c0을 선택하세요
+    * I2C1이 다른 장치에 의해 이미 점유된 경우 사용할 수 없습니다!!!
+    * 저장 후 재부팅
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c.png').default} size="80%" align="center" />
+
+
+## 연결 및 검색
+    * 본 튜토리얼에서는 PI V2를 참고로 사용합니다
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c2.png').default} size="80%" align="center" />
+
+    * SSH를 사용하여 FLY 상위기기에 연결 후 아래 명령어를 입력하면 아래 내용이 출력됩니다
+    * `I2C0`을 사용할 경우 아래 명령어의 `2`를 `0`으로 교체해야 합니다
+
+    ```cfg
+    sudo i2cdetect -y -r 2
+    ```
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c1.png').default} size="80%" align="center" />
+
+    * 정상적인 경우, 엔터를 누르면 즉시 위의 내용이 출력되고 주소가 함께 표시됩니다
+    * 주소는 무작위로 설정됩니다
+    * 선이 잘못 연결되거나, 선이 반대로 연결되거나, 설정이 활성화되지 않았거나, 모듈이 손상된 경우 정상적으로 출력되지 않습니다
+    * 주소는 16진수에서 10진수로 변환한 후 `i2c_address:` 뒤에 입력해야 합니다
+    * 온라인 진법 변환기를 사용하여 변환할 수 있습니다
+
+## 설정
+
+    ```cfg
+    [mcu host]
+    serial: /tmp/klipper_host_mcu
+
+    [temperature_sensor my_sensor]
+    sensor_type: LM75
+    i2c_address:72
+    # #   기본값은 72 (0x48). 일반 범위는 72-79 (0x48-0x4F)이며, 주소의 하위 3비트는 칩의 핀을 통해 설정됩니다
+    # #   (보통 점퍼나 하드와이어로 설정됨).
+    i2c_mcu:host
+    i2c_bus:i2c.2
+    # i2c_software_scl
+
+    ```

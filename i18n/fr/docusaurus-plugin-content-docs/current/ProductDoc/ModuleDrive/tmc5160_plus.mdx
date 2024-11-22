@@ -1,0 +1,151 @@
+---
+sidebar_position: 7
+---
+
+
+
+
+
+
+
+# TMC 5160 Plus
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus.png').default} size="100%" align="center" />
+
+## Paramètres de base
+
+    * Tension d'entrée : 12-60V
+    * Courant maximal : 10A
+    * Compatible avec : Firmware Marlin/Klipper/RRF
+    * Modes de pilotage supportés : TMC : SPI
+    * Interface pas à pas/direction avec interpolation microPlyer
+    * Résolution maximale de 256 micro-pas
+    * Supporte le fonctionnement silencieux stealthChop2 et des mouvements fluides
+    * Supporte la suppression de la résonance à fréquence moyenne
+    * Supporte le chopper de contrôle moteur dynamique spreadCycle
+    * Supporte le contrôle de vitesse dépendant de la charge dcStep
+    * Supporte la détection de charge sans capteur stallGuard2 à haute précision
+    * Supporte le contrôle de courant coolStep, économisant jusqu'à 75% d'énergie
+
+## Explications des cavaliers de la carte mère et des connexions du pilote
+
+    :::tip
+
+    Le TMC 5160 Plus utilise le mode SPI, veuillez installer les cavaliers SPI sur la carte mère FLY, pour les autres cartes mères, veuillez consulter le vendeur de la carte mère
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+### Installation du FPC de la carte mère
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fpc.png').default} size="100%" align="center" />
+
+### Sélection de la couleur RGB par commutateur
+
+    :::tip
+
+    L'utilisation de la broche EN de la carte mère pour contrôler le RGB bloquera de force le moteur
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb.png').default} size="100%" align="center" />
+    
+    * Connexion multiple des pilotes RGB
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb-1.png').default} size="80%" align="center" />
+
+
+### Connexion du ventilateur 12V
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fan.png').default} size="100%" align="center" />
+
+## Configuration de référence de la carte mère
+
+    :::danger
+
+    La résistance de détection du pilote est de 0.033, veuillez ne pas la configurer incorrectement
+
+    :::
+
+
+    <Tabs>
+        <TabItem value="Contrôle RGB via la broche EN du pilote" default>
+        
+        * Basculez le commutateur vers le port FAN
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        # enable_pin: !
+
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+        driver_DISS2G: 1
+        driver_DISS2VS: 1
+        ```
+        </TabItem>
+
+
+        <TabItem value="Contrôle RGB via la broche RGB de la carte mère" default>
+        
+        * Basculez le commutateur dans l'autre direction du port FAN
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        enable_pin: !
+        
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+        driver_DISS2G: 1
+        driver_DISS2VS: 1
+        ```  
+
+        </TabItem>
+
+        <TabItem value="Configuration de référence RGB" default>
+
+        * Contrôle de la LED du pilote via une extension de plugin  <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">Cliquez pour accéder</Button>
+
+        ```
+        [neopixel TP_led]
+        pin: 
+        chain_count: 6
+        # Nombre de LEDs
+        # Quantité de perles de lumière
+        color_order: GRB
+        initial_RED: 0.4    
+        initial_GREEN: 0.8
+        initial_BLUE: 1
+        initial_WHITE: 0.0
+        #66CCFF 
+
+        ```  
+
+        </TabItem>
+
+    </Tabs>
+
+## Avertissement sur le courant
+
+    :::danger
+
+    Le TMC5160 Plus supporte 10A, mais un courant trop élevé peut endommager le moteur et nécessite une amélioration de la dissipation thermique
+
+    :::

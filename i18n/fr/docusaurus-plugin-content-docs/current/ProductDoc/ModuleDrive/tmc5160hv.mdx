@@ -1,0 +1,90 @@
+---
+sidebar_position: 4
+---
+
+
+
+import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160HV
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160hv.png').default} size="80%" align="center" />
+
+## Paramètres de base
+
+    * Tension d'entrée : 12V-48V
+    * Courant maximal : 4,4A
+    * Compatible avec : firmware Marlin/Klipper/RRF
+    * Modes de pilotage supportés : TMC : SPI
+    * Interface pas à pas/direction avec interpolation de micro-pas microPlyer
+    * Résolution maximale de 256 micro-pas
+    * Support pour le fonctionnement silencieux stealthChop2 et les mouvements fluides
+    * Support pour la suppression de la résonance à fréquence moyenne
+    * Support pour le chopper de contrôle dynamique du moteur spreadCycle
+    * Support pour le contrôle de vitesse dépendant de la charge dcStep
+    * Support pour la détection de charge sans capteur à haute précision stallGuard2
+    * Support pour le contrôle de courant coolStep, économie d'énergie jusqu'à 75%
+
+## Explication des cavaliers de la carte mère
+
+    * TMC5160 utilise le cavalier SPI
+    * Les broches SPI de la FLY sont sur le quatrième pied en partant du haut à gauche, la broche CS est la broche SPI. Si la carte mère n'a pas les broches correspondantes, le SPI ne peut pas être utilisé
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+
+## Configuration de référence pour TMC5160
+
+    :::danger
+
+    * La résistance d'échantillonnage du driver est `sense_resistor: 0.075`, ne la configurez pas incorrectement
+    * spi_bus et spi_software ne peuvent être sélectionnés que l'un ou l'autre
+    
+    :::
+
+### Configuration de référence pour le mode SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Valeur du courant de fonctionnement du moteur
+    interpolate: False                  # Activation de l'interpolation de micro-pas à 256 (True pour activer, False pour désactiver)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Instructions d'utilisation de la position infinie
+
+    <DIAG />
+
+    :::tip Conseils pour l'utilisation de la position infinie
+
+    * Le `endstop_pin:` original doit être masqué ou supprimé, puis ajoutez `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * Après avoir configuré `diag1_pin:`, l'état du fin de course doit être non déclenché
+    * La configuration de `driver_SGT: :` nécessite de tester une valeur appropriée
+
+    :::
+
+    * Configuration de référence
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Une valeur différente de 0 peut entraîner un échec de retour à l'origine
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   Assurez-vous que l'état du fin de course est non déclenché après la configuration
+    #   Ce pin utilise généralement le préfixe "^" pour activer la résistance de pull-up interne
+    #   La sensibilité dépend de la tension de la courroie et doit être ajustée
+    #   (Assurez-vous également que driver_SGTHRS est configuré pour une sensibilité appropriée)
+
+    ```

@@ -1,0 +1,73 @@
+---
+sidebar_position: 7
+sidebar_label: Eddy 사용
+---
+
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# Eddy 사용
+
+    :::info
+
+    * 스캔 베드 사용 시 별도의 Z 제한을 사용하는 것이 좋습니다. 스캔 베드를 Z 제한으로 사용하지 않는 것이 좋습니다.
+    * Eddy를 설치할 때, 노즐 위치에서 바닥이 최소 1-2 mm 위에 있어야 합니다.
+    * Eddy 주파수를 보정할 때, 코일 PCB는 히트 베드에서 최소 5mm 떨어져 있어야 합니다.
+    * 전체 히트 베드가 상온에서 테스트되며, 테스트 시 히트 베드를 켜지 마십시오.
+
+    :::
+
+## 접선 도식
+
+    * 열저항기는 아래를 향하게 합니다.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.png').default} size="100%" align="left" />
+
+
+## 참조 설정 및 사용 설명
+
+    ### 스캔 베드 설정
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 43
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+        * 현재 외부 1612 모듈이 없으므로 이 설정은 사용할 수 없습니다.
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 42
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### 온도 보정 설정
+
+        ```cfg
+        [temperature_probe fly_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SB2040:gpio28
+        ```
+
+### bed_mesh 설정
+
+    * [bed_mesh]의 `horizontal_move_z` 매개변수를 2로 설정하는 것이 좋습니다. 이는 스캔 플랫폼 시 Eddy가 플랫폼에 최대한 가까이 있도록 합니다.
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+
+    <LDC1612 />

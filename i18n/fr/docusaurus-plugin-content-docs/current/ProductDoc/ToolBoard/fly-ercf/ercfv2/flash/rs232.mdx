@@ -1,0 +1,63 @@
+---
+sidebar_position: 4
+sidebar_label: Gravure du firmware RS232
+---
+
+import USBFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+# Compilation du firmware RS232
+
+## Commencer la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Sélectionner GPIO pins to set at micro-controller startup, entrer : gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/can.png').default} size="100%" align="center" />
+    * Appuyer sur la touche `Q`, une fois que **Save configuration** apparaît, appuyer sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
+    * Entrer `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la sortie finale affiche le contenu suivant, la compilation est réussie
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
+
+
+## Entrer en mode de gravure
+
+    :::tip
+
+    Le bouton entouré est le `BOOT`
+
+    :::
+
+    * Pour entrer en mode DFU, il faut que la carte soit complètement déconnectée, puis appuyer sur le bouton BOOT et connecter le câble de données à la carte et à l'ordinateur
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Confirmer si le mode de gravure est activé
+
+    <LS />
+
+
+## Graver le firmware 
+    
+    <USBFLASH />
+    
+
+
+## Confirmer si le firmware a démarré
+
+    * Si le firmware démarre normalement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

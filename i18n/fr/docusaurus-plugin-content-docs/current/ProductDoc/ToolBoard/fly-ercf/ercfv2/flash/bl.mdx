@@ -1,0 +1,89 @@
+---
+sidebar_position: 6
+sidebar_label: Firmware BL, veuillez ignorer
+---
+
+
+
+
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware Katapult
+
+## Description du firmware Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * ERCF V2 prend en charge CANR, S232, USB
+    * Ici, seul le firmware CAN est fourni avec des vitesses de 500K et 1M
+
+    :::
+
+## Entrer en mode flashage
+
+    :::tip
+
+    Le bouton entouré est le `BOOT`
+
+    :::
+
+    * Pour entrer en mode flashage, il faut que la carte mère soit complètement déconnectée de l'alimentation. Appuyez sur le bouton BOOT puis connectez le câble de données d'un côté à la carte mère et de l'autre à l'ordinateur hôte
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flashage du firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de flashage sous Windows" default>
+
+            * Firmware Katapult pour ERCF V2 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ERCF_V2.zip">Cliquez pour télécharger automatiquement le firmware</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de flashage depuis l'hôte">
+            
+            <Katapult />
+
+            4. Flashage du firmware
+
+            :::tip
+
+            Il suffit de flasher l'un des firmwares
+
+            :::
+
+            * Voici la commande de flashage pour le firmware à 500K CAN
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCFV2_CANBOOT_CAN_500K.uf2
+                ```
+                       
+            * Voici la commande de flashage pour le firmware à 1M CAN
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCFV2_CANBOOT_CAN_1M.uf2
+                ```
+            * Voici la commande de flashage pour le firmware USB
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/FLY_ERCFV2_CANBOOT_USB.uf2
+                ```
+
+            5. Si le message suivant apparaît, le flashage a réussi
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Après le flashage, il est nécessaire de déconnecter complètement la carte mère de l'alimentation.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED clignotera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

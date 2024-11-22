@@ -1,0 +1,51 @@
+---
+sidebar_position: 3
+sidebar_label: CAN 펌웨어 플래싱
+---
+
+import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_can.mdx';
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN 펌웨어 컴파일
+
+## 컴파일 시작
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * `Q` 키를 누르면 **Save configuration**이 나타나고, 이때 `Y` 키를 다시 누릅니다
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 이제 설정이 저장되고 명령 줄 인터페이스로 돌아갔어야 합니다
+    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 마지막으로 다음과 같은 내용이 출력되면 컴파일이 성공한 것입니다
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## 장치 검색
+
+    <LS />
+
+
+## 펌웨어 플래싱
+
+    * 펌웨어를 플래싱하기 전에 XT30 데이터 케이블을 사용하여 도구 보드를 UTOC 또는 브리징 펌웨어가 플래시된 메인보드에 연결합니다. 아래는 참고 회로도입니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/utoc.png').default} size="80%" align="left" />
+    * CAN H와 CAN L이 전원이 꺼진 상태에서 멀티미터로 측정한 저항 값이 `60Ω` 정도 되는지 확인하십시오. `120Ω`일 경우 `120Ω` 점퍼를 연결해야 하며, `40Ω` 정도일 경우 점퍼를 제거해야 합니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+
+
+

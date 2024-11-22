@@ -1,0 +1,183 @@
+---
+sidebar_position: 4
+sidebar_label: Raccordement de la carte mère
+---
+
+
+
+# Raccordement de la carte mère
+
+## Schéma des interfaces
+
+### Description des interfaces
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Description des broches
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Raccordement de l'alimentation
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/power.png').default} size="40%" align="center" />
+
+----
+
+## Installation des pilotes
+
+### Jumper de la carte mère
+    * DP5 n'a pas besoin d'installer de jumper de pilote
+
+
+### Broches sans fin
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/sensorless.png').default} size="40%" align="center" />
+
+----
+
+## Raccordement des moteurs pas à pas
+
+:::info
+* Peu importe le fabricant des moteurs pas à pas bipolaires, ils se présentent tous avec 4 fils. Peu importe la couleur, noir, blanc, vert, jaune, etc., ils correspondent toujours à 4 fils. Donc, nous devons grouper les fils en deux ensembles, A et B.
+* Pour les moteurs pas à pas bipolaires à quatre fils, nous n'avons pas besoin de savoir lequel est le groupe A ou B, l'essentiel est de déterminer qu'il s'agit d'un groupe, et vous pouvez inverser la direction du moteur dans la configuration.
+:::
+
+* Dans les imprimantes 3D, le type le plus courant est le moteur pas à pas bipolaire à quatre fils, dont le principe est illustré dans le schéma. Voici deux méthodes pour identifier la séquence des fils :
+    * Connectez arbitrairement deux fils de phase ensemble, puis tournez l'axe du moteur à la main. Si une résistance notable est ressentie, ces deux fils forment un groupe. Sinon, ils ne sont pas dans le même groupe et il faut tester une autre paire de fils.
+    * Utilisez un multimètre en position de test de continuité pour vérifier les fils de phase du moteur pas à pas. Si les fils sont conducteurs, ils forment un groupe; sinon, ils ne sont pas dans le même groupe et il faut tester une autre paire de fils.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Raccordement de la cartouche chauffante
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## Raccordement du lit chauffant
+
+* **Lit chauffant AC :** Lors du raccordement du SSR, assurez-vous de ne pas inverser les entrées et sorties.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **Lit chauffant DC :** Lors du raccordement du lit chauffant DC à la MOS embarquée, veuillez faire attention à la puissance utilisée. Le courant maximal du lit chauffant DC ne doit pas dépasser 10A. Si cela dépasse 10A, il est conseillé d'utiliser un module MOS externe pour le lit chauffant, sinon cela pourrait causer des dommages irréversibles à la carte mère.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## Raccordement de la sonde de température
+
+### Introduction aux types de sondes
+
+* Le mode de connexion des sondes est illustré ci-dessous. Veuillez consulter le fournisseur pour connaître le type de thermistance.
+
+* Si vous avez acheté chez fly (comme illustré ci-dessous), veuillez configurer le sensor_type comme suit : **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* Si vous avez une thermistance NTC 100K standard (comme illustré ci-dessous), veuillez configurer le sensor_type comme suit : **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### Raccordement de la sonde de la carte mère
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/ntc-4.png').default} size="40%" align="center" />
+
+----
+
+## Raccordement du ventilateur
+
+* **Raccordement du ventilateur**
+
+    :::tip
+
+    L'interface encadrée en rouge sur le schéma ci-dessous, les interfaces supérieure et inférieure sont contrôlées par la même broche, c'est-à-dire un ventilateur contrôlable avec deux sorties.
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## Raccordement des fins de course
+
+* Les fins de course existent en deux types : normalement ouvert (NO) et normalement fermé (NC). En général, sur les imprimantes 3D, il est recommandé d'utiliser **normalement fermé (NC)**, de sorte que si un problème survient dans le circuit des fins de course, le système signalera une erreur, évitant ainsi des collisions inutiles et des dommages à l'imprimante.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## Raccordement du capteur de nivellement
+
+### Raccordement du capteur de proximité métallique
+
+* La recommandation officielle de VORON est d'utiliser le capteur Omron TL-Q5MC (précédemment recommandé était le PL08N, les deux fonctionnent sur le même principe, avec seulement une différence de distance de détection) pour le nivellement du lit chauffant. Le schéma de connexion est illustré ci-dessous.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/pl08.png').default} size="40%" align="center" />
+
+----
+
+### Raccordement du BL-Touch
+
+* Le BL-Touch dispose de cinq fils, trois pour le premier groupe, responsables de l'alimentation du capteur et du déploiement de la sonde, et le deuxième groupe pour la terre et la ligne de signal, qui sort le signal de fin de course. Veuillez vérifier soigneusement la séquence des fils lors du raccordement du BL-Touch, une mauvaise connexion peut endommager définitivement le capteur et la carte mère !!! La méthode de connexion est illustrée ci-dessous.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Raccordement du Klicky
+
+* Klicky est un capteur de nivellement tiers, qui peut être fabriqué à domicile à très bas coût, avec une performance stable et un bon rapport qualité-prix, il est recommandé. La méthode de connexion est illustrée ci-dessous.
+* Adresse du projet : [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Adresse du projet, cliquez pour accéder")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Raccordement du Voron Tap
+
+* Le Tap est une sonde Z basée sur la buse, adaptée aux conceptions des imprimantes V2 et Trident. La tête d'impression entière se déplace pour déclencher un interrupteur optique, offrant une meilleure précision qu'un fin de course standard, et peut être utilisée avec presque toutes les plateformes d'impression disponibles.
+
+    :::warning
+
+    Il n'est pas recommandé de connecter le Voron Tap à **24V**, certaines versions ont une probabilité de brûler le capteur Tap avec **24V**, ce n'est pas un problème des produits Fly, mais un défaut de conception du Voron Tap, veuillez en être informé !!!
+
+    :::
+
+    :::danger
+
+    Attention : 5V et GND ne doivent pas être inversés, sinon cela pourrait endommager le capteur Tap et même la carte mère !!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+## Raccordement du FLY-Mini12864 LCD
+
+* Le schéma ci-dessous montre la méthode de connexion de l'écran mini12864 de FLY, pour les écrans d'autres fabricants, veuillez consulter les fabricants respectifs. Si l'écran mini12864 est mal connecté, il peut empêcher la connexion de l'ordinateur hôte au MCU. Si le MCU pouvait être connecté avant l'utilisation du mini12864 mais que cela ne fonctionne plus après, essayez de débrancher le câble du mini12864 !!!
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/mini12864.png').default} size="30%" align="center" />
+
+----
+
+## Connexion à l'ordinateur hôte
+
+* La carte mère est connectée à l'ordinateur hôte via l'interface TypeC ou peut être connectée via un port série. Ici, nous ne présentons que la première méthode.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----

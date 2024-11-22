@@ -1,0 +1,136 @@
+---
+sidebar_position: 5
+sidebar_label: 라즈베리 파이 등의 상위 기기 사용 네트워크 케이블 교재
+---
+
+
+
+
+# 네트워크 케이블 사용 교재
+
+
+    :::tip
+
+    네트워크 케이블 스크린 펌웨어는 수동으로 업데이트해야 합니다.
+
+    :::
+
+## 스크린 펌웨어 다운로드
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">스크린 펌웨어 다운로드</Button>
+
+    * 32GB 이하의 메모리 카드가 필요하며, TF 카드의 전송 속도는 class10 이상이어야 합니다. 샌디스크 등의 브랜드 TF 카드 사용을 권장합니다.
+
+
+## 네트워크 케이블 연결
+
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.png').default} size="100%" align="left" />
+
+
+## FLY 상위 기기용 시스템 패키지
+
+:::tip
+C8 PI_V2 PI GEMINI 시리즈에 적합합니다.
+:::
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">시스템 패키지 다운로드</Button>
+
+
+## 서비스 설치
+
+:::tip
+다른 상위 기기는 서비스를 직접 설치해야 합니다.
+:::
+
+:::warning 주의사항
+설치 과정에서 인터넷 연결이 필요합니다.
+:::
+    ```bash
+    sudo apt install isc-dhcp-server
+    ```
+## 네트워크 설정
+
+:::tip
+* 이 교재는 상위 기기의 네트워크 포트를 점유하게 됩니다. 스크린 연결만 사용 가능합니다.
+* 필요하지 않으면 아래의 수정 및 추가 설정만 삭제하면 됩니다.
+:::
+    `/etc/network/interfaces.d/eth0` 수정
+
+    ```bash
+    auto eth0
+    iface eth0 inet static
+    address 192.168.251.100
+    netmask 255.255.255.0
+    broadcast 192.168.251.255
+    network 192.168.251.0
+    gateway 192.168.251.1
+    ```
+
+    `/etc/default/isc-dhcp-server` 수정
+
+    ```bash
+    # Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
+
+    # Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+    #DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
+    #DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
+
+    # Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+    #DHCPDv4_PID=/var/run/dhcpd.pid
+    #DHCPDv6_PID=/var/run/dhcpd6.pid
+
+    # Additional options to start dhcpd with.
+    #       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+    #OPTIONS=""
+
+    # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+    #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+    INTERFACESv4="eth0"
+    #INTERFACESv4="eth0"
+    INTERFACESv6=""
+    #INTERFACES="eth0"
+
+    INTERFACES="eth0"
+    ```
+
+    `/etc/dhcp/dhcpd.conf` 수정, 파일 끝에 아래 내용 추가
+
+    ```bash
+    # ddns-update-style none;
+    subnet 192.168.251.0 netmask 255.255.255.0 {
+        range 192.168.251.100 192.168.251.200;
+        option routers 192.168.251.1;
+        option domain-name-servers 8.8.8.8, 8.8.4.4; # Google Public DNS as an example
+        default-lease-time 600; # Default lease time in seconds
+        max-lease-time 7200;    # Maximum lease time in seconds
+    }
+    ```
+
+    시스템을 먼저 재부팅한 후, 아래 서비스 재시작을 실행하거나
+
+    네트워크 서비스 재시작
+
+    ```bash
+    sudo systemctl restart NetworkManager
+    ```
+
+    이 작업은 네트워크 연결을 끊고 다시 연결합니다.
+
+    서비스 재시작
+
+    ```bash
+    sudo systemctl restart isc-dhcp-server
+    ```
+
+    로컬 IP 주소는 `192.168.251.100`이어야 합니다.
+
+## WIFI 우선순위 높이기
+
+:::tip
+* 이 명령은 네트워크 우선순위를 높이는 명령입니다. 추가하지 않으면 정상적인 인터넷 연결 및 다운로드가 불가능합니다!!!
+:::
+    * 상위 기기의 `/etc/rc.local`에 아래 명령 추가
+
+    ```bash
+    sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0
+    ```

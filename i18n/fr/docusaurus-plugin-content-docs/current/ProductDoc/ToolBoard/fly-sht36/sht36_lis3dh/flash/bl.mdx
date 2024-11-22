@@ -1,0 +1,87 @@
+---
+sidebar_position: 6
+sidebar_label: Micrologiciel BL, veuillez ignorer
+---
+
+
+
+
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Micrologiciel Katapult
+
+## Description du micrologiciel Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 LIS3DH prend en charge CAN
+    * Nous fournissons uniquement le micrologiciel CAN avec des vitesses de 500K et 1M
+    :::
+
+## Entrer en mode flash
+
+    :::tip
+
+    Le bouton entouré est le `Bouton BOOT`
+
+    :::
+
+    * Débranchez complètement la carte mère, court-circuitez le bouton BOOT et branchez un câble de données avec la carte mère et votre appareil
+    * Puis retirez le court-circuit sur le bouton BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/boot.png').default} size="50%" align="center" />
+
+## Flasher le micrologiciel
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de flashage pour Windows" default>
+
+            * Micrologiciel Katapult pour SHT36_LIS3DH <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_LIS3DH.zip">Cliquez pour télécharger automatiquement le micrologiciel</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de flashage pour machine hôte">
+            
+            <Katapult />
+
+            4. Flasher le micrologiciel
+
+            :::tip
+
+            Il suffit de flasher un seul micrologiciel
+
+            :::
+
+            * Voici la commande pour flasher le micrologiciel à une vitesse CAN de 500K
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_500K.uf2
+                ```
+                        
+                * Voici la commande pour flasher le micrologiciel à une vitesse CAN de 1M
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_1M.uf2
+                ```
+
+
+            5. Si le message suivant apparaît, le flashage a réussi
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+
+            :::tip
+
+            Une fois le flashage terminé, il est nécessaire de débrancher complètement la carte mère.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Vérifier le démarrage du micrologiciel
+
+    * Si le micrologiciel démarre correctement, la LED clignotera
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.png').default} size="100%" align="center" />

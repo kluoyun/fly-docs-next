@@ -1,0 +1,113 @@
+---
+sidebar_position: 4
+sidebar_label: Connexion WIFI et configuration de Klipper
+---
+
+
+
+
+
+
+## Connexion WIFI et opérations de base
+
+    [Écran tactile capacitif WiFi de 7 pouces pour contrôler plusieurs machines](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
+
+## Configuration de Klipper
+
+### Configuration LED
+
+    ```cfg
+    [led LED]
+    white_pin:PA15
+    ```
+
+### Configuration PTC
+
+    ```cfg
+    [heater_generic warehouse]
+    heater_pin:E_CS
+    sensor_type:ATC Semitec 104GT-2
+    sensor_pin:PA1
+    min_temp:-270
+    max_temp:600
+    control = pid
+    pid_kp = 16.804
+    pid_ki = 0.794
+    pid_kd = 88.854
+    ```
+
+### Configuration du ventilateur
+
+    ```cfg
+    [fan_generic fan1]
+    pin: FAN1
+    ```
+
+
+    ```cfg
+    [fan_generic fan2]
+    pin: FAN2
+    ```
+
+ 
+
+### Gcode personnalisé
+
+    * Après avoir fait défiler vers le bas sur l'écran, le Gcode personnalisé apparaît,
+    * Un bouton envoie plusieurs formats gcode :
+    * Exemple :
+
+    ```cfg
+    G91 
+    G1 X10 F6000
+    G90
+    ```
+
+    * Format d'entrée sur l'écran : (à partir de la deuxième ligne, ajouter \n avant chaque commande)
+
+    ```cfg
+    G91\nG1 X10 F6000\nG90
+    ```
+
+
+
+## Utilisation de l'exclusion d'objets
+
+    * Il faut remplacer moonraker
+
+    * Connectez-vous d'abord via SSH et assurez-vous que vous pouvez naviguer sur Internet
+
+    1. Sauvegardez le fichier moonraker
+
+    ```bash
+    mv ~/moonraker ~/moonraker-bak
+    ```
+
+    2. Arrêtez le service moonraker
+
+    ```bash
+    sudo systemctl restart moonraker
+    ```
+
+    3. Téléchargez moonraker
+
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
+    ```
+
+    4. Dans le navigateur, accédez à la machine hôte pour trouver `moonraker.conf`, ajoutez-le, puis redémarrez le système
+
+    ```bash
+    [network]
+    ```
+
+    5. Ensuite, dans le navigateur, entrez l'adresse ci-dessous, où IP doit être remplacé par l'IP de la machine hôte
+
+    ```bash
+    http://ip:7125/server/network/wifi/scan
+    ```
+
+* Cette étape indique que l'opération est terminée
+    
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.png').default} size="100%" align="left" />
+

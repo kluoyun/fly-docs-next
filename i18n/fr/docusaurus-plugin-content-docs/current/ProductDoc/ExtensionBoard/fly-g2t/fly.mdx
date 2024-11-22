@@ -1,0 +1,79 @@
+---
+sidebar_position: 3
+sidebar_label: Tutoriel d'utilisation de FLY PI
+---
+
+
+
+# Manuel d'utilisation de FLY
+
+## Points d'attention :
+
+    * Assurez-vous que l'alimentation de l'ordinateur est coupée avant d'installer la carte d'extension.
+    * Évitez d'utiliser la carte d'extension dans un environnement humide ou poussiéreux.
+    * Lors de l'installation de l'écran, veuillez ne pas le brancher ou le débrancher sous tension et faites attention à la direction du câble de l'écran pour éviter tout dommage.
+    * Lors de l'installation du ventilateur, veuillez vérifier les spécifications de courant et de tension du ventilateur pour éviter tout dommage.
+    * L'ordinateur FLY ne peut utiliser que l'interface RS232 centrale, la prise FAN et l'interface FPC pour l'écran !!!
+    * Les versions de l'ordinateur FLY compatibles avec le logiciel G2T sont `PI V2`, `C8`, `PRO X10`
+    * Les séries `Gemini` et `PI V1` ne sont pas compatibles
+
+## Installation de G2T
+
+    * Voici une référence
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.png').default} size="60%" align="left" />
+    * Référence de câblage
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## Utilisation de l'outil via la connexion RS232 embarquée
+
+    * Après avoir installé le dernier système sur l'ordinateur FLY, vous devez accéder à **l'IP de l'ordinateur + :9999**
+    * L'ordinateur FLY ne peut utiliser que l'interface RS232 centrale, la prise FAN et l'interface FPC pour l'écran !!!
+    * Dans les paramètres du système, trouvez **UART1** et enregistrez puis redémarrez
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.png').default} size="100%" align="left" />
+
+    * Voici la configuration de référence
+
+        ```cfg
+        [mcu] 
+        serial: /dev/ttyS1
+        baud: 250000
+        restart_method:command
+        ```
+
+## Utilisation du ventilateur 5V embarqué
+
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+        ```cfg
+        [mcu host]         
+        serial: /tmp/klipper_host_mcu 
+
+        [temperature_sensor FLY Pi]
+        sensor_type: temperature_host
+
+        [temperature_fan core_fan]      # Ventilateur de refroidissement de l'ordinateur
+        pin: host:gpiochip1/gpio102     # Broche du ventilateur de l'ordinateur
+        max_power: 1.0
+        sensor_type: temperature_host   # Réglé sur la température du contrôleur principal de l'ordinateur
+        control:watermark               # Mode de contrôle
+        target_temp: 48                 # Température de déclenchement du ventilateur de refroidissement de l'ordinateur
+        min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
+        max_temp: 90                    # Température maximale, au-dessus de laquelle une erreur sera signalée
+        off_below: 0.10
+        kick_start_time: 0.50
+        max_speed: 0.8                  # Vitesse maximale, à 80% de la puissance maximale
+        min_speed: 0.3                  # Vitesse minimale, à 30% de la puissance maximale
+
+        ```
+
+## Utilisation de l'écran
+
+    * Après avoir installé le dernier système sur l'ordinateur FLY, vous devez accéder à **l'IP de l'ordinateur + :9999**
+        * fly-tft-v2-c est le choix pour l'écran tactile capacitif de 3,5 pouces
+        * fly-tft-v2-r est le choix pour l'écran tactile résistif de 3,5 pouces
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.png').default} size="100%" align="left" />
+
+### Installation de l'écran
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.png').default} size="60%" align="left" />

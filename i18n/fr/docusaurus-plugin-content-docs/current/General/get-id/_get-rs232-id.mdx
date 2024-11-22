@@ -1,0 +1,86 @@
+## Recherche de l'ID RS232
+
+### Précautions avant la recherche de l'appareil
+
+    * Avant de rechercher l'ID RS232, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour accéder directement")
+    * Veuillez noter que vous devez vous connecter à SSH via le réseau et non via le port série
+    * Assurez-vous que l'UTOR est bien connecté et que le câble de données connecté à l'ordinateur hôte a des capacités de transmission de données
+    * Si vous utilisez un G2T, assurez-vous que le système supporte la connexion UART
+
+### Recherche de l'appareil
+
+    * Maintenant que vous êtes correctement connecté à l'ordinateur hôte, vous pouvez entrer `lsusb` pour rechercher l'appareil. Vous rencontrerez l'une des situations suivantes
+        * Si vous entrez `lsusb` et qu'il vous indique que la commande `ls` n'est pas trouvée, vous pouvez installer la commande en utilisant la commande ci-dessous
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * Si vous entrez `lsusb` et qu'il ne se passe rien, c'est un problème système et nous ne pouvons rien y faire. Vous devez changer de système ou utiliser un système qui fonctionne correctement
+        * Si les informations apparaissent comme dans l'image ci-dessous, veuillez noter que c'est juste à titre de référence. Vous devez seulement vérifier les caractères après l'ID
+        <ImageView image={require('@site/docs/General/get-id/img/7523.png').default} size="100%" align="left" />
+    * `1a86:7523` est l'appareil que vous devez utiliser cette fois. Vous n'avez pas besoin de prêter attention aux informations supplémentaires, car des problèmes système peuvent entraîner des affichages incomplets ou inexistants
+    * Si ce n'est pas le cas, vérifiez par vous-même si le câble de données est correctement connecté, si le micrologiciel est correctement installé.
+
+    :::warning Précautions
+
+    Vous ne pouvez utiliser la commande ci-dessous pour rechercher l'ID RS232 que si vous avez `1a86:7523`
+
+    :::
+
+
+### Recherche de l'ID RS232
+
+    ```bash
+    ls /dev/serial/by-path/*
+    ```
+
+    <ImageView image={require('@site/docs/General/get-id/img/rs232-id.png').default} size="100%" align="left" />
+    * Si vous entrez `ls /dev/serial/by-path/*` et qu'aucun ID n'apparaît, mais que `lsusb` montre l'appareil, changez d'ordinateur hôte ou changez de système sur l'ordinateur hôte
+    * Notez que l'UTOR sortira trois ID, et si vous avez déjà utilisé un autre système UTOR, il enregistrera les ID, ce qui peut entraîner l'apparition de plusieurs ID lors de la recherche
+    * Assurez-vous que l'ID se termine par `-port0`, sinon il ne pourra pas être utilisé
+
+    :::warning Précautions
+
+    Veuillez vous assurer que la carte d'outils et l'UTOR sont bien mis à la terre!!! Sinon, vous ne pourrez pas vous connecter à la carte d'outils!!!
+
+    :::
+
+### Remplir l'ID RS232 dans la configuration
+
+    * Ouvrez l'interface web de l'imprimante, dans la colonne de gauche sous l'option de configuration, trouvez : fluidd c'est : `{…}` ; mainsail c'est : `machine`, cliquez pour entrer dans `printer.cfg`
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.png').default} size="50%" align="left" />
+
+    * Copiez l'ID en bleu et remplissez-le dans le nœud `[mcu]` de la configuration `printer.cfg` sous `serial: `. Après avoir sauvegardé et redémarré, vous pourrez vous connecter à la carte mère. Si Klipper indique ``ADC out of range``, c'est un phénomène normal. Connectez correctement le lit chauffant et le thermocouple, configurez les broches du thermocouple de la buse et du lit, puis sauvegardez et redémarrez.
+
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.png').default} size="50%" align="left" />
+
+    :::warning Précautions
+
+    * L'ID RS232 nécessite la configuration de `baud:` et `restart_method:command`
+    * Voici une configuration de référence
+
+    :::
+
+        ```cfg
+        [mcu SHT36]
+        serial: /dev/serial/by-path/platform-1c1c000.usb-usb-0:1.2:1.0-port0
+        baud: 250000
+        restart_method:command
+        ```
+
+    :::danger
+
+    Attention : Tous les ID mentionnés dans le document sont des exemples. L'ID de chaque carte mère est différent, veuillez les modifier et les remplir en fonction de l'ID réellement obtenu.
+
+    :::
+
+    :::danger
+
+    Veuillez noter que l'ID ci-dessous ne peut pas être utilisé !!!!
+
+    :::
+
+        ```cfg
+        serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        ```
+----

@@ -1,0 +1,36 @@
+---
+sidebar_position: 9
+sidebar_label: UART를 통해 메인보드 연결
+---
+
+
+
+# 구성 방법
+
+:::danger 알아두세요
+이 방법을 사용한 후에는 mini pad의 가속도 인터페이스에 외부 가속도계를 연결할 수 없습니다.
+:::
+
+    * BOOT 디스크를 열고 `armbianEnv.txt`를 찾아서 엽니다.
+    * `overlays=usbhost2 usbhost3 uart2`에서 **uart2**를 **uart3**로 변경하고 저장합니다.
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart.png').default} size="80%" align="center" />
+
+## 접속 방법
+
+    * mini-pad의 TX를 UART 펌웨어가 설치된 메인보드의 RX에 연결합니다.
+    * mini-pad의 RX를 UART 펌웨어가 설치된 메인보드의 TX에 연결합니다.
+    * 공통 접지를 해야 합니다.
+    * 그렇지 않으면 UART 펌웨어가 설치된 메인보드에 연결할 수 없습니다.
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart1.png').default} size="80%" align="center" />
+
+## Klipper 참조 설정
+
+    ```cfg
+    [mcu]
+    serial: /dev/ttyS3
+    baud: 250000
+    #   사용되는 보드레이트. 기본값은 250000입니다.
+    restart_method: command
+    ```

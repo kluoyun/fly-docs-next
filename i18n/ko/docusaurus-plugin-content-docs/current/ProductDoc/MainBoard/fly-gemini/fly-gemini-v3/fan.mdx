@@ -1,0 +1,37 @@
+---
+sidebar_position: 11
+sidebar_label: 메인 컨트롤 팬
+---
+
+
+
+
+# 온보드 5V 팬 포트
+
+## Gemini에는 메인 컨트롤러 냉각을 위한 5V 제어 가능 인터페이스가 탑재되어 있으며, 연결 방법은 다음 그림과 같습니다
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.png').default} size="80%" align="center" />
+
+## 참조 설정
+
+    ```cfg
+    [mcu host]                      # FlyOS는 이미 linux MCU를 생성하여 정의만 하면 사용할 수 있습니다           
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor FLY-π]      # 상위 기기 온도
+    sensor_type: temperature_host
+
+
+    [temperature_fan core_fan]      # 상위 기기 냉각 팬
+    pin: host:gpiochip1/gpio103     # 상위 기기 팬 핀
+    max_power: 1.0
+    sensor_type: temperature_host   # 상위 기기 주 컨트롤러 온도로 설정
+    control:watermark               # 제어 방식
+    target_temp: 48                 # 상위 기기 냉각 팬 시작 온도
+    min_temp: 0                     # 최저 온도, 이 온도 이하로 내려가면 오류 발생
+    max_temp: 90                    # 최고 온도, 이 온도 이상으로 올라가면 오류 발생
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                  # 최대 속도, 전체 출력의 80%
+    min_speed: 0.3                  # 최소 속도, 전체 출력의 30%
+    ```

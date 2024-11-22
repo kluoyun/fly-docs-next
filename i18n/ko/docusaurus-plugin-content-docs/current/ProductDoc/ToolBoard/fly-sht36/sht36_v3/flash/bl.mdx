@@ -1,0 +1,86 @@
+---
+sidebar_position: 6
+sidebar_label: BL 펌웨어, 무시해 주세요
+---
+
+
+
+
+
+import WIN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult 펌웨어
+
+## Katapult 펌웨어 설명
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36_V3는 CAN과 RS232를 지원합니다.
+    * 여기서는 CAN 펌웨어를 500K와 1M 속도로 제공합니다.
+    :::
+
+## 부팅 모드 진입
+
+    :::tip
+
+    화살표가 가리키는 것이 `BOOT 버튼`입니다.
+
+    :::
+
+    * 메인보드가 완전히 전원이 꺼진 상태에서 BOOT 버튼을 누른 채로 데이터 전송이 가능한 데이터 케이블을 메인보드와 장치에 연결합니다.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## 펌웨어 플래시
+    <Tabs>
+        <TabItem value="win" label="윈도우 플래시 가이드" default>
+
+            * SHT36 V3 펌웨어 다운로드 링크   <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V3.zip">펌웨어 자동 다운로드</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="호스트 플래시 가이드">
+            
+            <Katapult />
+
+            4. 펌웨어 플래시
+
+            :::tip
+
+            하나의 펌웨어만 플래시하면 됩니다.
+
+            :::
+
+            * 아래는 500K CAN 속도의 펌웨어 플래시 명령어입니다.
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36V3_katapult_CAN_500K.uf2
+            ```
+                       
+            * 아래는 1M CAN 속도의 펌웨어 플래시 명령어입니다.
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36V3_katapult_CAN_1M.uf2
+            ```
+
+
+            5. 아래와 같은 메시지가 나타나면 플래시가 성공적으로 완료된 것입니다.
+
+            <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+
+            :::tip
+
+            플래시가 완료되면 메인보드의 전원을 완전히 한 번 꺼야 합니다.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## 펌웨어가 시작되었는지 확인
+
+    * 펌웨어가 정상적으로 시작되면 LED가 깜빡입니다.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.png').default} size="100%" align="center" />

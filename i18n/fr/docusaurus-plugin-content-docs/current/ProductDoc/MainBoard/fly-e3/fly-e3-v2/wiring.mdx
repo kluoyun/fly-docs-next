@@ -1,0 +1,81 @@
+---
+sidebar_position: 4
+sidebar_label: Connexion de la carte mère
+---
+
+
+
+
+# Connexion de la carte mère
+
+## Diagramme des interfaces
+
+### Explication des interfaces
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Explication des broches
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## Câblage de l'alimentation
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/power.png').default} size="40%" align="center" />
+
+----
+
+## Installation du pilote
+
+### Pontage de la carte mère
+
+* **Mode STEP/DIR.** Dans ce mode, on utilise des cavaliers pour régler la subdivision et un potentiomètre pour ajuster le courant. Les pilotes A4988 sont les plus courants, leur utilisation nécessite de consulter le tableau de configuration de subdivision fourni par le fabricant, puis de régler la subdivision via des cavaliers.
+* **Mode UART.** Les pilotes les plus courants pour ce mode incluent : TMC2208, TMC2209, TMC2226, etc. Ces puces de pilote peuvent communiquer par liaison série asynchrone UART avec le contrôleur principal, permettant de configurer la subdivision, le courant de fonctionnement, le mode silence, etc., via la modification du fichier de configuration.
+* **Mode SPI.** Les pilotes les plus courants pour ce mode incluent : TMC5160, TMC2230, etc. Ces puces de pilote communiquent par liaison série synchrone SPI avec le contrôleur principal, permettant également de configurer la subdivision, le courant de fonctionnement, le mode silence, etc., via la modification du fichier de configuration.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### Installation des pilotes
+
+* Avant l'installation, les pilotes doivent être vérifiés pour éviter d'endommager le pilote ou la carte mère.
+* **Pilotes FLY :** Si la fonction de retour à l'origine sans fin n'est pas utilisée, placez l'interrupteur à bascule en position 1 ; en revanche, si vous souhaitez utiliser cette fonction, placez l'interrupteur en position ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Attention !!! Lors de l'installation du module de pilote, assurez-vous que la direction d'insertion est correcte, c'est-à-dire que la broche EN se trouve dans le coin supérieur gauche, sinon le pilote et même la carte mère peuvent être endommagés !!! Pensez à coller un dissipateur thermique sur le pilote !!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## Connexion des moteurs pas à pas
+
+:::info
+* Peu importe le fabricant de moteurs pas à pas bipolaires, leur configuration finale correspond à 4 fils. Peu importe leur couleur, qu'ils soient noirs, blancs, verts, jaunes, etc., ils correspondent à 4 fils. Nous devons donc regrouper les fils en deux groupes, A et B.
+* Pour un moteur pas à pas bipolaire à quatre fils, nous n'avons pas besoin de savoir quel groupe est A ou B, l'essentiel est de déterminer un groupe, puis de modifier la direction du moteur dans la configuration.
+:::
+
+* Dans les imprimantes 3D, le moteur pas à pas bipolaire à quatre fils est le plus courant, son principe est illustré dans le diagramme. Il existe deux méthodes pour identifier la séquence des fils du moteur pas à pas :
+    * Connectez arbitrairement deux fils de phase, tournez l'axe du moteur à la main, si une résistance notable est ressentie, les deux fils de phase forment un groupe. Sinon, ce n'est pas un groupe, il faut tester avec les autres fils de phase.
+    * Utilisez un multimètre réglé sur la fonction de continuité, testez les fils de phase du moteur pas à pas, s'ils sont continus, ils forment un groupe ; sinon, ce n'est pas un groupe, il faut tester avec les autres fils de phase.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## Connexion de la cartouche de chauffe
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/heater.png').default} size="60%" align="center" />
+
+----

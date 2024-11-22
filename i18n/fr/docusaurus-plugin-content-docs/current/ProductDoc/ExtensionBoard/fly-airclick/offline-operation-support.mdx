@@ -1,0 +1,60 @@
+---
+sidebar_position: 5
+sidebar_label: Configuration de la connexion filaire
+---
+
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_usb1.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_rs232.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
+import GetUsbID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/get-id/_get-usb-id.mdx';
+
+# Configuration de la connexion filaire
+
+:::danger À savoir
+
+* Il est nécessaire de flasher le firmware sur le STM32F072 et de le connecter à Klipper pour supporter les opérations de connexion filaire.
+
+:::
+
+## Début de la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Appuyez sur la touche `Q`, puis sur **Enregistrer la configuration**, et enfin sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être revenu à l'interface de ligne de commande
+    * Saisissez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si vous voyez le message suivant à la fin, la compilation est réussie
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Entrer en mode de flashage
+
+    * Avec l'AirClick éteint, maintenez le bouton BOOT du STM32 et connectez le port de flashage du STM32 à l'ordinateur hôte via un câble Type-C
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/boot.png').default} size="100%" align="center" />
+
+## Vérifier l'entrée en mode de flashage
+
+    <LS />
+
+## Flasher le firmware
+    
+    <CANBOOT />
+
+## Recherche de l'ID USB
+    * Connectez le port de flashage de l'AirClick à un port USB de l'ordinateur hôte, n'appuyez pas sur le bouton BOOT sinon l'ID ne pourra pas être trouvé
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper.png').default} size="80%" align="center" />
+
+    <GetUsbID />

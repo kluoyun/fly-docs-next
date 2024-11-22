@@ -1,0 +1,93 @@
+---
+sidebar_position: 3
+---
+
+# TMC 오류 관련
+
+## `Unable to read tmc uart 'stepper_x' register IFCNT` 또는 `Unable to read tmc spi 'stepper_x' register register` 
+
+    1. 오류 세부사항
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart.png').default} size="80%" align="center" />
+
+    2. 오류 원인
+
+        * 드라이버와의 통신 불가
+
+    3. 주요 해결 방법
+
+        * 해당 드라이버의 UART 핀 설정이 올바른지 확인
+        * UART 점퍼가 올바르게 연결되었는지 확인
+        * 드라이버에 전원이 공급되고 있는지 확인
+        * 드라이버 또는 드라이버 포트 설정을 변경하여 문제를 판단
+        * 다른 제조사의 드라이버를 사용하는 경우, 해당 드라이버의 UART 핀이 FLY의 것과 일치하는지 확인, FLY 드라이버 UART 핀은 왼쪽에서 위에서부터 네 번째 핀
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/2209uart.png').default} size="80%" align="center" />
+        * 구매한 드라이버의 UART 핀이 다섯 번째에 있는 경우, 아래의 점퍼로 해결 가능
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart1.png').default} size="80%" align="center" />
+
+## `TMC XXXX reports error: GSTAT: 00000001 reset=1(Reset) ` 
+
+    1. 오류 세부사항
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/reset.png').default} size="80%" align="center" />
+
+    2. 오류 원인
+
+        * 드라이버 리셋
+
+    3. 주요 해결 방법
+
+        * 전원 연결이 불량
+        * 모터 단선
+        * 모터의 금속 외피를 메인보드 또는 도구 보드의 GND와 함께 연결
+
+## `TMC 'extruder' reports error: DRV_STATUS: c00d0103 otpw=1(OvertempWarning!) `
+
+    1. 오류 세부사항
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/overtemperror.png').default} size="80%" align="center" />
+
+    2. 오류 원인
+
+        * 드라이버 과열!
+        * 모터 과열 아님!
+
+    3. 주요 해결 방법
+
+        * 운영 전류 낮추기
+        * 유지 전류 삭제
+        * 드라이버 샘플링 저항이 올바른지 확인
+        * 드라이버의 냉각 강화, 예를 들어 팬 추가
+
+## `TMC 'extruder' reports error: DRV_STATUS: 601f1000 s2vsa=1(ShortToSupply_A!) csactual=31 ola=1(OpenLoad_A!) olb=1(OpenLoad_B!)）`
+
+    1. 오류 세부사항
+
+        * 이미지 없음
+
+    2. 오류 원인
+
+        * 드라이버 전류 설정이 잘못됨
+
+    3. 주요 해결 방법
+        
+        * 스테퍼 모터 AB 두 그룹의 코일 저항이 일치하는지 확인
+        * 스테퍼 모터 또는 부품 모터 내부의 전선이 느슨하거나 단락되었는지 확인
+        * 무음 모드 비활성화
+
+## `TMC 'extruder' reports error: DRV_STATUS: 00190060 s2vsb=1(ShortToSupply_B!) ola=1(0penLoad_A!) cs_actual-25`
+
+    1. 오류 세부사항
+    
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/ab.png').default} size="80%" align="center" />
+
+    2. 오류 원인
+
+        * 잘못된 연결 또는 모터 자체 문제
+
+    3. 주요 해결 방법
+        
+        * 스테퍼 모터 AB 두 그룹의 코일 저항이 일치하는지 확인
+        * 스테퍼 모터와 연결을 확인
+        * 모터의 선 순서가 왼쪽이 한 그룹, 오른쪽이 한 그룹인지 확인
+

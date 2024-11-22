@@ -1,0 +1,157 @@
+---
+sidebar_position: 1
+---
+
+
+
+
+
+
+# Introduction au produit
+
+  Le module d'installation et d'arrêt FLY-KPPM est conçu spécifiquement pour les cartes de développement telles que Raspberry Pi, en tant que module de sécurité pour éviter la perte de données due à une coupure de courant. Utilisant une technologie avancée, il commute automatiquement vers une alimentation par condensateur en cas de coupure de courant, garantissant que la carte de développement fonctionne toujours de manière stable pendant 15 secondes, assurant ainsi la sauvegarde effective des données. Compact et facile à installer.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.png').default} size="100%" align="left" />
+
+
+## Remarques sur le produit
+
+  :::danger À savoir
+  L'alimentation d'entrée ne supporte que DC12-24V, veuillez faire attention à la polarité lors du raccordement des fils, le branchement doit être effectué en état d'arrêt, et l'alimentation ne doit être connectée qu'une fois la connexion vérifiée comme correcte ; notre entreprise ne sera pas responsable des pertes causées par un branchement incorrect.
+  :::
+
+  :::danger À savoir
+  Le port 5V OUT est une sortie d'alimentation de secours, il ne doit pas être utilisé comme alimentation principale, veuillez utiliser USB-OUT ou SIG/IO pour alimenter l'appareil hôte.
+  :::
+
+  :::danger À savoir
+  Lors de l'utilisation avec le module d'arrêt sécurisé, une alimentation de 12V-24V est nécessaire. Pour garantir le bon fonctionnement du module, la tension de sortie 5V du module d'arrêt sécurisé ne doit pas être inférieure à 4,9V, sinon le module d'arrêt sécurisé tirera de l'énergie en interne, ce qui maintiendra les condensateurs en charge constante, entraînant une surchauffe du module.
+  :::
+
+
+## Explication du contenu affiché sur l'écran du produit
+
+
+    | Explication du contenu de l'écran    |       Explication gauche        |     Paramètres à droite          |        Explication à droite      |
+    | :------------- | :------------------: | :------------------: | :------------------: |
+    | `IN:`            |  Tension d'entrée             |  `OUT:`              |  Tension de sortie             |
+    | `CA:`            |  Tension totale du condensateur           |  `OI:`               |  Courant de charge de sortie         |
+    | `C1:`            |  Tension du condensateur C1           |  ` C2:`                |  Tension du condensateur C2           | 
+    | `Temp:`          |  Température du module d'arrêt sécurisé      | ` E:`                 |  Indication d'état, voir ci-dessous    | 
+
+
+    | Contenu affiché        |       Explication de l'état       |
+    | :------------- | :-----------------: | 
+    | ` Ready!`          |  Démarrage normal            |
+    | ` IN LOW!`         |  Tension d'entrée faible          |
+    | ` IN OVR!`         |  Courant de sortie trop élevé        |
+    | ` OV LOE!`         |  Tension de sortie trop basse        |
+    | ` OV OVR`          |  Courant de sortie trop élevé        |
+    | ` TP OVR!`         |  Température trop élevée            |
+    | ` NONE `           |  Erreur inconnue            |
+    | ` R: XX Sec `      |  Si l'alimentation est coupée puis reconnectée dans les 10 secondes, cette indication apparaîtra, après le compte à rebours, l'appareil hôte redémarrera            |
+
+## Téléchargement du modèle de boîtier fixe
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/KPPM.zip
+    ```
+
+## Explication des broches
+
+  * OUT-RST Réinitialiser
+  * OUT-PDN Arrêter
+
+  * IN-PIN 
+
+    Par défaut, il est en haute impédance, le module détecte automatiquement le temps de coupure de courant précédent lors de l'alimentation,
+  Si le temps de coupure est inférieur à 10 secondes, il attendra 10 secondes avant de commuter une fois la sortie 5V (pour s'assurer que l'appareil hôte peut s'arrêter et redémarrer correctement)
+  Si connecté à GND, la fonction de détection automatique du temps de coupure sera désactivée
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.png').default} size="100%" align="left" />
+
+## Tutoriel d'utilisation du logiciel hôte FLY
+
+  :::info
+  Seulement applicable à FLY-Pi FLY-Pi-V2 FLY-C8
+  :::
+
+  Le logiciel hôte FLY nécessite l'exécution des commandes suivantes via SSH
+
+  ```bash
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
+  ```
+
+  Redémarrer le système
+
+  ```bash
+  sudo reboot
+  ```
+  
+### Tutoriel de connexion du logiciel hôte FLY
+
+  <Tabs>
+      <TabItem value="serial" label="Tutoriel de connexion du logiciel hôte FLY" default>
+
+          <Tabs>
+              <TabItem value="1" label="FLY-C8 Utilisation de la connexion 5V" default>
+                  * FLY-C8 Utilisation de la connexion 5V
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="FLY-C8 Utilisation de la connexion USB" default>
+                  * FLY-C8 Utilisation de la connexion USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="3" label="FLY-Pi(π) Utilisation de la connexion 5V" default>
+                  * FLY-Pi Utilisation de la connexion 5V
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="4" label="FLY-Pi(π) Utilisation de la connexion USB" default>
+                  * FLY-Pi Utilisation de la connexion USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="5" label="FLY-Pi-V2 Utilisation de la connexion 5V" default>
+                  * FLY-Pi-V2 Utilisation de la connexion 5V
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="6" label="FLY-Pi-V2 Utilisation de la connexion USB" default>
+                  * FLY-Pi-V2 Utilisation de la connexion USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.png').default} size="80%" align="center" />
+              </TabItem>
+            
+          </Tabs>
+      </TabItem>
+  </Tabs>
+
+## Tutoriel d'utilisation du logiciel hôte Raspberry Pi
+
+  Le Raspberry Pi fonctionne de manière similaire aux opérations ci-dessus, il est nécessaire d'insérer la carte SD avec l'image du système dans un ordinateur, puis d'ajouter la ligne `dtoverlay=gpio-shutdown,gpio_pin=21` dans le fichier config.txt, ensuite de sauvegarder et de sortir.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.png').default} size="80%" align="left" />
+
+  
+
+  <Tabs>
+      <TabItem value="serial" label="Tutoriel de connexion du logiciel hôte Raspberry Pi" default>
+
+          <Tabs>
+              <TabItem value="1" label="Raspberry Pi Utilisation de la connexion 5V" default>
+                  * Raspberry Pi Utilisation de la connexion 5V
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Raspberry Pi Utilisation de la connexion USB" default>
+                  * Raspberry Pi Utilisation de la connexion USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.png').default} size="80%" align="center" />
+              </TabItem>
+          </Tabs>
+      </TabItem>
+  </Tabs>

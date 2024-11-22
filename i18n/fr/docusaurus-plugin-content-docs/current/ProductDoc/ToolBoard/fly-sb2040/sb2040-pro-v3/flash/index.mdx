@@ -1,0 +1,49 @@
+---
+sidebar_position: 1
+sidebar_label: Instructions pour la gravure du firmware
+---
+
+
+
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * SB2040 PRO V3 est préchargé avec le firmware Katapult pour la connexion CAN, à une vitesse de 1M
+    * Le firmware Katapult pour la connexion CAN du SB2040 PRO V3 est disponible à deux vitesses, 500K et 1M, et peut être gravé selon les besoins
+    * <Button variant="contained" disableElevation href="./bl">Gravure du firmware Katapult</Button>
+
+
+    :::
+
+# Instructions pour la gravure du firmware
+
+    * SB2040 PRO V3 peut se connecter à l'ordinateur hôte via deux méthodes : RS232 et CAN
+    * RS232 et CAN nécessitent l'utilisation de `XT30(2+2)-F` pour la connexion
+    * Voici le style du câble de données `XT30(2+2)-F`
+    <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger À savoir
+* La gravure du firmware de la carte mère doit être effectuée via Katapult pour Klipper
+* Si la carte mère a déjà Katapult gravé, il n'est pas nécessaire de procéder à la gravure du firmware Katapult à la fin, cela n'est qu'une précaution au cas où le firmware Katapult de la carte mère n'aurait pas été gravé avec succès
+* Vous pouvez appuyer rapidement deux fois sur le bouton de réinitialisation pour voir si un LED clignote sur la carte mère, indiquant que la carte mère est en mode Katapult
+:::
+
+## Comment déterminer quel firmware vous avez besoin
+
+    * SB2040 PRO V3 peut se connecter à l'ordinateur hôte de la manière suivante
+    * <Button variant="contained" disableElevation href="./can">Gravure du firmware CAN</Button>
+        * Avantages : Si le firmware `Katapult` est gravé, il est possible de mettre à jour le firmware sans toucher la carte mère, et supporte la connexion par bus
+        * Inconvénients : Peut causer des erreurs telles que des timeouts de retour à l'origine lors de l'utilisation avec `KlipperScreen`.
+        * Conseil : Si vous avez besoin d'utiliser CAN, assurez-vous que l'ordinateur hôte supporte CAN et nécessite un UTOC ou une carte mère avec un firmware de pont
+    * <Button variant="contained" disableElevation href="./rs232">Gravure du firmware RS232</Button>
+        * Avantages : Pas besoin de logiciels spéciaux, communication fiable et stable
+        * Inconvénients : Pour mettre à jour le firmware, il faut entrer en mode DFU manuellement ou double-cliquer sur RST pour entrer en mode `Katapult` et mettre à jour le firmware
+        * Conseil : Nécessite un G2T ou UTOR pour être utilisé
+
+## Explications sur le firmware Katapult
+
+    
+    <CANBOOT />

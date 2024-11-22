@@ -1,0 +1,44 @@
+---
+sidebar_position: 3
+---
+
+# Impression USB
+
+Ce tutoriel est uniquement applicable à la machine hôte FLY
+
+    :::danger À savoir
+
+    * Nécessite une installation manuelle
+    * Ce tutoriel remplacera le fichier `klipper/klippy/extras/virtual_sdcard.py` de Klipper.
+    * Permet de copier automatiquement les fichiers de l'USB sélectionné vers le répertoire `/tmp` du système après la sélection du fichier à imprimer.
+    * Après la copie, un message `File selected` sera affiché dans la ligne de commande de la page web.
+    * Ce fichier détectera le dossier `sdaX` ; s'il n'existe pas, il ne sera pas exécuté (où X dans sda représente A-Z et 0-9).
+    * Actuellement, seul le test a été effectué sur la machine hôte de FLY, les autres machines hôtes n'ont pas été testées.
+
+    :::
+
+## Méthode d'utilisation
+
+* Connectez-vous à la machine hôte via un logiciel SSH puis exécutez les instructions ci-dessous
+* Veuillez noter que cette commande redémarrera la machine hôte !!
+* Cette étape active la fonction d'impression USB
+    ```bash
+    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://upyun.pan.zxkxz.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
+    ```
+
+## Méthode d'impression USB
+
+### Sauvegarde et téléchargement du fichier
+
+* Veuillez noter que cette commande arrêtera Klipper
+* Cette étape active la fonction de copie automatique des fichiers de l'USB sélectionné dans le répertoire `/tmp` du système
+    ```bash
+    sudo systemctl stop klipper && mv ~/klipper/klippy/extras/virtual_sdcard.py ~/virtual_sdcard.py && curl -kfsSL https://cdn.mellow.klipper.cn/firmware/virtual_sdcard.py -o ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```
+
+### Cette étape restaure le fichier original
+
+* Veuillez noter que cette commande restaure Klipper original
+    ```bash
+    sudo systemctl stop klipper && mv ~/virtual_sdcard.py ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```

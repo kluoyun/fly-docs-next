@@ -1,0 +1,97 @@
+---
+sidebar_position: 9
+---
+
+# 다중 Z 참조 구성
+
+## 이중 Z 단일 리미트
+
+* 두 번째 Z 구성에서 `endstop_pin:`을 추가할 필요가 없습니다.
+
+    ```cfg
+    [stepper_z]
+    step_pin: PA5
+    dir_pin: PA4
+    enable_pin: !PA6
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    endstop_pin: ^!PA9
+    position_endstop: 0
+    position_max: 300
+    homing_speed: 50
+    homing_retract_dist: 5
+
+    [stepper_z1]
+    step_pin: PB10
+    dir_pin:  PB2
+    enable_pin: !PB11
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    step_pulse_duration: 0.000004
+    ```
+
+## 이중 Z 이중 리미트
+
+* 두 번째 Z 구성에서 `endstop_pin:`을 추가해야 합니다.
+
+    ```cfg
+    [stepper_z]
+    step_pin: PA5
+    dir_pin: PA4
+    enable_pin: !PA6
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    endstop_pin: ^!PA9
+    position_endstop: 0
+    position_max: 300
+    homing_speed: 50
+    homing_retract_dist: 5
+    step_pulse_duration: 0.000004
+
+    [stepper_z1]
+    step_pin: PB10
+    dir_pin:  PB2
+    enable_pin: !PB11
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    step_pulse_duration: 0.000004
+    endstop_pin: ^!PA10
+    ```
+
+## Probe 또는 BL Touch를 사용하는 이중 Z
+
+    * 첫 번째 Z 구성의 `endstop_pin:` 뒤에 pin을 `probe:z_virtual_endstop`로 변경해야 합니다.
+    * Probe 또는 BL Touch 설정이 필요합니다.
+
+        ```cfg
+        [stepper_z]
+        step_pin: PA5
+        dir_pin: PA4
+        enable_pin: !PA6
+        rotation_distance: 4
+        full_steps_per_rotation: 200
+        microsteps: 16
+        endstop_pin: probe:z_virtual_endstop  
+        # position_endstop: 0
+        position_max: 300
+        homing_speed: 50
+        homing_retract_dist: 5
+        step_pulse_duration: 0.000004
+
+        [probe]
+        pin: ^PB4                    # 신호 인터페이스
+        x_offset: 0                  # X축-센서 상대 노즐 오프셋
+        y_offset: 0                  # Y축-센서 상대 노즐 오프셋
+        #z_offset: 0                 # Z축-센서 상대 노즐 오프셋
+        speed: 3.0                   # 평준화 속도
+        lift_speed: 5                # 프로브 들어올리기 속도
+        samples: 3                   # 샘플링 횟수
+        samples_result: median       # 값 취득 방식 (기본값 median-중간값)
+        sample_retract_dist: 3.0     # 평준화 후 회수 거리
+        samples_tolerance: 0.075     # 샘플링 허용 오차 (너무 작은 값은 샘플링 횟수를 증가시킬 수 있음)
+        samples_tolerance_retries: 3 # 허용 오차 초과 재시도 횟수
+        ```

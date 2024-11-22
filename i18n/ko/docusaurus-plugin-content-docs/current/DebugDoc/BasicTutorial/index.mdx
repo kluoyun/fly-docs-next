@@ -1,0 +1,129 @@
+---
+sidebar_position: 1
+---
+
+
+
+
+
+# 상위기기 SSH 연결
+
+:::danger
+
+* 이 문서는 FLY 상위기기에만 적용됩니다. 다른 장치는 참고용입니다.
+* 펌웨어 컴파일 및 번인 시, 네트워크 연결 튜토리얼을 참조하세요. 시리얼 연결 튜토리얼이 아닙니다.
+
+:::
+
+* 시리얼 또는 WIFI를 통해 장비에 연결할 수 있습니다.
+* **MobaXterm_Personal** 또는 다른 **SSH 터미널 도구**를 미리 준비해주세요.
+* SD카드 또는 M2WE에 **해당 상위기기의 시스템이 번인**되었는지 확인하세요.
+* **상위기기가 정상적으로 시작되지 않으면 드라이브, 리미트 스위치, 팬 등 주변 장치를 제거하세요!!!**
+* **마지막으로 네트워크를 통해 SSH에 연결하여 펌웨어를 편리하게 컴파일하세요!!**
+* **펌웨어를 컴파일하려면 WIFI 또는 이더넷을 통해 상위기기에 연결하는 튜토리얼을 참조하세요.**
+
+<Tabs>
+    <TabItem value="serial" label="시리얼 연결" default>
+        ## 시리얼을 사용하여 상위기기 SSH에 연결
+
+        * FLY의 상위기기를 USB Type-c 케이블로 컴퓨터와 연결하세요.
+        * 다른 상위기기의 연결 방법은 직접 확인하세요!!
+
+        <Tabs>
+            <TabItem value="c8" label="FLY-C8" default>
+                * FLY-C8 포트
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c8-port.png').default} size="40%" align="center" />
+            </TabItem>
+            <TabItem value="piv2" label="FLY-Pi v2" default>
+                * FLY-Pi v2 포트
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.png').default} size="20%" align="center" />
+            </TabItem>
+            <TabItem value="piv1" label="FLY-Pi(π)" default>
+                * FLY-Pi 포트
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pi-port.png').default} size="20%" align="center" />
+            </TabItem>
+            <TabItem value="gemini" label="FLY-Gemini" default>
+                * FLY-Gemini 포트
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/gemini-port.png').default} size="20%" align="center" />
+            </TabItem>
+            <TabItem value="minipad" label="FLY-MiniPad" default>
+                * FLY-MiniPad 포트
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/minipad-port.png').default} size="30%" align="center" />
+            </TabItem>
+            <TabItem value="pilite2" label="FLY-Pi Lite2" default>
+                * FLY-Pi Lite2 포트
+
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pilite2-port.png').default} size="40%" align="center" />
+            </TabItem>
+        </Tabs>
+
+        * 메인보드와 컴퓨터가 정상적으로 연결되면 장치 관리자를 열어 CH340의 포트를 확인할 수 있습니다.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.png').default} size="40%" align="center" />
+
+        * `MobaXterm`을 열고 다음 설정을 진행하세요. 포트는 장치 관리자에서 본 포트를 선택하세요.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.png').default} size="40%" align="center" />
+
+        * 정상적으로 진행되면 부팅 화면을 볼 수 있습니다.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.png').default} size="40%" align="center" />
+
+        * 잠시 기다리면 다음 화면이 나타나면 부팅이 완료된 것입니다.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.png').default} size="40%" align="center" />
+
+        **몇 분이 지나도 화면에 아무것도 표시되지 않으면, 엔터 키를 몇 번 눌러주세요**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.png').default} size="40%" align="center" />
+
+        **엔터 후 다음과 같은 내용이 표시됩니다**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.png').default} size="40%" align="center" />
+
+        * IP를 확인하려면 ssh에서 `ip a | grep inet`을 입력하고 엔터를 누르면, 반환된 내용에서 라우터와 동일한 세그먼트의 IP를 찾을 수 있습니다.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.png').default} size="40%" align="center" />
+
+    </TabItem>
+    <TabItem value="net" label="네트워크 연결" default>
+        ## 네트워크 IP를 사용하여 상위기기 SSH에 연결
+
+        * 시스템이 **정상적으로 부팅**되었는지 확인하세요.
+        * 상위기기가 연결된 **라우터 백엔드에 로그인**하세요. 상위기기의 IP 주소를 알지 못한다면.
+        * **상위기기의 사용자 이름과 비밀번호를 알고 있어야 합니다**. FLY 시스템의 기본 사용자 이름은 **fly**이고, 기본 비밀번호는 **mellow**입니다.
+        * 메인보드가 부팅되고 네트워크에 연결되어 있다면, 다음 방법으로 SSH에 연결할 수 있습니다.
+        * MobaXterm을 열고 다음 설정을 진행하세요. IP는 앞서 확인한 IP를 입력하거나 라우터 백엔드에서 확인하세요.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.png').default} size="40%" align="center" />
+
+        **주의: 여기서 4단계는 상위기기의 사용자 이름을 입력하세요**
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.png').default} size="40%" align="center" />
+
+        * 처음 연결 시 이 창이 팝업되면 `Accept`를 클릭하세요.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.png').default} size="40%" align="center" />
+
+        * 비밀번호를 입력하라는 메시지가 표시되면 상위기기 비밀번호를 입력하고 엔터를 누르세요.
+
+        **주의: 여기서 입력한 비밀번호는 보이지 않습니다. 입력 후 바로 엔터를 누르세요**
+
+        FLY 시스템 기본값은 사용자 이름: `fly`, 비밀번호: `mellow`입니다.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.png').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.png').default} size="40%" align="center" />
+
+        * 로그인 성공
+
+    </TabItem>
+</Tabs>
+
+----

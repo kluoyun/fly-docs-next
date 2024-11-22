@@ -1,0 +1,91 @@
+---
+sidebar_position: 7
+sidebar_label: BL 펌웨어, 무시하세요
+---
+
+
+
+
+
+import WIN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult 펌웨어
+
+## Katapult 펌웨어 설명
+
+    <CANBOOT />
+
+    :::tip
+
+    * MMU 세 가지 모두 지원
+    * 여기서는 CAN 펌웨어와 USB 펌웨어만 제공
+    :::
+
+## 번인 모드 진입
+
+    :::tip
+
+    위쪽이 `RESET 버튼`, 아래쪽이 `BOOT 버튼`
+
+    :::
+
+    * 번인 모드 진입 방법은 두 가지가 있습니다
+    * 첫 번째: 메인보드가 완전히 전원이 꺼진 상태에서 BOOT 버튼을 누른 채로 데이터 전송이 가능한 데이터 케이블을 메인보드와 기기에 연결
+    * 두 번째: 데이터 전송이 가능한 데이터 케이블을 메인보드와 기기에 연결한 후, BOOT 버튼을 누른 채로 RST 버튼을 누르고, RST 버튼을 놓은 후 BOOT 버튼을 놓음
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.png').default} size="100%" align="center" />
+
+## 펌웨어 번인
+    <Tabs>
+        <TabItem value="win" label="윈도우 번인 튜토리얼" default>
+        
+            * MMU의 Katapult 펌웨어 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">클릭하여 자동으로 펌웨어 다운로드</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="상위기기 번인 튜토리얼">
+            
+            <Katapult />
+
+            4. 펌웨어 번인
+
+            :::tip
+
+            단 하나의 펌웨어만 번인하면 됩니다.
+
+            :::
+
+            * 아래는 500K CAN 속도의 펌웨어 번인 명령어입니다
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+                       
+            * 아래는 1M CAN 속도의 펌웨어 번인 명령어입니다
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+
+            * 아래는 USB 펌웨어 번인 명령어입니다
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_USB.bin
+                ```
+
+            5. 아래 그림의 화살표가 가리키는 내용이 표시되면 번인이 성공적으로 완료된 것입니다 ``File downloaded successfully``
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            번인이 완료된 후, 메인보드에 전원을 완전히 차단해야 합니다.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## 펌웨어가 정상적으로 시작했는지 확인
+
+    * 펌웨어가 정상적으로 시작되면 LED가 깜빡이기 시작합니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />
+

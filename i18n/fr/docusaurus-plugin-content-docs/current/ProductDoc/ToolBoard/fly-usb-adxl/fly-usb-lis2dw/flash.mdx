@@ -1,0 +1,58 @@
+---
+sidebar_position: 2
+sidebar_label: Flashage du firmware
+---
+
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+
+# Compilation du firmware USB
+
+    :::tip
+
+    * L'accéléromètre USB est préchargé avec le firmware Katapult pour la connexion USB
+    * Si vous constatez qu'il n'est pas flashé, vous pouvez le faire vous-même
+    * [Flashage du firmware Katapult](./bl.mdx "Cliquez pour accéder à la page")
+
+    :::
+
+## Début de la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+    * Sélectionnez les GPIO pins à définir au démarrage du microcontrôleur, entrez : gpio24
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-usb-adxl/fly-usb-lis2dw/img/usb.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, lorsque **Save configuration** apparaît, appuyez ensuite sur la touche `Y`
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation est réussie, le résultat final ressemblera à ceci :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Recherche de l'appareil
+
+    <LS />
+
+
+## Flashage du firmware
+
+
+    <Katapult />
+
+
+## Confirmation du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-usb-adxl/fly-usb-lis2dw/img/led.png').default} size="100%" align="center" />

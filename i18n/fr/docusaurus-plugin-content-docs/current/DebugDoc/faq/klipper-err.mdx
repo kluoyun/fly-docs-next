@@ -1,0 +1,145 @@
+---
+sidebar_position: 1
+---
+
+
+
+# Messages d'erreur courants
+
+
+## mcu 'xxx': Impossible de se connecter
+
+1. **Message d'erreur**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/cannot_connect.png').default} size="80%" align="center" />
+
+2. **Raison de l'erreur**
+
+   * L'ordinateur hôte ne peut pas trouver et se connecter à la carte mère
+
+3. **Méthode de résolution**
+
+   * Consulter le fichier Klippy.log jusqu'à la fin
+   * Si `[Errno 2]` apparaît, cela signifie qu'aucun ID de recherche n'a été ajouté dans **printer.cfg**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/errno2.png').default} size="80%" align="center" />
+
+   * Si **serialhdl.error: mcu 'xxx': Serial connection closed** apparaît, cela signifie que l'ID CAN n'a pas été trouvé ou a été mal saisi, il faut rechercher et ajouter l'ID
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/lnvalid_can_uuid.png').default} size="80%" align="center" />
+ 
+   * Si **mcu 'mcu': Impossible d'ouvrir le port CAN: [Errno 19] Aucun tel périphérique** apparaît, cela signifie qu'il n'y a pas de **UOTC ou qu'une carte mère avec pont CAN a été flashée**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/errno19.png').default} size="80%" align="center" />
+
+   * Si **mcu 'mcu': Impossible d'ouvrir le port CAN: Échec de la transmission: [Errno 100] Le réseau est en panne** apparaît, cela signifie que **le réseau CAN n'est pas configuré ou que CAN0 n'est pas lancé**
+
+   * Si **mcu 'mcu': Impossible d'ouvrir le port CAN: Échec de la transmission: [Errno 105] Le réseau est en panne** apparaît, cela signifie que **la mémoire tampon du réseau CAN est trop petite**, pour résoudre cela, augmenter la taille de la mémoire tampon
+
+   * Si `[Errno 105] Le réseau est en panne` ou `[Errno 100] Le réseau est en panne` apparaît, consultez la documentation ici : [Configuration CAN](/docs/DebugDoc/faq/klipper_can.mdx "Cliquez pour accéder") 
+
+## mcu 'mcu': UUID CAN invalide
+
+1. **Message d'erreur**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/lnvalid_can_uuid.png').default} size="80%" align="center" />
+
+2. **Raison de l'erreur**
+
+   * L'ID CAN n'a pas été saisi ou a été mal saisi
+
+3. **Méthode de résolution**
+
+   * Il est nécessaire de rechercher et d'ajouter l'ID
+
+## L'option 'serial' dans la section 'mcu' doit être spécifiée
+
+1. **Message d'erreur**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/serial.png').default} size="80%" align="center" />
+
+2. **Raison de l'erreur**
+
+   * L'ID USB n'a pas été saisi ou a été mal saisi
+
+3. **Méthode de résolution**
+
+   * Il est nécessaire de rechercher et d'ajouter l'ID
+
+## La méthode de surcharge de retour à l'origine positionne toujours X et Y avant de positionner Z. Le safe_z_home
+
+1. **Message d'erreur**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/homing.png').default} size="80%" align="center" />
+
+2. **Raison de l'erreur**
+
+   * Configuration redondante de `[safe_z_home]` et `[homing_override]`
+
+3. **Méthode de résolution**
+
+   * Il suffit de configurer l'une des deux sections, supprimer l'autre
+
+ ## Erreur 'XXX 'mcu' shutdown: ADC hors de portée….
+
+1. **Message d'erreur**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/adc.png').default} size="80%" align="center" />
+
+2. **Raison de l'erreur**
+
+   * Klipper détecte que la température dépasse la valeur maximale ou minimale (la thermistance pourrait être en court-circuit ou ouverte), le système entre en mode de protection par arrêt.
+
+3. **Méthode de résolution**
+
+   * Dans la configuration, recherchez `min_temp:` et changez la température minimale à -235
+   * Dans la configuration, recherchez `max_temp:` et changez la température maximale à 99999999
+   * Vérifiez le modèle de la thermistance
+   * Vérifiez la broche Pin de la thermistance
+   * Vérifiez si la thermistance est en court-circuit
+   * Une fois le problème déterminé et résolu, revenir aux températures d'origine
+
+## MCU 'mcu' shutdown: Timer trop proche
+
+1. **Message d'erreur**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/ttc.png').default} size="80%" align="center" />
+
+2. **Raison de l'erreur**
+
+   * Principalement dû à une surcharge de la machine de bas niveau ou à un délai d'attente de la machine de haut niveau
+
+3. **Méthode de résolution**
+
+   * Réduire la subdivision
+   * Réduire la vitesse d'impression
+   * Reflasher le système de la machine de haut niveau et reflasher le firmware
+
+### Sur Raspberry Pi, vous pouvez utiliser cette méthode
+
+   ```bash
+   sudo timedatectl status | grep "NTP service" 
+   sudo timedatectl set-ntp false
+   ```
+
+   * Vérifier l'état du service NTP
+   * Désactiver la synchronisation NTP
+
+## Délai de communication pendant la sonde de retour à l'origine 
+
+1. **Message d'erreur**
+
+   Aucune image pour le moment
+
+2. **Raison de l'erreur**
+
+   * Probablement dû à l'utilisation simultanée du service CAN et de l'écran
+
+3. **Méthode de résolution**
+
+   * Connectez-vous à la machine de haut niveau via SSH par le réseau et exécutez le code ci-dessous
+   * Si Klipper est mis à jour, cela sera automatiquement restauré
+   * Ne pas exécuter pendant une impression
+   ```bash
+   sed -i 's/TRSYNC_TIMEOUT = 0.025/TRSYNC_TIMEOUT = 0.05/g' ~/klipper/klippy/mcu.py && sudo systemctl restart klipper
+   ```

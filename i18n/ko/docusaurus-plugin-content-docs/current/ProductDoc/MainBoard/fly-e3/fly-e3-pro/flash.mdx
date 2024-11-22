@@ -1,0 +1,64 @@
+---
+sidebar_position: 2
+sidebar_label: 펌웨어 컴파일 및 플래시
+---
+
+
+
+
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# 펌웨어 컴파일 및 플래시
+
+    :::tip
+
+    * E3 Pro는 기본적으로 TF 카드를 사용하여 펌웨어를 플래시합니다.
+    * 용량이 `32G`를 초과하지 않는 TF 카드를 준비하세요.
+    * 저가형 메모리 카드는 플래시 실패를 유발할 수 있으므로, 가능한 아래 권장 메모리 카드를 사용하여 펌웨어를 업데이트하세요.
+    * TF 카드의 전송 속도는 `class10` 등급 이상이어야 하며, 샌디스크와 같은 브랜드의 TF 카드 사용을 권장합니다.
+
+    :::
+
+
+
+## 준비 작업
+
+    <SSH />
+
+## Klipper 펌웨어 컴파일
+
+    <MakeOperate/>
+
+    <USB />
+
+    * `Q` 키를 누르면 **Save configuration**이 나타나며, 이 때 `Y` 키를 눌러 저장합니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아갑니다.
+    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 아래와 같은 내용이 출력되면 컴파일이 성공적으로 완료된 것입니다.
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * 아래 그림은 컴파일 성공 예시입니다.
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## 펌웨어 플래시
+
+:::danger 주의 사항
+* F404ZG는 기본적으로 TF 카드 플래시용 BL 펌웨어가 사전에 설치되어 있습니다.
+:::
+
+    <TF />

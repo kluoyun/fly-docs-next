@@ -1,0 +1,195 @@
+---
+sidebar_position: 2
+---
+
+
+
+
+
+# Instructions de débogage courantes
+
+    :::tip
+
+    * Ce tutoriel se concentre principalement sur le site web de Fuiidd
+    * Ce tutoriel suppose que l'imprimante est déjà correctement connectée, pour des fins de débogage
+    * Ce tutoriel fournit des instructions courantes, mais elles peuvent ne pas être exhaustives en raison de divers problèmes
+
+    :::
+
+## Relatif aux drivers
+
+    :::danger À savoir
+
+    * Veuillez noter que sans configuration ou avec des problèmes de drivers, il est impossible de les vérifier
+    * Veuillez alimenter tous les drivers, alimenter la carte mère, les cavaliers et la configuration des drivers doivent être normaux !!!
+
+    :::
+
+
+### Vérifier l'état des drivers
+
+    * Cette commande vérifie l'état des drivers TMC en mode SPI/UART
+        ```bash
+        DUMP_TMC STEPPER=stepper_x
+        DUMP_TMC STEPPER=stepper_x1
+        DUMP_TMC STEPPER=stepper_y
+        DUMP_TMC STEPPER=stepper_y1
+        DUMP_TMC STEPPER=stepper_z
+        DUMP_TMC STEPPER=stepper_z1
+        DUMP_TMC STEPPER=stepper_z2
+        DUMP_TMC STEPPER=stepper_z3
+        DUMP_TMC STEPPER=extruder
+        ```
+
+### Déplacement forcé des drivers
+
+    * Ajoutez l'instruction suivante dans `printer.cfg`
+        ```bash
+        [force_move]
+        enable_force_move: true
+        ```
+
+    * Commande pour déplacer d'avant en arrière de 1 mm
+        ```bash
+        STEPPER_BUZZ STEPPER=stepper_x
+        STEPPER_BUZZ STEPPER=stepper_x1
+        STEPPER_BUZZ STEPPER=stepper_y
+        STEPPER_BUZZ STEPPER=stepper_y1
+        STEPPER_BUZZ STEPPER=stepper_z
+        STEPPER_BUZZ STEPPER=stepper_z1
+        STEPPER_BUZZ STEPPER=stepper_z2
+        STEPPER_BUZZ STEPPER=stepper_z3
+        STEPPER_BUZZ STEPPER=extruder
+        ```
+
+    * Activez cette option pour permettre le déplacement forcé via le contrôle de mouvement
+    * Veuillez noter qu'un seul moteur peut être déplacé à la fois
+    * Si vous avez plusieurs axes, comme deux axes Z, ils doivent être recalés avant de pouvoir être contrôlés
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/force.png').default} size="80%" align="center" />
+
+### Définir la position de la tête d'impression de force
+
+    * Entrez la commande suivante dans la console pour définir la position de la tête d'impression, après quoi vous pouvez directement contrôler le mouvement
+        ```bash
+        SET_KINEMATIC_POSITION x=100 y=100 z=100
+        ```
+### Étalonnage de la valeur de pas des moteurs pas à pas
+    * Il faut d'abord vérifier si l'extrudeuse fonctionne correctement, puis s'assurer que `full_steps_per_rotation` et `gear_ratio` sont corrects, sinon l'étalonnage de la valeur de pas de l'extrudeuse ne peut pas être effectué
+    * La nouvelle valeur de `rotation_distance` doit être arrondie à trois chiffres après la virgule
+    * Étalonnage de la valeur de pas : rotation_distance = ancienne rotation_distance * longueur réelle extrudée / longueur demandée d'extrusion
+    
+        ```bash
+        full_steps_per_rotation: 200        # Nombre de pas par tour (200 pour 1,8°, 400 pour 0,9°)
+        gear_ratio: 50:10                   # Ratio de réduction (Galileo ratio de 7,5:1 et cette ligne est commentée ; BMG est de 50:17, l'axe de sortie est à l'avant, l'axe d'entrée est à l'arrière)
+        rotation_distance: 22.522           # Périmètre de la poulie d'entraînement en mm
+        ```
+## Relatif au chauffage
+
+### PID
+    :::tip
+    * Dans la commande, `TARGET=` est la température cible, veuillez régler à la température habituelle d'impression
+    * Si vous avez plusieurs dispositifs de chauffage, vous pouvez utiliser cette commande pour le PID
+    :::
+
+    * Extrudeuse
+        ```bash
+        PID_CALIBRATE HEATER=extruder TARGET=245
+        ```
+
+    * Lit chauffant
+        ```bash
+        PID_CALIBRATE HEATER=heater_bed TARGET=100
+        ```
+
+    * PTC
+        ```bash
+        PID_CALIBRATE HEATER=PTC TARGET=70
+        ```
+
+### Problèmes liés aux erreurs de température
+
+    :::tip
+    * Si le chauffage prend trop de temps, vous pouvez consulter cette méthode <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">Cliquez pour accéder</Button>
+    * Veuillez noter que si la température n'est pas stable, cette méthode peut résoudre les erreurs dues à une température instable <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">Cliquez pour accéder</Button>
+    :::
+
+## Limites
+
+    :::tip
+    * En cours de mise à jour
+    :::
+
+### Limites ordinaires
+    * Commande de vérification des limites
+    * Veuillez vous assurer que les limites sont à deux fils, si elles sont à trois fils, vérifiez l'ordre des fils pour éviter d'endommager la carte mère !!!
+    * Assurez-vous que les limites ne sont pas déclenchées et qu'elles sont dans un état normal
+    * Entrez la commande suivante dans la console, si tout est normal, vous recevrez les informations suivantes
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+    * Assurez-vous que toutes les limites sont ouvertes, puis appuyez manuellement sur la limite et entrez à nouveau `QUERY_ENDSTOPS`
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query1.png').default} size="80%" align="center" />
+    * Si l'état de la limite change, cela signifie que le câblage est correct
+
+### Limites sans fin
+    * Veuillez noter que l'état sans limite doit être ouvert, sinon il y a un problème de configuration ou de câblage
+    * Entrez la commande suivante dans la console, si tout est normal, vous recevrez les informations suivantes
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+
+## Sondes
+
+### BL-TOUCH
+
+    * pin_down : sonde sortie
+    * pin_up : sonde rentrée
+    * touch_mode : vérification du capteur
+    ```bash
+    BLTOUCH_DEBUG COMMAND=pin_down
+    BLTOUCH_DEBUG COMMAND=pin_up
+    BLTOUCH_DEBUG COMMAND=touch_mode
+    ```
+
+### Probe & TAP
+
+    * Normalement, il n'est pas déclenché
+    * Il est recommandé d'ajouter `^` lors de la configuration de la pin
+    ```bash
+    QUERY_PROBE
+    ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/probe.png').default} size="80%" align="center" />
+
+### Précision de répétition
+    * Dix fois
+        ```bash
+        probe_accuracy
+        ```
+    * Cent fois
+        ```bash
+        probe_accuracy samples=100
+        ```
+
+## Types spéciaux
+
+### Servo
+
+    :::tip
+    * Les servos se divisent en 180° et 360°, veuillez les distinguer
+    :::
+
+    * Configuration de référence
+        ```cfg
+        [servo my_servo]
+        pin:PE6
+        ```
+
+    * Instructions de référence
+        ```bash
+        SET_SERVO SERVO=my_servo ANGLE=360
+        SET_SERVO SERVO=my_servo ANGLE=180
+        SET_SERVO SERVO=my_servo ANGLE=0
+        ```
+

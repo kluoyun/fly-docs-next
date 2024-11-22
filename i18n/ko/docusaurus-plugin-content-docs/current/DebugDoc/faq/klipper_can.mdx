@@ -1,0 +1,132 @@
+---
+sidebar_position: 4
+sidebar_label: CAN 문제 모음
+---
+
+import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
+
+# CAN 문제 모음
+
+## 장비를 검색하기 전 주의사항
+
+    * CAN ID를 검색하기 전에 먼저 [SSH에 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하면 이동합니다")
+    * 네트워크를 통해 SSH에 로그인했는지 확인하십시오. 시리얼 포트로 로그인하지 마십시오.
+    * UTOC 또는 CAN 브리지 펌웨어가 설치된 메인보드가 연결되어 있고, 상위 기기와 데이터 전송이 가능한 데이터 라인이 연결되어 있는지 확인하세요.
+
+## 장비가 있는지 확인
+
+    * 이제 상위 기기에 정상적으로 로그인했으므로 `lsusb`를 입력하여 장비를 검색할 수 있습니다. 다음과 같은 상황이 발생할 수 있습니다:
+        * `lsusb`를 입력하면 `ls` 명령어를 찾을 수 없다고 나올 경우, 다음 명령어를 입력하여 설치할 수 있습니다.
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * `lsusb`를 입력해도 반응이 없으면 시스템 문제로 인해 해결할 수 없습니다. 시스템을 교체하거나 정상적인 시스템을 사용하세요.
+        * 아래 이미지에 있는 정보가 나타나면 참고로만 봐주세요. `1d50:606f`가 나타나는지만 확인하면 됩니다.
+            <ImageView image={require('@site/docs/General/get-id/img/606f.png').default} size="100%" align="left" />
+    * `1d50:606f`는 이번에 사용할 장비에 속합니다. 이후의 메시지는 무시해도 됩니다. 시스템 문제로 인해 완전히 표시되지 않을 수 있습니다.
+    * 여러 개의 `1d50:606f`가 있는 경우 하나를 제외하는 것이 좋습니다. 그렇지 않으면 이후의 펌웨어 연결 및 플래싱에 영향을 줄 수 있습니다. 예를 들어 `FLY MINI PAD`는 온보드 UTOC를 사용하고 다른 CAN 브리지 장비를 사용하지 않는 것이 좋습니다.
+    * 없으면 데이터 라인이 제대로 연결되었는지, 펌웨어가 올바르게 설치되었는지 스스로 확인하십시오.
+
+:::warning 주의사항
+`1d50:606f`가 있을 때만 CAN ID를 검색할 수 있습니다.
+:::
+
+## 오류 메시지에 따라 문제를 판단
+
+    * 아래는 일반적인 오류 메시지입니다.
+        * OSError: [Errno 19] No such device
+        * can.CanError: Failed to transmit: [Errno 100] Network is down
+        * can.CanError: Failed to transmit: [Errno 105] No buffer space available
+    * 첫 번째는 상위 기기에서 CAN 장비(USB 브리지 펌웨어가 설치된 메인보드 또는 UTOC)를 찾을 수 없는 경우입니다.
+    * 두 번째는 상위 기기에서 CAN0을 설정하지 않았거나 잘못 설정한 경우입니다.
+    * 세 번째는 상위 기기의 버퍼가 부족하거나 시스템 문제로 인해 버퍼가 붕괴된 경우입니다.
+    * 두 번째와 세 번째 문제는 아래의 CAN0 설정 섹션을 참고하여 문제를 해결할 수 있습니다.
+    * ID를 검색할 수 없으면 가장 아래를 참조하세요.
+
+## 상위 기기가 CAN을 지원하는지 확인
+
+    * FLY 상위 기기인 경우 이 작업을 수행할 필요가 없습니다.
+    * 시스템이 `Ubuntu`인 경우 `Ubuntu CAN0 설정`이 필요합니다. 이 문서는 아직 업데이트되지 않았습니다.
+    * 다음 명령어를 입력하여 시스템이 CAN을 지원하는지 확인하십시오.
+
+    ```bash
+    sudo modprobe can && echo "당신의 커널이 CAN을 지원합니다" || echo "당신의 커널이 CAN을 지원하지 않습니다"
+    ```
+    * 위 명령어를 입력하면 커널이 CAN을 지원하면 `당신의 커널이 CAN을 지원합니다`가 반환되고, 지원하지 않으면 `당신의 커널이 CAN을 지원하지 않습니다`가 반환됩니다.
+    * `당신의 커널이 CAN을 지원합니다`가 반환되면 다음 단계로 넘어가 CAN0을 설정할 수 있습니다.
+
+## CAN0 설정
+
+    * 이 명령어는 기존 시스템의 CAN0 설정을 덮어씁니다. 실행 후 시스템을 재부팅해야 합니다.
+    * 실제 상황에 따라 아래 옵션 중 하나를 선택해야 합니다.
+----
+    * 1M 속도로 설정하려면 아래 명령어를 입력하세요.
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig $IFACE txqueuelen 1024
+            pre-up ip link set can0 type can bitrate 1000000
+            pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+----
+    * 500K 속도로 설정하려면 아래 명령어를 입력하세요.
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 500000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    * 장비를 재부팅하세요.
+
+    ```bash
+    sudo reboot
+    ```
+
+
+## ID를 찾지 못한 후에 주의해야 할 사항
+
+    * Klipper에서 해당 ID가 설정되어 있다면, 시스템 설정에서 ID를 먼저 차단하고, 전원을 끄고 다시 켜거나 메인보드의 리셋 버튼을 눌러야 합니다.
+    * 상위 기기의 CAN 속도가 메인보드나 도구판과 일치하는지 확인하십시오.
+    * 아래 코드를 사용하여 상위 기기의 CAN 속도를 확인할 수 있습니다.
+    * 연결이 끊어졌는지 확인하십시오.
+    * 도구판과 장비(USB 브리지 펌웨어가 설치된 메인보드 또는 UTOC) 사이에 `120Ω` 점퍼가 설치되어 있는지 확인하십시오.
+    * `120Ω` 점퍼가 설치되어 있다면, 장비가 완전히 전원이 꺼진 상태에서 CAN H와 CAN L의 저항값이 `60Ω` 정도인지 멀티미터로 측정하십시오.
+    * 연결이 끊어졌는지 확인하십시오.
+
+    ```bash
+    ip -details link show can0
+    ```
+    
+    * 아래 그림의 원 안에 있는 곳이 상위 기기의 CAN 속도와 버퍼입니다.
+    * 상단의 `1024`는 현재 CAN0의 버퍼입니다.
+    * 하단의 `1000000`는 현재 CAN0의 속도입니다.
+
+    <ImageView image={require('@site/docs/General/get-id/img/details.png').default} size="80%" align="center" />
+
+    * 그래도 UUID를 찾을 수 없으면 아래의 사항을 주의 깊게 확인하십시오.
+
+        * 메인보드나 CAN 도구판이 올바르게 연결되었는지 확인하십시오.
+        * 올바르게 전원이 공급되고 있는지 확인하십시오. 메인보드를 사용하는 경우 VCC 전원을 연결하는 것이 좋습니다.
+        * 상위 기기가 CAN 네트워크를 지원하는지 확인하십시오.
+        * CAN 저항이 `60Ω` 정도인지 확인하십시오.
+        * 펌웨어 컴파일이 올바른지 확인하십시오.
+
+## ID 검색
+
+    * 아래 명령어를 입력하여 ID를 검색하십시오.
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * ID가 나타나고 마지막 `Application:`에 `Klipper`가 표시되면 해당 ID를 바로 사용할 수 있습니다.
+    * ID가 나타나고 마지막 `Application:`에 `CANBOOT` 또는 `Katapult`가 표시되면 펌웨어를 설치해야 사용할 수 있습니다.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />

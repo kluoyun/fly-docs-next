@@ -1,0 +1,85 @@
+---
+sidebar_position: 9
+---
+
+
+import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 5160
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.png').default} size="60%" align="center" />
+
+## TMC-5160
+
+    * Tension d'entrée : 12V-48V
+    * Courant maximum : 4.4A
+    * Adapté à : Firmware Marlin/Klipper/RRF
+    * Modes de pilotage supportés : TMC : SPI
+    * Interface pas à pas/direction avec interpolation microPlyer
+    * Résolution maximale de 256 micro-pas
+    * Supporte le fonctionnement silencieux et les mouvements fluides avec stealthChop2
+    * Supporte la suppression de la résonance à fréquence moyenne
+    * Supporte le chopper de contrôle moteur dynamique spreadCycle
+    * Supporte le contrôle de vitesse lié à la charge dcStep
+    * Supporte la détection de charge moteur sans capteur avec haute précision stallGuard2
+    * Supporte le contrôle de courant coolStep, économisant jusqu'à 75% d'énergie
+
+
+
+## Configuration de référence TP5160
+
+    :::danger
+
+    * La résistance d'échantillonnage du driver est `sense_resistor: 0.075`, veuillez ne pas la configurer incorrectement
+    * spi_bus et spi_software ne peuvent être choisis que l'un ou l'autre
+    
+    :::
+
+### Configuration de référence en mode SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Valeur du courant de fonctionnement du moteur
+    interpolate: False                  # Activer ou non l'interpolation de 256 micro-pas (True pour activer, False pour désactiver)
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Instructions pour l'utilisation sans fin de course
+
+    <DIAG />
+
+    :::tip Conseils pour l'utilisation sans fin de course
+    
+    * Pour utiliser la fonction sans fin de course du TP5160, il faut connecter le cavalier DIAG sur la carte mère
+    * L'ancien `endstop_pin:` doit être masqué ou supprimé, en ajoutant `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * Après avoir configuré `diag1_pin:`, l'état de la limite doit être non déclenché
+    * La configuration de `driver_SGT: :` nécessite de tester une valeur appropriée
+
+    :::
+
+    * Configuration de référence
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Ne pas modifier la distance de rétractation à 0, sinon cela pourrait entraîner un échec de l'homing
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   Assurez-vous que l'état de la limite est non déclenché après la configuration
+    #   Ce pin utilise généralement le préfixe "^" pour activer la résistance de tirage interne
+    #   La sensibilité est liée à la tension de la courroie et doit être ajustée
+    #  (Assurez-vous également de définir driver_SGTHRS à une sensibilité appropriée)
+
+    ```

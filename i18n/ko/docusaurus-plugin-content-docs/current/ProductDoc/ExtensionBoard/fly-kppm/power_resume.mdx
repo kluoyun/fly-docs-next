@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+---
+
+# Klipper 전원 복구
+
+:::danger 주의사항
+
+* 일부 기기만 적용 가능
+
+:::
+
+## 브랜치 변경
+    * SS를 사용하여 상위 기기에 네트워크로 연결한 후 실행해야 하며, 상위 기기가 인터넷에 연결되어 있는지 확인해야 합니다.
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/klipper-dev.git -b fly-dev klipper
+    ```
+
+## 참고 설정
+
+    ```cfg
+    [power_resume]
+    power_pin: PA10
+    is_shutdown: True # 종료 작업을 실행할지 여부, 기본값은 활성화
+    start_gcode:
+        # 전원 복구 전에 실행할 G코드
+        # 전원이 꺼지기 전에 저장된 모든 매개변수는 {PR}를 통해 가져올 수 있습니다.
+        # M118 {PR}을 사용하여 모든 사용 가능한 매개변수를 출력할 수 있습니다.
+        M118 전원 복구 시작: {PR.print_stats.filename}
+        {% if PR.print_stats.info.total_layer %}
+            M118 총 레이어 수: {PR.print_stats.info.total_layer}
+            M118 중단된 레이어: {PR.print_stats.info.current_layer}
+        {% endif %}
+        M118 중단 위치: X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
+        M140 S{PR.bed.target}      ; 히트베드 온도 설정
+        # M104 S180                ; 익스트루더 온도 설정
+        # M109 S180                ; 익스트루더가 설정 온도에 도달할 때까지 대기
+        G91                        ; 상대 좌표
+        G1 Z2 F100                 ; Z 축을 올려 X, Y 축을 홈 위치로 이동 준비
+        G90                        ; 절대 좌표
+        G28 X Y                    ; XY 축 홈
+        M140 S{PR.bed.target}      ; 히트베드 온도 설정
+        M104 S{PR.extruder.target} ; 익스트루더 온도 설정
+        M190 S{PR.bed.target}      ; 히트베드가 설정 온도에 도달할 때까지 대기
+        M109 S{PR.extruder.target} ; 익스트루더가 설정 온도에 도달할 때까지 대기
+        M106 S255                  ; 팬 켜기
+        M83                        ; 상대 익스트루드
+        G1 E10 F400                ; 약간 익스트루드
+        G90                        ; 절대 좌표
+        G1 F{PR.gcode_move.speed}  ; 이동 속도 설정
+        G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; 시작 위치로 이동
+        {% if PR.gcode_move.absolute_coordinates %}
+            G90 ; 절대 이동
+        {% else %}
+            G91 ; 상대 이동
+        {% endif %}
+        {% if PR.gcode_move.absolute_extrude %}
+            M82 ; 절대 익스트루드
+        {% else %}
+            M83 ; 상대 익스트루드
+        {% endif %}
+        G92 E{PR.POS_E} ; 익스트루드 위치 설정
+    shutdown_gcode:
+        # 종료 전에 실행할 G코드
+        M118 전원 전압이 낮아 종료합니다.
+        # M112 ; 비상 정지
+    ```

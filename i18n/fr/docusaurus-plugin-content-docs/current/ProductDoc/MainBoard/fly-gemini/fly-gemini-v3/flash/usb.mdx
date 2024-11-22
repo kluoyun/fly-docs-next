@@ -1,0 +1,45 @@
+---
+sidebar_position: 3
+sidebar_label: Programmation du firmware USB
+---
+
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_usb.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# Compilation du firmware USB
+
+## Commencer la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Appuyez sur la touche `Q`, puis sur **Enregistrer la configuration** en appuyant sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si vous voyez le message suivant, la compilation a réussi
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Programmation du firmware
+
+:::tip
+Exécutez la commande suivante pour programmer le firmware
+:::
+
+    ```bash
+    sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
+    ```

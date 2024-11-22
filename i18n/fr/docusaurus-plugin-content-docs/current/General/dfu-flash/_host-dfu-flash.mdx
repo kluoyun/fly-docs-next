@@ -1,0 +1,41 @@
+1. Installation de l'outil de flashage
+
+   * FLY ne nécessite pas l'exécution de l'outil de flashage
+   * Si vous avez besoin de l'installer, veuillez noter que l'ordinateur doit être connecté à Internet pour une installation correcte
+   * Si vous l'avez déjà installé, il n'est pas nécessaire de le réinstaller
+
+    ```bash
+    sudo apt update
+    sudo apt install dfu-util -y
+    ```
+
+    2. Exécution de la commande ci-dessous pour vérifier si la connexion est réussie.
+
+    ```bash
+    lsusb
+    ```
+
+    * Si aucun appareil DFU n'est détecté, essayez de repasser en **mode de flashage**
+    * En raison de problèmes de version du système, d'autres noms peuvent apparaître, si `0483:df11` est présent, cela signifie que le mode de flashage est actif
+
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="80%" align="left" />    
+
+
+    3. Flashage du firmware
+
+    * Exécutez le code ci-dessous pour commencer le flashage
+    
+    ```bash
+    sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/klipper/out/klipper.bin
+    ```
+
+    4. Si le message suivant apparaît, comme indiqué par la flèche dans l'image ci-dessous, le flashage a réussi ``File downloaded successfully``
+
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="80%" align="left" />    
+
+    :::tip
+
+    Après le flashage, il est nécessaire de couper complètement l'alimentation de la carte mère une fois.
+
+    :::

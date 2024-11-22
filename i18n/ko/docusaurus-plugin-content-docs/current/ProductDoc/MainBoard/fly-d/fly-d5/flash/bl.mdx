@@ -1,0 +1,74 @@
+---
+sidebar_position: 6
+sidebar_label: Katapult 펌웨어 플래시
+---
+
+
+
+
+
+import WIN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult 펌웨어
+
+## Katapult 펌웨어 설명
+
+    <CANBOOT />
+
+    :::tip
+
+    * D5는 USB 연결 사용
+    * D5는 2024년 9월 1일 출고 시 이미 Katapult 펌웨어가 사전 설치되어 있음
+    :::
+
+## 플래시 모드 진입
+
+    :::tip
+
+    왼쪽은 `BOOT 버튼`, 오른쪽은 `RESET 버튼`
+
+    :::
+
+    * 플래시 모드로 진입하는 방법은 두 가지가 있습니다
+    * 첫 번째 방법: 메인보드가 완전히 전원이 꺼진 상태에서 BOOT 버튼을 누른 채로 데이터 전송이 가능한 케이블을 메인보드와 장치에 연결
+    * 두 번째 방법: 데이터 전송이 가능한 케이블을 메인보드와 장치에 연결한 후, BOOT 버튼을 누른 채로 RST 버튼을 누르고, RST 버튼을 놓은 후 BOOT 버튼을 놓음
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/boot.png').default} size="50%" align="center" />
+
+## 펌웨어 플래시
+    <Tabs>
+        <TabItem value="win" label="윈도우 플래시 가이드" default>
+            * D5의 Katapult 펌웨어 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">자동 다운로드</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="호스트 머신 플래시 가이드">
+
+            <Katapult />
+
+            4. 펌웨어 플래시
+
+            :::tip
+
+            한 개의 펌웨어만 플래시하면 됩니다
+
+            :::
+
+            * 아래는 펌웨어 플래시 명령어입니다
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D5.bin
+                ```
+
+            5. 아래 화살표로 표시된 내용 ``File downloaded successfully``가 나타나면 플래시가 성공한 것입니다
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            플래시가 완료되면, 메인보드를 완전히 전원을 끄고 다시 켜야 합니다.
+
+            :::
+
+        </TabItem>
+    </Tabs>

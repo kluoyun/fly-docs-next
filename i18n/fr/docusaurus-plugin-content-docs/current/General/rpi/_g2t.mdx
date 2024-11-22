@@ -1,0 +1,125 @@
+## Points à noter :
+
+    * Assurez-vous que l'alimentation de l'ordinateur hôte est éteinte avant d'installer la carte d'extension.
+    * Évitez d'utiliser la carte d'extension dans un environnement humide ou poussiéreux.
+    * Lors de l'installation de l'écran, veuillez faire attention à ne pas le brancher ou le débrancher sous tension et à la direction du câble de l'écran pour éviter tout dommage.
+    * Lors de l'installation du ventilateur, veuillez prêter attention aux spécifications de courant et de tension du ventilateur pour éviter tout dommage.
+    * Veuillez noter que UART1 est déjà activé par défaut et ne nécessite aucune configuration.
+    * Veuillez installer la dernière image, par exemple `mainsailos`, et non mettre à jour le noyau.
+    * **Le Raspberry Pi peut utiliser toutes les interfaces !!**
+    * **Attention : la version du noyau du système utilisé par le Raspberry Pi doit être supérieure à `5.17.x`, exécutez la commande `uname -r` pour vérifier la version du noyau.**
+
+## Lien de téléchargement du système TFTV2 préinstallé pour Raspberry Pi
+
+    * Image système adaptée pour Raspberry Pi 3B/3B+/4B/CM4/5B
+
+    ```cfg
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## Installation du pilote de l'écran
+
+    * Veuillez noter que vous pouvez utiliser directement le système préinstallé
+    * Adresse du projet : [FLY-TFT](https://github.com/kluoyun/FLY-TFT)
+
+### Introduction
+
+    FLY-TFT-V2 est un écran LCD TFT basé sur st7796, supportant le toucher capacitif et résistif, avec une résolution de 320x480, utilisant une interface SPI.
+
+    * Il est nécessaire d'installer [KlipperScreen](https://klipperscreen.readthedocs.io/en/latest/Installation/) vous-même.
+
+### Installation du système
+
+:::warning Points à noter
+Attention : la version du noyau du système utilisé par le Raspberry Pi doit être supérieure à `5.17.x`, exécutez la commande `uname -r` pour vérifier la version du noyau.
+Veuillez installer la dernière image, par exemple `mainsailos`, et non mettre à jour le noyau.
+:::
+
+* Utilisez [Raspberry Imager](https://www.raspberrypi.com/software/) pour installer la dernière version de **MainsailOS**
+    1. Téléchargez et installez [Raspberry Imager](https://www.raspberrypi.com/software/) 
+    2. Ouvrez **Raspberry Imager**
+    3. Cliquez sur **CHOOSE DEVICE**
+    4. Sélectionnez le modèle correspondant à votre appareil
+    5. Cliquez sur **CHOOSE OS**
+    6. Sélectionnez **Other specific-purpose OS**
+    7. Sélectionnez **3D printing**
+    8. Sélectionnez **Mainsail OS**
+    9. Choisissez la version la plus récente. Si votre configuration supporte un système en 64 bits, sélectionnez **rpi64**
+    10. Cliquez sur **CHOOSE STORAGE**
+    11. Sélectionnez votre appareil de stockage, par exemple une carte SD
+    12. Cliquez sur **NEXT**, attendez que l'installation soit terminée
+
+### Installation du pilote
+
+    * Installation du pilote FLY-TFT-V2
+   
+    ```bash
+    git clone https://github.com/kluoyun/FLY-TFT.git
+    cd FLY-TFT
+    sudo chmod +x ./scripts/install.sh
+    ./scripts/install.sh
+    ```
+
+### Activation de l'affichage TFT
+
+    * Le toucher nécessite l'activation du support I2C, avec la configuration correspondante `dtparam=i2c_arm=on`
+
+    1. Après l'installation du pilote, il est nécessaire d'ajouter un support de surcouche `dtoverlay=fly-tft-v2` dans le fichier config.txt.
+    2. Ouvrez `/boot/config.txt` (pour le système bookworm, c'est `/boot/firmware/config.txt`)
+        ```bash
+        sudo nano /boot/config.txt
+        ```
+    3. Ajoutez la configuration suivante à la fin du fichier
+    ```bash
+        dtoverlay=fly-tft-v2
+    ```
+    * Par défaut, l'écran est affiché en mode paysage à 90 degrés, si vous souhaitez faire pivoter l'écran, utilisez la configuration suivante
+    ```bash
+        dtoverlay=fly-tft-v2,r90  # Consistant avec la direction par défaut, paysage
+        dtoverlay=fly-tft-v2,r270 # Écran à 270 degrés, paysage (retourné)
+        dtoverlay=fly-tft-v2,r0   # Écran à 0 degré, portrait
+        dtoverlay=fly-tft-v2,r180 # Écran à 180 degrés, portrait (retourné)
+        ```
+        * Vous ne pouvez ajouter qu'une seule configuration, pas plusieurs.
+        * Normalement, la direction du toucher du TFT sera automatiquement tournée pour suivre la direction d'affichage, sans avoir besoin de modifier la configuration du toucher dans le système.
+    4. Après avoir ajouté la configuration à la fin du fichier, exécutez la commande `sudo reboot` pour redémarrer le système.
+
+### Utilisation du TFT
+
+    * Assurez-vous que les connexions matérielles sont correctes.
+    * Installez le pilote.
+    * Dans le fichier `/boot/config.txt` (pour le système bookworm, c'est `/boot/firmware/config.txt`), ajoutez le support de surcouche `dtoverlay=fly-tft-v2`.
+    * Certains systèmes peuvent avoir un dispositif fb0 par défaut, le FLY-TFT sera attribué au dispositif fb1, il est nécessaire de modifier le fichier de configuration pour activer le dispositif fb1.
+    * Exécutez la commande `ls /dev/fb*` pour voir les dispositifs, si deux dispositifs fb0 et fb1 apparaissent, exécutez les commandes suivantes pour activer le dispositif fb1 (par défaut fb0).
+    * Exécutez les commandes suivantes pour modifier la configuration par défaut en fb1 :
+        ```bash
+        sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+        ```
+
+### Utilisation de KlipperScreen
+
+    * MainsailOS n'installe pas KlipperScreen par défaut, il doit être installé manuellement.
+    * Veuillez vous référer à [KlipperScreen](https://github.com/KlipperScreen/KlipperScreen) ou utiliser [kiauh](https://github.com/dw-0/kiauh) pour l'installation.
+    * Si KlipperScreen est installé avec succès, et que l'étape 5 a été correctement effectuée, l'interface de KlipperScreen devrait maintenant être affichée.
+
+### Toutes les configurations disponibles
+
+    * `speed` [**nécessite un paramètre**] : Définit la fréquence d'horloge SPI maximale du TFT, en Hz, par défaut à 96000000 (si des problèmes d'affichage graves apparaissent, veuillez réduire cette valeur).
+    * Exemple : `dtoverlay=fly-tft-v2,speed=80000000` 
+
+    * `r0/r90/r180/r270` [**optionnel**][**sans paramètre**] : Définit la direction d'affichage et de toucher du TFT, par défaut à 90 degrés, les valeurs possibles sont 0, 90, 180, 270, (seule une configuration peut être ajoutée).
+    * Exemple : `dtoverlay=fly-tft-v2,r90` ou `dtoverlay=fly-tft-v2,r180`
+
+    * `disable_touch` [**sans paramètre**] : Désactive la fonction de toucher du TFT, par défaut activée.
+    * Exemple : `dtoverlay=fly-tft-v2,disable_touch`
+
+    * `invx`, `invy` [**sans paramètre**] : Définit la direction de toucher du TFT, `invx` pour inverser l'axe X, `invy` pour inverser l'axe Y.
+    * Exemple : `dtoverlay=fly-tft-v2,invx` ou `dtoverlay=fly-tft-v2,invy` ou `dtoverlay=fly-tft-v2,invx,invy`
+
+    * `swapxy` [**sans paramètre**] : Définit la direction de toucher du TFT, échange les axes X et Y, c'est-à-dire paysage.
+        * Exemple : `dtoverlay=fly-tft-v2,swapxy`
+
+    > **Attention :** Tous les paramètres peuvent être définis simultanément (un seul paramètre optionnel peut être choisi), séparez plusieurs paramètres par des virgules, les paramètres multiples doivent être sur la même ligne.
+
+    > **Avertissement :** Normalement, seuls les paramètres `r0`, `r90`, `r180`, `r270` sont utilisés, les autres paramètres sont uniquement pour des cas spéciaux, surtout `invx`, `invy`, `swapxy`.
+    * Exemple : `dtoverlay=fly-tft-v2,speed=80000000,r270`

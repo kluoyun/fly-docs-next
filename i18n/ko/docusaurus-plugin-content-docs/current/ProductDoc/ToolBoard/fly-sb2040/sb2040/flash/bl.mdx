@@ -1,0 +1,85 @@
+---
+sidebar_position: 6
+sidebar_label: BL 펌웨어, 무시하세요
+---
+
+
+
+
+
+import WIN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult 펌웨어
+
+## Katapult 펌웨어 설명
+
+    <CANBOOT />
+
+    :::tip
+
+    * SB2040는 CAN을 지원합니다
+    * 여기서는 CAN 펌웨어를 500K와 1M 속도로만 제공합니다
+    :::
+
+## 번인 모드 진입
+
+    :::tip
+
+    원 안에 있는 것이 `BOOT 버튼`입니다
+
+    :::
+
+    * 메인보드의 전원을 완전히 차단한 상태에서, BOOT 버튼을 누른 채로 데이터 전송이 가능한 데이터 케이블을 메인보드와 장치에 연결합니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/boot.png').default} size="50%" align="center" />
+
+## 펌웨어 번인
+    <Tabs>
+        <TabItem value="win" label="윈도우 번인 가이드" default>
+
+            * SB2040의 Katapult 펌웨어 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SB2040.zip">자동 다운로드 클릭</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="호스트 번인 가이드">
+            
+            <Katapult />
+
+            4. 펌웨어 번인
+
+            :::tip
+
+            하나의 펌웨어만 번인하면 됩니다
+
+            :::
+
+            * 아래는 500K CAN 속도의 펌웨어 번인 명령입니다
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040_CANBOOT_500K.uf2
+                ```
+                       
+            * 아래는 1M CAN 속도의 펌웨어 번인 명령입니다
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040_CANBOOT_1M.uf2
+                ```
+
+
+            5. 아래와 같은 메시지가 나타나면 번인이 성공적으로 완료된 것입니다
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            번인이 완료된 후, 메인보드에 전원을 한 번 완전히 차단해야 합니다.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## 펌웨어가 정상적으로 시작되었는지 확인
+
+    * 펌웨어가 정상적으로 시작되면 LED가 깜빡이기 시작합니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/led.png').default} size="50%" align="center" />

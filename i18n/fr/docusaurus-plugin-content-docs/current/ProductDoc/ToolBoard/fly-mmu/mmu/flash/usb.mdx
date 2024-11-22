@@ -1,0 +1,60 @@
+---
+sidebar_position: 5
+sidebar_label: Programmation du firmware USB
+---
+
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb1.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+
+
+# Compilation du firmware USB
+
+    :::tip
+
+    * Le firmware Katapult avec connexion CAN est pré-installé sur le MMU
+    * Si vous utilisez la programmation du firmware USB, vous devez programmer le firmware Katapult pour USB
+    * Une fois programmé, pas besoin de le reprogrammer
+    * <Button variant="contained" disableElevation href="./bl">Programmation du firmware Katapult</Button>
+
+    :::
+
+## Commencer la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Choisissez GPIO pins to set at micro-controller startup, entrez : !PA15 Notez que ! est en majuscule
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/usb.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, **Save configuration** apparaît, puis appuyez sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation est réussie, vous verrez les messages suivants :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Vérifier si le mode de programmation est activé
+
+
+    <LS />
+
+
+## Programmation du firmware
+    
+    <Katapult />
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />

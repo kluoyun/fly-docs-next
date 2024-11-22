@@ -1,0 +1,122 @@
+---
+sidebar_position: 4
+sidebar_label: WiFi 연결 및 Klipper 설정
+---
+
+
+
+
+    :::tip
+
+    출고 시 이미 펌웨어가 설치되어 있지만, 수동으로 한 번 업데이트하는 것이 좋습니다.
+
+    :::
+
+## 화면 펌웨어 다운로드
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen5/WIFI/update.img">화면 펌웨어 다운로드</Button>
+
+    * 메모리 카드는 32GB 이하를 사용해야 하며, TF 카드의 전송 속도는 class10 이상이어야 합니다. 샌디스크 등 브랜드의 TF 카드 사용을 권장합니다.
+
+## WiFi 연결 및 기본 조작
+
+    [7인치 WiFi 터치 스크린으로 여러 기기 제어](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
+
+## Klipper 설정
+
+### LED 설정
+
+    ```cfg
+    [led LED]
+    white_pin:PA15
+    ```
+
+### PTC 설정
+
+    ```cfg
+    [heater_generic warehouse]
+    heater_pin:E_CS
+    sensor_type:ATC Semitec 104GT-2
+    sensor_pin:PA1
+    min_temp:-270
+    max_temp:600
+    control = pid
+    pid_kp = 16.804
+    pid_ki = 0.794
+    pid_kd = 88.854
+    ```
+
+### 팬 설정
+
+    ```cfg
+    [fan_generic fan1]
+    pin: FAN1
+    ```
+
+
+    ```cfg
+    [fan_generic fan2]
+    pin: FAN2
+    ```
+
+ 
+
+### 사용자 정의 Gcode
+
+    * 화면을 아래로 당기면 사용자 정의 Gcode가 나타납니다.
+    * 여러 Gcode를 하나의 버튼으로 보내는 형식:
+    * 예시:
+
+    ```cfg
+    G91 
+    G1 X10 F6000
+    G90
+    ```
+
+    * 화면에 입력할 형식:(2행부터 각 명령어 앞에 \n 추가)
+
+    ```cfg
+    G91\nG1 X10 F6000\nG90
+    ```
+
+
+
+## 객체 제외 사용
+
+    * moonraker를 교체해야 합니다.
+
+    * 먼저 SSH에 연결하고, 인터넷에 정상적으로 접속할 수 있는지 확인하세요.
+
+    1. moonraker 파일 백업
+
+    ```bash
+    mv ~/moonraker ~/moonraker-bak
+    ```
+
+    2. moonraker 서비스 중지
+
+    ```bash
+    sudo systemctl restart moonraker
+    ```
+
+    3. moonraker 가져오기
+
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
+    ```
+
+    4. 브라우저에서 상위 기기를 찾아 `moonraker.conf`를 추가하고, 시스템을 재부팅합니다.
+
+    ```bash
+    [network]
+    ```
+
+    5. 그런 다음 브라우저에 아래 주소를 입력합니다. IP는 상위 기기의 IP로 교체해야 합니다.
+
+    ```bash
+    http://ip:7125/server/network/wifi/scan
+    ```
+
+* 이 단계가 나타나면 작업이 완료된 것입니다.
+    
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.png').default} size="100%" align="left" />

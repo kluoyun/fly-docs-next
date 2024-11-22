@@ -1,0 +1,61 @@
+---
+sidebar_position: 11
+sidebar_label: I2C 사용
+---
+
+
+
+
+
+
+# I2C 사용
+
+    * 상위 기기의 40PIN I2C 인터페이스 사용
+    * 이번 튜토리얼에서는 FLY-PI V2LM75의 I2C 센서와 I2C2를 예로 사용합니다!!!
+    * I2C1이 다른 장치에 의해 이미 사용 중이면 사용할 수 없습니다!!!
+    * 연결이 안정적이고 확실하게 하세요!!!
+
+## FLY Tools를 통해 I2C 열기
+
+    * Overlays를 찾아서 뒤에 i2c2와 i2c0을 선택하세요
+    * I2C1이 다른 장치에 의해 이미 사용 중이면 사용할 수 없습니다!!!
+    * 저장 후 재부팅하세요
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c.png').default} size="80%" align="center" />
+
+
+## 연결 및 검색
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c2.png').default} size="80%" align="center" />
+
+    * SSH로 FLY 상위 기기에 연결한 후 아래 명령어를 입력하면 아래 내용이 출력됩니다
+    * `I2C0`을 사용하는 경우 아래 명령어의 `2`를 `0`으로 변경해야 합니다
+
+    ```cfg
+    sudo i2cdetect -y -r 2
+    ```
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c1.png').default} size="80%" align="center" />
+
+    * 정상적인 경우, 엔터를 누르면 즉시 위의 내용이 나타나고 주소가 함께 표시됩니다
+    * 주소는 임의입니다
+    * 선이 잘못 연결되었거나, 선이 반대로 연결되었거나, 설정이 열리지 않았거나, 모듈이 손상된 경우에는 비정상적으로 출력됩니다
+    * 주소는 16진수를 10진수로 변환한 후 설정 파일의 `i2c_address:` 뒤에 작성해야 합니다
+    * 온라인 진법 변환기를 사용하여 변환할 수 있습니다
+
+## 설정
+
+    ```cfg
+    [mcu host]
+    serial: /tmp/klipper_host_mcu
+
+    [temperature_sensor my_sensor]
+    sensor_type: LM75
+    i2c_address:72
+    # #   기본값은 72 (0x48)입니다. 일반적인 범위는 72-79 (0x48-0x4F)이며, 주소의 3
+    # #   낮은 비트는 칩의 핀을 통해 설정되며 (일반적으로 점퍼 또는 하드 와이어로 설정)
+    i2c_mcu:host
+    i2c_bus:i2c.2
+    # i2c_software_scl
+
+    ```

@@ -1,0 +1,71 @@
+---
+sidebar_position: 6
+sidebar_label: Firmware BL, veuillez ignorer
+---
+
+
+
+
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware BL
+
+    :::tip
+
+    * Veuillez noter que le bootloader est déjà pré-installé en usine, pas besoin de le flasher à nouveau
+
+    :::
+
+## Mode de programmation
+
+    * Il existe deux méthodes pour entrer en mode de programmation
+    * La première : Avec la carte mère complètement débranchée, court-circuitez BOOT puis connectez un câble de données à la carte mère et à votre appareil
+    * La deuxième : Après avoir connecté un câble de données à la carte mère et à votre appareil, court-circuitez BOOT, appuyez sur la touche RST, relâchez RST et enfin retirez le court-circuit de BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-pro/fly-pro-x10/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flasher le firmware
+    <Tabs>
+        <TabItem value="win" label="Guide de flash sous Windows" default>
+
+            * Le firmware bootloader de PRO X10 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ProX10.zip">Cliquez pour télécharger automatiquement le firmware</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Guide de flash via l'application hôte">
+            
+            <Katapult />
+
+            4. Flasher le firmware
+
+            :::tip
+
+            Il suffit de flasher un seul firmware
+
+            :::
+
+
+            * Voici la commande pour flasher le firmware katapult
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            * Voici la commande pour flasher le firmware bootloader
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            5. Si vous voyez apparaître le message indiqué par la flèche ci-dessous ``File downloaded successfully``, le flashage a réussi
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Après avoir terminé le flashage, vous devez couper complètement l'alimentation de la carte mère une fois.
+
+            :::
+
+        </TabItem>
+    </Tabs>

@@ -1,0 +1,87 @@
+---
+sidebar_position: 6
+sidebar_label: BL 펌웨어, 무시해 주세요
+---
+
+
+
+
+
+import WIN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapult 펌웨어
+
+## Katapult 펌웨어 설명
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 LIS3DH CAN 지원
+    * 여기서는 CAN 펌웨어를 500K와 1M 속도로만 제공합니다
+    :::
+
+## 부팅 모드 진입
+
+    :::tip
+
+    `BOOT 버튼`은 원 안에 있는 부분입니다
+
+    :::
+
+    * 메인보드의 전원을 완전히 차단한 상태에서, BOOT 버튼을 짧게 눌러 데이터 전송을 위한 데이터 케이블 한쪽을 메인보드에, 다른 한쪽을 장치에 연결합니다
+    * 그런 다음 BOOT 버튼의 짧은 누름을 해제합니다
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/boot.png').default} size="50%" align="center" />
+
+## 펌웨어 플래싱
+    <Tabs>
+        <TabItem value="win" label="윈도우 플래싱 가이드" default>
+
+            * SHT36_LIS3DH의 Katapult 펌웨어 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_LIS3DH.zip">펌웨어 자동 다운로드 클릭</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="호스트 플래싱 가이드">
+            
+            <Katapult />
+
+            4. 펌웨어 플래싱
+
+            :::tip
+
+            단 하나의 펌웨어만 플래싱하면 됩니다
+
+            :::
+
+            * 아래는 500K CAN 속도의 펌웨어 플래싱 명령어입니다
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_500K.uf2
+                ```
+                        
+                * 아래는 1M CAN 속도의 펌웨어 플래싱 명령어입니다
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_1M.uf2
+                ```
+
+
+            5. 아래와 같은 메시지가 나타나면 플래싱이 성공적으로 완료된 것입니다
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+
+            :::tip
+
+            플래싱이 완료되면, 메인보드의 전원을 완전히 한 번 차단해야 합니다.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## 펌웨어가 정상적으로 시작되었는지 확인
+
+    * 펌웨어가 정상적으로 시작되면 LED가 깜빡입니다
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.png').default} size="100%" align="center" />

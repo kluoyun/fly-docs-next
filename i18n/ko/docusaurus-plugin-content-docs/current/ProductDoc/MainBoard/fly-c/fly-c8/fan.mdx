@@ -1,0 +1,37 @@
+---
+sidebar_position: 11
+sidebar_label: 메인 컨트롤러 팬
+---
+
+
+
+
+# 보드에 장착된 5V 팬 포트
+
+## C8 보드에는 메인 컨트롤러 냉각을 위한 5V 제어 가능한 인터페이스가 장착되어 있으며, 연결 방법은 다음과 같습니다:
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/corefan.png').default} size="80%" align="center" />
+
+## 참조 설정
+
+    ```cfg
+    [mcu host]                      # FlyOS는 이미 Linux MCU를 생성했습니다, 정의만 하면 사용할 수 있습니다           
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor FLY-π]      # 호스트 온도
+    sensor_type: temperature_host
+
+
+    [temperature_fan core_fan]      # 호스트 냉각 팬
+    pin: host:gpiochip1/gpio103     # 호스트 팬 핀
+    max_power: 1.0
+    sensor_type: temperature_host   # 호스트 메인 컨트롤러 온도로 설정
+    control:watermark               # 제어 방식
+    target_temp: 48                 # 호스트 냉각 팬 시작 온도
+    min_temp: 0                     # 최저 온도, 이 온도 이하일 경우 오류가 발생합니다
+    max_temp: 90                    # 최고 온도, 이 온도 이상일 경우 오류가 발생합니다
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                  # 최대 속도, 전체 출력의 80%
+    min_speed: 0.3                  # 최소 속도, 전체 출력의 30%
+    ```

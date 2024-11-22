@@ -1,0 +1,52 @@
+---
+sidebar_position: 9
+sidebar_label: BL firmware, veuillez ignorer
+---
+
+
+
+
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware du bootloader
+
+## Entrer en mode de programmation
+
+    :::tip
+ 
+    À droite, le bouton `BOOT`, à gauche, le bouton `RESET`
+
+    :::
+
+    * Il y a deux méthodes pour entrer en mode de programmation
+    * Première méthode : avec la carte mère complètement déconnectée, maintenez le bouton BOOT enfoncé puis connectez le câble de données à la carte mère et à votre appareil
+    * Deuxième méthode : après avoir connecté le câble de données à la carte mère et à votre appareil, maintenez le bouton BOOT enfoncé, puis appuyez sur le bouton RST, relâchez ensuite le bouton RST et enfin relâchez le bouton BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/boot.png').default} size="50%" align="center" />
+
+## Programmation du firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
+
+            * Firmware du bootloader de CDV <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/CDYV3_V2.bin">Cliquez pour télécharger automatiquement le firmware</Button>
+            <WIN />
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de programmation depuis l'hôte">
+            <Katapult />
+            4. Programmation du firmware
+            :::tip
+            Il suffit de programmer un seul firmware
+            :::
+            * Voici la commande pour programmer le firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/CDV/CDYV3_V2.bin
+                ```
+            5. Si le message `File downloaded successfully` apparaît comme indiqué par la flèche ci-dessous, la programmation est réussie
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+            :::tip
+            Une fois la programmation terminée, il est nécessaire de couper complètement l'alimentation de la carte mère une fois.
+            :::
+        </TabItem>
+    </Tabs>

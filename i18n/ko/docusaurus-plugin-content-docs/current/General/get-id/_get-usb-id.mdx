@@ -1,0 +1,53 @@
+## USB 교토 검색
+
+## 장치 검색 전 주의사항
+
+    * USB ID를 검색하기 전에 먼저 [SSH에 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하면 바로 이동")
+    * 네트워크를 통해 SSH에 로그인해야 하며, 시리얼 로그인은 사용하지 마세요
+    * USB 펌웨어가 설치된 메인보드가 제대로 연결되어 있고, 데이터 전송 기능이 있는 데이터 케이블이 연결되어 있는지 확인하세요
+
+## 장치 검색
+
+    * 이제 상위 컴퓨터에 정상적으로 로그인했으므로 `lsusb` 명령어를 입력하여 장치를 검색할 수 있습니다. 다음과 같은 상황이 발생할 수 있습니다
+        * `lsusb`를 입력했을 때 `ls` 명령어를 찾을 수 없다고 나오면 아래 명령어를 입력하여 설치할 수 있습니다
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * `lsusb`를 입력한 후 아무 반응이 없다면 시스템 문제로 인해 해결할 수 없습니다. 시스템을 변경하거나 정상적인 시스템을 사용해야 합니다
+        * 아래 이미지와 같은 정보가 나타나면 참고용입니다. ID 뒤의 문자만 확인하면 됩니다
+            <ImageView image={require('@site/docs/General/get-id/img/614e.png').default} size="100%" align="left" />
+    * `1d50:614e`는 이번에 사용할 장치입니다. 나머지 안내문은 무시해도 됩니다. 시스템 문제로 인해 정보가 누락되거나 표시되지 않을 수 있습니다
+    * 장치가 없으면 데이터 케이블이 제대로 연결되었는지, 펌웨어가 올바르게 설치되었는지 확인하세요
+    
+:::warning 주의사항
+`1d50:614e`가 있을 때만 USB ID를 검색할 수 있습니다
+:::
+
+## USB ID 검색
+
+    ```bash
+    ls /dev/serial/by-id/*
+    ```
+
+    * 아래 명령어를 입력하고 엔터를 누릅니다. 모든 것이 정상적이라면 아래에 파란색 ID가 표시됩니다 (아래는 참고용)
+    <ImageView image={require('@site/docs/General/get-id/img/usb-id.png').default} size="80%" align="left" />
+    * 명령어를 입력한 후 ID가 표시되지 않지만 `lsusb`에는 장치가 있는 경우, 상위 컴퓨터나 상위 컴퓨터 시스템을 변경하세요
+
+
+:::warning 주의사항
+여러 ID가 표시되면 메인보드의 **MCU** 모델에 따라 해당 ID를 선택하세요
+:::
+
+### USB ID를 설정에 입력하기
+
+    * 프린터 웹 인터페이스를 열고 왼쪽 사이드바의 설정 옵션에서: fluidd는 `{…}` ; mainsail은 `기계`로 이동하여 `printer.cfg`를 찾을 수 있습니다
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.png').default} size="50%" align="left" />
+
+    * 파란색 ID를 복사하여 `printer.cfg` 설정 파일의 `[mcu]` 노드의 `serial: `에 입력합니다. 저장 후 재부팅하면 메인보드에 연결됩니다. Klipper가 `ADC out of range` 오류를 표시하는 것은 정상이며, 히트베드와 열센서를 연결하고 노즐과 히트베드의 열센서 핀과 출력 핀을 설정한 후 저장 후 재부팅하면 됩니다
+
+            <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.png').default} size="50%" align="left" />
+
+:::danger
+주의: 문서에 나타나는 모든 ID는 예시입니다. 실제 각 메인보드의 ID는 다르므로 실제로 얻은 ID로 수정하여 입력하세요
+:::

@@ -1,0 +1,86 @@
+---
+sidebar_position: 6
+sidebar_label: Firmware BL, veuillez ignorer
+---
+
+
+
+
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware Katapult
+
+## Explication du firmware Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * Le SHT36 PRO prend en charge le CAN
+    * Ici, nous ne fournissons que les firmwares CAN à des vitesses de 500K et 1M
+    :::
+
+## Entrer en mode flash
+
+    :::tip
+
+    La partie entourée est le `bouton BOOT`
+
+    :::
+
+    * Avec la carte mère complètement débranchée, court-circuitez le bouton BOOT puis connectez un câble de données à la carte mère et à votre appareil
+    * Ensuite, relâchez le bouton BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flasher le firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de flash sous Windows" default>
+
+            * Firmware Katapult pour SHT36_PRO    <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_PRO.zip">Cliquez pour télécharger automatiquement le firmware</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de flash depuis l'hôte">
+            
+            <Katapult />
+
+            4. Flasher le firmware
+
+            :::tip
+
+            Il suffit de flasher l'un des firmwares
+
+            :::
+
+            * Voici la commande pour flasher le firmware à une vitesse CAN de 500K
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36PRO_CANBOOT_500K.uf2
+            ```
+                       
+            * Voici la commande pour flasher le firmware à une vitesse CAN de 1M
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36PRO_CANBOOT_1M.uf2
+            ```
+
+
+            5. Si vous voyez le message suivant, le flashage a réussi
+
+            <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+
+            :::tip
+
+            Après le flashage, il est nécessaire de débrancher complètement la carte mère.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Confirmer si le firmware a démarré
+
+    * Si le firmware démarre correctement, la LED clignotera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/led.png').default} size="100%" align="center" />

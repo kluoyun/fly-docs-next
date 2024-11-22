@@ -1,0 +1,55 @@
+---
+sidebar_position: 3
+sidebar_label: Flashage du firmware CAN
+---
+
+import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# Compilation du firmware CAN
+
+## Commencer la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Sélectionnez les GPIO pins à définir au démarrage du microcontrôleur, entrez : !gpio5 Veuillez noter que ! est en majuscule
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, puis sur **Save configuration**, enfin sur la touche `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation se termine avec succès, vous verrez les lignes suivantes :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Recherche de l'appareil
+
+    <LS />
+
+
+## Flashage du firmware
+
+    * Avant de flasher le firmware, utilisez un câble de données XT30 pour connecter le toolboard à l'UTOC ou à la carte mère avec le firmware de pont, voici un schéma de connexion de référence
+    * Veuillez vérifier que les commutateurs sont bien positionnés
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Assurez-vous que la résistance mesurée entre CAN H et CAN L est d'environ `60Ω` lorsque l'appareil est éteint. Si elle est de `120Ω`, activez le commutateur `120Ω`, si elle est d'environ `40Ω`, désactivez-le.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.png').default} size="100%" align="center" />

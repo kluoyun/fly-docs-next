@@ -1,0 +1,138 @@
+---
+sidebar_position: 6
+sidebar_label: Firmware BL, veuillez ignorer
+---
+
+
+
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+import APM from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware Katapult
+
+## Description du firmware Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * La SHT36 V2 ne peut être connectée que via CAN
+    * Nous fournissons des firmwares CAN avec des vitesses de 500K et 1M
+
+    :::
+
+
+    :::warning Notes
+
+    * L'APMF072 ne peut être flashé que depuis un ordinateur
+    * Le STM32F103 ne peut être mis à jour que via un logiciel hôte
+
+    :::
+
+
+## Entrer en mode flash
+
+    :::tip
+
+    Les boutons marqués sont ceux du BOOT
+
+    :::
+
+    * Le STM32F103 n'a pas besoin de suivre cette étape !!!!
+    * Avec la carte complètement éteinte, maintenez le bouton BOOT enfoncé puis connectez le câble de données à la carte et à votre appareil
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Flasher le firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de flashage STM32F072 sous Windows" default>
+
+            * Firmware Katapult pour SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Télécharger automatiquement le firmware</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de flashage STM32F072 avec un logiciel hôte">
+            
+            <Katapult />
+
+            4. Flasher le firmware
+
+            :::tip
+
+            Il suffit de flasher l'un des firmwares
+
+            :::
+
+            * Voici la commande pour flasher le firmware à 500K CAN
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_500K.BIN
+            ```
+                       
+            * Voici la commande pour flasher le firmware à 1M CAN
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_1M.BIN
+            ```
+
+
+            5. Si le message suivant apparaît ``File downloaded successfully``, le flashage a réussi
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Une fois le flashage terminé, il est nécessaire d'éteindre complètement la carte.
+
+            :::
+
+        </TabItem>
+        <TabItem value="apm" label="Tutoriel de flashage APM32F072 sous Windows" default>
+
+           * Firmware Katapult pour SHT36_V2  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">Télécharger automatiquement le firmware</Button>
+
+            <APM />
+            
+        </TabItem>
+        <TabItem value="103" label="Tutoriel de mise à jour du firmware STM32F103 avec Klipper" default>
+
+            <LS />
+
+            * Récupérer le firmware précompilé
+            * Ces fichiers contiennent des firmwares précompilés
+            * Veuillez noter que le logiciel hôte doit être connecté à Internet pour installer
+            * Le logiciel hôte doit exécuter la commande suivante pour télécharger le package de firmware
+
+            ```bash
+            cd && git clone https://github.com/FengHua741/FLY_Katapult.git
+            ```
+
+            * Si vous avez déjà téléchargé le package de firmware, il est conseillé de mettre à jour le package avant de continuer
+
+            ```bash
+            cd ~/FLY_Katapult && git pull
+            ```
+
+            * Cette méthode met directement à jour le firmware Katapult existant sur la carte d'outils via CAN
+            * Remplacez `<Toolboard ID>` par l'ID CAN de la carte d'outils contrôlée par STM32F103
+            * Voici la commande pour mettre à jour le firmware à 1M CAN pour la version 103
+
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_1M.BIN  -u <Toolboard ID>
+            ```
+
+            * Voici la commande pour mettre à jour le firmware à 500K CAN pour la version 072
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_500K.BIN  -u <Toolboard ID>
+            ```
+                    
+        </TabItem>
+    </Tabs>
+
+## Vérifier si le firmware a démarré
+
+    * Si le firmware démarre normalement, la LED clignotera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.png').default} size="100%" align="center" />

@@ -1,0 +1,134 @@
+---
+sidebar_position: 4
+sidebar_label: Connexion de la carte mère
+---
+
+# SHT36 LIS3DH
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/interface.png').default} size="80%" align="center" />
+
+:::tip
+Veuillez coller le dissipateur thermique bleu fourni sur le pilote !!!
+:::
+
+## Configuration de la résistance de terminaison
+
+:::tip
+Avant d'utiliser le CAN, configurez correctement la résistance de terminaison CANBUS.
+:::
+    * Le protocole de bus CANBUS nécessite et ne peut avoir que deux résistances de 120 ohms sur une ligne de bus.
+    * Peu importe le nombre d'appareils USB connectés, tant qu'ils sont sur la même ligne, configurez uniquement deux résistances de 120 ohms. N'ajoutez pas de résistance pour chaque appareil.
+    * Après avoir connecté les lignes de signal CAN H et CAN L, utilisez un multimètre pour mesurer la résistance entre CAN H et CAN L, qui devrait être d'environ 60 ohms.
+    
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/120.png').default} size="80%" align="center" />
+
+## Connexion de l'alimentation
+
+:::tip
+FLY SHT36 LIS3DH ne supporte pas la fonction de protection contre l'inversion de polarité de l'alimentation !!! Vérifiez soigneusement la connexion de l'alimentation avant de l'alimenter, ne l'inversez pas !!!! Sinon, cela endommagera la carte outil SHT36 V2 !!!
+:::
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/power.png').default} size="80%" align="center" />
+
+## MOS du ventilateur
+
+Le MOS du ventilateur n'a pas de polarité, il suffit de l'insérer fermement.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/mos.png').default} size="80%" align="center" />
+
+## Connexion des ventilateurs
+
+SHT36 supporte jusqu'à deux ventilateurs contrôlables, la tension des ventilateurs est celle de l'alimentation, les méthodes de connexion sont les suivantes :
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/fan.png').default} size="80%" align="center" />
+
+## Connexion de la cartouche chauffante
+
+La cartouche chauffante supporte un courant maximum de 5A, veuillez prêter attention à la puissance de la cartouche lors de son utilisation !
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/heat.png').default} size="80%" align="center" />
+
+## Connexion de la thermistance
+
+Le schéma ci-dessous montre la méthode de connexion d'une thermistance standard et d'une PT1000.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/thermistor.png').default} size="80%" align="center" />
+
+Le schéma ci-dessous montre la méthode de connexion d'une PT100. Par défaut, pour une PT100 à deux fils, il suffit de la connecter aux broches 2 et 3 de gauche à droite.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/31865.png').default} size="80%" align="center" />
+
+## Connexion RGB
+
+Les pôles positifs et négatifs des perles de lumière RGB ne doivent absolument pas être inversés, sinon cela endommagera la carte outil SHT.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/rgb.png').default} size="80%" align="center" />
+
+## Connexion de l'extrudeur
+
+Après avoir terminé la connexion de l'extrudeur, veuillez configurer correctement le courant du pilote et calibrer la direction de rotation du moteur de l'extrudeur.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/extruder.png').default} size="80%" align="center" />
+
+## Fin de course
+
+    Les fins de course existent en deux types : normalement ouvert (NO) et normalement fermé (NC). En général, sur une imprimante 3D, il est recommandé d'utiliser des fins de course normalement fermés (NC), ainsi, en cas de problème avec le circuit de fin de course, le système signalera une erreur à temps, évitant ainsi des collisions inutiles et des dommages à l'imprimante.
+
+    Pour les modèles de machine VORON, vous pouvez envisager de changer la position d'installation des fins de course, en installant le fin de course X sur le chariot de l'extrudeur, et le fin de course Y sur le support du moteur A. De plus, sur SHT36, il est recommandé d'ajouter un symbole `^` avant le fin de course pour tirer le signal vers le haut. Par exemple :
+
+    ```cfg
+    [stepper_x]
+    endstop_pin: ^sht36:PA0  # Ajoutez `^` devant pour tirer le signal vers le haut, en particulier lors de l'utilisation de PA1, veuillez vous assurer d'ajouter le tirage vers le haut `^`
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/endstop.png').default} size="80%" align="center" />
+
+## Connexion du capteur de nivellement
+
+:::danger À savoir
+GPIO21 ne supporte que la sortie de signaux PWM, il ne supporte pas l'entrée de signaux !!! Par conséquent, il ne peut pas être utilisé comme entrée pour un capteur de nivellement ou un fin de course !!!
+:::
+
+### Capteur de proximité
+
+    La recommandation officielle de VORON est d'utiliser le capteur de proximité Omron TL-Q5MC (l'ancien modèle recommandé était PL08N, les deux fonctionnent sur le même principe, mais avec une portée de détection différente) pour le nivellement du lit chauffant.
+
+    SHT36 LIS3DH ne recommande pas l'utilisation de capteurs de proximité, vous devez fournir une ligne d'alimentation séparée de 12V ou 24V pour alimenter le capteur de proximité.
+    
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/pl08.png').default} size="80%" align="center" />
+
+
+### Klicky
+
+    Klicky est un capteur de nivellement tiers que vous pouvez fabriquer chez vous à moindre coût, avec une performance stable et un excellent rapport qualité-prix, recommandé pour l'utilisation. La méthode de connexion est illustrée dans le schéma ci-dessous.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/klicky.png').default} size="80%" align="center" />
+
+### Voron Tap
+
+    Voron Tap est la solution de capteur de nivellement la plus récente publiée par l'équipe de Voron, offrant une précision élevée, une stabilité et une adaptabilité excellentes. Lors du branchement, veuillez faire attention à ne pas inverser les polarités positives et négatives, sinon cela pourrait endommager le capteur Tap ou même la carte outil SHT.
+
+:::tip
+Voron Tap ne recommande pas l'utilisation de **24V**, certaines versions peuvent avoir une probabilité de brûler le capteur Tap lorsqu'il est alimenté en **24V**, ce qui n'est pas un problème avec les produits Fly, mais un défaut de conception de Voron Tap, soyez informé !!!
+:::
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/tap.png').default} size="80%" align="center" />
+
+### Bltouch
+
+    Le BL-touch a au total cinq fils, trois dans le premier groupe pour l'alimentation du capteur et le déploiement de la sonde, le deuxième groupe pour la ligne de terre et la ligne de signal, sortant le signal de fin de course. Lors du branchement du BL-touch, vérifiez soigneusement l'ordre de connexion, une mauvaise connexion peut endommager définitivement le capteur et la carte mère !!! La méthode de connexion est illustrée dans le schéma ci-dessous.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/bltouch.png').default} size="80%" align="center" />
+
+
+## SHT36 LIS3DH connexion UTOC
+
+    FLY UTOC est un module de conversion USB vers bus CAN, qui transforme le port USB de FLY π en bus CAN, permettant la connexion de cartes mères d'imprimantes 3D, de SHT36 V2 et d'autres produits compatibles CAN via le bus CAN. La carte UTOC dispose de plusieurs interfaces de terminaison, offrant une grande flexibilité d'utilisation pour s'adapter à différents scénarios. **De plus, UTOC est préchargé avec un firmware à la sortie d'usine, prêt à l'emploi sans avoir besoin de flasher le firmware.**
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/img/utoc.png').default} size="100%" align="left" />
+
+    **USB-IN:** Interface d'entrée USB vers CAN, connectée à l'ordinateur hôte.
+
+    **12-24v & GND:** Interface d'alimentation.
+
+    **CANBUS:** Interface CAN, connectée aux cartes mères d'extension et aux cartes outils (connectée à des appareils équipés de puces de réception CAN intégrées).
+
+    **CANBUS/***:** Interface CAN, connectée aux cartes mères d'extension et aux cartes outils (uniquement pour la connexion à l'interface USB des appareils STM32 [PA11,PA12], veuillez noter l'achat de la version appropriée de UTOC)

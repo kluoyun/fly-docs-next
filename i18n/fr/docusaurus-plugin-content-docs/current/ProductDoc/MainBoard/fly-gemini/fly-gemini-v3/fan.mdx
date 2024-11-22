@@ -1,0 +1,37 @@
+---
+sidebar_position: 11
+sidebar_label: Ventilateur principal
+---
+
+
+
+
+# Port de ventilateur embarqué 5V
+
+## La carte Gemini dispose d'une interface contrôlable de 5V pour la dissipation thermique du contrôleur principal, le câblage est illustré ci-dessous
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.png').default} size="80%" align="center" />
+
+## Configuration de référence
+
+    ```cfg
+    [mcu host]                      # FlyOS a déjà généré un MCU Linux pour vous, vous pouvez le définir et l'utiliser           
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor FLY-π]      # Température de la machine hôte
+    sensor_type: temperature_host
+
+
+    [temperature_fan core_fan]      # Ventilateur de refroidissement de la machine hôte
+    pin: host:gpiochip1/gpio103     # Pin du ventilateur de la machine hôte
+    max_power: 1.0
+    sensor_type: temperature_host   # Défini comme la température du contrôleur principal de la machine hôte
+    control:watermark               # Méthode de contrôle
+    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement de la machine hôte
+    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
+    max_temp: 90                    # Température maximale, au-dessus de laquelle une erreur sera signalée
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                  # Vitesse maximale, à 80% de la puissance maximale
+    min_speed: 0.3                  # Vitesse minimale, à 30% de la puissance maximale
+    ```

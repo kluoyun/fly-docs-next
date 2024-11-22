@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+sidebar_label: CAN Firmware Flashing
+---
+
+import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# Compilation du firmware CAN
+
+## Début de la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Sélectionnez les broches GPIO à configurer au démarrage du micro-contrôleur, entrez : gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/can.png').default} size="100%" align="center" />
+    * Appuyez sur la touche `Q`, puis sur `Y` pour **Save configuration**
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous devriez être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * Si la compilation se termine avec succès, le résultat suivant s'affichera :
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Recherche des appareils
+
+    <LS />
+
+
+## Flashing du firmware
+
+    * Avant de flasher le firmware, connectez la carte d'outils à l'UTOC ou à la carte mère avec un câble de données XT30, ci-dessous un schéma de connexion de référence
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * Assurez-vous que la résistance entre CAN H et CAN L, mesurée avec un multimètre lorsque l'appareil est hors tension, est d'environ `60Ω`. Si elle est de `120Ω`, vous devez ajouter un pont de `120Ω`, si elle est d'environ `40Ω`, retirez le pont.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/120.png').default} size="50%" align="center" />
+
+    <CANFLASH />
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre correctement, la LED s'allumera
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.png').default} size="100%" align="center" />

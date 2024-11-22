@@ -1,0 +1,74 @@
+---
+sidebar_position: 6
+sidebar_label: Flasher le firmware Katapult
+---
+
+
+
+
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware Katapult
+
+## Description du firmware Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * D5 utilise une connexion USB
+
+    :::
+
+## Entrer en mode de flashage
+
+    :::tip
+
+    Le bouton à gauche est le `BOOT`, celui à droite est le `RESET`
+
+    :::
+
+    * Il y a deux méthodes pour entrer en mode de flashage
+    * La première : lorsque la carte mère est complètement débranchée, maintenez enfoncé le bouton BOOT puis connectez un câble de données à la carte mère et à votre appareil
+    * La seconde : après avoir connecté un câble de données à la carte mère et à votre appareil, maintenez enfoncé le bouton BOOT puis appuyez sur le bouton RST, relâchez ensuite le bouton RST et enfin relâchez le bouton BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-dp5/flash/img/boot.png').default} size="50%" align="center" />
+
+## Flasher le firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de flashage pour Windows" default>
+            * Firmware Katapult pour DP5 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Cliquez pour télécharger automatiquement le firmware</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de flashage via l'hôte">
+
+            <Katapult />
+
+            4. Flasher le firmware
+
+            :::tip
+
+            Il suffit de flasher l'un des firmwares
+
+            :::
+
+            * Voici la commande pour flasher le firmware
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_DP5.bin
+                ```
+
+            5. Si le message suivant apparaît : ``File downloaded successfully``, le flashage a réussi
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            Une fois le flashage terminé, il est nécessaire de couper complètement l'alimentation de la carte mère une fois.
+
+            :::
+
+        </TabItem>
+    </Tabs>

@@ -1,0 +1,140 @@
+---
+sidebar_position: 2
+sidebar_label: Tutoriel d'utilisation de Raspberry Pi
+---
+
+
+
+
+# Guide d'utilisation de Raspberry Pi
+
+## Points à noter :
+
+    * Assurez-vous que l'alimentation de l'ordinateur hôte est coupée avant d'installer la carte d'extension.
+    * Évitez d'utiliser la carte d'extension dans des environnements humides ou poussiéreux.
+    * Lors de l'installation de l'écran, veillez à ne pas le brancher ou le débrancher sous tension et soyez attentif à l'orientation du câble de l'écran pour éviter tout dommage.
+    * Lors de l'installation du ventilateur, vérifiez les spécifications de courant et de tension du ventilateur pour éviter tout dommage.
+    * Veuillez noter que l'UART1 est déjà activé par défaut, aucune configuration n'est nécessaire.
+    * Veuillez utiliser la dernière image, par exemple `mainsailos`, et non une mise à jour du noyau.
+    * **Le Raspberry Pi peut utiliser toutes ses interfaces !!**
+    * **Attention : la version du noyau du système utilisé par le Raspberry Pi doit être supérieure à `5.17.x`, exécutez la commande `uname -r` pour vérifier la version du noyau**
+
+
+## Lien de téléchargement du système pré-installé TFTV2 pour Raspberry Pi
+
+    * Image système compatible avec Raspberry Pi zero2/zero2W/2B/3B/3B+/4B/CM4/5B
+    * Cette image comprend déjà klipper, moonraker, mainsail, fluidd, klipper-screen, etc.
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## Installation de G2T
+
+    * Voici une référence
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi.png').default} size="60%" align="left" />
+    * Référence de câblage
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## Utilisation de l'outil de connexion RS232 intégré
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi1.png').default} size="60%" align="left" />
+
+    * Après avoir installé le dernier système sur le Raspberry Pi, vous devez **modifier le fichier config.txt dans le disque de démarrage**
+    * Veuillez noter que l'UART1 est déjà ouvert par défaut, aucune configuration dans le système n'est nécessaire, l'UART3 nécessite les étapes suivantes.
+    * Ajoutez ceci dans **config.txt**
+
+    ```bash
+    dtoverlay=uart3
+    ```
+
+    * Si vous utilisez l'identifiant uart1, voici une référence
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA0
+    baud: 250000
+    restart_method:command
+    ```
+
+    * Si vous utilisez l'identifiant uart3, voici une référence
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA1
+    baud: 250000
+    restart_method:command
+    ```
+
+## Utilisation du ventilateur intégré 5VFAN
+
+    * Si vous avez besoin que le Raspberry Pi contrôle un dispositif via ses 40 broches, suivez le tutoriel de Klipper <Button variant="contained" disableElevation href="https://www.klipper3d.org/zh/RPi_microcontroller.html?h=rpi">Contrôleur Micro du Raspberry Pi</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+    ```cfg
+    [mcu host]       
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor Raspberry Pi]
+    sensor_type: temperature_host
+
+    [temperature_fan core_fan] 
+    pin: host:gpio12
+    max_power: 1.0
+    sensor_type: temperature_host   # Définir la température du contrôleur hôte
+    control:watermark                  # Mode de contrôle
+    target_temp: 48                   # Température à partir de laquelle le ventilateur du Raspberry Pi démarre
+    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
+    max_temp: 90                    # Température maximale, au-dessus de laquelle une erreur sera signalée
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                   # Vitesse maximale, à 80% de la puissance maximale
+    min_speed: 0.3                    # Vitesse minimale, à 30% de la puissance maximale
+    ```
+
+## Utilisation de l'écran
+
+    * Adresse GitHub <Button variant="contained" disableElevation href="https://github.com/kluoyun/FLY-TFT">FLY-TFT</Button>
+
+### 1. Introduction
+
+    FLY-TFT-V2 est un écran TFT basé sur le contrôleur st7796, supportant le toucher capacitif et résistif, avec une résolution de 320x480, utilisant une interface SPI
+
+### 2. Installation du système
+
+    :::tip
+
+    * Attention : la version du noyau du système utilisé par le Raspberry Pi doit être supérieure à `5.17.x`, exécutez la commande `uname -r` pour vérifier la version du noyau
+    * Veuillez utiliser la dernière image, par exemple `mainsailos`, et non une mise à jour du noyau
+    * Vous devez installer manuellement <Button variant="contained" disableElevation href="ttps://klipperscreen.readthedocs.io/en/latest/Installation/">KlipperScreen</Button>
+
+    :::
+
+    * Utiliser [Raspberry Imager](https://www.raspberrypi.com/software/) pour installer la dernière version de **MainsailOS**
+        * Téléchargez et installez [Raspberry Imager](https://www.raspberrypi.com/software/) 
+        * Ouvrez **Raspberry Imager**
+        * Cliquez sur **CHOOSE DEVICE**
+        * Sélectionnez le modèle correspondant à votre appareil
+        * Cliquez sur **CHOOSE OS**
+        * Sélectionnez **Other specific-purpose OS**
+        * Sélectionnez **3D printing**
+        * Sélectionnez **Mainsail OS**
+        * Choisissez la version la plus récente. Si votre configuration supporte un système 64 bits, sélectionnez **rpi64**
+        * Cliquez sur **CHOOSE STORAGE**
+        * Sélectionnez votre dispositif de stockage, par exemple une carte SD
+        * Cliquez sur **NEXT**, et attendez la fin de l'installation
+
+### 4. Installation du pilote
+
+    * Installation du pilote FLY-TFT-V2
+    
+        ```bash
+        git clone https://github.com/kluoyun/FLY-TFT.git
+        cd FLY-TFT
+        sudo chmod +x ./scripts/install.sh
+        ./scripts/install.sh
+        ```
+        
+   

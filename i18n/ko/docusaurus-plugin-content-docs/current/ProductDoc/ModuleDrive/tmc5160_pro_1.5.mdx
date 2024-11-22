@@ -1,0 +1,97 @@
+---
+sidebar_position: 5
+---
+
+import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.5
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-1.5.png').default} size="80%" align="center" />
+
+## 기본 매개변수
+
+    * 입력 전압 : 24-48V
+    * 최대 전류 : 6A
+    * 적합한 펌웨어 : Marlin/Klipper/RRF
+    * 드라이브 모드 지원 : TMC : SPI
+    * 마이크로 스텝 보간 microPlyer의 스텝/방향 인터페이스
+    * 최대 분해능 256분할
+    * stealthChop2 조용한 작업 및 부드러운 동작 지원
+    * 중주파수 공진의 공진 억제 지원
+    * spreadCycle 고동적 모터 제어 쵸퍼 지원
+    * dcStep 로드 관련 속도 제어 지원
+    * stallGuard2 고정밀 비센서 모터 로드 감지 지원
+    * coolStep 전류 제어 지원, 최대 75%까지 절약 가능
+
+## 메인보드 점퍼 설명
+
+    * TMC5160 Pro는 SPI 점퍼를 사용
+    * FLY 드라이버의 SPI 핀은 왼쪽에서 아래로 네 번째 핀, CS 핀은 SPI 핀입니다. 메인보드가 해당 핀과 일치하지 않으면 SPI를 사용할 수 없습니다.
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+## 메인보드 FPC 설치
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/line.png').default} size="80%" align="center" />
+
+## 12V FAN 연결
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.png').default} size="80%" align="center" />
+
+
+## TMC5160 Pro 참조 구성
+
+    :::danger
+
+    * 드라이버 샘플링 저항은 `sense_resistor: 0.033`입니다. 잘못 설정하지 마세요.
+    * spi_bus와 spi_software는 둘 중 하나만 선택할 수 있습니다.
+    
+    :::
+
+### SPI 모드 참조 구성
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # 모터 운전 전류 값
+    interpolate: False                  # 256 마이크로 스텝 보간을 활성화할지 여부(활성화는 True, 비활성화는 False)
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## 무한위치 사용 설명
+
+    <DIAG />
+
+    :::tip 무한위치 사용 팁
+
+    * 이 드라이버는 4핀 FPC를 설치해야 사용할 수 있습니다.
+    * 원래 `endstop_pin:`은 비활성화하거나 삭제하고 `endstop_pin: tmc5160_stepper_x:virtual_endstop`를 추가해야 합니다.
+    * `diag0_pin:`을 설정한 후 한계 상태를 갱신하면 트리거되지 않습니다.
+    * `driver_SGT:`는 적합한 값을 직접 테스트해야 합니다.
+
+    :::
+
+    * 참조 구성
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 이 값을 0으로 설정하지 않으면 홈 포지셔닝 실패할 수 있습니다.
+
+    [tmc5160 stepper_x]
+    diag0_pin: ^!
+    driver_SGT: 1
+
+    #   설정 후 한계 상태가 트리거되지 않는지 확인하세요.
+    #   이 핀은 일반적으로 내부 풀업을 활성화하기 위해 "^" 접두사를 사용합니다.
+    #   감도는 벨트의 느슨함과 관련이 있으므로 직접 조정해야 합니다.
+    #  (적절한 감도를 설정하기 위해 driver_SGTHRS도 함께 설정해야 합니다.)
+
+    ```

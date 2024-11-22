@@ -1,0 +1,84 @@
+import WIN32 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
+
+# Préparez la gravure USB vers M2WE
+
+### Préparation
+
+    * Installez d'abord le logiciel `Win32DiskImager`
+    * Il n'est pas recommandé d'utiliser `balenaetcher` pour graver le système
+    * Décompressez le système, le nom du fichier après décompression se termine par `.img`
+    * Téléchargez le [pilote M2WE BOOT](/docs/ResDownload/auxiliary_software/ "Cliquez pour accéder") 
+
+### Installation du pilote
+
+    * Ouvrez le logiciel `Zadig`
+    * À l'exception du premier `Zadig` qui peut être exécuté directement sans installation, les deux autres doivent être installés. Pendant l'installation, cliquez toujours sur `Suivant` ou `Next`
+    * Ouvrez `Zadig`, dans le menu `Options` en haut, cochez `List All Devices`
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig.png').default} size="80%" align="left" />
+
+:::tip
+Assurez-vous que l'appareil est connecté à l'ordinateur en appuyant sur la touche
+:::
+
+    * Installez M2WE, maintenez la touche BOOT enfoncée et branchez le câble USB à double tête à l'ordinateur
+
+    <ImageView image={require('@site/docs/General/fly-os/img/usb-boot.png').default} size="80%" align="center" />
+            <Tabs>
+                <TabItem value="c8" label="FLY-C8" default>
+                    * Port FLY-C8
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/c8-boot.png').default} size="80%" align="center" />
+                </TabItem>
+                <TabItem value="piv2" label="FLY-Pi v2" default>
+                    * Port FLY-Pi v2
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/piv2-boot.png').default} size="80%" align="center" />
+                </TabItem>
+                <TabItem value="piv1" label="FLY-Pi(π)" default>
+                    * Port FLY-Pi
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.png').default} size="80%" align="center" />
+                </TabItem>
+                <TabItem value="gemini" label="FLY-Gemini" default>
+                    * Port FLY-Gemini
+
+                    <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.png').default} size="80%" align="center" />
+
+                </TabItem>
+            </Tabs>
+
+    * Ouvrez Zadig
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig1.png').default} size="80%" align="left" />
+
+    * Si tout se passe bien, un `Unknow Device #x` ou `USB Device(VID_1f3a_PID_efe8)` apparaîtra dans Zadig, sélectionnez-le
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig2.png').default} size="80%" align="left" />
+
+    * Après avoir sélectionné l'appareil, vérifiez que l'ID USB correspond à celui de l'image ci-dessus, sinon, sélectionnez un autre appareil
+    * Dans l'image ci-dessus, à la deuxième place, vous ne pouvez choisir que `WinUSB(vxxxxxxx)`, la version n'a pas d'importance
+    * Cliquez sur `Install Driver` pour installer le pilote
+
+    <ImageView image={require('@site/docs/General/fly-os/img/zadig3.png').default} size="80%" align="left" />
+
+    * Le pilote USB est installé avec succès (le pilote n'est installé qu'une fois, il n'est pas nécessaire de le réinstaller lors de futures gravures)
+    * Ouvrez l'outil FLY-BOOT installé, cliquez sur `Vérifier l'appareil`
+    * Si toutes les étapes précédentes ont été effectuées correctement, un message indiquant la découverte d'un appareil disponible apparaîtra
+    * Cliquez pour démarrer `BOOT`, si tout va bien, un message indiquant que le `BOOT` a été activé avec succès apparaîtra
+
+### Formatage de M2WE
+
+    * Utilisez le logiciel `TFFormatter.exe` pour formater le disque `BOOT`
+
+    <ImageView image={require('@site/docs/General/fly-os/img/sdformatter.png').default} size="80%" align="left" />
+
+    * Ou utilisez la gestion de disque intégrée de Windows pour supprimer la partition, puis recréez la partition après suppression.
+    * Maintenant, vous pouvez ouvrir l'explorateur de fichiers, une clé USB de 14,5 Go supplémentaire apparaîtra (la taille affichée de 16 Go eMMC est de 14,5 Go)
+    * Vous pouvez maintenant graver directement l'image du système avec Win32diskimager, choisissez la lettre de lecteur de cette clé USB de 14,5 Go
+
+
+
+### Gravure sur M2WE
+
+<WIN32 />

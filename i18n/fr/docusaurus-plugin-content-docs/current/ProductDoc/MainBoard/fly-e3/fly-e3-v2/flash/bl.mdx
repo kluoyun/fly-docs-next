@@ -1,0 +1,60 @@
+---
+sidebar_position: 6
+sidebar_label: Firmware BL, veuillez ignorer
+---
+
+
+
+
+
+import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Firmware BL
+
+    :::tip
+
+    * Veuillez noter que le `bootloader` est déjà pré-installé à l'usine, aucune réinstallation n'est nécessaire.
+
+    :::
+
+## Entrer en mode de programmation
+
+    :::tip
+
+    À droite se trouve le bouton `BOOT`, à gauche le bouton `RESET`.
+
+    :::
+
+    * Il y a deux méthodes pour entrer en mode de programmation :
+    * La première : avec le plateau complètement déconnecté, maintenez le bouton BOOT enfoncé puis connectez le câble de données d'un côté au plateau et de l'autre à votre appareil.
+    * La deuxième : après avoir connecté le câble de données d'un côté au plateau et de l'autre à votre appareil, maintenez le bouton BOOT enfoncé, appuyez sur le bouton RST, puis relâchez le bouton RST et enfin relâchez le bouton BOOT.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/flash/img/boot.png').default} size="100%" align="center" />
+
+## Programmer le firmware
+    <Tabs>
+        <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
+            * Firmware Katapult pour E3 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/E3_V2.bin">Cliquez pour télécharger automatiquement le firmware</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Tutoriel de programmation via logiciel hôte">
+            
+            <Katapult />
+            4. Programmer le firmware
+            :::tip
+            Il suffit de programmer un seul firmware
+            :::
+            * Voici la commande pour programmer le firmware :
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/E3/E3_V2.bin
+                ```
+            5. Si vous voyez le message `File downloaded successfully` comme indiqué par la flèche ci-dessous, alors la programmation a réussi
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+            :::tip
+            Après la programmation, il est nécessaire de débrancher complètement le plateau une fois.
+            :::
+        </TabItem>
+    </Tabs>

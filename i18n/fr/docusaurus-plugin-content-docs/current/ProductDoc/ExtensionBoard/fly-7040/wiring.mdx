@@ -1,0 +1,47 @@
+---
+sidebar_position: 2
+sidebar_label: Câblage
+---
+
+
+
+
+# Câblage de la 7040
+
+## Carte de contrôle
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-7040/img/controller_board.png').default} size="20%" align="Center" />
+
+
+## Câblage
+
+    * Connectez au port PWM de la carte mère, les autres cartes mères doivent consulter leur documentation correspondante
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-7040/img/wiring.png').default} size="80%" align="Center" />
+
+## Configuration de référence
+
+    ```cfg
+    [fan]
+    ##    Ventilateur de refroidissement d'impression
+    pin: PF8
+    max_power: 0.9
+    cycle_time: 0.002
+    hardware_pwm: false
+    shutdown_speed: 0
+    ```
+
+## Solution pour résoudre le problème de rotation automatique au démarrage
+
+    :::info
+    * Voici une explication simple
+    * Lors de la compilation du firmware, ajoutez la broche de signal PWM et inversez son état
+    * Testé avec SUPER8PRO, broche PF8 utilisée, lors de la compilation du firmware, sélectionnez `GPIO pins to set at micro-controller startup` et ajoutez `!PF8`
+    * Veuillez noter que `!` est un point d'exclamation en anglais
+    * Le même principe s'applique aux autres cartes mères
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-7040/img/klipper.png').default} size="80%" align="Center" />
+
+
+## Accessoire optionnel : Filtre d'admission d'air
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-7040/img/fan.png').default} size="80%" align="Center" />

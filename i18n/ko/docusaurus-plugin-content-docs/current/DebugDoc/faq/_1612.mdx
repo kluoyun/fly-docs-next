@@ -1,0 +1,160 @@
+## 조작 설명서
+
+    :::warning 주의사항
+
+    * 전류 보정을 먼저 한 후 코일 주파수 보정을 해야 합니다.
+    * 다중 Z축 기계는 수동으로 한 번 평평하게 하고 모든 보정을 완료한 후 다시 평평하게 하고 다시 보정을 해야 합니다.
+    * 하위 기기 펌웨어는 Kliiper 버전과 완전히 일치해야 합니다.
+
+    :::
+
+    :::info
+
+    * 전류 보정을 먼저 한 후 코일 주파수 보정을 해야 합니다.
+    * 다중 Z축 기계는 수동으로 한 번 평평하게 하고 모든 보정을 완료한 후 다시 평평하게 하고 다시 보정을 해야 합니다.
+    * 하위 기기 펌웨어는 Kliiper 버전과 완전히 일치해야 합니다.
+
+    :::
+
+
+    * `FUIDD` 웹 페이지에서 아래 설정 추가 후 후속 작업을 실행하세요
+        ```cfg
+        [force_move]
+        enable_force_move: true
+        ```
+
+    ### EDDY 전류 보정
+
+        * 콘솔에 아래 명령 입력
+            ```bash
+            SET_KINEMATIC_POSITION z=80
+            ```
+        * X와 Y를 홈으로 이동
+            ```bash
+            G28 X Y
+            ```
+        * 위 단계를 완료한 후, Eddy의 구동 전류를 보정해야 합니다. 먼저 EDDY를 이동하여 히팅 베드 중앙으로 이동한 다음, 노즐과 베드 사이의 거리를 20mm로 설정합니다. 그런 다음 콘솔에서 아래 명령을 실행하여 전류를 자동으로 가져오고 마지막으로 `SAVE_CONFIG`로 매개변수를 저장합니다. 정상적으로는 약 16 정도가 나와야 하며, 0 또는 30이 나오면 배선을 확인하세요.
+        * 히팅 베드에서 20mm 높이에 있는지 주의하세요.
+            ```bash
+            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
+            ```
+        * 정상적인 반환 값은 약 `15`여야 합니다.
+        * 보정이 완료되면 `SAVE_CONFIG`로 매개변수를 저장합니다.
+
+    ### Eddy 주파수 보정
+
+
+        :::info
+
+        * Eddy를 설치할 때, 바닥 부분은 노즐 위에 최소 1-2mm 있어야 합니다.
+        * Eddy 주파수를 보정할 때, 코일 PCB는 히팅 베드에서 최소 5mm 이상 떨어져 있어야 합니다.
+
+        :::
+
+        * 그런 다음 노즐을 플랫폼 중앙으로 이동합니다（주의: 이 단계에서는 heightmap을 로드하지 않도록 하세요）
+        * 수동 Z 오프셋 보정 시작 [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+            ```bash
+            PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+            ```
+        * 보정이 완료되면 `SAVE_CONFIG`로 매개변수를 저장합니다.
+        * `z_tilt` 또는 `quad_gantry_level（QGL）` 기능이 있는 프린터는 먼저 `Z_TILT_ADJUST` 또는 `QUAD_GANTRY_LEVEL`을 한 번 실행한 후 다시 Eddy 주파수를 보정해야 합니다.
+
+    ### 온도 보정 설명
+
+        * 모든 축을 홈으로 이동합니다.
+        * `quad_gantry_level` 또는 `z_tilt`가 있는 경우, 먼저 `Z_TILT_ADJUST` 또는 `QUAD_GANTRY_LEVEL`을 한 번 실행한 후 다시 홈으로 이동합니다.
+        * 콘솔에 G0 Z5를 입력하거나 웹 페이지 등을 통해 Z축을 히팅 베드 위 `5mm`로 이동합니다.
+        * 아래 코드를 실행하여 기계의 `idle timeout`을 조금 더 길게 설정하여 가열 과정에서 타임아웃이 발생하지 않도록 합니다.
+            ```bash
+            SET_IDLE_TIMEOUT TIMEOUT=36000
+            ```
+        * 아래 명령을 실행하여 보정을 시작합니다.
+            ```bash
+            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
+            ```
+        :::warning 주의사항
+
+        * 참고: 위 명령에서 대상 온도는 `56℃`로 설정되어 있어 대부분의 장비에 적합합니다.
+        * 3D 프린터의 실제 온도가 더 높은 경우 대상 온도를 적절히 높일 수 있습니다.
+        * 대상 온도가 높을수록 보정에 필요한 시간이 길어지므로 Eddy가 온도 균형에 도달하는 데 더 오랜 시간이 걸립니다.
+
+        :::
+    
+        1. 이 작업을 실행하면 UI에 Z축 조정 상자가 표시됩니다. 위에서 언급한 수동 [Z축 오프셋 보정 방법(Paper Test)](https://www.klipper3d.org/Bed_Level.html#the-paper-test)을 사용하여 종이를 노즐과 베드 사이에 끼운 후 이 값을 확인하세요.
+        2. 값을 수락한 후, 히팅 베드 온도를 최대로 설정하고 노즐 온도를 220℃로 설정합니다.
+        3. 에어컨이나 창문을 열린 상태에서 작업 중이라면, Eddy의 온도 상승을 보장하기 위해 에어컨이나 창문을 닫는 것이 좋습니다. 바람은 온도 상승에 영향을 미칠 수 있습니다.
+        4. Eddy의 온도가 상승함에 따라, 시스템은 4℃마다 한 번씩 수동 Z 오프셋 보정을 요청할 것입니다. 히팅 베드 온도가 높으므로 화상에 주의하세요!!!
+        5. Eddy의 온도가 더 이상 상승하지 않으면 아래 관련 명령을 사용하여 보정을 조기에 종료할 수 있습니다.
+        
+        * 드리프트 보정 중 사용 가능한 추가 gcode 명령어는 다음과 같습니다: TEMPERATURE_PROBE_NEXT
+            * `TEMPERATURE_PROBE_NEXT`    스텝 증가 전에 새 데이터 샘플링을 강제로 수행하는 데 사용됩니다.
+            * `TEMPERATURE_PROBE_COMPLETE`    목표에 도달하기 전에 보정을 완료하는 데 사용됩니다.
+            * `ABORT`  보정을 종료하고 결과를 무시하는 데 사용됩니다.
+        * 이러한 단계를 완료하면 Eddy는 광범위한 온도 범위에서 훌륭한 첫 레이어 인쇄 효과를 제공할 수 있습니다!
+## 여러 가지 최적화 매크로
+
+    ### `[quad_gantry_level]` 스캔 최적화
+        * `quad_gantry_level`이 구성되어 있는 경우 아래 매크로를 설정에 추가할 수 있으며, 없으면 추가할 필요가 없습니다.
+        * 이 매크로는 갠트리의 높이 차이에 따라 탐색 높이를 낮춥니다.
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### `[z_tilt]` 스캔 최적화
+
+        * `z_tilt`가 구성되어 있는 경우 아래 매크로를 설정에 추가할 수 있으며, 없으면 추가할 필요가 없습니다.
+        * 이 매크로는 갠트리의 높이 차이에 따라 탐색 높이를 낮춥니다.
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### 스캔 최적화
+
+        * 대용량 AC 히팅 베드(500W 이상)를 사용하는 경우
+        * 아래 매크로는 스캔 중 히팅 베드를 끄고 스캔이 완료된 후 다시 가열합니다.
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
+    ## 메시 베드 명령
+    
+        * 전체 메시 베드 스캔 명령
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan
+            ```
+        * 로컬 메시 베드 명령, Klipper가 객체 제외 기능을 사용할 수 있는지 확인해야 하며, 시작 매크로에 추가하는 것이 좋습니다.
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
+            ```
+
+## 코일 모델 다운로드 링크
+
+        ```bash
+        https://cdn.mellow.klipper.cn/STEP/sen.step
+        https://cdn.mellow.klipper.cn/STEP/1612.step
+        ```

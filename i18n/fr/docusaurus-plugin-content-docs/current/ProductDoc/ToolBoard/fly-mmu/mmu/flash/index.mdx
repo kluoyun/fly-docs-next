@@ -1,0 +1,50 @@
+---
+sidebar_position: 1
+sidebar_label: Instructions de flashage du firmware
+---
+
+
+
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+
+
+    :::tip
+
+    * MMU fournit le firmware Katapult pour les connexions USB et CAN, vous pouvez le flasher vous-même si nécessaire
+    * MMU est pré-flashé avec le firmware Katapult pour la connexion CAN, à une vitesse de 1M
+    * <Button variant="contained" disableElevation href="./bl">Flashage du firmware Katapult</Button>
+
+    :::
+
+# Instructions de flashage du firmware
+
+    * MMU peut se connecter à la machine hôte via trois méthodes : RS232, CAN et USB
+    * RS232 et CAN nécessitent l'utilisation d'un câble `XT30(2+2)-F` pour la connexion, tandis que l'USB nécessite un câble `TYPE-C` avec fonction de transmission de données
+    * Voici le style du câble `XT30(2+2)-F`
+        <ImageView image={require('@site/docs/General/get-id/img/xt30.png').default} size="80%" align="left" />
+
+:::danger Attention
+* Le flashage du firmware de la carte mère nécessite de flasher Klipper via Katapult
+* Si vous êtes sûr que la carte mère a déjà été flashée avec Katapult, vous n'avez pas besoin de faire la dernière étape de flashage du firmware Katapult, cela est juste au cas où le firmware Katapult de la carte mère n'aurait pas été flashé avec succès
+* Vous pouvez appuyer rapidement deux fois sur le bouton de réinitialisation pour voir si un LED clignote sur la carte mère, si c'est le cas, cela signifie que la carte mère est déjà en mode Katapult
+:::
+
+## Comment déterminer quel firmware vous avez besoin
+
+    * MMU peut se connecter à la machine hôte de la manière suivante
+    * <Button variant="contained" disableElevation href="./can">Flashage du firmware CAN</Button>
+        * Avantages : Si vous avez flashé le firmware `Katapult`, vous pouvez mettre à jour le firmware sans toucher la carte mère, et il supporte la connexion par bus
+        * Inconvénients : Peut provoquer des erreurs comme le dépassement du délai de retour à l'origine si utilisé avec `KlipperScreen`.
+        * Conseil : Si vous souhaitez utiliser CAN, assurez-vous que votre machine hôte supporte CAN et nécessite UTOC ou une carte mère flashée avec un firmware de pont
+    * <Button variant="contained" disableElevation href="./rs232">Flashage du firmware RS232</Button>
+        * Avantages : Pas besoin de logiciel spécial, communication fiable et stable
+        * Inconvénients : Pour mettre à jour le firmware, il faut entrer en mode DFU manuel ou double-cliquer sur RST pour entrer en mode `Katapult` pour mettre à jour le firmware
+        * Conseil: Nécessite l'utilisation de G2T ou UTOR
+    * <Button variant="contained" disableElevation href="./usb">Flashage du firmware USB</Button>
+        * Avantages : Si vous avez flashé le firmware Katapult, vous pouvez mettre à jour le firmware sans toucher la carte mère. Si vous utilisez une carte mémoire ou le mode DFU pour flasher, vous devez toujours suivre la méthode originale pour mettre à jour le firmware, communication fiable et stable
+        * Inconvénients : Si plusieurs périphériques USB sont connectés, cela peut affecter la transmission de données
+
+## Explication du firmware Katapult
+
+    <CANBOOT />

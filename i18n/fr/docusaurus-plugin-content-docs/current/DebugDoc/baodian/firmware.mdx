@@ -1,0 +1,75 @@
+---
+sidebar_position: 2
+---
+
+
+
+
+# Explications du Firmware
+
+    :::danger À savoir
+
+    * Il est préférable de compiler le firmware Klipper avec votre propre firmware de machine hôte
+    * Utiliser un firmware compilé par quelqu'un d'autre ou une version différente peut entraîner divers problèmes
+    * Évitez autant que possible d'utiliser des machines hôtes modifiées
+
+    :::
+
+## Explications Spéciales
+
+    :::info Explications Spéciales
+    * La plupart des cartes mères FLY sont déjà équipées du firmware `Katapult` à la sortie d'usine
+    * Les cartes mères FLY utilisent maintenant principalement le firmware `Katapult` pour flasher le firmware `Klipper`
+    * Les cartes mères DP5, D5 et D7 nécessitent une programmation manuelle du firmware `Katapult` correspondant
+    * En raison de l'impact précédent du firmware, après avoir flashé le firmware `Katapult`, il faut cliquer deux fois sur la réinitialisation de la carte mère pour rechercher l'ID de la carte mère, sinon le firmware ne peut pas être flashé
+    :::
+
+## Explications de la Compilation du Firmware
+
+    :::tip
+
+    * Les cartes mères FLY utilisent le bootloader Katapult et la carte SD pour flasher
+    * L'avantage du firmware Katapult est qu'il permet de mettre à jour le firmware sans contact direct avec la carte mère
+    * L'avantage du firmware bootloader est qu'il n'y a pas de risque de flasher le mauvais firmware
+    * Il est préférable d'utiliser `MobaXterm` pour configurer le firmware, car certains logiciels SSH particuliers peuvent entraîner des échecs de compilation selon les retours des utilisateurs
+
+    :::
+
+    * Veuillez noter que quel que soit le firmware, il est nécessaire de s'assurer que la compilation est correcte, sinon cela peut entraîner l'impossibilité de trouver l'imprimante ou même de la détecter
+
+## Explications de la Compilation du Firmware
+
+    :::tip
+    * Assurez-vous de cocher l'option `Enable extra low-level configuration options` sinon les détails spécifiques ne seront pas affichés
+    :::
+
+### STM32
+
+    * Si la configuration de `GPIO pins to set at micro-controller startup` est nécessaire lors de la compilation du firmware STM32, assurez-vous que les lettres sont en majuscule
+
+### RP2040
+
+    * Si la configuration de `GPIO pins to set at micro-controller startup` est nécessaire lors de la compilation du firmware RP2040, assurez-vous que les lettres sont en minuscule
+
+## Explications du Flashing du Firmware
+
+    :::danger À savoir
+
+    * Pour flasher le firmware `Klipper` via le firmware `Katapult`, assurez-vous de pouvoir trouver l'appareil, si l'appareil n'est pas détecté, cliquez manuellement deux fois sur la réinitialisation de la carte mère
+    * Veuillez ne pas utiliser des méthodes de flashing autres que celles mentionnées dans le tutoriel
+    * Vérifiez s'il n'y a pas d'erreurs de compilation dans le firmware, car des erreurs de compilation empêchent le flashing correct du firmware
+
+    :::
+
+### Firmware Katapult
+
+    * Méthode pour résoudre un firmware compilé avec des erreurs lorsqu'il est flashé avec le firmware Katapult
+    * Cliquez deux fois sur la réinitialisation de la carte mère, normalement une LED clignotera après la réinitialisation
+    * Effacez le firmware de la carte mère, puis reflashez le firmware Katapult
+
+### Firmware Bootloader
+
+    * Méthode pour résoudre un firmware compilé avec des erreurs lorsqu'il est flashé avec le firmware bootloader
+    * Re-flashez simplement via la carte TF
+    * Si le flash ne fonctionne pas, éteignez d'abord l'appareil, installez la carte SD sur la carte mère puis rallumez, cela devrait flasher en cinq secondes
+

@@ -1,0 +1,74 @@
+---
+sidebar_position: 7
+sidebar_label: Utilisation d'Eddy
+---
+
+
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# Utilisation d'Eddy
+
+    :::info
+
+    * Veuillez noter que pour le balayage du lit, il est recommandé d'utiliser une limite Z séparée, et il n'est pas recommandé d'utiliser le balayage du lit comme limite Z
+    * Lors de l'installation d'Eddy, la position de la base par rapport à la buse doit être au moins 1 à 2 mm au-dessus de la buse
+    * Lors de l'étalonnage de la fréquence d'Eddy, le PCB de la bobine doit être éloigné du lit d'au moins 5 mm
+    * Veuillez ne pas tester le lit à température ambiante, et ne pas allumer le lit pendant le test
+
+    :::
+
+## Schéma de câblage
+
+    * La thermistance vers le bas
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.png').default} size="100%" align="left" />
+
+
+## Configuration de référence et instructions d'utilisation
+
+    ### Configuration de balayage du lit
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 43
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+        * Veuillez noter qu'actuellement, il n'existe pas de module externe 1612, donc cette configuration n'est pas utilisable pour le moment
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 42
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### Configuration de compensation de température
+
+        ```cfg
+        [temperature_probe fly_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SB2040:gpio28
+        ```
+
+### Configuration bed_mesh
+
+    * Le paramètre `horizontal_move_z` dans [bed_mesh], il est recommandé de le régler à 2 pour que, lors du balayage de la plateforme, Eddy soit le plus proche possible de la plateforme
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+
+    <LDC1612 />
