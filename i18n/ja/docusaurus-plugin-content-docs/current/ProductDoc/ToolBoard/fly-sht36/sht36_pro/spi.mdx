@@ -1,0 +1,34 @@
+---
+sidebar_position: 8
+sidebar_label: SPIを使用できない解決方法
+---
+
+# 搭載5160ドライバーが使用できない
+
+    ```bash
+    Unable to write tmc spi 'extruder' register IHOLD_IRUN
+    ```
+
+## 具体的な理由
+
+    * 5160を使用して下記のエラーが表示された場合、上位機Armツールチェーンのバージョン問題`arm-none-eabi-gcc`
+
+## 解決方法
+    解決方法は以下の3つがあります
+
+    * コンパイルツールチェーン`arm-none-eabi-gcc`を`gcc10`から`gcc8`に変更
+    * 上位機システムの変更
+    * 正常なファームウェアの書き込み
+
+    ファームウェアのダウンロードと書き込みには、ツールボードが正常にcanに接続され、CANBOOTを所有している必要があります
+
+    * ダウンロード
+
+    ```bash
+    cd ~/ && git clone https://github.com/FengHua741/FLY_Katapult.git
+    ```
+    * 書き込み
+
+    ```
+    python3 ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/Klipper/SHT36PRO/SHT36PRO_KLIPPER_CAN-1M_v0.12.0-229-g589bd64c.bin -u <SHT36PRO_canid>
+    ```

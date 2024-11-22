@@ -1,0 +1,78 @@
+## CAN設定とID検索
+
+* CANを使用する場合は、上位機のCAN設定を確認してください
+
+----
+
+:::danger 注意
+
+主板を上位機に接続した後に、以下の操作を行ってください
+
+:::
+
+
+:::warning
+
+上位機のCANネットワーク、ブリッジ主板のCAN速度、CANツールボードの速度が完全に一致していることを確認してください
+
+:::
+
+### 検索デバイス前の注意事項
+
+    * CAN IDを検索する前に、まず[SSHに接続](/docs/DebugDoc/BasicTutorial/index.mdx "クリックでジャンプ")
+    * ネットワークを使用してSSHにログインしていることを確認してください。シリアルポートでのログインは使用しないでください
+    * UTOCに接続するか、CANブリッジファームウェアをフラッシュした主板が接続されていることを確認し、上位機に接続されたデータケーブルがデータ転送機能を持つことを確認してください
+
+### デバイスの検索
+
+    * 現在上位機に正常にログインしているので、`lsusb`を入力してデバイスを検索します。以下のいずれかの状況が発生します
+        * `lsusb`を入力したら`ls`コマンドが見つからないと表示された場合、以下のコマンドでインストールしてください
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * `lsusb`を入力した後、何も反応がない場合はシステムの問題でどうしようもないので、システムを変更するか、正常に動作するシステムを使用してください
+        * 以下の画像のような情報が表示された場合、これは参考に過ぎません。`1d50:606f`が表示されていることを確認するだけです
+            <ImageView image={require('@site/docs/General/get-id/img/606f.png').default} size="100%" align="left" />
+    * `1d50:606f`は今回使用するデバイスです。後続のヒントは無視してください。システムの問題により、完全に表示されない場合や表示されない場合があります
+    * 複数の`1d50:606f`がある場合は、1つを除外することをお勧めします。そうしないと、後続の書き込みやファームウェアの接続に影響を与えます。`FLY MINI PAD`を使用する場合は、UTOCを搭載したものを使用し、他のCANブリッジデバイスを使用しないことをお勧めします
+    * ない場合は、データケーブルが正しく接続されているか、ファームウェアが正しくフラッシュされているかを確認してください。
+
+:::warning 注意事項
+`1d50:606f`があるときにのみCAN IDを検索できます
+:::
+
+### CAN IDの検索
+
+    * 以下のコマンドを入力してID検索を行います
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * IDが表示され、最終行の`Application:`に`Klipper`と表示されている場合、そのIDは直接使用できます
+    * IDが表示され、最終行の`Application:`に`CANBOOT`または`Katapult`と表示されている場合は、ファームウェアの更新が必要です
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />
+
+
+### CAN問題集
+
+    :::danger 注意
+
+    * CAN IDが見つからない場合は、以下のドキュメントを参照してください  
+    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN問題集</Button>
+
+    :::
+
+### CANのIDを設定に記入する
+
+    * プリンタのウェブインターフェースを開き、左サイドバーの設定オプションで、fluiddの場合は`{…}`、mainsailの場合は`マシン`を探し、クリックして`printer.cfg`を見つけます
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.png').default} size="50%" align="left" />
+
+    * 取得したUUIDを`printer.cfg`の`[mcu]`ノードの`canbus_uuid:`にコピーして記入します。保存して再起動すると主板に接続されます。Klipperがファームウェアの更新を要求したり、ADCエラーが発生したりする場合は、Klipperが主板に接続されたことを示しています
+
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />
+
+        :::danger
+
+        注意：ドキュメントに記載されているすべてのIDは例示であり、実際の主板のIDはそれぞれ異なります。実際に取得したIDに基づいて変更してください。
+
+        :::

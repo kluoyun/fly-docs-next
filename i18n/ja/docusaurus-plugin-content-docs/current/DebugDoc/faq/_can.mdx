@@ -1,0 +1,110 @@
+----
+
+# エラーメッセージから問題を判断する
+
+    * 以下は一般的なエラーメッセージ
+        * OSError: [Errno 19] No such device
+        * can.CanError: Failed to transmit: [Errno 100] Network is down
+        * can.CanError: Failed to transmit: [Errno 105] No buffer space available
+    * 第一種は上位機が`1d50:606f`デバイスを見つけられない
+    * 第二種は上位機がCAN0を設定していないか、設定が間違っている
+    * 第三種は上位機のバッファが不足しているか、システムの問題などでバッファが崩壊する
+    * 第二点と第三点は下方のCAN0の設定を見て、問題を調査してください
+    * IDが検索できない場合は最下部を参照してください
+
+## 上位機がCANをサポートしているかを検査する
+
+    * FLY上位機の場合はこの操作は不要です
+    * システムが`Ubuntu`の場合、直接システムを変更することをお勧めします。CANの設定が面倒ですので、システム変更をお勧めします
+    * 以下のコマンドを入力して、システムがCANをサポートしているかを確認してください
+
+    ```bash
+    sudo modprobe can && echo "您的内核支持CAN" || echo "您的内核不支持CAN"
+    ```
+
+    * 上記のコマンドを入力すると、内核がCANをサポートしている場合は`您的内核支持CAN`と返されます。サポートしていない場合は`您的内核不支持CAN`と返されます。
+
+## CAN0を設定する
+
+    * このコマンドは元のシステムのCAN0の設定を上書きします。実行後、システムを再起動する必要があります
+    
+    * 1Mの速度を設定する場合は以下のコマンドを入力してください
+----
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig can0 txqueuelen 1024
+            pre-up ip link set can0 type can bitrate 1000000
+            pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+----
+    * 500Kの速度を設定する場合は以下のコマンドを入力してください
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig can0 txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 500000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    * デバイスを再起動します
+
+    ```bash
+    sudo reboot
+    ```
+
+
+## IDが検索できない場合は以下の点に注意してください
+
+    * Klipperが対応するIDを設定している場合、システム設定でまずIDを無効にしてからシャットダウンし、電源を切ってから再起動するか、メインボードのリセットボタンを押してください
+    * 上位機のCAN速度がメインボードやツールボードなどと一致しているか
+    * 以下のコードを使用して上位機のCAN速度を確認できます
+    * 断線がないか確認してください
+    ```bash
+    ip -details link show can0
+    ```
+    * 以下の画像で囲まれた部分が上位機のCAN速度とバッファです
+    * 上の`1024`は現在のCAN0バッファ
+    * 下の`1000000`は現在のCAN0速度
+
+    <ImageView image={require('@site/docs/DebugDoc/faq/img/details.png').default} size="80%" align="center" />
+
+    * UUIDがまだ検索できない場合は、以下の注意事項を注意深く確認してください
+
+        * メインボードやCANツールボードに正しく接続されているか
+        * 正しく電源供給されているか、メインボードを使用する場合はVCC電源に接続してください
+        * 上位機がCANネットワークをサポートしているか
+        * ファームウェアのコンパイルが正しいか
+## IDの検索
+
+    * 以下のコマンドを入力してIDを検索します
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * IDが表示され、最後の`Application:`にKlipperと表示される場合はそのIDを直接使用できます
+    * IDが表示され、最後の`Application:`に`CANBOOT`または`Katapult`と表示される場合はファームウェアを更新する必要があります
+    <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />
+
+
+## CAN IDの設定方法
+
+    * プリンタのウェブインターフェースを開き、左側のサイドバーの設定オプションでfluiddの場合は`{…}`、mainsailの場合は`機械`をクリックし、`printer.cfg`を見つけます
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.png').default} size="50%" align="left" />
+
+    * 検索したUUIDを`printer.cfg`の`[mcu]`ノードの`canbus_uuid:`にコピーし、保存して再起動するとメインボードに接続できます。Klipperがファームウェアの更新やADCエラーなどを警告する場合は、Klipperがメインボードに接続していることを示しています
+
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.png').default} size="50%" align="left" />
+
+        :::danger
+
+        注意：ドキュメントに表示されているすべてのIDは例示であり、実際の各メインボードのIDは異なります。実際に取得したIDを基に変更してください。
+
+        :::

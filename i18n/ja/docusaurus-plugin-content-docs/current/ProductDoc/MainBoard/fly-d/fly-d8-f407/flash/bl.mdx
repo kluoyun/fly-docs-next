@@ -1,0 +1,75 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapultファームウェア
+
+## Katapultファームウェアの説明
+
+    <CANBOOT />
+
+    :::tip
+
+    * D8はUSB接続を使用
+
+    :::
+
+## 焼き込みモードに入る
+
+    :::tip
+
+    左側が`RSTボタン`、右側が`BOOTボタン`
+
+    :::
+
+    * 焼き込みモードに入る方法は2種類
+    * 第一の方法：メインボードが完全に電源が切れている状態で、BOOTボタンを押しながらデータ転送可能なケーブルをメインボードとあなたのデバイスに接続
+    * 第二の方法：データ転送可能なケーブルをメインボードとあなたのデバイスに接続した後、BOOTボタンを押しながらRSTボタンを押し、RSTボタンを離した後、最後にBOOTボタンを離す
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d8-f407/flash/img/boot.png').default} size="50%" align="center" />
+
+## ファームウェアの焼き込み
+    <Tabs>
+        <TabItem value="win" label="Windows焼き込みガイド" default>
+
+            * D8のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">自動ダウンロード</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="ホストマシン焼き込みガイド">
+
+            <Katapult />
+
+            4. ファームウェアの焼き込み
+
+            :::tip
+
+            どれか一つのファームウェアを焼き込むだけで良い
+
+            :::
+
+            * 下記はファームウェアの焼き込みコマンド
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D8_F407.bin
+                ```
+
+            5. 下記の矢印で示された内容「File downloaded successfully」が表示されたら焼き込み成功
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            焼き込み完了後、メインボードの電源を一度完全に切る必要があります。
+
+            :::
+
+        </TabItem>
+    </Tabs>

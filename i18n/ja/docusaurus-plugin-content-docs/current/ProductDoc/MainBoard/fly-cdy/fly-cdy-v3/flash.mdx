@@ -1,0 +1,65 @@
+---
+sidebar_position: 2
+sidebar_label: ファームウェアのコンパイルと書き込み
+---
+
+
+
+
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+
+# ファームウェアのコンパイルと書き込み
+
+    :::tip
+
+    * CDVはデフォルトでTFカードを使用してファームウェアを書き込みます
+    * 容量が`32G`を超えないTFカードを準備してください
+    * 無名のメモリカードは書き込みに失敗する可能性があるため、以下の推奨されるメモリカードを使用してファームウェアを更新してください
+    * TFカードの転送速度は`class10`級以上が最適です。サンディスクなどのブランドのTFカードを使用することをお勧めします
+
+    :::
+
+
+
+## 準備作業
+
+    <SSH />
+
+## Klipperファームウェアのコンパイル
+
+    <MakeOperate/>
+
+    <USB />
+
+    * `Q`キーを押して**Save configuration**が表示されたら、`Y`キーを押してください
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 設定が保存され、コマンドラインに戻るはずです
+    * `make -j4`と入力してコンパイルを開始します。時間がかかります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されたらコンパイル成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * 下図はコンパイル成功の例です
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## ファームウェアの書き込み
+
+:::danger 注意事項
+* CDVにはTFカード書き込み用のBLファームウェアがプリインストールされています
+:::
+
+    <TF />

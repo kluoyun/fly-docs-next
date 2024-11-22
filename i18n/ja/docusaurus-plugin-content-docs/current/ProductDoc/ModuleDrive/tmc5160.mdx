@@ -1,0 +1,89 @@
+---
+sidebar_position: 3
+---
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160.png').default} size="80%" align="center" />
+
+## 基本パラメータ
+
+    * 入力電圧：12V-24V
+    * 最大電流：4.4A
+    * 適用ファームウェア：Marlin/Klipper/RRF
+    * サポートされるドライブモード：TMC：SPI
+    * マイクロステップ補間microPlyer付きのステップ/方向インターフェース
+    * 最高分解能は256分割
+    * stealthChop2による静音動作と滑らかな動きをサポート
+    * 中周波共振の抑制をサポート
+    * spreadCycleによる高ダイナミックモータ制御チョッパをサポート
+    * dcStepによる負荷依存速度制御をサポート
+    * stallGuard2による高精度センサレスモータ負荷検出をサポート
+    * coolStepによる電流制御をサポート、最大75%の省エネルギー
+
+## マザーボードのジャンパ説明
+
+    * TMC5160はSPIジャンパを使用
+    * FLYドライブのSPIピンは左から数えて4番目のピン、CSピンはSPIピンです。マザーボードが対応するピンでない場合、SPIを使用できません
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+
+## TMC5160リファレンス設定
+
+    :::danger
+
+    * ドライバのサンプル抵抗は`sense_resistor: 0.075`です、誤った設定をしないでください
+    * spi_busとspi_softwareは二者択一です
+    
+    :::
+
+### SPIモードリファレンス設定
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # モータの運転電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするか（有効はTrue、無効はFalse）
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## 無限位使用説明
+
+    <DIAG />
+
+    :::tip 無限位使用のヒント
+
+    * このドライバはDIAGピンを自分で溶接する必要があります、そうしないと無限位機能を使用できません
+    * 元の`endstop_pin:`はコメントアウトまたは削除し、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加する必要があります
+    * `diag1_pin:`を設定した後、リミットスイッチの状態が未トリガーであることを確認してください
+    * `driver_SGT: :`は適切な値を見つけるために自分でテストする必要があります
+
+    :::
+
+    * リファレンス設定
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 0に設定しないと原点復帰が失敗することがあります
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   設定後、リミットスイッチの状態が未トリガーであることを確認してください
+    #   このピンは通常、内部プルアップを有効にするために"^"プレフィックスを使用します
+    #   感度はベルトの張り具合に依存するため、調整が必要です
+    #  （driver_SGTHRSを適切な感度に設定することを確認してください）
+
+    ```

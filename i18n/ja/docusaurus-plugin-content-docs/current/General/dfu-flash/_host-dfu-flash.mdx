@@ -1,0 +1,41 @@
+1. インストールツールのインストール
+
+    * FLY上位機はインストールツールのインストールが不要
+    * インストールが必要な場合は注意：上位機はネットに接続できる必要があります
+    * すでにインストール済みの場合はインストール不要
+
+    ```bash
+    sudo apt update
+    sudo apt install dfu-util -y
+    ```
+
+    2. 以下のコマンドを実行して接続が成功したかどうかを確認します。
+
+    ```bash
+    lsusb
+    ```
+
+    * DFUデバイスが表示されない場合は、**焼付けモード**に再び入ることを試みてください
+    * システムバージョンの問題により、他の名前が表示される場合がありますが、`0483:df11`が表示されれば焼付けモードに入ったことを示します
+
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.png').default} size="80%" align="left" />    
+
+
+    3. ファームウェアの焼付け
+
+    * 下記のコードを実行して焼付けを開始します
+    
+    ```bash
+    sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/klipper/out/klipper.bin
+    ```
+
+    4. 下図の矢印で示された内容「File downloaded successfully」が表示されれば焼付け成功です
+
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="80%" align="left" />    
+
+    :::tip
+
+    焼付け完了後、一度完全に電源を切る必要があります。
+
+    :::

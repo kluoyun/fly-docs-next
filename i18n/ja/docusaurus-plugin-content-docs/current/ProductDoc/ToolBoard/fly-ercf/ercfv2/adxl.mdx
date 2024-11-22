@@ -1,0 +1,45 @@
+---
+sidebar_position: 6
+sidebar_label: 加速度計の使用
+---
+
+# 加速度計の使用
+
+import ADXL from "/docs/DebugDoc/faq/kipper-adxl.mdx";
+
+## klipperの切り替え
+
+    * まだマージされていないため、使用するにはklipperを切り替える必要があります
+
+    ```bash
+    sudo cp -r klipper klipperdev
+    sudo rm -rf ~/klipper
+    git clone https://github.com/FLYmaker/klipper.git
+    sudo systemctl restart klipper
+    ```
+
+    * 参照設定
+    ```cfg
+    #####################################################################
+    #                       LIS3DH加速度計設定（必要に応じて有効化）
+    #####################################################################
+    [lis2dw]
+    is_lis3dh:True
+    cs_pin: SHT36:gpio9
+    spi_software_sclk_pin: SHT36:gpio10
+    spi_software_mosi_pin: SHT36:gpio11
+    spi_software_miso_pin: SHT36:gpio12
+
+    [resonance_tester]
+    accel_chip: lis2dw
+    probe_points:
+        125, 125, 20  #この場所に共振測定時のノズル位置を設定してください
+
+
+```
+
+## 使用ガイド
+
+
+
+<ADXL />

@@ -1,0 +1,82 @@
+---
+sidebar_position: 1
+---
+
+
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 2209
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209.png').default} size="80%" align="center" />
+
+## 基本パラメータ
+
+    * 入力電圧 ：12V-24V
+    * 適用範囲： Marlin/Klipper/RRF ファームウェア
+    * モーターがステップを失いにくい
+    * 静音モードをサポート
+    * 大面積のファンヒートパッド、ドライバーの作業温度を低下させる
+    * ドライブモードのサポート：TMC：UART
+    * モーターストール検出をサポート
+
+## メインボードのジャンパーの説明
+
+    * TMC2209はUARTジャンパーを使用
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+    * FLYドライバーのUARTピンは左側から下へ数えて4番目のピン、PDNピンがUARTピンです。メインボードが対応するピン位置でなければUARTを使用できません
+    * 他のドライバーが5番目のピンを使用している場合は、我々のメインボードを使用するための方法を参照して解決してください  <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">UARTが使用できない解決方法</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/uart1.png').default} size="80%" align="center" />
+
+## TMC2209の参照設定
+
+    :::danger
+
+    ドライバーのサンプリング抵抗は0.110にしてください、間違って設定しないでください
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0.8                    # モーターの運転電流値（単位：mA）
+    sense_resistor: 0.110               # ドライバーのサンプリング抵抗を変更しないでください
+    stealthchop_threshold: 0
+    ```
+
+## 無限位置の使用説明
+
+    <DIAG />
+
+    :::tip 無限位置の使用ヒント
+
+    * 元の`endstop_pin:`は無効化するか削除する必要があります、そして`endstop_pin: tmc2209_stepper_x:virtual_endstop`を追加します
+    * `diag_pin:`を設定した後、リミットの状態が未トリガーになります
+    * `driver_SGTHRS:`は適切な値を自分でテストする必要があります
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209diag.png').default} size="80%" align="center" />
+
+    * 参照設定
+
+    :::tip
+
+    * FLY 2209の裏側にディップスイッチがあります、反対側に切り替える必要があります
+    * FLY 2209CはDIAGを直接接続するドライバーで、このステップは不要です
+
+    :::
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 0にしないとリセットに失敗する可能性があります
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```

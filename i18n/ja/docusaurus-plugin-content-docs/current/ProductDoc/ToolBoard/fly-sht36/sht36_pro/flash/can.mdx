@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+sidebar_label: CANファームウェアのコンパイルと書き込み
+---
+
+import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CANファームウェアのコンパイル
+
+## コンパイルの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * マイクロコントローラの起動時に設定するGPIOピンの選択、入力：!gpio13 注意!は大文字
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/can.png').default} size="100%" align="center" />
+    * `Q`キーを押して、**Save configuration**が表示されたら、`Y`キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 設定が保存され、コマンドラインインターフェースに戻るはずです
+    * `make -j4`を入力してコンパイルを開始します、時間がかかるのでご注意ください
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されるとコンパイルが成功したことを示します
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## デバイスの検索
+
+    <LS />
+
+
+## ファームウェアの書き込み
+
+    * ファームウェアを書き込む前に、ツールボードをUTOCまたはブリッジファームウェアを書き込んだメインボードにXT30データケーブルで接続します。以下は参考接続図です
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * CAN HとCAN Lが切断された状態でマルチメータで抵抗値を測定し、`60Ω`前後であることを確認してください。`120Ω`の場合は`120Ω`のジャンパーを接続し、`40Ω`前後の場合はジャンパーを取り外す必要があります
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/120.png').default} size="80%" align="center" />
+
+    <CANFLASH />
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動すると、LEDが常に点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/led.png').default} size="70%" align="center" />

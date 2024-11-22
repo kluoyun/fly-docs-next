@@ -1,0 +1,60 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BLファームウェア
+
+    :::tip
+
+    * 工場出荷時に既に`ブートローダー`がプリインストールされているため、再インストールする必要はありません。
+
+    :::
+
+## 書き込みモードへの移行
+
+    :::tip
+
+    右側が`BOOTボタン`、左側が`RESETボタン`です。
+
+    :::
+
+    * 書き込みモードへの移行方法は2通りあります。
+    * 1つ目：完全に電源を切った状態で、BOOTボタンを押しながら、データ転送が可能なケーブルを一端をメインボードに、もう一端をあなたのデバイスに接続します。
+    * 2つ目：データ転送が可能なケーブルを一端をメインボードに、もう一端をあなたのデバイスに接続した後、BOOTボタンを押し続け、RSTボタンを押してからRSTボタンを放し、最後にBOOTボタンを放します。
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/flash/img/boot.png').default} size="100%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windowsでの書き込み手順" default>
+            * E3のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/E3_V2.bin">自動ダウンロードをクリック</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="ホストマシンの書き込み手順">
+            
+            <Katapult />
+            4. ファームウェアの書き込み
+            :::tip
+            どれか一つのファームウェアを書き込むだけで十分です。
+            :::
+            * 以下のコマンドでファームウェアを書き込みます。
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/E3/E3_V2.bin
+                ```
+            5. 以下のようなメッセージが表示されたら、書き込みが成功しました。
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+            :::tip
+            書き込みが完了した後、メインボードの電源を一度完全に切る必要があります。
+            :::
+        </TabItem>
+    </Tabs>

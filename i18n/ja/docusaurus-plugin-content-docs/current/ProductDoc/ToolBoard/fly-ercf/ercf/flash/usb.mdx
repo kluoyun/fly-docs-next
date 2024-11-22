@@ -1,0 +1,60 @@
+---
+sidebar_position: 4
+sidebar_label: USBファームウェアの書き込み
+---
+
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+
+
+# USB ファームウェアのビルド
+
+    :::tip
+
+    * ERCF出荷時にはCAN接続のKatapultファームウェアがプリインストールされています
+    * USBファームウェアの書き込みが必要な場合は、USB用のKatapultファームウェアを書き込む必要があります
+    * 一度書き込んだ後は再度書き込む必要はありません
+    * <Button variant="contained" disableElevation href="./bl">Katapultファームウェアの書き込み</Button>
+
+    :::
+
+## ビルドの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * 起動時に設定するGPIOピンを選択し、「gpio17」と入力します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/usb.png').default} size="100%" align="center" />
+    * `Q` キーを押し、「**Save configuration**」が表示されたら、`Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * これで設定が保存され、コマンドラインに戻ります
+    * `make -j4` を入力してビルドを開始します。少し時間がかかります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されれば、ビルドが成功したことになります
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## 書き込みモードに入ったかどうかを確認
+
+
+    <LS />
+
+
+## ファームウェアの書き込み
+    
+    <Katapult />
+
+## ファームウェアが起動したかどうかを確認
+
+    * ファームウェアが正常に起動すればLEDが点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.png').default} size="100%" align="center" />

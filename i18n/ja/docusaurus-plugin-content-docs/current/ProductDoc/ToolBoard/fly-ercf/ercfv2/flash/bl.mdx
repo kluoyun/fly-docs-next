@@ -1,0 +1,89 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapultファームウェア
+
+## Katapultファームウェアの説明
+
+    <CANBOOT />
+
+    :::tip
+
+    * ERCF V2はCANR、S232、USBをサポートしています
+    * ここではCANファームウェアを500Kと1Mの速度で提供します
+
+    :::
+
+## 書き込みモードへの移行
+
+    :::tip
+
+    囲まれたのが`BOOTボタン`です
+
+    :::
+
+    * 書き込みモードに移行するには、完全に電源を切った状態で、BOOTボタンを押しながら、データ転送可能なデータケーブルを一端を基板に、もう一端をホストマシンに接続します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/boot.png').default} size="100%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windows書き込みガイド" default>
+
+            * ERCF V2のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ERCF_V2.zip">自動ダウンロード</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="ホストマシン書き込みガイド">
+            
+            <Katapult />
+
+            4. ファームウェアの書き込み
+
+            :::tip
+
+            どれか一つのファームウェアを書き込むだけです
+
+            :::
+
+            * 下記は500K CAN速度のファームウェア書き込みコマンドです
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCFV2_CANBOOT_CAN_500K.uf2
+                ```
+                       
+            * 下記は1M CAN速度のファームウェア書き込みコマンドです
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/ERCF/FLY_ERCFV2_CANBOOT_CAN_1M.uf2
+                ```
+            * 下記はUSBのファームウェア書き込みコマンドです
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/FLY_ERCFV2_CANBOOT_USB.uf2
+                ```
+
+            5. 下記のメッセージが表示されれば、書き込み成功です
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+            :::tip
+
+            書き込み完了後、基板に完全に電源を切る必要があります。
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動すれば、LEDが点滅します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.png').default} size="100%" align="center" />

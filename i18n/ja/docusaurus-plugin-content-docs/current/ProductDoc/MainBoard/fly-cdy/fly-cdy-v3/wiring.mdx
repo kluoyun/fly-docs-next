@@ -1,0 +1,198 @@
+---
+sidebar_position: 4
+sidebar_label: マザーボードの配線
+---
+
+
+
+
+# マザーボードの配線
+
+## インターフェース図
+
+### インターフェースの説明
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Pin脚の説明
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## 電源の配線
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/power.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fuse.png').default} size="40%" align="center" />
+
+----
+
+## ドライバのインストール
+
+### マザーボードドライバのジャンパ設定
+
+* **STEP/DIRモード。** このモードでは、ジャンパキャップを使用して細分設定を行い、電位器で電流を調整します。最も一般的なA4988ドライバを使用する場合、製造元が提供する細分設定表を参照し、ジャンパキャップで細分を設定します。
+* **UARTモード。** 一般的にこのモードを使用するドライバには：TMC2208、TMC2209、TMC2226などがあります。これらのドライバチップはUART非同期シリアル通信を介してメインコントローラと通信し、設定ファイルを変更することでドライバの細分、動作電流、静音モードなどを設定できます。
+* **SPIモード。** 一般的にこのモードを使用するドライバには：TMC5160、TMC2230などがあります。これらのドライバチップはSPIを介してメインコントローラと同期シリアル通信を行い、同様に設定ファイルを変更することでドライバの細分、動作電流、静音モードなどを設定できます。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### ドライバのインストール
+
+* ドライバをインストールする前に、ドライバやマザーボードに損傷を与えないために適切なチェックを行ってください。
+* **FLYドライバ：** 無限位置リセット機能を使用しない場合は、ダイポールスイッチを1の位置にしてください。逆に無限位置リセット機能を使用する場合は、ダイポールスイッチをONの位置にしてください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **注意！！！ ドライバモジュールをインストールする際には、必ず挿入方向が正しいことを確認してください。つまり、ENピンが左上にあります。そうでないとドライバやマザーボードが損傷します！！！ ドライバにヒートシンクをしっかり貼り付けてください！！！**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## ステッピングモーターの配線
+
+* 3Dプリンタで最も一般的なのは2相4線ステッピングモーターで、その原理は以下の図の通りです。ステッピングモーターの線順を識別する方法は2つあります：
+    1. ステッピングモーターの4本の線を任意に2本短絡し、手でモーター軸を回します。回転が非常に重い場合、これら2本の線は同じコイルグループ、すなわちA+とB+またはA-とB-です。短絡していない状態と同じく簡単に回る場合、これら2本の線は異なるコイルグループです。
+    2. マルチメーターのブザー機能を使用し、4本の線の任意の2本を測定します。ブザーが鳴る場合、これら2本の線は同じコイルグループです。逆に鳴らない場合は異なるコイルグループで、1本の線を変更して再測定する必要があります。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## ヒーター管の配線
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## ヒートベッドの配線
+
+* **交流ヒートベッド：** ソリッドステートリレーを配線する際には、入力と出力を間違えないように注意してください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **直流ヒートベッド：** マザーボードに搭載されているMOSで直流ヒートベッドに接続する際には、電力の使用に注意してください。直流ヒートベッドの最大電流は10Aを超えてはいけません。10Aを超える場合は、外部MOSモジュールを使用してヒートベッドを使用することをお勧めします。そうしないとマザーボードに取り返しのつかないダメージを与える可能性があります。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## 温度センサーの配線
+
+### 温度センサーの種類紹介
+
+* 温度センサーの配線方法は以下の図の通りです。温度センサーの種類については購入した業者に問い合わせてください。
+
+* FLYで購入したもの（以下の図に示す）の場合、sensor_type を **ATC Semitec 104GT-2** に設定してください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* 一般的なNTC 100K（以下の図に示す）の場合、sensor_type を **Generic 3950** に設定してください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### マザーボードの温度センサー配線
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/nozzle.png').default} size="40%" align="center" />
+
+
+
+----
+
+## ファンの配線
+
+* **ファンの配線**
+
+    :::tip
+
+    * MOSをインストールする必要があります
+
+    :::
+
+    * ファンの配線
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fan.png').default} size="30%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fanmos1.png').default} size="30%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fan-voltage.png').default} size="30%" align="center" />
+
+----
+
+## リミットスイッチの配線
+
+* リミットスイッチには常開（NO）と常閉（NC）の2種類があります。一般的に3Dプリンタでは、**常閉（NC）**の使用が推奨されます。これにより、リミットスイッチの回路に問題が発生した場合、システムが即座にエラーを報告し、不要な衝突を防ぎ、プリンタの損傷を避けることができます。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## レベリングセンサーの配線
+
+
+
+### BL-Touchの配線
+
+* BL-touchには5本の線があります。1組目は3本でセンサーの電源供給とプローブの展開/収納を担当し、2組目は地線と信号線で、リミット信号を出力します。BL-touchの配線を行う際には、線順を慎重に確認してください。誤った配線はセンサーとマザーボードを永久的に損傷させる可能性があります！！！以下の図に示すように配線してください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Klickyの配線
+
+* Klickyはサードパーティのレベリングセンサーで、非常に低コストで自宅で作ることができ、性能も安定しているため、コストパフォーマンスが高く、使用をお勧めします。以下の図に示すように配線してください。
+* プロジェクトアドレス：[jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "プロジェクトアドレス、クリックで移動")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Voron Tapの配線
+
+* TapはV2およびTridentプリンタ設計に適したノズルベースのZプローブです。全体のツールヘッドが動いて光スイッチをトリガーし、通常のリミットスイッチよりも精度が高いです。市場に出回っているほとんどのプリントプラットフォームで使用できます。
+
+    :::warning
+
+    Voron Tapは **24V** への接続は推奨されません。特定のバージョンでは **24V** を使用すると、Tapセンサーが焼け付く可能性があります。これはFly製品の問題ではなく、Voron Tapの設計上の欠陥です。ご了承ください！！！
+
+    :::
+
+    :::danger
+
+    注意：5VとGNDを逆に接続しないでください。そうするとTapセンサーやマザーボードを損傷する可能性があります！！！
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+## FLY-Mini12864 LCDの配線
+
+* 以下の図はFLYのmini12864の配線方法です。他のメーカーの画面については、それぞれのメーカーに問い合わせてください。Mini12864画面を逆に接続したり、間違った配線をすると、上位機がMCUに接続できなくなる可能性があります。mini12864画面を使用する前にMCUに正常に接続できていた場合、mini12864を使用した後に接続できなくなった場合は、mini12864の配線を抜いてみてください！！！
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/mini12864.png').default} size="30%" align="center" />
+
+----
+
+## 上位機への接続
+
+* マザーボードはTypeCインターフェースを介して上位機のUSBポートに接続することも、シリアルポートを介して上位機に接続することもできます。ここでは前者についてのみ説明します。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----

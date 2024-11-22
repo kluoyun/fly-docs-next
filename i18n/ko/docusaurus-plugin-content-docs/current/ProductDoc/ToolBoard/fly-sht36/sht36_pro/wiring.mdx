@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-sidebar_label: 메인보드 연결
+sidebar_label: 메인보드 배선
 ---
 
 
@@ -12,129 +12,17 @@ sidebar_label: 메인보드 연결
 
 
 :::tip
-증정된 파란색 방열판을 드라이버에 붙여주세요!!!
+증정된 파란색 방열판을 드라이버에 부착하세요!!!
 :::
 
 
 
-## 종단 저항 설정
+# 메인보드 참고 배선
 
-:::tip
-CAN을 사용하기 전에 CANBUS 종단 저항을 올바르게 설정하세요.
-:::
-    * CANBUS 버스 프로토콜에서는 한 버스에 두 개의 120옴 저항이 있어야 합니다.
-    * USB 장치를 몇 개 연결하든, 하나의 버스에 속한다면 두 개의 120옴 저항만 설정하면 됩니다. 각 장치에 저항을 추가할 필요가 없습니다.
-    * CAN H와 CAN L 신호선을 연결한 후, 멀티미터로 CAN H와 CAN L 사이의 저항값을 측정하면 약 60옴이어야 합니다.
-    
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/120.png').default} size="80%" align="center" />
+    :::warning 주의사항
 
-## 전원 연결
+    이미지 해상도가 너무 높아 웹 페이지에서 보기 어려우니, 마우스 커서를 배선도 위에 놓고 오른쪽 클릭 후 '이미지 다른 이름으로 저장'을 선택하여 이미지를 데스크탑에 저장한 후 확인하세요!!!
 
-:::tip
-FLY SHT36 Pro는 전원 방향 방지 기능을 지원하지 않습니다!!! 전원을 연결하기 전에 전원 연결을 주의 깊게 확인하세요, 반대로 연결하지 마세요!!!! 그렇지 않으면 SHT36 V2 도구 보드가 손상될 수 있습니다!!!
-:::
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/power.png').default} size="80%" align="center" />
+    :::
 
-## 팬 MOS
-
-팬 MOS는 정방향이 없습니다, 단단히 꽂기만 하면 됩니다.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/mos.png').default} size="80%" align="center" />
-
-## 팬 연결
-
-SHT36는 최대 두 개의 제어 가능한 팬을 지원하며, 팬 전압은 전원 전압입니다. 연결 방법은 다음과 같습니다.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/fan.png').default} size="80%" align="center" />
-
-## 히터 연결
-
-히터는 최대 5A의 전류를 지원하므로 사용 시 히터의 전력을 주의하세요!
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/heat.png').default} size="80%" align="center" />
-
-## 열전도계 연결
-
-아래 그림은 일반 열전도계와 PT1000의 연결 방법입니다.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/thermistor.png').default} size="80%" align="center" />
-
-아래 그림은 PT100의 연결 방법입니다. 기본적으로 두 선 PT100은 왼쪽에서 오른쪽으로 2번째와 3번째 핀에 연결하면 됩니다.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/31865.png').default} size="80%" align="center" />
-
-## RGB 연결
-
-RGB LED의 양극과 음극을 반대로 연결하지 않도록 주의하세요, 그렇지 않으면 SHT 도구 보드가 손상될 수 있습니다.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/rgb.png').default} size="80%" align="center" />
-
-## 압출기 연결
-
-압출기 연결이 완료되면, 드라이버 전류를 설정하고 압출기 모터의 회전 방향을 보정하세요.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/extruder.png').default} size="80%" align="center" />
-
-## 한계 스위치
-
-    한계 스위치는 정상 개방(NO)과 정상 폐쇄(NC) 두 가지가 있습니다. 일반적으로 3D 프린터에서는 정상 폐쇄(NC)를 사용하는 것이 좋습니다. 이렇게 하면 한계 스위치 회로에 문제가 발생했을 때 시스템이 즉시 오류를 보고하여 불필요한 충돌을 방지하고 프린터를 보호할 수 있습니다.
-
-    VORON 모델의 경우, 한계 스위치의 설치 위치를 변경하는 것을 고려해볼 수 있습니다. 프린트 헤드 슬라이더에 X 한계 스위치를 설치하고, A 모터 베이스에 Y 한계 스위치를 설치하는 것이 좋습니다. 또한, SHT36에서 한계 스위치 앞에 ``^``를 추가하는 것이 좋습니다, 신호를 풀업합니다. 예:
-
-    ```cfg
-    [stepper_x]
-    endstop_pin: ^sht36:PA0  # 앞에 ^를 추가하여 신호를 풀업합니다, 특히 PA1을 사용할 때 반드시 풀업을 추가하세요 ^
-    ```
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/endstop.png').default} size="80%" align="center" />
-
-## 레벨링 센서 연결
-
-:::danger 주의사항
-gpio21은 PWM 신호 출력만 지원하며, 신호 입력은 지원하지 않습니다!!! 따라서 레벨링 센서나 한계 스위치의 입력으로 사용할 수 없습니다!!!
-:::
-
-### 근접 스위치
-
-    VORON 공식 권장 사항은 오므론 Omron TL-Q5MC(이전에는 PL08N을 권장했으나, 두 제품의 원리는 동일하고 탐지 거리만 다름) 센서를 사용하여 열판 레벨링을 수행하는 것입니다.
-
-    SHT36 Pro는 근접 스위치 사용을 권장하지 않으며, 별도로 12V 또는 24V 전원선을 연결하여 근접 스위치에 전원을 공급해야 합니다.
-    
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/pl08.png').default} size="80%" align="center" />
-
-
-### Klicky
-
-    Klicky는 제3의 레벨링 센서로, 매우 저렴한 비용으로 집에서 제작할 수 있고, 성능이 안정적이며 성비가 가장 높아 사용을 권장합니다. 연결 방법은 아래 그림과 같습니다.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/klicky.png').default} size="80%" align="center" />
-
-### Voron Tap
-
-    Voron Tap은 Voron 팀이 최근 발표한 레벨링 센서 솔루션으로, 정밀도가 높고 안정성이 강하며 적응성이 좋습니다. 연결 시, 양극과 음극이 반대로 연결되지 않도록 주의하세요, 그렇지 않으면 Tap 센서나 SHT 도구 보드가 손상될 수 있습니다.
-
-:::tip
-Voron Tap은 **24V** 연결을 권장하지 않습니다, 특정 버전에서 **24V**를 사용하면 Tap 센서가 손상될 확률이 있습니다. 이는 Fly 제품의 문제가 아니라 Voron Tap의 설계 결함입니다, 양해 부탁드립니다!!!
-:::
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/tap.png').default} size="80%" align="center" />
-
-### Bltouch
-
-    BL-touch에는 총 다섯 개의 선이 있으며, 첫 번째 그룹은 세 개의 선으로 센서의 전원 공급과 프로브의 들어올림/내려놓기를 담당하고, 두 번째 그룹은 접지선과 신호선으로 한계 신호를 출력합니다. BL-touch 연결 시 연결 순서를 주의 깊게 확인하세요, 잘못된 연결은 센서와 메인보드를 영구적으로 손상시킬 수 있습니다!!! 연결 방법은 아래 그림과 같습니다.
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/bltouch.png').default} size="80%" align="center" />
-
-
-## SHT36 Pro와 UTOC 연결
-
-    FLY UTOC은 USB를 CAN 버스로 변환하는 모듈로, 이를 통해 FLY π의 USB 포트를 CAN 버스로 전환하여 3D 프린터 메인보드, SHT36 V2 등 CAN 버스 제품과 연결할 수 있습니다. FLY UTOC 보드에는 다양한 단자 인터페이스가 있어 사용이 유연하고 다양한 상황에 적합합니다. **또한, UTOC은 출하 시 이미 펌웨어가 설치되어 있어, 추가로 펌웨어를 설치할 필요가 없습니다.**
-
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/utoc.png').default} size="100%" align="left" />
-
-    **USB-IN:** USB를 CAN으로 변환하는 입력 인터페이스, 상위 컴퓨터에 연결
-
-    **12-24v & GND:** 전원 인터페이스
-
-    **CANBUS:** CAN 인터페이스, 확장 메인보드 및 도구 보드 등과 연결(보드에 CAN 수신/송신 칩이 있는 장비에 연결)
-
-    **CANBUS/*:** CAN 인터페이스, 확장 메인보드 및 도구 보드 등과 연결(STM32 장비의 USB 인터페이스[PA11,PA12]에만 연결, 해당 버전의 UTOC을 구매하세요)
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/img/sht36pro_wiring.png').default} size="100%" align="center" />

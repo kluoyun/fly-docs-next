@@ -1,0 +1,85 @@
+---
+sidebar_position: 9
+---
+
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 5160
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.png').default} size="60%" align="center" />
+
+## TMC-5160
+
+    * 入力電圧：12V-48V
+    * 最大電流：4.4A
+    * 適用： Marlin/Klipper/RRF ファームウェア
+    * ドライブモードサポート：TMC：SPI
+    * マイクロステップ補間のステップ/方向インターフェース
+    * 最大分解能は256分割
+    * stealthChop2静音動作とスムーズな動作をサポート
+    * 中周波数共振の共振抑制をサポート
+    * spreadCycle高動態モータ制御チョッパをサポート
+    * dcStep負荷関連速度制御をサポート
+    * stallGuard2高精度無センサーモータ負荷検出をサポート
+    * coolStep電流制御をサポート、最大75％の省エネが可能
+
+
+
+## TP5160の参考設定
+
+    :::danger
+
+    * ドライバのサンプル抵抗は`sense_resistor: 0.075`です、誤って設定しないでください
+    * spi_busとspi_softwareはどちらか一方を選択してください
+    
+    :::
+
+### SPIモードの参考設定
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # モーターの運転電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするか（有効はTrue、無効はFalse）
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## 無限位使用説明
+
+    <DIAG />
+
+    :::tip 無限位使用のヒント
+    
+    * TP5160の無限位を使用するには、メインボードのDIAGジャンパーを接続する必要があります
+    * 元の`endstop_pin:`は無効にするか削除し、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加します
+    * `diag1_pin:`を設定した後にリミット状態を更新すると未トリガー状態になります
+    * `driver_SGT: :`は適切な値を自分でテストする必要があります
+
+    :::
+
+    * 参考設定
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 0に設定しないとホームポジションに戻ることができない可能性があります
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   設定後、リミット状態が未トリガーであることを確認してください
+    #   このピンは通常、内部プルアップを有効にするために"^"プレフィックスを使用します
+    #   感度はベルトの張り具合に依存し、自分で調整する必要があります
+    #  （適切な感度にdriver_SGTHRSを設定する必要があります）
+
+    ```

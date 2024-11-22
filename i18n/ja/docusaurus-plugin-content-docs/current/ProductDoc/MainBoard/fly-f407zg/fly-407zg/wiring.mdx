@@ -1,0 +1,188 @@
+---
+sidebar_position: 4
+sidebar_label: マザーボード配線
+---
+
+# マザーボード配線
+
+## インターフェース図
+
+### インターフェース説明
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### ピンの説明
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## 電源配線
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/power.png').default} size="40%" align="center" />
+----
+
+## ドライバの設置
+
+### マザーボードドライバのジャンパー
+
+* **STEP/DIRモード。** このモードでは、ジャンパーキャップを使用してマイクロステップを設定し、電位器を調整して電流を調節します。最も一般的なのはA4988ドライバで、このドライバを使用する場合、製造元が提供するマイクロステップ設定表を確認し、ジャンパーキャップで設定する必要があります。
+* **UARTモード。** このモードを使用する最も一般的なドライバは：TMC2208、TMC2209、TMC2226などです。この種のドライバチップは、UART非同期シリアル通信を使用してマスターコントローラと通信することができ、設定ファイルを変更することでドライバのマイクロステップ、動作電流、サイレントモードなどを設定できます。
+* **SPIモード。** このモードを使用する最も一般的なドライバは：TMC5160、TMC2230などです。この種のドライバチップは、SPIでマスターコントローラと同期シリアル通信を行い、同様に設定ファイルを変更してドライバのマイクロステップ、動作電流、サイレントモードなどを設定できます。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### ドライバの取り付け
+
+* ドライバを取り付ける前に、適切なチェックを行う必要があります。ドライバやマザーボードに損傷を与えないようにするためです。
+* **FLYドライバ：** 無限回転ゼロリセット機能を使用しない場合、ディップスイッチを1の位置にしてください；逆に、無限回転ゼロリセット機能を使用する場合は、ディップスイッチをONの位置にしてください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **注意！！！ ドライバモジュールを取り付ける際は、ENピンが左上に来るように正しく挿入してください。さもないと、ドライバやマザーボードが故障する可能性があります！！！ドライバに放熱シートを貼ることをお忘れなく！！！**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## ステッピングモータの配線
+
+:::info
+* どのメーカーの2相ステッピングモータでも、最終的に4本の線に対応します。色は何でも良い、黒、白、緑、黄など、4本の線に対応しています。したがって、線をA、Bの2つのグループに分ける必要があります。
+* 2相4線ステッピングモータの場合、AグループかBグループかを知る必要はありません。主に一組を確認することが重要で、設定ファイルでモータの方向を変更できます。
+:::
+
+* 3Dプリンタで最も一般的に使用されるのは2相4線ステッピングモータで、その原理は以下の図の通りです。ステッピングモータの線順を判別する方法は2つあります：
+    * 任意の2本の相線を接続し、手でモータの軸を回転させると、明らかな抵抗が感じられる場合、その2本の相線は一組です。逆に、そうでない場合は、他の相線をテストしてください。
+    * ワークメーターで、通電チェックモードに設定し、ステッピングモータの任意の2本の相線をテストします。通電すれば、一組と判断できます；逆に、そうでない場合は、他の相線をテストしてください。
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/motor.png').default} size="40%" align="center" />
+
+----
+
+## ヒーターの配線
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/heater.png').default} size="60%" align="center" />
+
+----
+
+## ホットベッドの配線
+
+* **ACホットベッド：** 配線時には、入力と出力が間違わないように注意してください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.png').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-ac-2.png').default} size="40%" align="center" />
+
+* **DCホットベッド：** MOSFETが搭載されている場合は、DCホットベッドに接続する際の電力に注意してください。DCホットベッドの最大電流は10Aを超えないようにしてください。10Aを超える場合は、外部MOSFETモジュールを使用することをお勧めします。さもないと、マザーボードに不可逆的な損傷を与える可能性があります。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-dc.png').default} size="60%" align="center" />
+
+----
+
+## 温度センサの配線
+
+### 温度センサの種類紹介
+
+* 温度センサの配線方法は以下の図の通りです。温度センサの種類については購入元に問い合わせてください。
+
+* flyで購入した場合（以下の図のように）、sensor_type を **ATC Semitec 104GT-2** に設定してください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.png').default} size="30%" align="center" />
+
+* 一般的なNTC 100K（以下の図のように）、sensor_type を **Generic 3950** に設定してください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.png').default} size="40%" align="center" />
+
+----
+
+### マザーボードの温度センサ配線
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-4.png').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-5.png').default} size="40%" align="center" />
+
+
+
+----
+
+## ファンの配線
+
+* **ファンの配線**
+
+    :::tip
+
+    * MOSFETは取り付ける必要があります
+
+    :::
+
+    * ファンの配線
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/fan.png').default} size="30%" align="center" />
+
+----
+
+## 限位スイッチの配線
+
+* 限位スイッチには常開（NO）と常閉（NC）の2種類があります。一般的に3Dプリンタでは、**常閉（NC）** を使用することをお勧めします。こうすることで、限位スイッチの回路に問題が発生した場合、システムがすぐにエラーを報告し、不必要な衝突を防ぎ、プリンタの損傷を避けることができます。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/endstop.png').default} size="40%" align="center" />
+
+----
+
+## 調平センサの配線
+
+### BL-Touchの配線
+
+* BL-touchには5本の線があります。最初の3本はセンサの電源とプローブの伸縮を担当し、2番目のグループはグラウンド線とシグナル線で、限位信号を出力します。BL-touchを接続する際には、線順を慎重に確認してください。間違った接続はセンサやマザーボードに永久的な損傷を与える可能性があります！！！接続方法は以下の図の通りです。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bltouch.png').default} size="40%" align="center" />
+
+----
+
+### Klickyの配線
+
+* Klickyはサードパーティの調平センサで、非常に低コストで自宅で製作可能で、性能も安定しており、コストパフォーマンスが高いのでお勧めです。接続方法は以下の図の通りです。
+* プロジェクトアドレス：[jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "プロジェクトアドレスをクリックするとジャンプします")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/klicky.png').default} size="40%" align="center" />
+
+----
+
+### Voron Tapの配線
+
+* TapはノズルベースのZプローブで、V2およびTridentプリンタ設計に適しています。ツールヘッド全体が光スイッチをトリガーするために移動し、一般的な限位スイッチよりも精度が高いです。ほとんどの印刷プラットフォームで使用可能です。
+
+    :::warning
+
+    Voron Tapは **24V** を接続することはお勧めしません。特定のバージョンでは **24V** を使用するとTapセンサが焼ける可能性があるため、Fly製品の問題ではなく、Voron Tapの設計上の欠陥です。ご注意ください！！！
+
+    :::
+
+    :::danger
+
+    注意：5VとGNDを逆に接続しないでください。さもないと、Tapセンサやマザーボードが故障する可能性があります！！！
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/tap.png').default} size="40%" align="center" />
+
+----
+
+
+
+## 上位機への接続
+
+* マザーボードはType-Bインターフェースで上位機のUSBポートに接続することも、シリアルポートで接続することもできます。ここでは前者についてのみ説明します。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/connect-host.png').default} size="40%" align="center" />
+
+----

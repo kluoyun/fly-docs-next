@@ -1,0 +1,194 @@
+---
+sidebar_position: 2
+---
+
+
+
+
+
+# よく使われるデバッグコマンド
+
+    :::tip
+
+    * 本チュートリアルはFuiiddウェブページを主に扱います
+    * 本チュートリアルは既にプリンターと正常に接続されていることを前提としています
+    * 本チュートリアルでは一般的なコマンドを提供しますが、様々な問題により完全に収録されているわけではありません
+
+    :::
+
+## ドライバ関連
+
+    :::danger 注意事項
+
+    * ドライバが設定されていないか問題がある場合はチェックできません
+    * すべてのドライバに電源を供給し、メインボードに電源を供給し、ドライバのジャンパと設定が正常であることを確認してください！！
+
+    :::
+
+
+### ドライバ状態の確認
+
+    * このコマンドはTMCドライバのSPI/UARTモードの状態を検証します
+        ```bash
+        DUMP_TMC STEPPER=stepper_x
+        DUMP_TMC STEPPER=stepper_x1
+        DUMP_TMC STEPPER=stepper_y
+        DUMP_TMC STEPPER=stepper_y1
+        DUMP_TMC STEPPER=stepper_z
+        DUMP_TMC STEPPER=stepper_z1
+        DUMP_TMC STEPPER=stepper_z2
+        DUMP_TMC STEPPER=stepper_z3
+        DUMP_TMC STEPPER=extruder
+        ```
+
+### ドライバの強制移動
+
+    * `printer.cfg`に以下のコマンドを追加します
+        ```bash
+        [force_move]
+        enable_force_move: true
+        ```
+
+    * 強制的に1mm前後移動するコマンド
+        ```bash
+        STEPPER_BUZZ STEPPER=stepper_x
+        STEPPER_BUZZ STEPPER=stepper_x1
+        STEPPER_BUZZ STEPPER=stepper_y
+        STEPPER_BUZZ STEPPER=stepper_y1
+        STEPPER_BUZZ STEPPER=stepper_z
+        STEPPER_BUZZ STEPPER=stepper_z1
+        STEPPER_BUZZ STEPPER=stepper_z2
+        STEPPER_BUZZ STEPPER=stepper_z3
+        STEPPER_BUZZ STEPPER=extruder
+        ```
+
+    * このオプションを有効にすると、移動制御を通じて強制移動が可能です
+    * 注意：一度に一つのモーターのみ移動できます
+    * 複数の軸がある場合、例えば二つのZ軸はホームポジションに戻す必要があります
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/force.png').default} size="80%" align="center" />
+
+### プリントヘッドの距離の強制設定
+
+    * コンソールに入力することでプリントヘッドの位置を強制的に設定し、その後直接移動制御が可能です
+        ```bash
+        SET_KINEMATIC_POSITION x=100 y=100 z=100
+        ```
+### ステッピングモーターのステップ値校正
+    * まずエクストルーダーが正常に動作するか確認し、`full_steps_per_rotation`と`gear_ratio`が正しいかどうかを確認しないとエクストルーダーのステップ値を校正できません
+    * 新しい`rotation_distance`を得た後は、小数点以下3桁まで四捨五入します
+    * ステップ値の校正: rotation_distance=旧rotation_distance*実際の押し出し長/要求された押し出し長
+    
+        ```bash
+        full_steps_per_rotation: 200        # 単一回転のパルス数（200は1.8度、400は0.9度）
+        gear_ratio: 50:10                   # 減速比（ガリレオのギア比は7.5:1でこの行をコメントアウト；BMGは50:17、前が出力軸、後が入力軸）
+        rotation_distance: 22.522           # 駆動プーリーの周長mm
+        ```
+## 加熱関連
+
+### PID
+    :::tip
+    * コマンド内の`TARGET=`は設定温度です。通常のプリント温度を設定してください
+    * 複数の加熱装置がある場合、このコマンドでPID調整ができます
+    :::
+
+    * エクストルーダー
+        ```bash
+        PID_CALIBRATE HEATER=extruder TARGET=245
+        ```
+
+    * ヒートベッド
+        ```bash
+        PID_CALIBRATE HEATER=heater_bed TARGET=100
+        ```
+
+    * PTC
+        ```bash
+        PID_CALIBRATE HEATER=PTC TARGET=70
+        ```
+
+### 温度誤差関連
+
+    :::tip
+    * 加熱待ち時間が長すぎる場合はこの方法を参照してください <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">リンクへジャンプ</Button>
+    * 温度が安定しない場合、この方法で温度不安定によるエラーを解決できます <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">リンクへジャンプ</Button>
+    :::
+
+## リミット関連
+
+    :::tip
+    * 更新中
+    :::
+
+### 通常のリミット
+    * リミットチェックコマンド
+    * 2線式リミットであることを確認してください。3線式の場合は配線順序に誤りがないか確認する必要があります。さもないとメインボードが故障する可能性があります！！！
+    * リミットが正常に開いていることを確認し、何も触れていない状態で以下のコマンドを入力してください。正常な場合は以下の情報が返されます
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+    * リミットが全て開いた状態で、手動でリミットを押した後、再度`QUERY_ENDSTOPS`を入力してください
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query1.png').default} size="80%" align="center" />
+    * リミットの状態が変わった場合、配線が正しいことを示します
+
+### 無限リミット
+    * 無限リミットの状態は必ず開いている必要があります。そうでない場合、設定または配線に問題があります
+    * コンソールに入力することで以下の情報が返されます
+        ```bash
+        QUERY_ENDSTOPS
+        ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/query.png').default} size="80%" align="center" />
+
+## プローブ関連
+
+### BL-TOUCH
+
+    * pin_down:プローブを展開
+    * pin_up:プローブを収納
+    * touch_mode:センサーの検証
+    ```bash
+    BLTOUCH_DEBUG COMMAND=pin_down
+    BLTOUCH_DEBUG COMMAND=pin_up
+    BLTOUCH_DEBUG COMMAND=touch_mode
+    ```
+
+### Probe & TAP
+
+    * 通常はトリガーされていない
+    * 設定時にピンを`^`で指定することをお勧めします
+    ```bash
+    QUERY_PROBE
+    ```
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/probe.png').default} size="80%" align="center" />
+
+### 繰り返し精度
+    * 10回
+        ```bash
+        probe_accuracy
+        ```
+    * 100回
+        ```bash
+        probe_accuracy samples=100
+        ```
+
+## 特殊タイプ
+
+### サーボ
+
+    :::tip
+    * サーボは180度と360度に分かれますので、区別してください
+    :::
+
+    * 参考設定
+        ```cfg
+        [servo my_servo]
+        pin:PE6
+        ```
+
+    * 参考コマンド
+        ```bash
+        SET_SERVO SERVO=my_servo ANGLE=360
+        SET_SERVO SERVO=my_servo ANGLE=180
+        SET_SERVO SERVO=my_servo ANGLE=0
+        ```
+

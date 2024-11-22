@@ -1,0 +1,125 @@
+## 注意事项：
+
+    * インストールする前に、上位機が電源を切っていることを確認してください。
+    * 湿気や埃の多い環境での拡張ボードの使用を避けてください。
+    * 画面をインストールする際は、電源を入れたままプラグを抜き差ししないでください。画面線の向きに注意して、破損を防ぎましょう。
+    * ファンをインストールする際は、ファンの電流と電圧仕様に注意して、破損を防ぎましょう。
+    * UART1はデフォルトで有効になっており、設定の必要はありません。
+    * 最新のイメージをフラッシュしてください。例えば`mainsailos`、カーネルのアップグレードではありません。
+    * **ラズベリーパイはすべてのインターフェースを使用できます！！！**
+    * **注意：ラズベリーパイが使用しているシステムのカーネルバージョンは`5.17.x`以上である必要があります。`uname -r`コマンドでカーネルバージョンを確認してください。**
+
+## ラズベリーパイにTFTV2システムをプリインストールしたダウンロードリンク
+
+    * ラズベリーパイ3B/3B+/4B/CM4/5B向けのシステムイメージ
+
+    ```cfg
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## 画面ドライバのインストール
+
+    * 事前にインストールされたシステムを使用できます
+    * プロジェクトアドレス:[FLY-TFT](https://github.com/kluoyun/FLY-TFT)
+
+### 紹介
+
+    FLY-TFT-V2はst7796をベースにしたTFT液晶画面で、静電容量式タッチと抵抗式タッチの両方をサポートし、解像度は320x480、SPIインターフェースを使用しています。
+
+    * [KlipperScreen](https://klipperscreen.readthedocs.io/en/latest/Installation/)を自分でインストールする必要があります。
+
+### システムインストール
+
+:::warning 注意事項
+注意：ラズベリーパイが使用しているシステムのカーネルバージョンは`5.17.x`以上である必要があります。`uname -r`コマンドでカーネルバージョンを確認してください。
+最新のイメージをフラッシュしてください。例えば`mainsailos`、カーネルのアップグレードではありません。
+:::
+
+* 最新の **MainsailOS** を [Raspberry Imager](https://www.raspberrypi.com/software/) を使用してインストールしてください。
+    1. [Raspberry Imager](https://www.raspberrypi.com/software/) をダウンロードしてインストールします 
+    2. **Raspberry Imager** を開きます
+    3. **CHOOSE DEVICE** をクリックします
+    4. あなたのデバイスに応じて対応するモデルを選択します
+    5. **CHOOSE OS** をクリックします
+    6. **Other specific-purpose OS** を選択します
+    7. **3D printing** を選択します
+    8. **Mainsail OS** を選択します
+    9. 最新のバージョンを選択します。あなたの設定が64ビットシステムをサポートしている場合は **rpi64** を選択します
+    10. **CHOOSE STORAGE** をクリックします
+    11. あなたのストレージデバイスを選択します。例えばSDカード
+    12. **NEXT** をクリックし、インストールが完了するのを待ちます
+
+### ドライバのインストール
+
+    * FLY-TFT-V2ドライバのインストール
+   
+    ```bash
+    git clone https://github.com/kluoyun/FLY-TFT.git
+    cd FLY-TFT
+    sudo chmod +x ./scripts/install.sh
+    ./scripts/install.sh
+    ```
+
+### TFTの表示の有効化
+
+    * タッチ機能を有効にするには、I2Cサポートを有効にする必要があります。対応する設定は`dtparam=i2c_arm=on`です。
+
+    1. ドライバをインストールした後、`config.txt`ファイルに`dtoverlay=fly-tft-v2`のオーバーレイサポートを追加する必要があります。
+    2. `/boot/config.txt` (bookwormシステムでは`/boot/firmware/config.txt`)を開きます
+        ```bash
+        sudo nano /boot/config.txt
+        ```
+    3. ファイルの末尾に以下の設定を追加します
+    ```bash
+        dtoverlay=fly-tft-v2
+    ```
+    * デフォルトでは画面は90度横に表示されます。画面を回転させる場合は以下の設定を使用してください
+    ```bash
+        dtoverlay=fly-tft-v2,r90  # デフォルト方向と同じ、横
+        dtoverlay=fly-tft-v2,r270 # 270度横、横（反転）
+        dtoverlay=fly-tft-v2,r0   # 0度縦、縦
+        dtoverlay=fly-tft-v2,r180 # 180度縦、縦（反転）
+        ```
+        * 任意の設定を一つだけ追加できます。複数の設定は追加できません。
+        * 通常、TFTのタッチ方向は自動的に表示方向に合わせて回転し、システム内のタッチ設定を変更する必要はありません。
+    4. ファイルの末尾に追加した後、`sudo reboot`コマンドでシステムを再起動してください。
+
+### TFTの使用
+
+    * ハードウェア接続が正しいことを確認してください
+    * ドライバがインストールされていることを確認してください
+    * `/boot/config.txt` (bookwormシステムでは`/boot/firmware/config.txt`)ファイルに`dtoverlay=fly-tft-v2`のオーバーレイサポートが追加されていることを確認してください
+    * 一部のシステムではデフォルトのfb0デバイスが存在する場合があり、FLY-TFTはfb1デバイスに割り当てられます。fb1デバイスを有効にするために設定ファイルを変更する必要があります。
+    * `ls /dev/fb*`コマンドでデバイスを確認し、fb0とfb1の2つのデバイスが表示された場合、fb1デバイスを有効にするための以下のコマンドを実行してください（デフォルトはfb0です）。
+    * 以下のコマンドを実行してデフォルト設定をfb1デバイスに変更してください。
+        ```bash
+        sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+        ```
+
+### KlipperScreenの使用
+
+    * MainsailOSではデフォルトでKlipperScreenがインストールされていないため、手動でインストールする必要があります。
+    * [KlipperScreen](https://github.com/KlipperScreen/KlipperScreen)または[kiauh](https://github.com/dw-0/kiauh)を使用してインストールしてください。
+    * KlipperScreenが成功裏にインストールされ、第5ステップが正しく完了していれば、KlipperScreenのインターフェースが表示されているはずです。
+
+### すべての利用可能な設定
+
+    * `speed` [**パラメータが必要**]：TFTの最大SPIクロック周波数を設定します。単位はHzで、デフォルトは96000000（重大な画面の乱れが発生した場合はこの値を適切に下げてください）
+    * 例：`dtoverlay=fly-tft-v2,speed=80000000` 
+
+    * `r0/r90/r180/r270` [**オプション**][**パラメータ不要**]：TFTの表示とタッチ方向を設定します。デフォルトは90度です。可選値は0,90,180,270（一つの設定しか追加できません）
+    * 例：`dtoverlay=fly-tft-v2,r90`または`dtoverlay=fly-tft-v2,r180`
+
+    * `disable_touch` [**パラメータ不要**]：TFTのタッチ機能を無効にします。デフォルトは有効
+    * 例：`dtoverlay=fly-tft-v2,disable_touch`
+
+    * `invx`,`invy` [**パラメータ不要**]：TFTのタッチ方向を設定します。`invx`はX方向の反転、`invy`はY方向の反転
+    * 例：`dtoverlay=fly-tft-v2,invx`または`dtoverlay=fly-tft-v2,invy`または`dtoverlay=fly-tft-v2,invx,invy`
+
+    * `swapxy` [**パラメータ不要**]：TFTのタッチ方向を設定します。X軸とY軸を交換する、つまり横画面にします。
+        * 例：`dtoverlay=fly-tft-v2,swapxy`
+
+    > **注意：** すべてのパラメータは同時に設定できます（オプションのパラメータは一つだけ選択できます）。複数のパラメータはカンマで区切って、同一行に記述します。
+
+    > **警告：** 通常は`r0`,`r90`,`r180`,`r270`の4つのパラメータだけを使用します。他のパラメータは特殊な場合にのみ使用し、特に`invx`,`invy`,`swapxy`は注意が必要です。
+    * 例：`dtoverlay=fly-tft-v2,speed=80000000,r270`

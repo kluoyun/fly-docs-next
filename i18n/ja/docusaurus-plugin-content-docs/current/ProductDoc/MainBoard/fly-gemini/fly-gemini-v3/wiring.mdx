@@ -1,0 +1,72 @@
+---
+sidebar_position: 7
+sidebar_label: マザーボードの配線
+---
+
+# マザーボードの配線
+
+## インターフェース図
+
+### インターフェースの説明
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/interface.png').default} size="50%" align="center" />
+
+----
+
+### Pin脚の説明
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/pin.png').default} size="50%" align="center" />
+
+---
+
+## 電源の配線
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/power.png').default} size="40%" align="center" />
+
+----
+
+## ドライバーのインストール
+
+### マザーボードドライバージャンパー
+
+* **STEP/DIRモード。** このモードでは、ジャンパーハットを使用して細分を設定し、電位器を調整して電流を調整します。最も一般的なのはA4988ドライバーで、この種のドライバーを使用するには、メーカーが提供する細分設定表を確認し、ジャンパーハットで細分を設定する必要があります。
+* **UARTモード。** このモードを使用する最も一般的なドライバーは：TMC2208、TMC2209、TMC2226などです。この種のドライバーチップはマスター制御とUART非同期シリアル通信を行うことができ、設定ファイルを変更することでドライバーの細分、動作電流、静音モードなどを設定できます。
+* **SPIモード。** このモードを使用する最も一般的なドライバーは：TMC5160、TMC2230などです。この種のドライバーチップはマスター制御とSPI同期シリアル通信を行うことができ、同様に設定ファイルを変更することでドライバーの細分、動作電流、静音モードなどを設定できます。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.png').default} size="40%" align="center" />
+
+----
+
+### ドライバーのインストール
+
+* ドライバーをインストールする前に、適切なチェックを行う必要があります。ドライバーまたはマザーボードに損傷を与えないようにしてください。
+* **FLYドライバー：** 無限位リセット機能を使用しない場合は、ディップスイッチを1の位置にしてください。逆に、無限位リセット機能を使用する場合は、ディップスイッチをONの位置にしてください。
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.png').default} size="40%" align="center" />
+
+    :::danger
+
+    * **注意！！！ ドライバーモジュールをインストールする際には、必ず挿入方向が正しいか確認してください。つまり、ENピンが左上隅にあります。さもないと、ドライバーやマザーボードが損傷する可能性があります！！！ドライバーにヒートシンクをしっかりと貼り付けることを注意してください！！！**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.png').default} size="40%" align="center" />
+
+
+----
+
+## ステッピングモーターの配線
+
+:::info
+* どのメーカーが製造した二相ステッピングモーターであっても、最終的には4本の線で表されます。色が何であれ、黒、白、緑、黄色などに対応するのは4本の線です。したがって、私たちは線をグループ分けし、A、Bの二つのグループに分ける必要があります。
+* 二相四線ステッピングモーターにおいて、どれがAグループでどれがBグループかを知る必要はありません。グループを一つ決めることが重要で、設定ファイルでモーターの方向を変更するだけで済みます。
+:::
+
+* 3Dプリンターでは、最も一般的に使用されるのは二相四線ステッピングモーターで、その原理図は以下の通りです。ステッピングモーターの配線の識別方法は二つあります：
+    * 任意の二本の相線を接続し、モーター軸を手で回すと明らかな抵抗が感じられる場合は、その二本の相線は一組です。そうでない場合は、他の相線をテストしてください。
+    * ワンオフメーターを使用し、通断モードに設定し、ステッピングモーターの任意の二本の相線をテストします。通電すれば一組です。通電しない場合は、他の相線をテストしてください。
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.png').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/wiring/motor.png').default} size="40%" align="center" />
+
+----

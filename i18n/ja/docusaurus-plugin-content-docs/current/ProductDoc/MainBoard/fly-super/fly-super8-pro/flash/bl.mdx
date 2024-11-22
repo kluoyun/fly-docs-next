@@ -1,0 +1,67 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BLファームウェア
+
+    :::tip
+
+    * 出荷時にはすでに`ブートローダ`がプリインストールされているので、再インストールは不要です。
+
+    :::
+## 書き込みモードへの移行
+
+
+    * 書き込みモードへの移行方法は2通りあります
+    * 第一の方法：メインボードが完全に電源を切った状態で、BOOTを短絡し、データ伝送機能のあるケーブルをメインボードとあなたのデバイスに接続します
+    * 第二の方法：データ伝送機能のあるケーブルをメインボードとあなたのデバイスに接続した後、BOOTを短絡してRSTキーを押し、RSTキーを離してからBOOTジャンパーを外します
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.png').default} size="100%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windows書き込みチュートリアル" default>
+
+            * SUPER8 PROのブートローダーファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">ファームウェアを自動ダウンロード</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="ホストマシンの書き込みチュートリアル">
+            
+            <Katapult />
+
+            4. ファームウェアの書き込み
+
+            :::tip
+
+            どれか一つのファームウェアだけを書き込む必要があります。
+
+            :::
+
+
+            * 以下のコマンドでファームウェアを書き込みます
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER8PRO.bin
+                ```
+
+            5. 下図の矢印に示されている内容「File downloaded successfully」が表示された場合、書き込み成功です
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            書き込み完了後、メインボードの電源を完全に一度切る必要があります。
+
+            :::
+
+        </TabItem>
+    </Tabs>

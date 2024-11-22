@@ -1,0 +1,78 @@
+---
+sidebar_position: 8
+---
+
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 2209
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp2209.png').default} size="60%" align="center" />
+
+
+## 基本パラメータ
+
+    * 入力電圧：12V-24V
+    * 適用：Marlin/Klipper/RRF ファームウェア
+    * モーターがステップを失いにくい
+    * 静音モードをサポート
+    * 大面積ファン付きヒートシンク、ドライバーの動作温度を下げる
+    * ドライバーモードサポート：TMC：UART
+    * モーターストール検出をサポート
+
+
+## FLYマザーボードジャンパー
+
+    :::tip
+
+    * TP2209はUARTモードを使用
+    * TP2209はドライバージャンパーピン不要、単に設定するだけ
+
+    :::
+
+
+## TP2209参考設定
+
+    :::danger
+
+    ドライバーのサンプル抵抗は0.110、誤設定しないでください
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0.8                    # モーターの運行電流値（単位：mA）
+    sense_resistor: 0.110               # ドライバーのサンプル抵抗を変更しないでください
+    stealthchop_threshold: 0
+    ```
+
+
+
+## 無限位使用説明
+
+    <DIAG />
+
+    :::tip 無限位使用ヒント
+
+    * 元の`endstop_pin:`は遮断または削除が必要、新たに`endstop_pin: tmc2209_stepper_x:virtual_endstop`を追加
+    * `diag_pin:`を設定した後、リミットの状態を更新すると未トリガー
+    * `driver_SGTHRS:`の設定には適切な値を自分でテストする必要があります
+
+    :::
+
+
+    * 参照設定
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 退避距離を0にしないとホーム位置に戻る可能性があります
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```

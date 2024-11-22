@@ -1,0 +1,34 @@
+---
+sidebar_position: 9
+sidebar_label: UARTでメインボードに接続
+---
+
+# 設定方法
+
+:::danger 注意事項
+この方法を使用した後、mini padの加速度インターフェースに外部加速度計を接続することはできません。
+:::
+
+    * BOOTディスクを開き、`armbianEnv.txt`を見つけて開く
+    * `overlays=usbhost2 usbhost3 uart2`の**uart2**を**uart3**に変更して保存する
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart.png').default} size="80%" align="center" />
+
+## 配線方法
+
+    * mini-padのTXを、シリアルファームウェアを書き込んだメインボードのRXに接続してください
+    * mini-padのRXを、シリアルファームウェアを書き込んだメインボードのTXに接続してください
+    * グラウンドを共用する必要があります
+    * そうしないと、シリアルファームウェアを書き込んだメインボードに接続できません
+
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-mini-pad/img/uart1.png').default} size="80%" align="center" />
+
+## Klipperの参考設定
+
+    ```cfg
+    [mcu]
+    serial: /dev/ttyS3
+    baud：250000
+    #   使用するボーレート。デフォルトは250000
+    restart_method:command
+    ```

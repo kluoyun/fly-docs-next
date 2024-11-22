@@ -1,0 +1,18 @@
+---
+sidebar_position: 2
+---
+
+# 印刷開始時の温度不安定による待ち時間が長すぎる
+
+    * このマクロは直接設定ファイルに追加できます
+    * このマクロの役割は、通常の温度上昇を待つが、温度が目標に達したら次のステップに直接進むことです
+    ```cfg title="printer.cfg"
+    [gcode_macro M109]
+    rename_existing: M109.1
+    gcode:
+        {% set s = params.S|float %}
+        M104 {% for p in params %}{'%s%s' % (p, params[p])}{% endfor %}  ; Set hotend temp
+        {% if s != 0 %}
+        TEMPERATURE_WAIT SENSOR=extruder MINIMUM={s} MAXIMUM={s+1}   ; Wait for hotend temp (within 1 degree)
+        {% endif %}	
+    ```

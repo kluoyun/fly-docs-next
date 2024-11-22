@@ -1,0 +1,102 @@
+---
+sidebar_position: 1
+sidebar_label: 紹介
+---
+
+
+
+# TAP
+
+## TAP接線示意図！
+
+    :::warning 注意事項
+
+    * TAPをサーボポートに接続しないでください。リミットポートに接続する必要があります！！！
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/tap.png').default} size="90%" align="left" />
+
+
+## TAPの設定チュートリアル
+
+
+    :::tip
+
+    * TAPはノズルを直接リミットトリガーとして使用するため、XYオフセットはありません。
+
+    :::
+
+    :::tip
+
+    * TAPを変更する場所はZリミットとプローブだけです。
+
+    :::
+    ```cfg
+
+    [stepper_z]
+    endstop_pin: probe:z_virtual_endstop
+    # endstop_pin: ^sht36:PA1  
+    # position_endstop: -0.5        
+
+    [probe]
+    pin: ^sht36:PA1              # シグナルインターフェース
+    x_offset: 0                  # X軸-センサーのノズルからのオフセット
+    y_offset: 0                  # Y軸-センサーのノズルからのオフセット
+    #z_offset: 0                 # Z軸-センサーのノズルからのオフセット
+    speed: 3.0                   # 調整速度
+    lift_speed: 5                # プローブのリフト速度
+    samples: 3                   # サンプル回数
+    samples_result: median       # 値の取得方法（デフォルトmedian-中央値）
+    sample_retract_dist: 3.0     # 調整時の戻り距離
+    samples_tolerance: 0.075     # サンプリング許容誤差（許容誤差が小さすぎるとサンプル回数が増加する可能性があります）
+    samples_tolerance_retries: 3 # 許容誤差超過時の再試行回数
+    activate_gcode:
+        {% set PROBE_TEMP = 150 %}
+        {% set MAX_TEMP = PROBE_TEMP + 5 %}
+        {% set ACTUAL_TEMP = printer.extruder.temperature %}
+        {% set TARGET_TEMP = printer.extruder.target %}
+
+        {% if TARGET_TEMP > PROBE_TEMP %}
+            { action_respond_info('Extruder temperature target of %.1fC is too high, lowering to %.1fC' % (TARGET_TEMP, PROBE_TEMP)) }
+            M106 S255
+            M109 S{ PROBE_TEMP }
+            M106 S26
+        {% else %}
+            # Temperature target is already low enough, but nozzle may still be too hot.
+            {% if ACTUAL_TEMP > MAX_TEMP %}
+                { action_respond_info('Extruder temperature %.1fC is still too high, waiting until below %.1fC' % (ACTUAL_TEMP, MAX_TEMP)) }
+                TEMPERATURE_WAIT SENSOR=extruder MAXIMUM={ MAX_TEMP }
+            {% endif %}
+        {% endif %}
+
+    ```
+
+## スタートマクロの変更
+    * 効果
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/klipper.png').default} size="80%" align="left" />
+
+### PrusaSlicerのスタートマクロ変更 
+
+    ```bash
+    M109 S150
+    print_start
+    M109 S[first_layer_temperature]
+    ```
+
+### CURAのスタートマクロ変更
+
+    ```bash
+    M109 S150
+    print_start
+    M109 S{material_print_temperature_layer_0} ;Start heating extruder
+    ```
+
+### Orca-Slicerのスタートマクロ変更
+
+    ```bash
+    M190 S[bed_temperature_initial_layer_single]
+    M109 S150
+    print_start  PRINT_MIN={first_layer_print_min[0]},{first_layer_print_min[1]} PRINT_MAX={first_layer_print_max[0]},{first_layer_print_max[1]}
+    M109 S[nozzle_temperature_initial_layer]
+    ```

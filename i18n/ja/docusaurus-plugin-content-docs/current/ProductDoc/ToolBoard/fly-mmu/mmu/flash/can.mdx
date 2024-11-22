@@ -1,0 +1,57 @@
+---
+sidebar_position: 3
+sidebar_label: CANファームウェア書き込み
+---
+
+import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_can.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CANファームウェアのビルド
+
+## ビルドの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * GPIOピンをマイクロコントローラの起動時に設定する選択、入力：!PA15 大文字の!に注意
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/can.png').default} size="100%" align="center" />
+    * `Q`キーを押して **Save configuration** が表示されたら、次に`Y`キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * これで設定が保存され、コマンドラインインターフェースに戻るはずです
+    * `make -j4`を入力してビルドを開始、時間がかかります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されればビルド成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## デバイスの検索
+
+    <LS />
+
+
+## ファームウェアの書き込み
+
+    * ファームウェアの書き込み前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアを書き込んだメインボードに接続します。以下は参考図
+    * ディップスイッチが対応する位置にあるかどうかを確認してください
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/can_mode.png').default} size="90%" align="center" />
+    * UTOCへの接続参考
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * CAN HとCAN Lの間の抵抗が、電源オフの状態でマルチメータで測定すると約`60Ω`になるようにしてください。`120Ω`の場合は`120Ω`のジャンパーを接続し、`40Ω`の場合はジャンパーを取り外します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/120.png').default} size="50%" align="center" />
+
+    <CANFLASH />
+
+## ファームウェアが起動しているか確認
+
+    * ファームウェアが正常に起動するとLEDが点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />

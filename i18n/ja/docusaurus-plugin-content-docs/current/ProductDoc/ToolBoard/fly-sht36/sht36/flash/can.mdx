@@ -1,0 +1,49 @@
+---
+sidebar_position: 3
+sidebar_label: CANファームウェアの書き込み
+---
+
+import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_can.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CANファームウェアのビルド
+
+## ビルドの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * `Q` キーを押すと **Save configuration** が表示されるので、その後 `Y` キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * これで設定が保存され、シェルに戻ったはずです
+    * `make -j4` を入力してビルドを開始します。時間がかかるので、しばらくお待ちください
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されればビルド成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## デバイスの検索
+
+    <LS />
+
+
+## ファームウェアの書き込み
+
+    * ファームウェアを書き込む前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアを書き込んだメインボードに接続します。下記は参考接続図です
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/utoc.png').default} size="80%" align="left" />
+    * 電源を切った状態でCAN HとCAN Lの間の抵抗をテスターで測定し、約`60Ω`であることを確認してください。`120Ω`であれば`120Ω`のジャンパを接続し、約`40Ω`であればジャンパを外してください
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+

@@ -1,0 +1,38 @@
+1. ファームウェア書き込みツールのインストール
+
+    * SSHで下記のコマンドを入力
+    * 初回書き込み時のみ実行が必要、その後は不要
+    ```bash
+    cd ~/klipper/lib/rp2040_flash/ && make
+    ```
+    <ImageView image={require('@site/docs/General/dfu-flash/img/2040.png').default} size="100%" align="left" />
+
+2. 下記のコマンドを実行して接続が成功したか確認する。
+
+    * `lsusb`と入力
+    * `2e8a:0003`のデバイスが見つからない場合、**書き込みモード**に再入試してください
+    * システムのバージョン問題で他の名前が表示される可能性がありますが、`2e8a:0003`があれば書き込みモードに入っていることを示します
+
+        <ImageView image={require('@site/docs/General/get-id/img/2e8a.png').default} size="80%" align="left" /> 
+
+    :::warning 注意事項
+
+    `2e8a:0003`が表示された時のみ次へ進んでください
+
+    :::
+
+3. 事前コンパイル済みファームウェアの取得
+
+    * ここには事前コンパイル済みのファームウェアが含まれています
+    * 上位機がインターネット接続可能である必要があります
+    * 上位機で下記のコマンドを実行してファームウェアパッケージをダウンロード
+
+    ```bash
+    cd && git clone https://github.com/FengHua741/FLY_Katapult.git
+    ```
+
+    * 既にファームウェアパッケージをダウンロードしている場合は、更新後に残りの手順を進めることをお勧めします
+
+    ```bash
+    cd ~/FLY_Katapult && git pull
+    ```

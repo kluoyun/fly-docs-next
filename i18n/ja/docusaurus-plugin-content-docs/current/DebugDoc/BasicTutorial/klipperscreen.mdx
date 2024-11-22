@@ -1,0 +1,55 @@
+---
+sidebar_position: 7
+sidebar_label: KlipperScreenの拡張機能
+---
+
+
+
+
+# KlipperScreenの拡張機能
+
+## KlipperScreenのマウスカーソルを表示する方法
+
+    * プリンタの設定ファイル`KlipperScreen.conf`を開く。このファイルはKlipperScreenをインストールした後に自動生成される。存在しない場合は自分で作成する
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf.png').default} size="100%" align="center" />
+    * 下記のコードを設定ファイルの最上部に追加する
+    ```cfg
+    [main]
+    show_cursor: True
+    ```
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf-1.png').default} size="80%" align="center" />
+    * 保存して再起動する
+
+## 他の上位機にリモート接続する
+
+    * プリンタの設定ファイル`KlipperScreen.conf`を開く。このファイルはKlipperScreenをインストールした後に自動生成される。存在しない場合は自分で作成する
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf.png').default} size="100%" align="center" />
+    * 下記のコードを設定ファイルの最上部に追加する
+    * `VORON-300`プリンタ名を変更し、`192.168.6.217`を接続したいマシンのIPアドレスに変更する
+    * 注意：2つ目の`[printer KlipperScreen]`はリモート接続するマシンを拡張するためのものであり、デバッグやシャットダウンに使用できる
+    :::danger 注意
+
+    * 同じローカルネットワーク内にあることを確認してください
+
+    :::
+
+    ```cfg
+    # プリンタ名と名前を定義する。名前は最初のプリンタの後に何でもよい
+    [printer VORON-300]
+    # 127.0.0.1と7125以外のMoonrakerホスト/ポートを定義する
+    moonraker_host: 192.168.6.217
+    # ポート443と7130はhttps/wssを使用する
+    moonraker_port: 7125
+    # 信頼されたクライアントIPからの接続でない場合、Moonraker APIキーを設定する
+    moonraker_api_key: False
+
+    # プリンタ名と名前を定義する。名前は最初のプリンタの後に何でもよい
+    [printer KlipperScreen]
+    # 127.0.0.1と7125以外のMoonrakerホスト/ポートを定義する
+    moonraker_host: 127.0.0.1
+    # ポート443と7130はhttps/wssを使用する
+    moonraker_port: 7125
+    # 信頼されたクライアントIPからの接続でない場合、Moonraker APIキーを設定する
+    moonraker_api_key: False
+
+    ```

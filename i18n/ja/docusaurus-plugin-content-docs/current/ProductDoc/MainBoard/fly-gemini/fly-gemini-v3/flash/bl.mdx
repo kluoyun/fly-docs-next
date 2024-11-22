@@ -1,0 +1,83 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BLファームウェア
+
+    :::tip
+
+    * 出荷時に`bootloader`が既にフラッシュされているので、再度フラッシュする必要はありません。
+
+    :::
+
+## 書き込みモードへの進入
+
+
+    * 書き込みモードに入る方法は二つあります
+    * 第一の方法：主板が完全に電源オフの状態で、BOOTとBOOT1を短絡し、データ転送ケーブルの一端を主板に接続し、もう一方をあなたのデバイスに接続します
+    * 第二の方法：データ転送ケーブルの一端を主板に接続し、もう一方をあなたのデバイスに接続した後、BOOTとBOOT1を短絡してからRSTボタンを押し、RSTボタンを離し、最後にBOOTジャンパを切り離します
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windows書き込みチュートリアル" default>
+
+            * Geminiのbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">自動的にファームウェアをダウンロード</Button>
+
+            * ディップスイッチ`3`,`4`を右にスライドし、下位機と上位機を内蔵USBで接続します
+            * ディップスイッチ`1`,`2`を左にスライドし、そうしないと下位機と上位機の接続に影響します
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip3.png').default} size="50%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="上位機書き込みチュートリアル">
+
+            * ディップスイッチ`1`,`2`を右にスライドし、下位機と上位機を内蔵USBで接続します
+            * ディップスイッチ`3`,`4`を左にスライドし、そうしないと下位機と上位機の接続に影響します
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip1.png').default} size="50%" align="center" />
+            * この方法でディップスイッチを操作した後、下部USBポートは下位機に占有されるため、他のデバイスを接続しないでください
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.png').default} size="50%" align="center" />
+
+            <Katapult />
+
+            4. ファームウェアの書き込み
+
+            :::tip
+
+            どちらか一つのファームウェアを書き込むだけで大丈夫です。
+
+            :::
+
+
+            * 以下はbootloaderファームウェアの書き込みコマンドです
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/Gemini/GeminiV3.bin
+                ```
+
+            5. 下記の図の矢印に示される内容「File downloaded successfully」が表示されれば、書き込み成功です
+
+            :::warning
+
+            赤い矢印で指している行の**後ろのエラー**は無視してください！！！
+
+            :::
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            書き込み完了後、主板に一度完全に電源を切る必要があります。
+
+            :::
+
+        </TabItem>
+    </Tabs>

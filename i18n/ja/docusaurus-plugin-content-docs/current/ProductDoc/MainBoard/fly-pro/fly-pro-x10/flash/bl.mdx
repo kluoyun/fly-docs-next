@@ -1,0 +1,72 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BLファームウェア
+
+    :::tip
+
+    * 出荷時には既に`bootloader`がプリインストールされているので、再度書き込みする必要はありません。
+
+    :::
+
+## 書き込みモードへの入り方
+
+
+    * 書き込みモードに入る方法は二つあります
+    * 第一の方法：基板が完全に電源を切った状態で、BOOTを短絡し、データ転送機能を持つケーブルの一端を基板に、もう一端をデバイスに接続します。
+    * 第二の方法：データ転送機能を持つケーブルの一端を基板に、もう一端をデバイスに接続した後、BOOTを短絡し、RSTボタンを押してから離し、最後にBOOTのジャンパーを外します。
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-pro/fly-pro-x10/flash/img/boot.png').default} size="100%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windows書き込みガイド" default>
+
+            * PRO X10のbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ProX10.zip">自動ダウンロードファームウェアをクリック</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="ホストマシン書き込みガイド">
+            
+            <Katapult />
+
+            4. ファームウェアの書き込み
+
+            :::tip
+
+            どちらか一方のファームウェアを書き込むだけで大丈夫です。
+
+            :::
+
+
+            * 以下はkatapultファームウェアの書き込みコマンドです。
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            * 以下はbootloaderファームウェアの書き込みコマンドです。
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            5. 以下の図に示される「File downloaded successfully」というメッセージが表示されれば、書き込み成功です。
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            書き込み完了後、基板に完全に電源を一度切る必要があります。
+
+            :::
+
+        </TabItem>
+    </Tabs>

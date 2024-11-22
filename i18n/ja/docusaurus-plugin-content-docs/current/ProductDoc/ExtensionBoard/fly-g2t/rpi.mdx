@@ -1,0 +1,223 @@
+---
+sidebar_position: 2
+sidebar_label: ラズパイ使用ガイド
+---
+
+# ラズパイ使用説明
+
+## 注意事項：
+
+    * 拡張ボードをインストールする前に、上位機の電源を切ってください。
+    * 湿気やほこりの多い環境での拡張ボードの使用を避けてください。
+    * 画面をインストールする際は、電源を入れたまま抜き差ししないように注意し、画面の向きにも気を付けてください。
+    * ファンをインストールする際は、ファンの電流と電圧仕様に注意してください。
+    * UART1は既にデフォルトで有効になっているため、設定は不要です。
+    * 最新のイメージをインストールしてください。例えば`mainsailos`です。カーネルをアップグレードしないでください。
+    * **ラズパイは全てのインターフェースを使用できます！！！**
+    * **注意：ラズパイが使用するシステムのカーネルバージョンは`5.17.x`以上である必要があります。コマンド`uname -r`でカーネルバージョンを確認してください。**
+
+## ラズパイの事前インストール済みTFTV2システムのダウンロードリンク
+
+    * ラズパイzero2/zero2W/2B/3B/3B+/4B/CM4/5B用のシステムイメージ
+    * このイメージにはklipper、moonraker、mainsail、fulidd、klipper-screenなどが事前にインストールされています。
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## G2Tのインストール
+
+    * 下記は参考です
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi.png').default} size="60%" align="left" />
+    * 配線参考
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## オン・ボードRS232を使用してツールバージョンに接続する方法
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi1.png').default} size="60%" align="left" />
+
+    * ラズパイに最新のシステムをインストールした後、**ブートディスクのconfig.txtファイルを編集する必要があります**
+    * UART1はデフォルトで開かれているため、システム内で設定する必要はありません。UART3は以下の手順が必要です。
+    * **config.txt**に以下の行を追加してください
+
+    ```bash
+    dtoverlay=uart3
+    ```
+
+    * UART1を使用する場合、IDは以下のようになります
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA0
+    baud: 250000
+    restart_method:command
+    ```
+
+    * UART3を使用する場合、IDは以下のようになります
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA1
+    baud: 250000
+    restart_method:command
+    ```
+
+## オン・ボード5VFANの使用
+
+    * ラズパイ40PINでデバイスを制御する場合は、Klipperのチュートリアルに従ってインストールしてください。 <Button variant="contained" disableElevation href="https://www.klipper3d.org/zh/RPi_microcontroller.html?h=rpi">RPi マイクロコントローラー</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+    ```cfg
+    [mcu host]       
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor Raspberry Pi]
+    sensor_type: temperature_host
+
+    [temperature_fan core_fan] 
+    pin: host:gpio12
+    max_power: 1.0
+    sensor_type: temperature_host   #ホストマシンの温度に設定
+    control:watermark                  #制御方法
+    target_temp: 48                   #ホストマシン冷却ファン開始温度
+    min_temp: 0                     #最低温度、これ以下の温度ではエラーが発生します
+    max_temp: 90                    #最高温度、これ以上の温度ではエラーが発生します
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                   #最大速度、フルパワー時の80%
+    min_speed: 0.3                    #最小速度、フルパワー時の30%
+    ```
+
+## 画面の使用方法
+
+    * Githubリンク <Button variant="contained" disableElevation href="https://github.com/kluoyun/FLY-TFT">FLY-TFT</Button>
+
+### 1. 紹介
+
+    FLY-TFT-V2はst7796ベースのTFT液晶画面で、静電容量式タッチと抵抗膜式タッチの両方をサポートし、解像度は320x480、SPIインターフェースを使用しています。
+
+### 2. システムインストール
+
+    :::tip
+
+    * 注意：ラズパイが使用するシステムのカーネルバージョンは`5.17.x`以上である必要があります。コマンド`uname -r`で確認してください。
+    * 最新のイメージをインストールしてください。例えば`mainsailos`です。カーネルをアップグレードしないでください。
+    * 自分でインストールする必要があります <Button variant="contained" disableElevation href="ttps://klipperscreen.readthedocs.io/en/latest/Installation/">KlipperScreen</Button>
+
+    :::
+
+    * [Raspberry Imager](https://www.raspberrypi.com/software/)を使用して最新の**MainsailOS**をインストール
+        * [Raspberry Imager](https://www.raspberrypi.com/software/)をダウンロードしてインストール
+        * **Raspberry Imager**を開く
+        * **CHOOSE DEVICE**をクリック
+        * 対応するモデルを選択
+        * **CHOOSE OS**をクリック
+        * **Other specific-purpose OS**を選択
+        * **3D printing**を選択
+        * **Mainsail OS**を選択
+        * 最新バージョンを選択。64ビットシステムに対応している場合は**rpi64**を選択
+        * **CHOOSE STORAGE**をクリック
+        * ストレージデバイスを選択（例：SDカード）
+        * **NEXT**をクリックし、インストールが完了するのを待つ
+
+### 4. ドライバーのインストール
+
+    * FLY-TFT-V2ドライバーのインストール
+    
+        ```bash
+        git clone https://github.com/kluoyun/FLY-TFT.git
+        cd FLY-TFT
+        sudo chmod +x ./scripts/install.sh
+        ./scripts/install.sh
+        ```
+        
+    
+
+### 5. 使用
+
+    :::tip
+
+    * タッチ機能を使用するにはI2Cを有効にする必要があります。対応する設定は`dtparam=i2c_arm=on`
+
+    :::
+
+    1. ドライバーのインストール後、config.txtファイルに`dtoverlay=fly-tft-v2`のオーバーレイを追加する必要があります。
+    2. `/boot/config.txt` (bookwormシステムでは`/boot/firmware/config.txt`)を開く
+        ```bash
+        sudo nano /boot/config.txt
+        ```
+    3. ファイルの最後に以下の設定を追加
+        ```bash
+        dtoverlay=fly-tft-v2
+        ```
+    * デフォルトでは画面は90度の横画面で表示されます。画面を回転させる場合は以下の設定を使用
+        ```bash
+        dtoverlay=fly-tft-v2,r90  # デフォルトと同じ方向、横
+        dtoverlay=fly-tft-v2,r270 # 270度横画面、横（反転）
+        dtoverlay=fly-tft-v2,r0   # 0度縦画面、縦
+        dtoverlay=fly-tft-v2,r180 # 180度縦画面、縦（反転）
+        ```
+        * 複数の設定を同時に追加することはできません。1つだけ設定してください。
+        * 通常、TFTのタッチ方向は自動的に画面の表示方向に合わせて回転します。システム内のタッチ設定を変更する必要はありません。
+
+    4. ファイルの最後に追加した後、コマンド `sudo reboot` でシステムを再起動してください。
+
+        * ハードウェア接続が正しいことを確認してください。
+        * ドライバーがインストールされていることを確認してください。
+        * `/boot/config.txt` (bookwormシステムでは`/boot/firmware/config.txt`)に`dtoverlay=fly-tft-v2`のオーバーレイが追加されていることを確認してください。
+        * 一部のシステムでは、デフォルトのfb0デバイスがあり、FLY-TFTがfb1デバイスに割り当てられる場合があります。この場合、fb1デバイスを有効にする設定ファイルを変更する必要があります。
+        * コマンド`ls /dev/fb*`を実行してデバイスを確認し、fb0とfb1の2つのデバイスが表示された場合は、次のコマンドでfb1デバイスを有効にしてください（デフォルトはfb0です）。
+        * 次のコマンドを実行してデフォルト設定をfb1デバイスに変更してください。
+            ```bash
+            sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+            ```
+
+### 6. KlipperScreenの使用
+
+    * MainsailOSにはデフォルトでKlipperScreenがインストールされていません。手動でインストールする必要があります。
+    * [KlipperScreen](https://github.com/KlipperScreen/KlipperScreen)または[kiauh](https://github.com/dw-0/kiauh)を使用してインストールしてください。
+    * KlipperScreenが正常にインストールされ、5の手順が正しく完了している場合、KlipperScreenのインターフェースが表示されているはずです。
+
+### 7. 利用可能なすべての設定
+
+    * `speed` **パラメータが必要：TFTの最大SPIクロック周波数を設定、単位はHz、デフォルト96000000（重度の画面乱れが発生する場合はこの値を適切に下げてください）
+    * 例：`dtoverlay=fly-tft-v2,speed=80000000` 
+
+    * `r0/r90/r180/r270` **オプション****パラメータ不要**：TFTの表示とタッチ方向を設定、デフォルトは90度、選択肢は0,90,180,270（1つの設定しか追加できません）
+    * 例：`dtoverlay=fly-tft-v2,r90`または`dtoverlay=fly-tft-v2,r180`
+
+    * `disable_touch` **パラメータ不要**：TFTのタッチ機能を無効化、デフォルトは有効
+    * 例：`dtoverlay=fly-tft-v2,disable_touch`
+
+    * `invx`,`invy` **パラメータ不要**：TFTのタッチ方向を設定、`invx`はX方向の反転、`invy`はY方向の反転
+    * 例：`dtoverlay=fly-tft-v2,invx`または`dtoverlay=fly-tft-v2,invy`または`dtoverlay=fly-tft-v2,invx,invy`
+
+    * `swapxy` **パラメータ不要**：TFTのタッチ方向を設定、X軸とY軸を入れ替える、つまり横画面
+        * 例：`dtoverlay=fly-tft-v2,swapxy`
+    
+    :::tip
+
+    * **注意：** すべてのパラメータは同時に設定可能です（オプションのパラメータは1つだけ設定できます）、パラメータ間はカンマで区切られ、複数のパラメータは同じ行に記述する必要があります。
+    * **警告：** 通常`r0`,`r90`,`r180`,`r270`の4つのパラメータだけが使用されます。他のパラメータは特別な場合にのみ使用し、特に`invx`,`invy`,`swapxy`は注意が必要です。
+
+    :::
+
+    * 例：`dtoverlay=fly-tft-v2,speed=80000000,r270`
+
+
+## ラズパイzero2とzero2Wに関する注意事項
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/zero.png').default} size="60%" align="left" />
+    * この注意事項は、G2TとFLY-TFTスクリーンの組み合わせ使用について説明します。
+    * ラズパイzero2とzero2wはデフォルトの表示デバイスを変更する必要があります。以下のコードを実行して直接変更してください。そうしないと表示されません。
+    * 実行後、再起動が必要です。
+
+    ```bash
+    sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+    ```
+
+## 画面の設置
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.png').default} size="60%" align="left" />

@@ -1,0 +1,88 @@
+---
+sidebar_position: 4
+---
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160HV
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160hv.png').default} size="80%" align="center" />
+
+## 基本パラメータ
+
+    * 入力電圧：12V-48V
+    * 最大電流：4.4A
+    * 対応ファームウェア：Marlin/Klipper/RRF
+    * ドライブモードサポート：TMC：SPI
+    * マイクロステップ補間機能付きステップ/方向インターフェース
+    * 最大解像度256マイクロステップ
+    * 静音動作と流動的な動作をサポートするstealthChop2
+    * 中周波数共振抑制をサポート
+    * 高ダイナミックモータ制御チョッパをサポートするspreadCycle
+    * 負荷依存速度制御をサポートするdcStep
+    * 高精度センサレスモータ負荷検出をサポートするstallGuard2
+    * 最大75％の省エネを実現するcoolStep電流制御をサポート
+
+## メインボードジャンパ説明
+
+    * TMC5160はSPIジャンパを使用
+    * FLYドライバのSPIピンは左から数えて4番目のピンで、CSピンはSPIピンと同じです。メインボードのピンが対応していない場合はSPIを使用できません
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+
+## TMC5160参考設定
+
+    :::danger
+
+    * ドライバのサンプル抵抗は`sense_resistor: 0.075`に設定してください、誤設定しないでください
+    * spi_busとspi_softwareは二択です
+    
+    :::
+
+### SPIモード参考設定
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # モータの動作電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするかどうか（有効はTrue、無効はFalse）
+    sense_resistor: 0.075
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## 無限位の使用説明
+
+    <DIAG />
+
+    :::tip 無限位使用のヒント
+
+    * 元の`endstop_pin:`は無効化または削除する必要があります、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加してください
+    * `diag1_pin:`を設定した後、リミットステータスが未トリガーであることを確認してください
+    * `driver_SGT:`には適切な値をテストして設定してください
+
+    :::
+
+    * 参考設定
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 0に変更しないとホームポジションに戻るのに失敗する可能性があります
+
+    [tmc5160 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   設定後、リミットステータスが未トリガーであることを確認してください
+    #   このピンには通常"^"プレフィックスを使用して内部プルアップを有効にします
+    #   感度はベルトの張り具合に依存し、調整が必要です
+    #   （同時にdriver_SGTHRSを適切な感度に設定する必要があります）
+
+    ```

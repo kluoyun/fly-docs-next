@@ -1,0 +1,63 @@
+---
+sidebar_position: 5
+---
+
+
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.2
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro.png').default} size="80%" align="center" />
+
+## 基本パラメータ
+
+    * 入力電圧：24-48V
+    * 最大電流：6A
+    * 適用：Marlin/Klipper/RRF ファームウェア
+    * ドライブモードサポート：TMC：SPI
+    * マイクロステップ補間のステップ/方向インターフェース
+    * 最大分解能は256ステップ
+    * stealthChop2の静音作業と流暢な動作をサポート
+    * 中周波共振の抑制をサポート
+    * spreadCycle高ダイナミックモーターコントロールチョッパーをサポート
+    * dcStep負荷関連の速度制御をサポート
+    * stallGuard2高精度無センサー型モーターロード検出をサポート
+    * coolStep電流制御をサポート、最大で75%の節電が可能
+
+## 主板ジャンパ説明
+
+    * TMC5160 ProはSPIジャンパを使用
+    * FLYドライブのSPIピンは左から下に数えて4番目のピン、CSピンはSPIピンです。もし基板が対応するピン位置でない場合はSPIを使用できません
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+## 12V FAN接続
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.png').default} size="80%" align="center" />
+
+
+## TMC5160 Pro参照設定
+
+    :::danger
+
+    * ドライバーのサンプリング抵抗は`sense_resistor: 0.033`です、間違った設定をしないでください
+    * spi_busとspi_softwareは二つから一つを選択してください
+    
+    :::
+
+### SPIモード参照設定
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # モーターの運行電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするかどうか（有効はTrue、無効はFalse）
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```

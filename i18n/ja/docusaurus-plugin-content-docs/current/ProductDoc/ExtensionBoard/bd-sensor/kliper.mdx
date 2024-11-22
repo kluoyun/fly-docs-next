@@ -1,0 +1,162 @@
+---
+sidebar_position: 3
+sidebar_label: Klipperの使用
+---
+
+
+
+
+
+# **BDsensor** のインストール
+
+## センサーケーブルをメインボードまたはCANバスツールヘッドボードに接続する。
+
+    * SB2040はBDsensorを使用できないことに注意してください
+    * SHT36を使用する場合、BDsensorのCLK/SCL (入力)を高圧入力ポートに接続し、ジャンパーを接続する必要があります
+    * BDsensorのCLKとSDA線は、どのGPIOピンにも接続できます。また、BDsensorケーブルを直接Bltouchポートに接続することもできます。例：
+
+    ```bash
+    BLtouch    |    BDsensor
+    5V       -->     5V
+    GND      -->     GND
+    S        -->     CLK/SCL    (入力)
+    GND      -->     GND
+    Zmin     -->     SDA    (入力/出力) 
+    ```
+
+    * メインボードコネクタ内のいくつかのピンがMCUのgpiosに直接接続されていない場合（例えば、フィルタコンデンサが付いているか、MOSFET、ダイオードまたはオプトカプラで絶縁されているが、抵抗やプルアップ/ダウン抵抗で絶縁されている場合は使用可能）、それらはBDsensorと一緒に使用できません。また、ファームウェアは接続エラーを報告します。例：
+
+    * ファンとヒーターのコネクタはMOSFETで絶縁されています
+    * 一部のボードでは、温度サーミスタとエンドストップ/プローブのコネクタはGNDにフィルタコンデンサを介して接続されています
+
+1. 以下の図のように、BDセンサーをホットエンドの近くに取り付けます。 [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/bd-sensor/img/bd.png').default} size="100%" align="left" />
+
+
+## Klipperファームウェアにパッチを適用する
+
+    * 以前のKlipperファイルの変更を破棄し、Klipperを更新する
+
+        ```bash
+        cd
+        cd ~/klipper
+        git checkout .
+        git pull
+        ```
+
+    * BDsensorの最新コードをクローンする
+
+        ```bash
+        cd && git clone https://github.com/markniu/Bed_Distance_sensor.git
+        ```
+
+    * インストール
+
+        ```bash
+        cd  ~/Bed_Distance_sensor/klipper/
+        ./install_BDsensor.sh
+        ```
+
+    * ファームウェアをコンパイルする
+
+        ```bash
+        cd ~/klipper/
+        make menuconfig
+        make clean
+        make
+        ```
+
+    * ファームウェアをBDsensorに接続されているMCUまたはCANbusツールヘッドボードに書き込みます
+
+## あなたのプリンタがMoonrakerを実行している場合、以下の部分をmoonraker.confに追加してください。そうすれば、ウェブページまたはKlipperscreenから一回クリックでBDsensorを更新できます。
+
+    ```bash
+    [update_manager BDsensor]
+    type: git_repo
+    primary_branch: new
+    channel: dev
+    path: ~/Bed_Distance_sensor
+    origin: https://github.com/markniu/Bed_Distance_sensor.git
+    install_script: ./klipper/install_BDsensor.sh
+    is_system_service: False
+    managed_services: klipper
+    info_tags:
+    desc=Bed Distance Sensor
+    ```
+
+## printer.cfgを編集する
+
+    * この部分を**printer.cfg**にコピーし、`[BDsensor]` `sda_pin` `scl_pin`を編集し、**BLtouch**などの他のプローブ部分を無効に忘れないでください。メインボードまたはツールヘッドCANモジュールにBDsensorを接続できます
+    * `speed`を0.8に変更します。これはz傾斜とPROBE_ACCURACYコマンドにのみ適用されます。値が小さいほど、プローブ時の精度が高くなります。 `[BDsensor]`
+    * Z軸の原点復帰時にBDsensorをリミットスイッチとして使用するには、`[stepper_z]` の `endstop_pin` を `endstop_pin: probe:z_virtual_endstop` に変更します
+    * **printer.cfg**に`[safe_z_home]` があることを確認してください
+    * `z_tilt`または`quad_gantry_level`の`[quad_gantry_level]`値を1に変更します（0.7-1.0mmが推奨）。Klipperのデフォルト値は5mmで、これを変更しないとセンサーの範囲を超える可能性があります
+    * **ノズルの高さは`z_adjust:`でのみ調整可能で、正の数はホットベッドに近づき、負の数は離れます。その他のノズル高さの調整設定はバグが発生する可能性があります**
+    * クイックプローブを有効にするには`no_stop_probe:true`の前の#を削除します
+    * 以下は設定例です。
+
+        ```cfg
+        [BDsensor] 
+        scl_pin:PC6  # サーボ信号ポート
+        sda_pin:PC3  # リミット信号ポート
+        delay: 20 # 1パルスの20us、20以上の値でなければならず、50未満でなければならない
+        z_offset:0 # この `z_offset` は0に設定する必要があります
+        z_adjust:0.0 # Z軸の調整、z_offset機能を置き換えます。-0.3から0.3mmの範囲内
+        x_offset: -34
+        y_offset: 0
+        #no_stop_probe:true # クイックプローブを有効にする場合、ツールヘッドはプローブポイントで停止しません。
+        position_endstop: 0.8 # Z軸がこの位置（mm）で停止します。推奨値は0.4~1.0
+        #speed:0.8 # この速度はz傾斜とPROBE_ACCURACYコマンドにのみ適用されます。
+
+        [stepper_z]
+        endstop_pin: probe:z_virtual_endstop 
+        #position_endstop: 0.5
+        homing_speed: 5
+        second_homing_speed: 0.8
+
+        [bed_mesh]
+        speed: 200
+        horizontal_move_z:1
+        algorithm: bicubic
+
+        [quad_gantry_level]
+        horizontal_move_z:1
+
+        ```
+
+## インストール後、以下のGコードコマンドを送信して確認してください
+
+    ```bash
+    M102   S-1     # センサー情報を読み取る
+    M102   S-2     # 一つの距離値を読み取る
+    ```
+
+## 接続の確認
+
+    * **コンソール**から`M102 S-1`を送信します。これは返信メッセージの例です。空白または他の文字列が返ってきた場合は、接続とワイヤの順序を確認してください
+
+        ```bash
+        Send: M102 S-1
+        Recv: V1.0 pandapi3d.com
+        ```
+
+## 校正
+
+    * ノズルを清掃し、コンソールからZ軸を移動し、ノズルがちょうどベッドに触れるまで調整します（BDsensorはこの位置をゼロポジションとして使用するため、`z_offset`は不要です。 `[BDsensor]`セクションで値が0の理由です）
+    * **コンソール**からGコードコマンド`M102 S-6`を送信し、プリンターはZ軸を0.1mmずつゆっくりと上に動かし、4mmに達するまで行います。センサーのインストール前にM102 S-6を実行しないでください。また、校正中にプリンタの電源を切らないでください。そうしないと、古い校正データが削除されます。その場合、再校正するだけです
+    * その後、`M102 S-5`を送信してBDsensorが正常に校正されたかどうかを確認できます。これはBDsensorに保存された元の校正データを返します。
+
+**注意事項**:
+
+* Z軸の原点復帰速度は5が最適です
+
+* M102 S-5で返ってきた最初の校正データが400を超えている場合、センサーが高すぎることを意味し、ベッドに近づけて再インストールする必要があります。最初のデータの推奨値は100です。また、二番目のデータの値が最初のデータより10以上大きくなるようにしてください
+
+  * FAQ: 校正データが1で始まり、二番目の値が9、三番目の値が24の場合、これは何を意味しますか？
+
+  * これは、0-0.1ミリメートルの範囲の解像度が9で、0.1-0.2ミリメートルの範囲の解像度が15であることを意味します。そのため、最初の解像度0-0.1ミリメートルが10以上になるように再校正をお勧めします。
+
+* G28を実行した後や、これらのコマンド `Z_tilt`と `quad_gantry_level`でZ軸の高さを調整するのを忘れないでください
+
+* 部分名の大文字小文字は正確でなければならない、さもないとKlipperは`Unknown pin chip name 'probe'`と報告します

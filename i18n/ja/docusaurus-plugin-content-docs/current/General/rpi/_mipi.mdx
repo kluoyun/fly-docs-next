@@ -1,0 +1,51 @@
+## Raspberry Pi 5とMIPIの組み合わせ
+
+:::tip
+FLY_MIPIはRaspberry Pi 5用に設計された変換モジュールで、DSIとCSIデバイスを直接使用することができます。
+:::
+
+### Raspberry Pi 5とMIPIの配線
+
+    :::danger 注意事項
+
+    * Raspberry Pi 5のDSIとCSIインターフェースは現在MIPIと改名されています
+    * MIPIインターフェースは設定によりCSIカメラやDSIディスプレイを直接使用できます
+    * 金指の向きに注意してください
+
+    :::
+
+    * Raspberry Pi 5には2つのMIPIインターフェースがあり、正面から見ると1と0のマークが見えます
+
+
+## DSIディスプレイの配線
+
+    * 1番のインターフェースを使用する場合、以下のようにディスプレイを設定します
+
+    ```bash
+    dtoverlay=vc4-kms-dsi-7inch,dsi1
+    ```
+
+    * 0番のインターフェースを使用する場合、以下のようにディスプレイを設定します
+
+    ```bash
+    dtoverlay=vc4-kms-dsi-7inch,dsi0
+    ```
+    * 配線の参考
+        <ImageView image={require('@site/docs/General/rpi/img/mipi_dsi.png').default} size="100%" align="left" />
+
+## CSIカメラの配線
+
+    <ImageView image={require('@site/docs/General/rpi/img/csi1.png').default} size="100%" align="left" />
+    * カメラのモデルは購入したものに合わせて設定してください。このチュートリアルではimx219を使用しています。
+
+    * 左側のMIPIインターフェースを使用する場合、カメラを以下のように設定します
+    ```bash
+    dtoverlay=imx219,cam1
+    ```
+
+    * 右側のMIPIインターフェースを使用する場合、カメラを以下のように設定します
+    ```bash
+    dtoverlay=imx219,cam0
+    ```
+    * 配線の参考
+    <ImageView image={require('@site/docs/General/rpi/img/mipi_csi.png').default} size="100%" align="left" />

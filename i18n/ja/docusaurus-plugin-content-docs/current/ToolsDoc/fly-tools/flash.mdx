@@ -1,0 +1,36 @@
+---
+sidebar_position: 4
+sidebar_label: ファームウェアのコンパイル
+---
+
+
+
+
+# 機能デモンストレーション
+
+    <ImageView image={require('@site/docs/ToolsDoc/fly-tools/img/home.gif').default} size="100%" align="left" />
+
+    * 一鍵でデバイスIDをコピーし、自動的にIDを認識し、対応する設定に**serial:**、**canbus_uuid:**、**device:**を追加
+    * CANレートとCANバッファの変更をサポートし、プレイヤーがカスタムCANを簡単に設定できる
+    * カメラデバイスのクエリをサポートし、プレイヤーがカメラを検索する手間を省く
+
+    :::tip 提示
+
+    * FLY-Toolsは自動的にCAN設定を作成しないため、CANレートとCANバッファの変更を利用するには自分でCAN設定を作成する必要があります
+
+    :::
+
+
+    * SSHを使用してネットワーク接続を行い、ユーザーとして以下コマンドを実行してください
+    * Ubuntuは現在この機能をサポートしていません
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 1000000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 1000000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```

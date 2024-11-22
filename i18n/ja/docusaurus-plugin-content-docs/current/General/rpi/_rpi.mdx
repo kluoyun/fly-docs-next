@@ -1,0 +1,102 @@
+## 注意事項
+
+    1. 禁止带电时拔插除USB之外的任何设备
+    2. Type C 接口可以用作供电也可以用作USB SLAVE接口烧录镜像
+    3. 为了保证CM4供电正常，在使用Type C 接口烧录镜像时，请不要连接其他设备。
+    4. 模块没有带任何保护，请勿短路电源。
+    5. FLY主板不支持POE功能！请不要使用POE供电
+
+:::danger 须知
+* 注意：EMMC 版本不可以使用SD卡
+* 注意：不带EMMC版本使用MICRO SD 卡启动，需要使用读卡器烧录镜像
+* 内存卡建议TF卡的传输速度必须为`class10`级或`class10`级以上，建议使用闪迪等品牌的TF卡
+:::
+
+    <ImageView image={require('@site/docs/General/rpi/img/emmc.png').default} size="100%" align="left" />
+
+## ラズパイにTFTV2システムをプリインストールしたダウンロードリンク
+
+    * ラズパイ3B/3B+/4B/CM4/5Bに適用されるシステムイメージ
+    * このイメージはklipper、moonraker、mainsail、fulidd、klipper-screenなどがあらかじめインストールされています
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## イメージのダウンロード
+
+    * システムを[こちら](https://www.raspberrypi.org/downloads/raspberry-pi-os/)で最新のリリースをダウンロード（または画像の指示に従ってください）。
+    * もしダウンロードしたのがシードファイルなら、迅雷や彗星などのソフトウェアを使って再度ダウンロードしてください
+
+    <ImageView image={require('@site/docs/General/rpi/img/rpi.png').default} size="70%" align="left" />
+
+
+    * デスクトップと推奨ソフトウェア付きのイメージ`(Raspberry Pi OS with desktop and recommended software)`、EMMC 16G またはCM4 lite 16G以上のストレージが必要
+
+:::danger 须知
+EMMCバージョンは電源を切った状態でスイッチを切り替えてCM4焼き付けモードに入る必要があります。Liteバージョンは直接システムカードにイメージを焼き付ければ良い
+:::
+
+:::danger 须知
+* EMMCバージョンは焼き付けモードに入る必要があります。以下に焼き付けモードの方法を示します
+* Liteバージョンは焼き付けモードに入る必要はなく、直接フォーマットしてからイメージを焼き付けてください
+:::
+
+## rpiboot（ブートローダー）のダウンロード
+
+    * 管理者権限でrpibootソフトウェアをダウンロードして開く[こちらからダウンロード](https://files.waveshare.net/wiki/w/upload/f/f3/Rpiboot_setup.zip)
+    * ドライバーのインストールと起動ツールをインストールします。成功後、インストールディレクトリにrpiboot.exeアプリがあります
+
+    <ImageView image={require('@site/docs/General/rpi/img/boot.png').default} size="80%" align="left" />
+
+## 焼き付けモードへの移行
+
+    * この時点でコンピューターに接続し、電源を供給すると、コンピューターのデバイスマネージャーにBCMxxxのデバイスが認識されます
+
+        <ImageView image={require('@site/docs/General/rpi/img/bcm2711.png').default} size="80%" align="left" />
+
+
+    * 次にrpibootを実行してください
+
+        <ImageView image={require('@site/docs/General/rpi/img/rpiboot.png').default} size="80%" align="left" />
+
+
+    * 実行が終了するのを待ち、マイコンピューターにUSBドライブが表示されます
+
+:::danger 须知
+注意：コンピューターがBCMxxxのデバイスを認識しない場合、上のどれかの手順に問題がある可能性があります。必ずBCMxxxのデバイスが認識されてからrpibootを実行してください。それ以外は無効です。
+:::
+
+
+## EMMCまたはSDカードのフォーマット
+
+    * SDFormatter.exe[こちらからダウンロード](https://www.waveshare.net/w/upload/d/d7/Panasonic_SDFormatter.zip)を使用してSDカードをフォーマット
+
+        <ImageView image={require('@site/docs/General/rpi/img/sdformatter.png').default} size="80%" align="left" />
+
+
+    * または、WINの内蔵ディスク管理を使用してパーティションを削除し、削除後新しいパーティションを作成します。
+    * このPCを右クリック -> 管理 -> ディスク管理 -> 新しく追加されたドライブを見つける（間違えると大変です） -> すべてのパーティションを削除 -> 新しいパーティションを作成（任意のファイルシステム）システムを焼き付けた後二つのドライブが表示される場合、そのままフォーマットまたはパーティション削除を進めてください
+
+## イメージの書き込み
+
+    1. Raspberry Pi Imager [こちらからダウンロード](https://www.raspberrypi.com/software/)でイメージを書き込みます。
+    2. 書き込み前にアカウントとパスワードの設定、SSHの有効化が必要です
+
+            <ImageView image={require('@site/docs/General/rpi/img/imager.png').default} size="80%" align="left" />
+
+
+    3. 書き込みが完了すると、マイコンピューターにUSBドライブが表示されます
+
+## 書き込み完了後再起動
+
+    * 書き込み完了後、電源を切断し、コンピューターとの接続線を外し、BOOTスイッチを戻します。再度電源を入れてください
+
+## ラズパイzero2とzero2Wの注意事項
+
+    * この注意事項は、FLY-TFTスクリーンとG2Tを組み合わせて使用する場合の説明です
+    * ラズパイzero2とzero2wはデフォルトの表示デバイスを変更する必要があり、以下のコードを実行して直接変更できます\
+    * 実行後、再起動が必要ですのでご注意ください
+    ```cfg
+    sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+    ```

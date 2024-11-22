@@ -1,0 +1,72 @@
+---
+sidebar_position: 6
+sidebar_label: Katapultファームウェアの書き込み
+---
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapultファームウェア
+
+## Katapultファームウェアの説明
+
+    <CANBOOT />
+
+    :::tip
+
+    * D7はUSB接続を使用
+    * D7は2024年9月1日から出荷時にKatapultファームウェアがプリインストールされています
+
+    :::
+
+## 書き込みモードへの移行
+
+    :::tip
+
+    左側が`BOOTボタン`、右側が`RESETボタン`
+
+    :::
+
+    * 書き込みモードへの移行方法は2つあります
+    * 第一の方法：電源を完全に切った状態で、BOOTボタンを押しながらデータ伝送用のケーブルを主板とデバイスに接続します
+    * 第二の方法：データ伝送用のケーブルを主板とデバイスに接続した後、BOOTボタンを押しながらRSTボタンを押し、RSTボタンを放してからBOOTボタンを放します
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/boot.png').default} size="50%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windowsへの書き込みガイド" default>
+
+            * D7のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">自動ダウンロード</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="ホストマシンへの書き込みガイド">
+
+            <Katapult />
+
+            4. ファームウェアの書き込み
+
+            :::tip
+
+            どれか1つのファームウェアを書き込むだけです
+
+            :::
+
+            * 以下はファームウェアの書き込みコマンドです
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D7.bin
+                ```
+
+            5. 以下の画像の矢印が指す内容「File downloaded successfully」が表示されたら、書き込みが成功したことになります
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            書き込みが完了した後、主板に一度完全に電源を切る必要があります。
+
+            :::
+
+        </TabItem>
+    </Tabs>

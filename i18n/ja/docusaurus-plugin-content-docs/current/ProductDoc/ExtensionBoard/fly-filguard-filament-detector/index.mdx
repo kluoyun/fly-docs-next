@@ -1,0 +1,146 @@
+---
+sidebar_position: 1
+---
+
+
+
+
+# 製品紹介
+
+  FilGuardフィラメント検出器は、VZ-Hextrudort-Low押出機と互換性があり、断線検出、詰まり検出をサポートし、カスタマイズ可能なボタンを備えています。
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament_1.png').default} size="60%" align="left" />
+ 
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament.png').default} size="40%" align="left" />
+
+## 配線教程
+
+* 搭載されたPH2.0 5P端子で配線がより便利
+
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/connection.png').default} size="80%" align="left" />
+
+## ファームウェアランプの状態紹介
+
+* フィラメント不足：赤色の点滅
+* フィラメントの供給：青色の点滅（供給速度が速いほど点滅頻度が高い）
+* フィラメントの戻し：緑色の点滅（同上）
+* フィラメントありだが供給・戻しなし：オレンジ色の呼吸ランプ
+
+## klipper、断線と詰まりの参考設定
+
+:::warning
+詰まり検出設定中の`detection_length: 2.0`
+
+2.0mmはこのスマートフィラメント検出モジュールが正常に動作するための最小検出長さです。誤作動が発生した場合は、検出長さを1mmずつ増加させて問題を解決してください。
+:::
+
+        ```cfg
+        [respond]
+        default_type: echo
+
+        [force_move]
+        enable_force_move: True
+
+        [filament_switch_sensor 断線検出]
+        pause_on_runout: False
+        switch_pin: ^!PG12
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 フィラメント不足
+                # filament_unload
+        insert_gcode:
+                M118 フィラメント供給
+                FORCE_MOVE STEPPER=extruder DISTANCE=8 VELOCITY=5 ACCEL=60
+                {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                        M118 加熱待ち!
+                        SET_HEATER_TEMPERATURE HEATER=extruder TARGET=200
+                        TEMPERATURE_WAIT SENSOR=extruder MINIMUM=190
+                {% endif %}
+                M83
+                G92 E0
+                G0 E50 F500
+                G0 E10 F200
+
+        [filament_motion_sensor 詰まり検出]
+        extruder: extruder
+        detection_length: 2.0
+        switch_pin: ^!PG10
+        pause_on_runout: False
+        runout_gcode:
+                {% if (printer.print_stats.state == "printing") %}
+                        PAUSE
+                {% endif %}
+                M118 詰まり
+        insert_gcode:
+                M118 詰まり復旧
+        #event_delay:
+        #pause_delay:
+
+        ```
+
+:::info
+供給と戻しはどちらか一つしか使用できません
+:::
+
+## Kliiper戻しボタンの参考設定
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 加熱待ち!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E10 F300
+                        G0 E-20 F200
+                        G0 E-50 F500
+                {% else %}
+                        M118 印刷中、引き戻し操作は行いません!
+                {% endif %}
+        ```
+
+
+## Kliiper供給ボタンの参考設定
+
+        ```cfg
+        [gcode_button filament_unload]
+        pin: ^!PG11
+        release_gcode:
+        filament_unload
+        press_gcode:
+
+
+        [gcode_macro filament_unload]
+        gcode:
+                {% if (printer.print_stats.state != "printing") %}
+                        M83
+                        G92 E0
+                        {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
+                                M118 加熱待ち!
+                                SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
+                                TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
+                        {% endif %}
+                        G0 E20 F300
+                {% else %}
+                        M118 印刷中、引き戻し操作は行いません!
+                {% endif %}
+        ```
+
+
+## 3Dモデルダウンロードリンク
+
+        ```
+        https://cdn.mellow.klipper.cn/STEP/%E8%80%97%E6%9D%90%E6%96%AD%E6%96%99%E5%A0%B5%E6%96%99%E6%A3%80%E6%B5%8B%E6%A8%A1%E5%9D%97.7z
+        ```

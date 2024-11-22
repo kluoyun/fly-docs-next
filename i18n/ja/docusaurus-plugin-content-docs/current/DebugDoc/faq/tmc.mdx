@@ -1,0 +1,98 @@
+---
+sidebar_position: 3
+---
+
+
+
+# TMCエラー関連
+
+## `Unable to read tmc uart 'stepper_x' register IFCNT`または `Unable to read tmc spi 'stepper_x' register register` 
+
+    1. エラーの詳細
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart.png').default} size="80%" align="center" />
+
+    2. エラーの原因
+
+        * ドライバーとの通信ができない
+
+    3. 主な解決方法
+
+        * 対応するドライバーのUARTピンの設定が正しいか確認
+        * UARTのジャンパが正しく接続されているか確認
+        * ドライバーに電源が供給されているか確認
+        * ドライバーやドライバーポートの設定を変更して判断
+        * 他社製のドライバーの場合、ドライバーのUARTピンがFLYと一致しているか確認する必要があります。FLYドライバーのUARTピンは左から上に数えて4番目のピンです
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/2209uart.png').default} size="80%" align="center" />
+        * 購入したドライバーのUARTピンが5番目のピンにある場合は、下記のジャンパで対応してください
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart1.png').default} size="80%" align="center" />
+
+## `TMC XXXX reports error: GSTAT: 00000001 reset=1(Reset) ` 
+
+    1. エラーの詳細
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/reset.png').default} size="80%" align="center" />
+
+    2. エラーの原因
+
+        * ドライバーのリセット
+
+
+    3. 主な解決方法
+
+        * 電源接続の接触不良
+        * モーターの断線
+        * モーターの金属外殻を基板やツール版のGNDに接続する
+
+## `TMC 'extruder' reports error: DRV_STATUS: c00d0103 otpw=1(OvertempWarning!) `
+
+    1. エラーの詳細
+
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/overtemperror.png').default} size="80%" align="center" />
+
+    2. エラーの原因
+
+        * ドライバーの過熱!
+        * モーターの過熱ではありません！
+
+    3. 主な解決方法
+
+        * 運転電流を下げる
+        * 保持電流を削除
+        * ドライバーのサンプリング抵抗が正しいか確認
+        * ドライバーの放熱を強化する、例えばファンを追加
+
+## `TMC 'extruder' reports error: DRV_STATUS: 601f1000 s2vsa=1(ShortToSupply_A!) csactual=31 ola=1(OpenLoad_A!) olb=1(OpenLoad_B!)）`
+
+    1. エラーの詳細
+
+        * 画像なし
+
+    2. エラーの原因
+
+        * ドライバーの電流設定が正しくない
+
+
+    3. 主な解決方法
+        
+        * ステッピングモーターのAB二つのコイルの抵抗が一致しているか確認
+        * ステッピングモーターや部品のモーター内部の電線が緩んでいたり、短絡しているか確認
+        * サイレントモードをオフにする
+
+## `TMC 'extruder' reports error: DRV_STATUS: 00190060 s2vsb=1(ShortToSupply_B!) ola=1(0penLoad_A!) cs_actual-25`
+
+    1. エラーの詳細
+    
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/ab.png').default} size="80%" align="center" />
+
+    2. エラーの原因
+
+        * 接続ミスまたはモーター自体の問題
+
+
+    3. 主な解決方法
+        
+        * ステッピングモーターのAB二つのコイルの抵抗が一致しているか確認
+        * ステッピングモーターや配線を確認
+        * モーターの線順が左側が一組、右側が一組であるか確認
+

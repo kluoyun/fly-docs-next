@@ -1,0 +1,145 @@
+---
+sidebar_position: 1
+---
+
+
+
+# よくあるエラーメッセージ
+
+
+## mcu 'xxx': Unable to connect
+
+1. **エラーメッセージ**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/cannot_connect.png').default} size="80%" align="center" />
+
+2. **エラーの原因**
+
+   * 上位機がメインボードを見つけて接続できない
+
+3. **解決方法**
+
+   * Klippy.logを確認し、最下部までスクロールする
+   * `[Errno 2]`が表示された場合、検索IDが見つからず**printer.cfg**に追加されていないことを示す
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/errno2.png').default} size="80%" align="center" />
+
+   * **serialhdl.error: mcu 'xxx': Serial connection closed**が表示された場合、CAN IDが見つからないか、入力が間違っているため、検索IDを探して入力する必要がある
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/lnvalid_can_uuid.png').default} size="80%" align="center" />
+ 
+   * **mcu 'mcu': Unable to open CAN port: [Errno 19] No such device**が表示された場合、**UOTCまたはCANブリッジを搭載したメインボードがない**ことを示す
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/errno19.png').default} size="80%" align="center" />
+
+   * **mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 100] Network is down**が表示された場合、**CANネットワークが設定されていないか、CAN0が起動していない**ことを示す
+
+   * **mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 105] Network is down**が表示された場合、**CANネットワークのバッファが小さすぎる**ため、バッファを大きくする必要がある
+
+   * `[Errno 105] Network is down`と`[Errno 100] Network is down`については、こちらのドキュメントを参照してください：[CAN設定](/docs/DebugDoc/faq/klipper_can.mdx "クリックでジャンプ")
+
+## mcu 'mcu': Invalid CAN uuid
+
+1. **エラーメッセージ**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/lnvalid_can_uuid.png').default} size="80%" align="center" />
+
+2. **エラーの原因**
+
+   * CAN IDが入力されていないか、入力が間違っている
+
+3. **解決方法**
+
+   * 検索IDを探して入力する必要がある
+
+## Option 'serial' in section 'mcu' must be specified
+
+1. **エラーメッセージ**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/serial.png').default} size="80%" align="center" />
+
+2. **エラーの原因**
+
+   * USB IDが入力されていないか、入力が間違っている
+
+3. **解決方法**
+
+   * 検索IDを探して入力する必要がある
+
+##  homing override method always homes X and Y before homing Z. The safe_z_home
+
+1. **エラーメッセージ**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/homing.png').default} size="80%" align="center" />
+
+2. **エラーの原因**
+
+   * `[safe_z_home]`と`[homing_override]`が重複して設定されている
+
+3. **解決方法**
+
+   * どちらか一つを設定し、もう一方を削除する
+
+ ##  Error ‘XXX ‘mcu’ shutdown: ADC out of range….
+
+1. **エラーメッセージ**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/adc.png').default} size="80%" align="center" />
+
+2. **エラーの原因**
+
+   * Klipperが温度が最大または最小閾値を超えたことを検出し、システムがシャットダウンプロテクションモードに入る（サーミスタが開放または短絡している可能性がある）
+
+3. **解決方法**
+
+   * 設定内で`min_temp:`を検索し、最小温度を-235に変更
+   * 設定内で`max_temp:`を検索し、最大温度を99999999に変更
+   * サーミスタの型番が正しいか確認
+   * サーミスタのピンが正しいか確認
+   * サーミスタが短絡していないか確認
+   * 問題を特定し解決した後、元の温度設定に戻す
+
+## MCU ‘mcu’ shutdown: Timer too close
+
+1. **エラーメッセージ**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/ttc.png').default} size="80%" align="center" />
+
+2. **エラーの原因**
+
+   * 主に下位機のオーバーロードまたは上位機のタイムアウト
+
+3. **解決方法**
+
+   * ステップ数を減らす
+   * 印刷速度を下げる
+   * 上位機のシステムとファームウェアを再インストール
+
+### Raspberry Piでこの方法を使用できます
+
+   ```bash
+   sudo timedatectl status | grep "NTP service" 
+   sudo timedatectl set-ntp false
+   ```
+
+   * NTPサービスの状態を確認
+   * NTP同期を無効にする
+
+## Communication timeout during homing probe 
+
+1. **エラーメッセージ**
+
+   画像なし
+
+2. **エラーの原因**
+
+   * CANとスクリーンサービスが同時にこのエラーを起こす可能性が高い
+
+3. **解決方法**
+
+   * SSHを使用して上位機にネットワーク経由で接続後、下記のコードを実行
+   * Klipperを更新すると自動的に元に戻る
+   * 印刷中に実行しないでください
+   ```bash
+   sed -i 's/TRSYNC_TIMEOUT = 0.025/TRSYNC_TIMEOUT = 0.05/g' ~/klipper/klippy/mcu.py && sudo systemctl restart klipper
+   ```

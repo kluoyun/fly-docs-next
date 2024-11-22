@@ -1,0 +1,37 @@
+---
+sidebar_position: 8
+sidebar_label: 板載5Vファンコネクタ
+---
+
+
+
+
+# 板載5Vファンコネクタ
+
+## Pi-V2には5Vの制御可能なインターフェースが搭載されており、主制御の冷却に使用されます。接続方法は以下の図の通りです
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.png').default} size="80%" align="left" />
+
+
+## 参考設定
+
+    ```cfg
+    [mcu host]                      # FlyOSはあなたのために既にLinux MCUを生成しており、定義するだけで使用できます           
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor FLY-π]      # ホストマシンの温度
+    sensor_type: temperature_host
+
+
+    [temperature_fan core_fan]      # ホストマシンの冷却ファン
+    pin: host:gpiochip1/gpio103     # ホストマシンのファンピン
+    max_power: 1.0
+    sensor_type: temperature_host   # ホストマシンの制御温度に設定
+    control:watermark               # 制御方法
+    target_temp: 48                 # ホストマシンの冷却ファン起動温度
+    min_temp: 0                     # 最低温度、この温度以下の場合エラーが発生します
+    max_temp: 90                    # 最高温度、この温度以上の場合エラーが発生します
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                  # 最大速度、最大出力時の80%
+    min_speed: 0.3                  # 最小速度、最大出力時の30%
+    ```

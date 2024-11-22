@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+sidebar_label: CANファームウェアの書き込み
+---
+
+import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN ファームウェアのコンパイル
+
+## コンパイルの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * GPIOピンをマイクロコントローラ起動時に設定するには、入力：gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/can.png').default} size="100%" align="center" />
+    * `Q` キーを押して **Save configuration** が表示されたら、`Y` キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 設定が保存され、コマンドラインプロンプトに戻る
+    * `make -j4` を入力してコンパイルを開始する。時間がかかる
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されたらコンパイル成功
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## デバイスの検索
+
+    <LS />
+
+
+## ファームウェアの書き込み
+
+    * ファームウェアの書き込み前に、XT30データケーブルを使ってツールボードをUTOCまたはブリッジファームウェアが書き込まれたメインボードに接続します。以下の接続図を参考にしてください
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * CAN HとCAN Lの間を、電源を切った状態でマルチメーターで測定し、抵抗値が`60Ω`付近であることを確認してください。`120Ω`であれば`120Ω`のジャンパーを接続し、`40Ω`付近であればジャンパーを取り外します。
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/120.png').default} size="50%" align="center" />
+
+    <CANFLASH />
+
+## ファームウェアが起動したかどうかの確認
+
+    * ファームウェアが正常に起動するとLEDが点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.png').default} size="100%" align="center" />

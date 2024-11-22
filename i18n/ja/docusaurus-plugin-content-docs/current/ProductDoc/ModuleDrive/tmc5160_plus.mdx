@@ -1,0 +1,151 @@
+---
+sidebar_position: 7
+---
+
+
+
+
+
+
+
+# TMC 5160 Plus
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus.png').default} size="100%" align="center" />
+
+## 基本パラメータ
+
+    * 入力電圧：12-60V
+    * 最大電流：10A
+    * 対応ファームウェア：Marlin/Klipper/RRF
+    * 駆動モードサポート：TMC：SPI
+    * マイクロステップ補間機能付きステップ/方向インターフェース
+    * 最大256分割の解像度
+    * stealthChop2の静音動作と滑らかな動作をサポート
+    * 中周波共振の抑制をサポート
+    * spreadCycle高動的モータ制御チョッパーをサポート
+    * dcStep負荷関連速度制御をサポート
+    * stallGuard2高精度無センサーモータ負荷検出をサポート
+    * coolStep電流制御をサポート、最大75%の省エネ
+
+## 主板ジャンパーとドライバ接続の説明
+
+    :::tip
+
+    TMC 5160 PlusはSPIモードを使用します。FLY主板のジャンパーはSPIジャンパーに従ってジャンパーキャップを設置してください。他社の主板については、主板の販売者にご確認ください。
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+### 主板FPCの設置
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fpc.png').default} size="100%" align="center" />
+
+### RGBスイッチの選択
+
+    :::tip
+
+    主板のENピンを使用してRGBを制御すると、モータが強制的にロックされます。
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb.png').default} size="100%" align="center" />
+    
+    * 複数のドライバのRGB接続
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb-1.png').default} size="80%" align="center" />
+
+
+### 12V FAN接続
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fan.png').default} size="100%" align="center" />
+
+## 主板の参照設定
+
+    :::danger
+
+    ドライバのサンプリング抵抗は0.033に設定してください、誤って設定しないでください。
+
+    :::
+
+
+    <Tabs>
+        <TabItem value="ドライバのENピンを使用してRGBを制御する場合" default>
+        
+        * スイッチはFANポートに向けて切り替え
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        # enable_pin: !
+
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+        driver_DISS2G: 1
+        driver_DISS2VS: 1
+        ```
+        </TabItem>
+
+
+        <TabItem value="主板のRGBピンを使用してRGBを制御する場合" default>
+        
+        * スイッチはFANポートの反対方向に向けて切り替え
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        enable_pin: !
+        
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+        driver_DISS2G: 1
+        driver_DISS2VS: 1
+        ```  
+
+        </TabItem>
+
+        <TabItem value="RGB参照設定" default>
+
+        * プラグインを通じてドライバLEDを制御する  <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">クリックでジャンプ</Button>
+
+        ```
+        [neopixel TP_led]
+        pin: 
+        chain_count: 6
+        # LEDの数
+        # 灯珠数量
+        color_order: GRB
+        initial_RED: 0.4    
+        initial_GREEN: 0.8
+        initial_BLUE: 1
+        initial_WHITE: 0.0
+        #66CCFF 
+
+        ```  
+
+        </TabItem>
+
+    </Tabs>
+
+## 電流警告
+
+    :::danger
+
+    TMC5160 Plusは10Aをサポートしますが、過大な電流はモータを損傷する可能性があり、散熱を強化する必要があります。
+
+    :::

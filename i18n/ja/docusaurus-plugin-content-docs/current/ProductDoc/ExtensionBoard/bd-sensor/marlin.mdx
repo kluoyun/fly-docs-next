@@ -1,0 +1,200 @@
+---
+sidebar_position: 3
+sidebar_label: Marlinの使用
+---
+
+
+
+
+
+# **BDsensor** のインストール
+
+## センサーケーブルをメインボードまたはCANバスツールヘッドボードに接続します。
+
+    * SB2040はBDsensorを使用できませんのでご注意ください。
+    * SHT36はBDsensorのCLK/SCL（入力）を高圧入力ポートに接続し、ジャンパーを接続する必要がありますのでご注意ください。
+    * BDsensorのCKLおよびSDA線は、基板の任意のGPIOピンに接続できます。BDセンサーケーブルを直接Bltouchポートに接続することもできます。例：
+
+    ```bash
+    BLtouch    |    BDsensor
+    5V       -->     5V
+    GND      -->     GND
+    S        -->     CLK/SCL    (入力)
+    GND      -->     GND
+    Zmin     -->     SDA    (入力/出力)
+    ```
+
+    * メインボードコネクタ内のいくつかのピンがMCUのgpiosに直接接続されていない場合（例えば、フィルターコンデンサが付いている、MOSFET、ダイオード、またはオプトカプラで分離されているが、抵抗または抵抗プルアップ/プルダウンで分離されている場合は可）、それらはBDsensorと一緒に使用できません。また、ファームウェアは接続エラーを報告します。例：
+
+    * ファンおよびヒーターのコネクタはMOSFETで分離されています。
+    * いくつかの基板では、温度サーミスタおよびエンドストップ/プローブ用のコネクタが通常フィルターコンデンサを介してGNDに接続されています。
+
+1. 下図のように、BDセンサーをホットエンドの近くに取り付けます。 [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/bd-sensor/img/bd.png').default} size="100%" align="left" />
+
+
+
+## Marlinファームウェアにパッチを適用する
+
+    BDセンサーはMarlin2.1.xに統合されています（2022年8月27日以降）、
+
+    リリースバージョンをダウンロードできますが、最新のバグフィックスバージョンをダウンロードすることを推奨します：https://github.com/MarlinFirmware/Marlin
+
+    設定ファイルとピンファイルを変更する必要があります。
+
+### 設定.hの編集
+
+1. BD_SENSORを有効にする
+
+    コメントを解除します。
+
+    ```bash
+    #define BD_SENSOR`
+    `#define Z_SAFE_HOMING
+    #define BD_SENSOR_PROBE_NO_STOP //この新しい行を追加して、ノズル停止なしで高速ベッドレベリングを行う
+    ```
+
+    `BD_SENSOR_PROBE_NO_STOP`のみ
+
+    最新のMarlinバグフィックス：https://github.com/MarlinFirmware/Marlin
+
+    説明： https://github.com/MarlinFirmware/Marlin/pull/25847
+
+2. プローブでホームする
+
+    `Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN`が無効になっていることを確認し、次のように`USE_PROBE_FOR_Z_HOMING`を有効にしてください。
+
+    ```bash
+    //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+    // Force the use of the probe for Z-axis homing
+    #define USE_PROBE_FOR_Z_HOMING
+    ```
+
+
+
+3. 二回目のZ軸ホーム速度を遅くする
+
+    ```bash
+    #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 16)
+    ```
+
+    ここでは、BDsensorプロセスから読み取られるストッパーは通常のストッパーのようにリアルタイムでないため、ホーム速度とZ軸ホーム速度を遅くする必要があります。
+
+    ### Configuration_adv.hの編集
+
+    `#define BABYSTEPPING`を有効にして、実時レベリング機能を実現します。
+
+    ```bash
+    #define HOMING_BUMP_DIVISOR { 2, 2, 8 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+    ```
+
+### pins_boardname.hの編集
+
+    BDsensorのSDAおよびSCLのピンを次の3行を追加して、ピンファイルpins_boardname.hで設定します（例）：`pins_PANDA_PI_V29.h`
+
+        ```bash
+        #define  I2C_BD_SDA_PIN    PC6   // メインボードに接続されているSDA線を実際の番号に変更してください
+        #define  I2C_BD_SCL_PIN    PB2   // メインボードに接続されているSLK線を実際の番号に変更してください
+        #define  I2C_BD_DELAY  20      // デフォルト値は20で、範囲は[20,50]にする必要があります。
+        ```
+
+    通常のBLtouchのようにプリント前に自動ベッドレベリングプローブ（G29）をしたい場合、コメントを解除します。
+
+        ```bash
+        #define AUTO_BED_LEVELING_BILINEAR
+        ```
+
+    そして、次のように値を編集します。
+
+        ```bash
+        #define Z_CLEARANCE_DEPLOY_PROBE   0 // デプロイ/ストウのZクリアランス
+        #define Z_CLEARANCE_BETWEEN_PROBES  1 // プローブポイント間のZクリアランス
+        #define Z_CLEARANCE_MULTI_PROBE     1 // 複数のプローブ間のZクリアランス
+        ```
+
+
+
+## BDセンサーの値を液晶画面に表示する
+
+    * プリンタがステータス表示（gcode M117をサポート）を持っている場合、LCD12864や一部のuart画面（例えばender3V2）など...
+
+## 校正
+
+    1. ノズルを清掃し、コンソールでZ軸を移動させ、ノズルがベッドにちょうど触れるまで（BDsensorはこの位置を0点として使用するため、z_offsetは不要で、値を0に設定します）。
+    2. gcodeコマンド`M102 S-6`を送信します。プリンタはZ軸を0.1mmずつゆっくりと上に移動し、4mmに達するまで続けます。センサーを取り付ける前にM102 S-6を実行しないでください。また、校正中にプリンタの電源を切らないでください。さもないと古い校正データが削除されます。その場合、再度校正してください。
+
+    3. `M102 S-5`を送信して、BDセンサーが正しく校正されたかどうかを確認できます。これにより、BDセンサー内に保存されている生の校正データが返されます。
+
+    また、このための校正ツールもあります：https://github.com/markniu/Bed_Distance_sensor/raw/new/marlin/BD_Config_Tool_Marlin.zip ![img](https://raw.githubusercontent.com/markniu/Bed_Distance_sensor/main/doc/images/Read.jpg)
+
+    注意：データ値が1015または> 1010の場合、センサーの範囲を超えています。最初の5点（0〜0.5mm）またはそれ以上の値が0から1000の範囲内で、増加する値のdeltaが>=10である場合、校正に成功したことを示します。上記の図のように。
+
+    M102 S-5が返す最初の生の校正データが400より大きい場合、センサーが高すぎて取り付けられていることを意味し、ベッドに近い位置に再び取り付ける必要があります。また、2番目のデータが最初のデータ値より10以上大きくなることを確認してください。
+
+## テストとプリント
+
+    メニュー ベッド層
+
+    自動ベッド位置
+
+## 自動ベッドレベリングの方法は2つあります：
+
+    **1. M102を使用して最初の数層をリアルタイムでレベリングする**
+
+        gcodeコマンドを送信するか、gcodeファイルにgcodeを追加して、この自動レベルを簡単に有効または無効にすることができます。
+
+        Kuraでベッドレベリングを有効にするには、プリンタマシンの設定の「スタートGコード」セクションのG102（全軸をホームする）Gコードのすぐ下にM28 Gコードを追加します。例えば、G28の下にこれを追加すると、Z軸高さが0.2mm以下の場合にのみベッドレベリングが行われます。`M102 S2`
+
+        BDsensorを使用してベッドレベリングを無効にするには、次のコマンドを送信または使用します。ちなみに、デフォルトでは無効になっています。`M102 S0``G28``M18`
+
+        ```bash
+        M102   S-1     //センサー情報を読み取り、接続チェックに使用できます。
+        M102   S-2     //現在の距離値を読み取る
+        M102   S-5     //生の校正データを読み取る
+        M102   S-6     //校正を開始する前に、ノズルがベッドに触れることを確認し、プリンタを再起動します。Z軸をホームする前にこれを実行しないでください。
+        M102   S4      //調整可能なZ高さ値を設定します。例えば、M102 S4は、Z高さが0.4mm以下で調整を行い、M102 S0で無効にします。
+        ```
+
+    **2. G29自動ベッドレベリング**
+
+        G29のBLtouchと同じように自動ベッドレベリングを行う別の方法があります。G28の下に一行追加するだけです。
+
+        [インストールビデオ](https://www.pandapi3d.com/post/install-bed-distance-sensor-video)
+
+        [クリスの地下室のインストールビデオ](https://youtu.be/VLUfvkO2NFc?si=PF_6nhw39KhHBhcj)
+
+### Zエンドストップの確認 `M119`
+
+    このステップを確認する前に、Z軸をホームしないでください。さもないとノズルがプリントベッドに押し付けられる可能性があります。
+
+    これはM119コマンド（エンドストップの状態を報告する）送信後の返信メッセージです。
+
+    ```bash
+    Send: M119
+    Recv: x:open y:open z:open
+    ```
+
+    z minが開いていない場合、設定を確認してください。`#define Z_MAX_ENDSTOP_HIT_STATE HIGH`
+
+    - Zモーターがオフ/ロック解除されていることを確認
+    - 手でZ軸を下に移動し、ノズルがベッドに触れるまで
+    - `M102 S-2`を送信すると、戻り値が0.00mmになるはずです。その後、再度M119を送信すると、zエンドストップが現在トリガーされているのが見えます。
+
+    ```bash
+    Send: M119
+    Recv: x:open y:open z:TRIGGERED
+    ```
+
+    ### 接続の確認
+
+    `M102 S-1`で接続を確認します。これは返信メッセージの例です。接続とワイヤの順序が正しいかどうかを確認し、空白または他の文字列が返されないかどうかを確認してください。
+
+    ```bash
+    Send: M102 S-1
+    Recv: V1.0 pandapi3d.com
+    ```
+
+
+
+##  上記のすべてのステップが正しければ、Z軸をホームすることができます。

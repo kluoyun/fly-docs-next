@@ -1,0 +1,157 @@
+---
+sidebar_position: 1
+---
+
+
+
+
+
+
+# 製品紹介
+
+  FLY-KPPMインストールシャットダウンモジュールは、ラズベリーパイなどの開発ボード向けに設計された安全モジュールで、停電によるデータ損失を防ぐことを目的としています。先進的な技術を採用しており、停電が発生した際には自動的にキャパシタ電源に切り替わり、停電時に開発ボードが15秒間安定して動作し続けることを保証し、データの有効な保存を確保します。小型で便利、インストールも簡単です。
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.png').default} size="100%" align="left" />
+
+
+## 製品注意事項
+
+  :::danger 注意事項
+  入力電源はDC12-24Vのみをサポートし、接線時には正負極を区別してください。接線作業は必ず電源を切った状態で行い、接線が正しいことを確認してから電源を入れてください。接線ミスによる損失については、当社は責任を負いません。
+  :::
+
+  :::danger 注意事項
+  5V OUTジャックの+5Vは非常用電源出力として使用され、通常の電源供給には使用しないでください。USB-OUTまたはSIG/IOを使用して上位機に電源を供給してください。
+  :::
+
+  :::danger 注意事項
+  安全シャットダウンモジュールを使用する際には、12V-24Vの電源を使用してください。モジュールが正常に動作することを確保するために、安全シャットダウンモジュールボード内の5V出力電圧が4.9V以下に低下しないようにしてください。そうでない場合、安全シャットダウンモジュールは内部で昇圧を行い、キャパシタが常に充電状態となり、モジュールが継続的に発熱します。
+  :::
+
+
+## 製品画面表示内容説明
+
+
+    | 画面内容説明    |       左側説明        |     右側パラメータ          |        右側説明      |
+    | :------------- | :------------------: | :------------------: | :------------------: |
+    | `IN:`            |  入力電圧             |  `OUT:`              |  出力電圧             |
+    | `CA:`            |  キャパシタ総電圧     |  `OI:`               |  出力負荷電流         |
+    | `C1:`            |  C1キャパシタ電圧     |  ` C2:`              |  C2キャパシタ電圧     | 
+    | `Temp:`          |  安全シャットダウンモジュール温度 | ` E:`       |  状態表示、下記を参照してください    | 
+
+
+    | 表示内容        |       状態説明       |
+    | :------------- | :-----------------: | 
+    | ` Ready!`          |  正常起動            |
+    | ` IN LOW!`         |  入力電圧低下        |
+    | ` IN OVR!`         |  出力電流過高        |
+    | ` OV LOE!`         |  出力電圧過低        |
+    | ` OV OVR`          |  出力電流過高        |
+    | ` TP OVR!`         |  温度過高            |
+    | ` NONE `           |  不明なエラー        |
+    | ` R: XX Sec `      |  10秒以内に電源が切れた後、電源が入るとこのメッセージが表示され、カウントダウン終了後上位機が再起動します。            |
+
+## 固定外殻モデルダウンロード
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/KPPM.zip
+    ```
+
+## ピン説明
+
+  * OUT-RST リセット
+  * OUT-PDN シャットダウン
+
+  * IN-PIN 
+
+    初期状態でプルアップされています。モジュールが電源を入れると、自動的に前回の停電時間を検出します。
+  前回の停電時間が10秒未満の場合、5V出力が10秒後に自動的にオン/オフされます（上位機がシャットダウンを完了し、再起動できることを保証するため）。
+  もしGNDに接続された場合、自動検出機能が無効になります。
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.png').default} size="100%" align="left" />
+
+## FLY上位機使用マニュアル
+
+  :::info
+  FLY-Pi FLY-Pi-V2 FLY-C8専用
+  :::
+
+  FLY上位機は以下のコマンドをSSHで実行する必要があります。
+
+  ```bash
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
+  ```
+
+  システムを再起動します。
+
+  ```bash
+  sudo reboot
+  ```
+  
+### FLY上位機接線マニュアル
+
+  <Tabs>
+      <TabItem value="serial" label="FLY上位機接線マニュアル" default>
+
+          <Tabs>
+              <TabItem value="1" label="FLY-C8 5V接線を使用" default>
+                  * FLY-C8は5V接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="FLY-C8 USB接線を使用" default>
+                  * FLY-C8はUSB接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="3" label="FLY-Pi(π) 5V接線を使用" default>
+                  * FLY-Piは5V接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="4" label="FLY-Pi(π) USB接線を使用" default>
+                  * FLY-PiはUSB接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="5" label="FLY-Pi-V2 5V接線を使用" default>
+                  * FLY-Pi-V2は5V接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="6" label="FLY-Pi-V2 USB接線を使用" default>
+                  * FLY-Pi-V2はUSB接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.png').default} size="80%" align="center" />
+              </TabItem>
+            
+          </Tabs>
+      </TabItem>
+  </Tabs>
+
+## ラズベリーパイ上位機使用マニュアル
+
+  ラズベリーパイの操作は上記と同様です。ラズベリーパイでは、システムイメージがインストールされたSDカードをコンピュータに挿入し、config.txtファイルに`dtoverlay=gpio-shutdown,gpio_pin=21`という行を追加し、保存して終了します。
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.png').default} size="80%" align="left" />
+
+  
+
+  <Tabs>
+      <TabItem value="serial" label="ラズベリーパイ上位機接線マニュアル" default>
+
+          <Tabs>
+              <TabItem value="1" label="ラズベリーパイ5V接線を使用" default>
+                  * ラズベリーパイは5V接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.png').default} size="80%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="ラズベリーパイ USB接線を使用" default>
+                  * ラズベリーパイはUSB接線を使用
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.png').default} size="80%" align="center" />
+              </TabItem>
+          </Tabs>
+      </TabItem>
+  </Tabs>

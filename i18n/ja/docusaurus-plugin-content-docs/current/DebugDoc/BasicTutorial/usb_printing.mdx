@@ -1,0 +1,44 @@
+---
+sidebar_position: 3
+---
+
+# USBメモリプリント
+
+このチュートリアルはFLY上位機にのみ適用されます。
+
+    :::danger 注意事項
+
+    * 自分でインストールする必要があります
+    * このチュートリアルでは、klipperの`klipper/klippy/extras/virtual_sdcard.py`ファイルを置き換えます。
+    * USBメモリ内のファイルを選択してプリントする際に、自動的にUSBメモリのファイルをシステムの`/tmp`ディレクトリにコピーすることが可能です。
+    * コピーが完了すると、ウェブページのコマンドラインに`File selected`と表示されます。
+    * このファイルは`sdaX`フォルダを検出します。存在しない場合は実行されません（sda中のXはA-Zと0-9を表します）
+    * 現在、FLYの上位機のみテスト済み。他の上位機はテストされていません。
+
+    :::
+
+## 使用方法
+
+* SSHソフトウェアを使用して上位機に接続し、下記のコマンドを実行します。
+* このコマンドは上位機を再起動させます！！
+* このステップではUSBメモリプリント機能を有効にします。
+    ```bash
+    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://upyun.pan.zxkxz.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
+    ```
+
+## USBメモリプリントの操作方法
+
+### ファイルのバックアップとダウンロード
+
+* このコマンドはKipperを停止させます。
+* このステップでは、USBメモリファイルを選択した際に自動的に`/tmp`ディレクトリにコピーする機能を有効にします。
+    ```bash
+    sudo systemctl stop klipper && mv ~/klipper/klippy/extras/virtual_sdcard.py ~/virtual_sdcard.py && curl -kfsSL https://cdn.mellow.klipper.cn/firmware/virtual_sdcard.py -o ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```
+
+### 元のファイルに戻す
+
+* このコマンドは元のKlipperを復元します。
+    ```bash
+    sudo systemctl stop klipper && mv ~/virtual_sdcard.py ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```

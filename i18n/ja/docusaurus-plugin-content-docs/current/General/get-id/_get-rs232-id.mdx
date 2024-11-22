@@ -1,0 +1,86 @@
+## RS232 IDの検索
+
+### 機器を検索する前に注意すべきこと
+
+    * RS232 IDを検索する前に、まず[SSHに接続してください](/docs/DebugDoc/BasicTutorial/index.mdx "クリックで移動")
+    * 注意してください、SSHへの接続はネットワークを使用して行う必要があります。シリアルポートを使用してはいけません
+    * UTORが正しく接続されていること、そして上位機に接続するデータケーブルにデータ転送機能があることを確認してください
+    * G2Tを使用する場合は、システムがUARTリンクをサポートしているかどうかを確認してください
+
+### 機器の検索
+
+    * これで上位機に正常にログインできたので、`lsusb`コマンドを入力して機器を検索できます。以下のいずれかの状況が発生します
+        * `lsusb`を入力して`ls`コマンドが見つからないと表示された場合は、以下のコマンドを入力してインストールしてください
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * `lsusb`を入力しても反応がない場合、これはシステムの問題であり、対応できません。システムを変更するか、正常に動作するシステムを使用してください
+        * 下記の画像に示される情報が表示された場合、これは参考情報です。IDの後の文字を確認するだけです
+        <ImageView image={require('@site/docs/General/get-id/img/7523.png').default} size="100%" align="left" />
+    * `1a86:7523`が今回使用する機器に属します。後続のメッセージは気にしなくてよいです。システムの問題で表示されない場合や不完全に表示される場合があります
+    * もし表示されない場合は、データケーブルが正しく接続されているか、ファームウェアが正しく書き込まれているかを確認してください。
+
+    :::warning 注意事項
+
+    `1a86:7523`が表示された場合のみ、以下のコマンドでRS232 IDを検索できます
+
+    :::
+
+
+### RS232 IDの検索
+
+    ```bash
+    ls /dev/serial/by-path/*
+    ```
+
+    <ImageView image={require('@site/docs/General/get-id/img/rs232-id.png').default} size="100%" align="left" />
+    * `ls /dev/serial/by-path/*`を入力してもIDが表示されないが、`lsusb`で機器が表示される場合は、上位機を変更するか、上位機のシステムを変更してください
+    * UTORを使用すると3つのIDが出力されます。また、別のUTORシステムを使用した場合、そのIDが記録されるため、検索時に複数のIDが表示されることがあります
+    * IDの後に`-port0`が付いていることを確認してください。そうでないと使用できません
+
+    :::warning 注意事項
+
+    注意してください、ツールボードとUTORは必ずGNDに接続してください！！！さもないとツールボードに接続できません！！！
+
+    :::
+
+### RS232のIDを設定ファイルに記入する
+
+    * プリンタのウェブインターフェースを開き、左側のサイドバーの設定オプションから以下の項目を探します：fluiddの場合：`{…}` ；mainsailの場合：`マシン`、クリックして`printer.cfg`を見つけます
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.png').default} size="50%" align="left" />
+
+    * 青いIDをコピーし、`printer.cfg`の`[mcu]`ノードの`serial: `に記入します。保存して再起動すると主板に接続できます。Klipperが``ADC out of range``と表示するのは正常な現象です。ヒートベッドとサーミスタを接続し、ノズルとヒートベッドのサーミスタピンと出力ピンを正しく設定し、保存して再起動してください。
+
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.png').default} size="50%" align="left" />
+
+    :::warning 注意事項
+
+    * RS232 IDには`baud:`と`restart_method:command`を設定する必要があります
+    * 以下は参考設定です
+
+    :::
+
+        ```cfg
+        [mcu SHT36]
+        serial: /dev/serial/by-path/platform-1c1c000.usb-usb-0:1.2:1.0-port0
+        baud: 250000
+        restart_method:command
+        ```
+
+    :::danger
+
+    注意：文書中に表示されるすべてのIDは例示であり、実際の各主板のIDは異なります。実際に取得したIDに基づいて変更してください。
+
+    :::
+
+    :::danger
+
+    以下のIDは使用しないでください！！！
+
+    :::
+
+        ```cfg
+        serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        ```
+----

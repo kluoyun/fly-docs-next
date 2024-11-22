@@ -1,0 +1,46 @@
+---
+sidebar_position: 4
+sidebar_label: USBブリッジCANファームウェアの書き込み
+---
+
+import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_utoc.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# USBブリッジCANファームウェアの書き込み
+
+## コンパイルの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * `Q`キーを押して **Save configuration** が表示されたら、再度 `Y` キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * 今は設定が保存され、コマンドラインのインターフェースに戻っているはず
+    * `make -j4` を入力してコンパイルを開始、時間がかかる
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されたらコンパイル成功
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+
+## ファームウェアの書き込み
+
+:::tip
+以下のコマンドを実行してファームウェアを書き込みます
+:::
+
+    ```bash
+    sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
+    ```

@@ -1,0 +1,61 @@
+---
+sidebar_position: 5
+sidebar_label: USBファームウェアの書き込み
+---
+
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb1.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+
+
+# USB ファームウェアのコンパイル
+
+    :::tip
+
+    * MMUは出荷時にCAN接続のKatapultファームウェアがプリインストールされています
+    * USBファームウェアを書き込む場合は、USB用のKatapultファームウェアを書き込む必要があります
+    * 一度書き込み後、再書き込みは不要です
+    * <Button variant="contained" disableElevation href="./bl">Katapultファームウェアの書き込み</Button>
+
+    :::
+
+## コンパイルの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * GPIOピンの選択（マイクロコントローラ起動時に設定する）、入力：!PA15 注意：!は大文字です
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/usb.png').default} size="100%" align="center" />
+    * `Q` キーを押して **Save configuration** が表示されたら、次に `Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * これで設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始、時間がかかる場合があります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されればコンパイル成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## 書き込みモードへの確認
+
+
+    <LS />
+
+
+## ファームウェアの書き込み
+    
+    <Katapult />
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動した場合、LEDが点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.png').default} size="100%" align="center" />
+

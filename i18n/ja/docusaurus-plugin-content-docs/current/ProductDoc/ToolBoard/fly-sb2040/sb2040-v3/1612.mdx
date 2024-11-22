@@ -1,0 +1,73 @@
+---
+sidebar_position: 7
+sidebar_label: Eddyの使用
+---
+
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# Eddyの使用
+
+    :::info
+
+    * ベッドスキャンには個別のZリミットを使用することをお勧めします。ベッドスキャンをZリミットとして使用することは推奨されません。
+    * Eddyを設置する際、底部はノズルの上方1-2 mm以上にしてください。
+    * Eddyの周波数を校正する際、線圈PCBはベッドから少なくとも5mm離しておいてください。
+    * ベッドをテストする際は常温で行い、テスト中にベッドをオンにしないでください。
+
+    :::
+
+## 接線図
+
+    * サーミスタを下に
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.png').default} size="100%" align="left" />
+
+
+## 参照設定と使用説明
+
+    ### ベッドスキャン設定
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 43
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+        * 注意：現在、外部1612モジュールは発売されておらず、この設定は一時的に使用できません。
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 0.8
+        i2c_address: 42
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### 温度補償設定
+
+        ```cfg
+        [temperature_probe fly_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SB2040:gpio28
+        ```
+
+### bed_mesh設定
+
+    * [bed_mesh] 内の`horizontal_move_z`パラメータは、Eddyがプラットフォームにできるだけ近づくように、2に設定することをお勧めします。
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+
+    <LDC1612 />

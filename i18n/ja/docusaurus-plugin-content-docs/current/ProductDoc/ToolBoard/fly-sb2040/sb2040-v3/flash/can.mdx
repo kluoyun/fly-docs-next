@@ -1,0 +1,56 @@
+---
+sidebar_position: 3
+sidebar_label: CANファームウェアの書き込み
+---
+
+import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CANファームウェアのビルド
+
+## ビルドの開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * GPIOピンを選択してマイクロコントローラの起動時に設定、入力：!gpio5 注意！は大文字
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.png').default} size="100%" align="center" />
+    * `Q`キーを押し、**Save configuration**が表示されたら、`Y`キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * これで設定が保存され、コマンドラインインターフェースに戻る
+    * `make -j4`を入力してビルドを開始、少し時間がかかる
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に下記の内容が出力されればビルド成功
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## デバイスの検索
+
+    <LS />
+
+
+## ファームウェアの書き込み
+
+    * ファームウェアを書き込む前に、XT30データケーブルでツールボードをUTOCまたはブリッジファームウェアをインストールしたメインボードに接続、下記は参考図
+    * ディップスイッチが正しい位置にあるかどうか注意してください
+        <ImageView image={require('@site/docs/General/get-id/img/utoc.png').default} size="80%" align="left" />
+    * CAN HとCAN Lが電源を切った状態でマルチメータで測定した抵抗が`60Ω`前後であることを確認してください、`120Ω`の場合は`120Ω`のディップスイッチを開き、`40Ω`の場合は閉じます
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.png').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動するとLEDが点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.png').default} size="100%" align="center" />
+

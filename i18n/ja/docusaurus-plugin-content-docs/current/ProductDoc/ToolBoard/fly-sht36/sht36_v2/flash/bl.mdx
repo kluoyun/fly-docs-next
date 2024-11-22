@@ -1,0 +1,139 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+import APM from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapultファームウェア
+
+## Katapultファームウェア説明
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 V2はCAN接続のみ使用可能
+    * こちらではCANファームウェアを500Kと1Mの速度で提供
+
+    :::
+
+
+    :::warning 注意事項
+
+    * APMF072はPCでファームウェアを焼き込み可能
+    * STM32F103は上位機でファームウェアを更新可能
+
+    :::
+
+
+## 焼き込みモードへの移行
+
+    :::tip
+
+    丸で囲まれたのがBOOTダイヤル
+
+    :::
+
+    * STM32F103はこのステップを行わないでください！！！
+    * 主板が完全に電源を切った状態で、BOOTボタンを押しながらデータ伝送可能なケーブルを主板とあなたのデバイスに接続してください
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/boot.png').default} size="100%" align="center" />
+
+## ファームウェアの焼き込み
+    <Tabs>
+        <TabItem value="win" label="STM32F072でWindowsを使用しての焼き込みチュートリアル" default>
+
+            * SHT36_V2のKatapultファームウェア  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">自動ダウンロードリンク</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="STM32F072で上位機を使用しての焼き込みチュートリアル">
+            
+            <Katapult />
+
+            4. ファームウェアの焼き込み
+
+            :::tip
+
+            どれか一つを焼き込むだけでOK
+
+            :::
+
+            * 以下は500K CAN速度のファームウェア焼き込みコマンド
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_500K.BIN
+            ```
+                       
+            * 以下は1M CAN速度のファームウェア焼き込みコマンド
+            ```bash
+            sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_1M.BIN
+            ```
+
+
+            5. 以下のように「File downloaded successfully」が表示されたら、焼き込みが成功しています。
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            焼き込み完了後、主板に完全に電源を切る必要があります。
+
+            :::
+
+        </TabItem>
+        <TabItem value="apm" label="APM32F072でWindowsを使用しての焼き込みチュートリアル" default>
+
+           * SHT36_V2のKatapultファームウェア  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">自動ダウンロードリンク</Button>
+
+            <APM />
+            
+        </TabItem>
+        <TabItem value="103" label="STM32F103でKlipperを使用してのファームウェア更新チュートリアル" default>
+
+            <LS />
+
+            * 事前コンパイル済みファームウェアの取得
+            * ここには事前にコンパイルされたファームウェアが含まれています
+            * 上位機がインターネットに接続できる必要があります
+            * 上位機で以下のコマンドを実行してファームウェアパッケージをダウンロードします
+
+            ```bash
+            cd && git clone https://github.com/FengHua741/FLY_Katapult.git
+            ```
+
+            * ファームウェアパッケージをダウンロード済みの場合は、更新後に残りの操作を行うことをお勧めします
+
+            ```bash
+            cd ~/FLY_Katapult && git pull
+            ```
+
+            * この方法では、CANを通じて既存のKatapultファームウェアを直接更新します
+            * `<Toolboard ID>`をSTM32F103コントローラのツールボードのCANIDに置き換える必要があります
+            * 以下は103バージョン1M CAN速度のファームウェア更新コマンド
+
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_1M.BIN  -u <Toolboard ID>
+            ```
+
+            * 以下は072バージョン500K CAN速度のファームウェア更新コマンド
+            ```bash
+            ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_500K.BIN  -u <Toolboard ID>
+            ```
+                    
+                </TabItem>
+            </Tabs>
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動するとLEDが点滅します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.png').default} size="100%" align="center" />
+

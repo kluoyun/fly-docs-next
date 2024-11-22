@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+---
+
+# Klipper 断電続打
+
+:::danger 注意事項
+
+* 一部の機器にのみ適用可能
+
+:::
+
+## ブランチの切り替え
+    * 上位機にネットワーク接続するためにはSSを使用する必要があり、上位機がインターネットに接続されていることを確認してください
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/klipper-dev.git -b fly-dev klipper
+    ```
+
+## 参照設定
+
+    ```cfg
+    [power_resume]
+    power_pin: PA10
+    is_shutdown: True # シャットダウン操作を実行するかどうか、デフォルトでは有効
+    start_gcode:
+        # 続打開始前に実行されるgcode
+        # 断電前に保存されたすべてのパラメータは{PR}で取得可能
+        # M118 {PR}を使って利用可能なすべてのパラメータを出力できます
+        M118 続打開始: {PR.print_stats.filename}
+        {% if PR.print_stats.info.total_layer %}
+            M118 総層数: {PR.print_stats.info.total_layer}
+            M118 中断層: {PR.print_stats.info.current_layer}
+        {% endif %}
+        M118 中断位置: X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
+        M140 S{PR.bed.target}      ; ホットベッド温度の設定
+        # M104 S180                ; ノズル温度の設定
+        # M109 S180                ; ノズルが設定温度に達するまで待機
+        G91                        ; 相対座標
+        G1 Z2 F100                 ; Zを上げてXYの原点復帰準備
+        G90                        ; 絶対座標
+        G28 X Y                    ; XYの原点復帰
+        M140 S{PR.bed.target}      ; ホットベッド温度の設定
+        M104 S{PR.extruder.target} ; ノズル温度の設定
+        M190 S{PR.bed.target}      ; ホットベッドが設定温度に達するまで待機
+        M109 S{PR.extruder.target} ; ノズルが設定温度に達するまで待機
+        M106 S255                  ; 冷却ファンをオンにする
+        M83                        ; 相対押出
+        G1 E10 F400                ; 少し押し出す
+        G90                        ; 絶対座標
+        G1 F{PR.gcode_move.speed}  ; 移動速度の設定
+        G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; 開始位置に移動
+        {% if PR.gcode_move.absolute_coordinates %}
+            G90 ; 絶対移動
+        {% else %}
+            G91 ; 相対移動
+        {% endif %}
+        {% if PR.gcode_move.absolute_extrude %}
+            M82 ; 絶対押出
+        {% else %}
+            M83 ; 相対押出
+        {% endif %}
+        G92 E{PR.POS_E} ; 押出位置の設定
+    shutdown_gcode:
+        # シャットダウン前に実行されるgcode
+        M118 電源電圧低下、シャットダウン
+        # M112 ; 緊急停止
+    ```

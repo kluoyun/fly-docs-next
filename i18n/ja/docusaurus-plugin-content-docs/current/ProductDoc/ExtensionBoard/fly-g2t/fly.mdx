@@ -1,0 +1,77 @@
+---
+sidebar_position: 3
+sidebar_label: FLY PI使用チュートリアル
+---
+
+# FLY上位機の使用説明
+
+## 注意事項：
+
+    * 拡張ボードをインストールする前に、上位機の電源を切るようにしてください。
+    * 湿気やほこりが多い環境で拡張ボードを使用しないでください。
+    * 画面をインストールする際は、通電しないでください。画面の向きに注意し、損傷しないようにしてください。
+    * ファンをインストールする際は、ファンの電流と電圧仕様に注意してください。損傷しないようにしてください。
+    * FLY上位機は中央のRS232インターフェース、FANポート、FPC画面インターフェースのみ使用できます！！！
+    * FLY上位機で使用できるG2Tのモデルは`PI V2`、`C8`、`PRO X10`
+    * `Gemini`シリーズと`PI V1`は使用できません
+
+## G2Tのインストール
+
+    * 以下は参考資料です
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.png').default} size="60%" align="left" />
+    * 配線参考
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.png').default} size="60%" align="left" />
+
+
+## 板載RS232接続ツールの使用方法
+
+    * FLY上位機に最新のシステムをインストールした後、**上位機のIP+:9999**にアクセスする必要があります
+    * FLY上位機は中央のRS232インターフェース、FANポート、FPC画面インターフェースのみ使用できます！！！
+    * システム設定で**UART1**を見つけ、保存して再起動してください
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.png').default} size="100%" align="left" />
+
+    * 以下は参考設定です
+
+        ```cfg
+        [mcu] 
+        serial: /dev/ttyS1
+        baud: 250000
+        restart_method:command
+        ```
+
+## 板載5VFANの使用
+
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.png').default} size="50%" align="left" />
+
+        ```cfg
+        [mcu host]         
+        serial: /tmp/klipper_host_mcu 
+
+        [temperature_sensor FLY Pi]
+        sensor_type: temperature_host
+
+        [temperature_fan core_fan]      # 上位機の冷却ファン
+        pin: host:gpiochip1/gpio102     # 上位機ファンのピン
+        max_power: 1.0
+        sensor_type: temperature_host   # 上位機の温度を設定
+        control:watermark               # 制御方法
+        target_temp: 48                 # 上位機冷却ファンの開始温度
+        min_temp: 0                     # 最低温度、これ以下の温度でエラーが発生します
+        max_temp: 90                    # 最高温度、これ以上の温度でエラーが発生します
+        off_below: 0.10
+        kick_start_time: 0.50
+        max_speed: 0.8                  # 最大速度、フルパワー時の80%
+        min_speed: 0.3                  # 最小速度、フルパワー時の30%
+
+        ```
+
+## 画面の使用方法
+
+    * FLY上位機に最新のシステムをインストールした後、**上位機のIP+:9999**にアクセスする必要があります
+        * fly-tft-v2-cは3.5インチTFTキャパシタンススクリーンの選択肢です
+        * fly-tft-v2-rは3.5インチTFT抵抗スクリーンの選択肢です
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.png').default} size="100%" align="left" />
+
+### 画面のインストール
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.png').default} size="60%" align="left" />

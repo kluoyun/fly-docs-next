@@ -1,0 +1,74 @@
+---
+sidebar_position: 6
+sidebar_label: Katapultファームウェアの書き込み
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapultファームウェア
+
+## Katapultファームウェアの説明
+
+    <CANBOOT />
+
+    :::tip
+
+    * D5はUSB接続を使用
+    * D5は2024年9月1日から出荷時既にKatapultファームウェアがプリインストールされています
+    :::
+
+## 書き込みモードへの移行
+
+    :::tip
+
+    左が`BOOTボタン`、右が`RESETボタン`です
+
+    :::
+
+    * 書き込みモードに入る方法は2つあります
+    * 第一の方法：主板の電源が完全に切れている状態で、BOOTボタンを押しながらデータ転送可能なケーブルを主板とデバイスに接続します
+    * 第二の方法：データ転送可能なケーブルを主板とデバイスに接続した後、BOOTボタンを押しながらRESETボタンを押し、RESETボタンを離してからBOOTボタンを離します
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/boot.png').default} size="50%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windows書き込みガイド" default>
+            * D5のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">自動ダウンロード</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="ホストマシン書き込みガイド">
+
+            <Katapult />
+
+            4. ファームウェアの書き込み
+
+            :::tip
+
+            どれか一つのファームウェアを書き込むだけで大丈夫です
+
+            :::
+
+            * 以下はファームウェアの書き込みコマンドです
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D5.bin
+                ```
+
+            5. 下図の矢印の部分に``File downloaded successfully``が表示されたら書き込み成功です
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.png').default} size="100%" align="center" />
+
+            :::tip
+
+            書き込み完了後、主板の電源を完全に切ってください。
+
+            :::
+
+        </TabItem>
+    </Tabs>

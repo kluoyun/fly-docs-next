@@ -1,0 +1,86 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Katapultファームウェア
+
+## Katapultファームウェア説明
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36_V3 はCANとRS232をサポート
+    * ここではCANファームウェアを500Kと1Mの速度で提供
+    :::
+
+## 書き込みモードに入る
+
+    :::tip
+
+    矢印が指すのが`BOOTボタン`
+
+    :::
+
+    * 主板が完全に電源を切った状態で、BOOTボタンを押しながらデータ伝送可能なデータケーブルの一端を主板に、もう一端をあなたのデバイスに接続
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/boot.png').default} size="100%" align="center" />
+
+## ファームウェアの書き込み
+    <Tabs>
+        <TabItem value="win" label="Windows書き込みガイド" default>
+
+            * SHT36 V3のファームウェアダウンロードURL   <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V3.zip">自動ダウンロードファームウェア</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="ホストマシン書き込みガイド">
+            
+            <Katapult />
+
+            4. ファームウェアの書き込み
+
+            :::tip
+
+            どれか一つのファームウェアを書き込むだけ
+
+            :::
+
+            * 以下は500K CAN速度のファームウェア書き込みコマンド
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36V3_katapult_CAN_500K.uf2
+            ```
+                       
+            * 以下は1M CAN速度のファームウェア書き込みコマンド
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36V3_katapult_CAN_1M.uf2
+            ```
+
+
+            5. 以下のメッセージが表示されれば書き込み成功
+
+            <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.png').default} size="100%" align="center" />
+
+
+            :::tip
+
+            書き込み完了後、主板を完全に電源を切る必要があります。
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動するとLEDが点滅します
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.png').default} size="100%" align="center" />

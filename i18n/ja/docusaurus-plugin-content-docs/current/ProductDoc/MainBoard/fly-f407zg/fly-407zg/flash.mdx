@@ -1,0 +1,59 @@
+---
+sidebar_position: 2
+sidebar_label: ファームウェアのコンパイルと書き込み
+---
+
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# ファームウェアのコンパイルと書き込み
+
+    :::tip
+
+    * 407ZGはデフォルトでTFカードを使用してファームウェアを書き込みます
+    * 容量が`32G`以下のTFカードを準備してください
+    * 無名メーカーのメモリーカードは書き込みに失敗することがあります。下記の推奨カードを使用してファームウェアを更新してください
+    * TFカードの転送速度は`class10`レベル以上が望ましいです。サンディスクなどのブランドのTFカードを使用することをお勧めします
+
+    :::
+
+## 準備作業
+
+    <SSH />
+
+## Klipperファームウェアのコンパイル
+
+    <MakeOperate/>
+
+    <USB />
+
+    * `Q` キーを押すと **Save configuration** が表示されるので、次に `Y` キーを押してください
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.png').default} size="50%" align="center" />
+    * これで設定が保存され、コマンドラインインターフェースに戻るはずです
+    * `make -j4` と入力してコンパイルを開始します。少し時間がかかります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.png').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されたら、コンパイル成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * 以下はコンパイル成功の例です
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.png').default} size="50%" align="left" />
+
+## ファームウェアの書き込み
+
+:::danger 注意事項
+* F404ZGにはTFカード書き込み用のBLファームウェアがプリインストールされています
+:::
+
+    <TF />

@@ -1,0 +1,99 @@
+---
+sidebar_position: 5
+---
+
+
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.5
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-1.5.png').default} size="80%" align="center" />
+
+## 基本パラメータ
+
+    * 入力電圧：24-48V
+    * 最大電流：6A
+    * 適用ファームウェア：Marlin/Klipper/RRF
+    * 駆動モードサポート：TMC：SPI
+    * マイクロステップ補間microPlyer付きのステップ/方向インターフェース
+    * 最大解像度は256細分
+    * ステルスチョップ2静音動作と滑らかな動きをサポート
+    * 中周波数共振の共振抑制をサポート
+    * スプレッドサイクル高ダイナミックモータ制御チョッパをサポート
+    * DCステップ負荷関連速度制御をサポート
+    * スタルガード2高精度無センサモータ負荷検出をサポート
+    * クールステップ電流制御をサポート、最大75%の省エネルギー可能
+
+## メインボードジャンパ説明
+
+    * TMC5160 ProはSPIジャンパを使用
+    * FLYドライブのSPIピンは左から下に数えて4番目のピン、CSピンはSPIピンです。メインボードが対応するピン位置でない場合、SPIを使用できません
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.png').default} size="100%" align="center" />
+
+## メインボードFPCの取り付け
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/line.png').default} size="80%" align="center" />
+
+## 12V FANの配線
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.png').default} size="80%" align="center" />
+
+
+## TMC5160 Proの参考設定
+
+    :::danger
+
+    * ドライバのサンプル抵抗は`sense_resistor: 0.033`に設定してください。誤った設定をしないでください
+    * spi_busとspi_softwareはどちらか一方を選択してください
+    
+    :::
+
+### SPIモードの参考設定
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # モータの運転電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするかどうか（有効はTrue、無効はFalse）
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## 無限位使用説明
+
+    <DIAG />
+
+    :::tip 無限位使用のヒント
+
+    * このドライバは4ピンのFPCを取り付けないと使用できません
+    * 元の`endstop_pin:`を無効にするか削除し、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加する必要があります
+    * `diag0_pin:`を設定した後、リミットの状態は未トリガーとなります
+    * `driver_SGT: :`の適切な値を自分でテストする必要があります
+
+    :::
+
+    * 参考設定
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 0に変更しないとホームポジションに戻ることができません
+
+    [tmc5160 stepper_x]
+    diag0_pin: ^!
+    driver_SGT: 1
+
+    #   設定後、リミットの状態が未トリガーであることを確認してください
+    #   このピンは通常"^"プレフィックスを使用して内部プルアップを有効にします
+    #   感度はベルトの張り具合に依存するため、調整が必要です
+    #  （同時にdriver_SGTHRSに適切な感度を設定してください）
+
+    ```
