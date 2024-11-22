@@ -1,0 +1,41 @@
+name: Auto Comment on PR
+
+on:
+  pull_request_target:
+    types: [ opened, synchronize ]
+    branches: [ master ]
+
+jobs:
+  comment:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create a comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN  }}
+          script: |
+            const { owner, repo, number: issue_number } = context.issue;
+            
+            // Get PR creator's username
+            const prCreator = context.payload.pull_request.user.login;
+            
+            const commentBody = `🔊@${prCreator} 🚀Thanks for your contribution 🎉. Please wait for the unit test to complete, it will be automatically translated later. 🔥`;
+            github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body: commentBody
+            });
+            github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number,
+                labels: ['waiting-review','auto-translate','auto-merge']
+              });
+              

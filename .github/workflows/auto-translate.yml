@@ -1,0 +1,138 @@
+name: Auto Translate
+
+on:
+  pull_request_target:
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
+  pull_request_review:
+    types:
+      - submitted
+  check_suite:
+    types:
+      - completed
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  check:
+    name: "Check"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install canvas dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test build website
+        run: pnpm run build --locale zh-Hants
+  translate:
+    name: "Auto Translate"
+    runs-on: ubuntu-latest
+    needs: [check]
+    outputs:
+      pushed: ${{ steps.add-commit.outputs.pushed }}
+      committed: ${{ steps.add-commit.outputs.committed }}
+    steps:
+      - name: Checkout pr
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Install pip dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install openai
+      - name: Get all test, doc and src files that have changed
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            docs/**
+      - name: translate
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          MDX_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_URL: ${{ secrets.OPENAI_API_URL }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+        run: |
+          python3 ./scripts/auto-translate.py --force -f "$MDX_FILES"
+      - name: Add i18n files
+        id: add-commit
+        uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
+        with:
+          add: "i18n/"
+          author_name: ${{ github.event.pull_request.user.login }}
+          author_email: ${{ github.event.pull_request.user.email }}
+          message: "i18n: 🎉 auto translate"
+          push: true
+  build-test:
+    name: "Build and Test"
+    runs-on: ubuntu-latest
+    needs: [check, translate]
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: false
+
+          # all of these default to true, but feel free to set to
+          # "false" if necessary for your workflow
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+      - name: Install canvas dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test build website
+        run: pnpm run build
