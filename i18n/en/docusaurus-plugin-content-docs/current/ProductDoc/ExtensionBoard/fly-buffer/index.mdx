@@ -2,27 +2,23 @@
 sidebar_position: 1
 ---
 
-
-
-
-
 # Introduction
 
-# LLL Buffer Usage
+# Usage of LLL Buffer
 
-​	The LLL consumable buffer is a device specifically designed for remote filament feeding in 3D printers, aiming to simplify the loading and unloading of filaments. The buffer is equipped with two buttons, one for feeding and the other for retracting, allowing users to perform electric feeding and retracting operations.
+    The LLL filament buffer is a device specifically designed for remote feeding of 3D printers, aimed at simplifying the loading and unloading of materials. This buffer comes equipped with two buttons for feeding and retracting material, allowing users to perform motorized feeding and retraction operations.
 
 ### Buffer Function:
 
-​	When the extruder of the 3D printer is feeding, if there is pulling on the filament spool at the far end, the buffer will detect this action and automatically feed a segment of filament towards the hot end. This operation will be repeated each time there is pulling. This effectively reduces the pulling force on the filament by the extruder, maintaining stable pushing force and thus improving the stability of print quality.
+    When the extruder of the 3D printer pulls in filament, if it tugs on the remote material rack, the buffer detects this action and automatically feeds out a segment of material towards the hot end. This feeding action repeats with each tug, effectively reducing the pulling force on the filament by the extruder, maintaining a stable pushing force, and thereby enhancing the consistency of print quality.
 
-### Filament Runout Detection Function:
+### Filament Runout Detection:
 
-​	The buffer has a built-in filament runout detector. When it detects that there is no filament in the buffer, it sends a signal to the 3D printer to pause printing. To use this function, you need to connect the signal pin and modify the configuration of the 3D printer. However, the buffer function can be used directly without modifying the configuration.
+    The buffer includes a filament runout detector which, upon detecting no material in the buffer, sends a signal to pause the 3D printer. To utilize this feature, signal pins need to be connected and the 3D printer's configuration modified. However, the buffer function can be used directly without any configuration changes.
 
-​	With the above design features, the LLL consumable buffer not only simplifies filament operations but also enhances the stability of the 3D printing process and print quality.
+    Through these design features, the LLL filament buffer not only simplifies material handling but also improves the stability and quality of the 3D printing process.
 
-* Please note that you need to connect the filament before using these functions; otherwise, you can only control the motor through the buttons.
+* Please note that the functions can only be used after the material is inserted; otherwise, you can only control the motor via the buttons.
 
 ## Model Download Link
 
@@ -31,22 +27,21 @@ sidebar_position: 1
 ## Configuration Reference
 
     ```cfg
-    [filament_switch_sensor Filament Runout Detection]
+    [filament_switch_sensor filament_runout]
     pause_on_runout: true
     switch_pin: ^PG7
     runout_gcode:
             PAUSE
-            M118 Filament Out
+            M118 Material Out
     insert_gcode:
-            M118 Loading Filament
+            M118 Material In
     ```
 
 ## Wiring Reference
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-buffer/img/buffer.webp').default} size="100%" align="center" />
 
+
 ## Installation Diagram
 
-```bash
-https://cdn.mellow.klipper.cn/SCH-PDF/buffer.pdf
-```
+<PdfView file="https://cdn.mellow.klipper.cn/SCH-PDF/buffer.pdf"/>
