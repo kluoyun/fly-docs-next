@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkklipper_docs=self.webpackChunkklipper_docs||[]).push([[81903],{1912:e=>{e.exports=JSON.parse('{"blogBasePath":"/fly-docs-next/en/blog","blogTitle":"Blog","authorsListPath":"/fly-docs-next/en/blog/authors"}')}}]);

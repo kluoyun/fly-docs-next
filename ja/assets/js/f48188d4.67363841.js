@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkklipper_docs=self.webpackChunkklipper_docs||[]).push([["39248"],{97560:function(e){e.exports=JSON.parse('{"tags":[{"label":"Document","permalink":"/fly-docs-next/ja/blog/tags/document","description":"Document","count":1}]}')}}]);
