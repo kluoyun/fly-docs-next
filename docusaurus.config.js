@@ -208,6 +208,10 @@ const config = {
                 label: '原文档站',
                 href: 'https://mellow-old.klipper.cn',
               },
+              {
+                label: 'RRF',
+                href: 'https://teamgloomy.github.io/',
+              },
             ],
           },
           {
@@ -282,7 +286,7 @@ const config = {
       },
       announcementBar: {
         id: `announcementBar-next`,
-        content: `🎉️ <b>全新文档站点测试</b> 🥳️`,
+        content: `⏰ <b>多语言由AI自动生成，请注意辨别。尤其是执行命令与配置</b> `,
       },
       liveCodeBlock: {
         playgroundPosition: 'bottom',
