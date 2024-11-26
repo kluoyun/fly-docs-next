@@ -3,27 +3,29 @@ sidebar_position: 7
 sidebar_label: Utilisation d'Eddy
 ---
 
+
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Utilisation d'Eddy
 
     :::info
 
-    * Veuillez noter que pour le balayage du lit, il est recommandé d'utiliser une limite Z séparée, et il n'est pas recommandé d'utiliser le balayage comme limite Z
-    * Lors de l'installation d'Eddy, la position de la base par rapport à la buse doit être d'au moins 1-2 mm au-dessus de la buse
-    * Lors de l'étalonnage de la fréquence d'Eddy, le PCB de la bobine doit être éloigné du lit chauffant d'au moins 5 mm
-    * Veuillez ne pas tester le lit chauffant à la température ambiante, et ne pas allumer le lit chauffant lors des tests
+    * Veuillez noter que le scan du lit est recommandé d'utiliser une limite Z séparée, il n'est pas recommandé d'utiliser le scan du lit comme limite Z
+    * Lors de l'installation d'Eddy, la position du bas par rapport à la buse doit être au moins 1-2 mm au-dessus de la buse
+    * Lors de l'étalonnage de la fréquence Eddy, la PCB de la bobine doit être à au moins 5 mm du lit chauffant
+    * Veuillez ne pas tester avec le lit chauffant à la température ambiante, et ne pas allumer le lit chauffant pendant le test
 
     :::
 
 ## Schéma de câblage
 
-    * Résistance thermique vers le bas
+    * Thermistance vers le bas
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.webp').default} size="100%" align="left" />
+
 
 ## Configuration de référence et instructions d'utilisation
 
-    ### Configuration du balayage du lit
+    ### Configuration du scan du lit
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -38,7 +40,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * Veuillez noter qu'il n'y a actuellement pas de module externe 1612 disponible, cette configuration n'est donc pas utilisable pour le moment
+        * Veuillez noter qu'il n'y a pas encore de module externe 1612 disponible, cette configuration ne peut pas être utilisée pour le moment
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -52,17 +54,17 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-    ### Configuration de la compensation de température
+    ### Configuration de la compensation thermique
 
         ```cfg
-        [temperature_probe fly_probe]
+        [temperature_probe fly_eddy_probe]
         sensor_type:Generic 3950
         sensor_pin:SB2040:gpio28
         ```
 
-### Configuration de bed_mesh
+### Configuration bed_mesh
 
-    * Dans le paramètre `horizontal_move_z` de [bed_mesh], il est recommandé de le régler à 2, afin que lors du balayage de la plateforme, Eddy soit le plus proche possible de la plateforme
+    * Le paramètre `horizontal_move_z` dans [bed_mesh], il est recommandé de le régler à 2, pour que Eddy soit le plus proche possible de la plateforme lors du scan
 
     ```cfg
     [bed_mesh]

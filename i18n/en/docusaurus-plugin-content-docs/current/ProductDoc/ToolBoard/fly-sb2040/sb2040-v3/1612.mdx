@@ -4,23 +4,22 @@ sidebar_label: Eddy Usage
 ---
 
 
-
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddy Usage
 
     :::info
 
-    * Please note that it is recommended to use a separate Z limit switch for bed leveling, rather than using the bed leveling as the Z limit switch.
-    * When installing Eddy, ensure that the bottom is at least 1-2 mm above the nozzle.
-    * When calibrating the Eddy frequency, keep the coil PCB at least 5mm away from the heated bed.
-    * Please ensure that the entire bed is at room temperature for testing, and do not turn on the heated bed during the test.
+    * Please note that it is recommended to use a separate Z limit switch for bed leveling; it is not advised to use Eddy as a Z limit switch.
+    * When installing Eddy, ensure that the bottom of Eddy is at least 1-2 mm above the nozzle.
+    * When calibrating Eddy's frequency, keep the coil PCB at least 5 mm away from the bed.
+    * Please ensure the entire bed is at room temperature for testing, and do not turn on the bed during the test.
 
     :::
 
 ## Wiring Diagram
 
-    * Thermistor faces downward
+    * Thermistor facing down
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.webp').default} size="100%" align="left" />
 
 
@@ -41,7 +40,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * Please note that currently there is no external 1612 module available, so this configuration cannot be used for now.
+        * Please note that there is currently no external 1612 module available, so this configuration cannot be used yet.
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -58,14 +57,14 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     ### Temperature Compensation Configuration
 
         ```cfg
-        [temperature_probe fly_probe]
+        [temperature_probe fly_eddy_probe]
         sensor_type:Generic 3950
         sensor_pin:SB2040:gpio28
         ```
 
-### Bed Mesh Configuration
+### bed_mesh Configuration
 
-    * For the `horizontal_move_z` parameter in [bed_mesh], it is recommended to set it to 2 so that Eddy is as close to the platform as possible during scanning.
+    * In [bed_mesh], it is recommended to set the `horizontal_move_z` parameter to 2, so that Eddy remains as close to the platform as possible during scanning.
 
     ```cfg
     [bed_mesh]
