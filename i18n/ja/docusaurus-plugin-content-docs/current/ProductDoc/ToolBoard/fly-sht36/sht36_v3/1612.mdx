@@ -1,32 +1,32 @@
 ---
 sidebar_position: 7
-sidebar_label: Eddyの使用
+sidebar_label: Eddyの使用方法
 ---
 
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
-# Eddyの使用
+# Eddyの使用方法
 
     :::info
 
-    * 注意：ベッドスキャンには専用のZリミットスイッチを使用することをお勧めします。ベッドスキャンをZリミットスイッチとして使用しないでください
-    * Eddyをインストールする際、ノズルの位置はノズルの上に少なくとも1-2mm必要です
-    * Eddyの周波数を校正する際、コイルPCBはヒートベッドから少なくとも5mm離しておく必要があります
-    * すべてのテストは常温で行い、テスト中はヒートベッドを開けないでください
+    * 床スキャンに専用のZリミットを使用することをお勧めします。床スキャンをZリミットとして使用することは推奨されません
+    * Eddyをインストールする際、ノズルの位置はノズルの上部に少なくとも1-2 mmの余裕が必要です
+    * Eddyの周波数を校正する際、コイルPCBは熱床から少なくとも5mm離してください
+    * 熱床のテストは常温下で行い、テスト中は熱床を開かないでください
 
     :::
 
 
 ## 配線図
 
-    * サーミスタは下向き
+    * サーミスタを下向きにしてください
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="100%" align="left" />
 
 
 ## 参考設定と使用説明
 
-    ### ベッドスキャン設定
+    ### 床スキャン設定
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -41,7 +41,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * 注意：現在、外部1612モジュールは発売されていないため、この設定はまだ使用できません
+        * 注意：現在、外部1612モジュールは出ていません。この設定は一時的に使用できません
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -58,14 +58,14 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     ### 温度補正設定
 
         ```cfg
-        [temperature_probe fly_probe]
+        [temperature_probe fly_eddy_probe]
         sensor_type:Generic 3950
         sensor_pin:SHT36:gpio28
         ```
 
 ### bed_mesh設定
 
-    * [bed_mesh] 内の`horizontal_move_z`パラメータは、ベッドスキャン時にEddyがプラットフォームにできるだけ近づくように、2に設定することをお勧めします
+    * [bed_mesh] の`horizontal_move_z`パラメータを2に設定することをお勧めします。プラットフォームをスキャンする際に、Eddyができるだけプラットフォームに近づくようにします
 
     ```cfg
     [bed_mesh]

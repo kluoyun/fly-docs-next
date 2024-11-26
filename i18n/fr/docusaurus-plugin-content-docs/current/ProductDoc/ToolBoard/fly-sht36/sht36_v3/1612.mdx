@@ -1,20 +1,22 @@
 ---
 sidebar_position: 7
-sidebar_label: Utilisation d'Eddy
+sidebar_label: Utilisation de Eddy
 ---
+
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
-# Utilisation d'Eddy
+# Utilisation de Eddy
 
     :::info
 
-    * Veuillez noter que l'utilisation d'un capteur de lit séparé est recommandée pour le Z-limite, il n'est pas recommandé d'utiliser le capteur de lit comme Z-limite
-    * Lors de l'installation d'Eddy, la position de la base par rapport à la buse doit être au moins 1-2 mm au-dessus de la buse
-    * Lors du réglage de la fréquence d'Eddy, la PCB de la bobine doit être éloignée du lit de chauffage d'au moins 5 mm
-    * Veuillez ne pas tester avec le lit de chauffage à température ambiante, et ne pas allumer le lit pendant le test
+    * Veuillez noter que la numérisation du lit suggère l'utilisation d'une limite Z séparée, il n'est pas recommandé d'utiliser la numérisation du lit comme limite Z
+    * Lors de l'installation de Eddy, la position de la partie inférieure par rapport à la buse doit être au moins 1 à 2 mm au-dessus de la buse
+    * Lors de l'étalonnage de la fréquence de Eddy, le PCB de la bobine doit être à au moins 5 mm du lit chauffant
+    * Veuillez ne pas tester avec le lit chauffant à température ambiante et ne pas allumer le lit chauffant pendant le test
 
     :::
+
 
 ## Schéma de câblage
 
@@ -24,7 +26,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 ## Configuration et instructions d'utilisation
 
-    ### Configuration du capteur de lit
+    ### Configuration de la numérisation du lit
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -39,7 +41,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * Veuillez noter qu'il n'existe pas encore de module externe 1612, donc cette configuration ne peut pas être utilisée pour l'instant
+        * Veuillez noter que pour l'instant, il n'existe pas de module externe 1612, donc cette configuration ne peut pas être utilisée pour le moment
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -56,14 +58,14 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     ### Configuration de la compensation de température
 
         ```cfg
-        [temperature_probe fly_probe]
+        [temperature_probe fly_eddy_probe]
         sensor_type:Generic 3950
         sensor_pin:SHT36:gpio28
         ```
 
 ### Configuration de bed_mesh
 
-    * Dans [bed_mesh], le paramètre `horizontal_move_z` doit être défini à 2, afin que Eddy soit le plus proche possible de la plateforme lors de la numérisation
+    * Dans [bed_mesh], il est suggéré de régler le paramètre `horizontal_move_z` à 2 pour que Eddy soit le plus proche possible de la plateforme lors de la numérisation
 
     ```cfg
     [bed_mesh]
