@@ -76,8 +76,8 @@ jobs:
           branch: gh-pages
           folder: build
 
-  deloy-cf:
-    name: Delaoy to Cloudflare Pages
+  deloy-firebase-cf:
+    name: Delaoy to Firebase and Cloudflare Pages
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -127,6 +127,14 @@ jobs:
             exit 1
           fi
           echo "index.html found in build directory"
+
+      - name: Delaoy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FLY_DOCS_A131A }}
+          channelId: live
+          projectId: fly-docs-a131a
 
       - name: Delaoy to Cloudflare Pages
         env:
