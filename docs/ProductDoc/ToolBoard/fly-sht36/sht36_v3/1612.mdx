@@ -21,10 +21,47 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 ## 接线示意图
 
     * 热敏电阻朝下
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="100%" align="left" />
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
 
 ## 参考配置与使用说明
+   
+    ### ldc16121612默认频率修改
+    此方法只用于sht36-v3/SB2040-v3或SB2040-Pro-v3
+    可使用Mobaxterm工具执行命令
+
+    下载地址:https://mobaxterm.mobatek.net/download.html
+    
+    [详细使用请参考](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+
+
+    执行第一条命令回车
+
+    ```cfg
+sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+    ```
+
+    执行第二条命令回车
+  ```cfg
+grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+  ```
+    替换成功会返回一条带有`LDC1612_FREQ = 40000000`的行，那么替换就成功了。如果没有任何返回，则表示替换没有成功。
+    或者使用这条命令去查看是否成功
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
+```cfg
+cat /home/fly/klipper/klippy/extras/ldc1612.py
+```
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+
+   温馨提示：修改完请使用此命令重启klipper服务并重新执行校准eddy频率
+   ```cfg
+   systemctl restart klipper
+   ```
+   eddy校准频率命令
+   ```cfg
+   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+   ```
+
 
     ### 扫床配置
 
