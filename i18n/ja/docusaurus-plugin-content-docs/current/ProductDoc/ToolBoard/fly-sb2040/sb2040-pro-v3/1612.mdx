@@ -1,67 +1,66 @@
 ---
 sidebar_position: 7
-sidebar_label: Eddyの使用方法
+sidebar_label: Eddy 使用
 ---
-
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
-# Eddyの使用方法
+# Eddy 使用
 
     :::info
 
-    * ベッドスキャンには専用のZリミットを使用することを推奨します。ベッドスキャンをZリミットとして使用することはお勧めしません
-    * Eddyをインストールする際、ノズルの位置はノズルの上に1-2mm以上離れている必要があります
-    * Eddyの周波数を調整する際、コイルPCBはベッドから少なくとも5mm離す必要があります
-    * ベッド全体が常温でテストしてください。テスト中はベッドをオンにしないでください
+    * スキャンベッドを使用する際は、個別のZリミットを使用することをお勧めします。スキャンベッドをZリミットとして使用することはお勧めしません。
+    * Eddyの取り付け時、ノズルの位置はノズルの上に少なくとも1〜2mm離れている必要があります。
+    * Eddyの周波数を調整する際、コイルPCBはヒートベッドから少なくとも5mm離す必要があります。
+    * ヒートベッドを常温下でテストし、テスト中はヒートベッドをオンにしないでください。
 
     :::
 
-## 配線図
+## 接线示意图
 
-    * 商標が下向きになるように
+    * 商标朝下
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="100%" align="left" />
 
 
-## 参照設定と使用説明
+## 参考配置与使用说明
 
-### ldc16121612デフォルト周波数変更
-    この方法はsht36-v3/SB2040-v3またはSB2040-Pro-v3専用です
-    Mobaxtermツールを使用してコマンドを実行できます
+### ldc1612 1612默认频率修改
+    この方法はsht36-v3/SB2040-v3またはSB2040-Pro-v3にのみ使用されます。
+    Mobaxtermツールを使用してコマンドを実行できます。
 
-    ダウンロードURL:https://mobaxterm.mobatek.net/download.html
-    
-    [詳細についてはこちらを参考にしてください](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+    必要な <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxtermツール</Button> をダウンロードしてください。
+
+    [詳細な使用方法はこちらを参照してください。](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
 
 
-    最初のコマンドを実行し、Enterを押します
+    最初のコマンドを実行し、Enterキーを押します。
 
     ```cfg
 sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
     ```
 
-    二つ目のコマンドを実行し、Enterを押します
+    2番目のコマンドを実行し、Enterキーを押します。
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    置換が成功すると`LDC1612_FREQ = 40000000`を含む行が返されます。置換が成功したことになります。何も返されない場合は置換が失敗したことを示します。
-    またはこのコマンドで成功したかどうかを確認できます
+    置換が成功すると、`LDC1612_FREQ = 40000000`を含む行が返されます。成功しなかった場合は、何も返されません。
+    または、このコマンドを使用して成功したかどうかを確認します。
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   温かいアドバイス：変更が完了したらこのコマンドでklipperサービスを再起動し、再度eddyの周波数を校正してください
+   注意：変更が完了したら、以下のコマンドを使用してklipperサービスを再起動し、Eddyの周波数を再校正してください。
    ```cfg
    systemctl restart klipper
    ```
-   eddyの校正コマンド
+   Eddyの周波数校正コマンド
    ```cfg
    PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
    ```
 
-    ### ベッドスキャン設定
+    ### スキャンベッドの設定
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -76,7 +75,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-        * 注意してください、現在外部1612モジュールは発売されていませんので、この設定は使用できません
+        * 注意：現在、外部1612モジュールは発売されていません。この設定は現在使用できません。
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -90,7 +89,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-    ### 温度補償設定
+    ### 温度補正設定
 
         ```cfg
         [temperature_probe fly_eddy_probe]
@@ -100,7 +99,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 
 ### bed_mesh設定
 
-    * [bed_mesh] の`horizontal_move_z`パラメータは、プラットフォームをスキャンする際にEddyがプラットフォームにできるだけ近づくように2に設定することを推奨します
+    * [bed_mesh] の `horizontal_move_z` パラメータは、スキャンベッド時にEddyがプラットフォームにできるだけ近づくように、2に設定することをお勧めします。
 
     ```cfg
     [bed_mesh]
