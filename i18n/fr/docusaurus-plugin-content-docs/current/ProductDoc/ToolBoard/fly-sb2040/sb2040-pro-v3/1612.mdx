@@ -10,22 +10,58 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
     :::info
 
-    * Veuillez noter que pour le balayage du lit, il est recommandé d'utiliser une limite Z séparée, il n'est pas recommandé d'utiliser le balayage du lit comme limite Z
-    * Lors de l'installation d'Eddy, la position du bas par rapport à la buse doit être au moins 1-2 mm au-dessus de la buse
-    * Lors de l'étalonnage de la fréquence d'Eddy, le PCB de la bobine doit être à au moins 5 mm du lit chauffant
-    * Veuillez ne pas tester avec tout le lit à température ambiante, et ne pas allumer le lit pendant le test
+    * Veuillez noter que l'utilisation d'Eddy en tant que limiteur Z n'est pas recommandée. Il est conseillé d'utiliser une limite Z séparée.
+    * Lors de l'installation d'Eddy, la position de sa base par rapport à la buse doit être d'au moins 1 à 2 mm au-dessus de la buse.
+    * Lors de l'étalonnage de la fréquence d'Eddy, la PCB de la bobine doit être à au moins 5 mm du lit chauffant.
+    * Veuillez effectuer tous les tests à température ambiante et ne pas allumer le lit chauffant pendant le test.
 
     :::
 
 ## Schéma de câblage
 
-    * Thermistance vers le bas
+    * Marque vers le bas
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="100%" align="left" />
 
 
 ## Configuration de référence et instructions d'utilisation
 
-    ### Configuration du balayage du lit
+### Modification de la fréquence par défaut de ldc16121612
+    Cette méthode est uniquement pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3
+    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes
+
+    Lien de téléchargement:https://mobaxterm.mobatek.net/download.html
+    
+    [Veuillez consulter pour une utilisation détaillée](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+
+
+    Exécutez la première commande et appuyez sur Entrée
+
+    ```cfg
+sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+    ```
+
+    Exécutez la deuxième commande et appuyez sur Entrée
+  ```cfg
+grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+  ```
+    Si la modification est réussie, une ligne contenant `LDC1612_FREQ = 40000000` sera retournée. Si aucune ligne n'est retournée, cela signifie que la modification n'a pas réussi.
+    Ou bien, vous pouvez utiliser cette commande pour vérifier si la modification a été effectuée avec succès
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
+```cfg
+sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
+```
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+
+   Note amicale : Après modification, veuillez utiliser cette commande pour redémarrer le service klipper et recalibrer la fréquence d'Eddy
+   ```cfg
+   systemctl restart klipper
+   ```
+   Commande de calibration de la fréquence d'Eddy
+   ```cfg
+   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+   ```
+
+    ### Configuration de la sonde de lit
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -40,7 +76,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * Veuillez noter qu'il n'existe pas encore de module 1612 externe, cette configuration ne peut pas être utilisée pour le moment
+        * Veuillez noter qu'il n'y a actuellement pas de module 1612 externe disponible, donc cette configuration n'est pas encore utilisable.
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -54,7 +90,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-    ### Configuration de la compensation de température
+    ### Configuration de compensation de température
 
         ```cfg
         [temperature_probe fly_eddy_probe]
@@ -62,9 +98,9 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         sensor_pin:SB2040:gpio28
         ```
 
-### Configuration bed_mesh
+### Configuration de bed_mesh
 
-    * Dans [bed_mesh], il est recommandé de définir le paramètre `horizontal_move_z` à 2, pour que lors du balayage de la plateforme, Eddy soit aussi proche que possible de la plateforme
+    * Dans [bed_mesh], le paramètre `horizontal_move_z` devrait être défini à 2, pour que Eddy soit le plus proche possible de la plateforme lors du scan.
 
     ```cfg
     [bed_mesh]

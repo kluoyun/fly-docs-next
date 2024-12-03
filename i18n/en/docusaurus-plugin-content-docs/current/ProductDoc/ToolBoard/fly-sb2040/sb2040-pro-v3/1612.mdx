@@ -3,29 +3,64 @@ sidebar_position: 7
 sidebar_label: Eddy Usage
 ---
 
-
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddy Usage
 
     :::info
 
-    * Please note that bed leveling is recommended to use a separate Z limit, do not use Eddy as a Z limit
+    * Please note that bed scanning is recommended to use a separate Z limit, do not use bed scanning as Z limit
     * When installing Eddy, the bottom should be at least 1-2 mm above the nozzle
-    * When calibrating the Eddy frequency, keep the coil PCB at least 5 mm away from the bed
-    * Please ensure the entire bed is at room temperature during testing, and do not turn on the bed
+    * When calibrating Eddy frequency, keep the coil PCB at least 5mm away from the heated bed
+    * Please ensure the entire bed is at room temperature for testing, and do not turn on the bed during testing
 
     :::
 
 ## Wiring Diagram
 
-    * Thermistor facing down
+    * With the trademark facing down
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="100%" align="left" />
 
 
 ## Reference Configuration and Usage Instructions
 
-    ### Bed Leveling Configuration
+### Modifying the default frequency of ldc16121612
+    This method is only for sht36-v3/SB2040-v3 or SB2040-Pro-v3
+    You can use the Mobaxterm tool to execute commands
+
+    Download link: https://mobaxterm.mobatek.net/download.html
+    
+    [For detailed usage, please refer](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+
+
+    Execute the first command and press Enter
+
+    ```cfg
+sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+    ```
+
+    Execute the second command and press Enter
+  ```cfg
+grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+  ```
+    If the replacement is successful, a line containing `LDC1612_FREQ = 40000000` will be returned, indicating success. If there is no return, it means the replacement was not successful.
+    Alternatively, use this command to check for success
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
+```cfg
+sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
+```
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+
+   Friendly reminder: After modification, please restart the Klipper service with this command and recalibrate the Eddy frequency
+   ```cfg
+   systemctl restart klipper
+   ```
+   Eddy frequency calibration command
+   ```cfg
+   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+   ```
+
+    ### Bed Scanning Configuration
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -40,7 +75,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * Please note that there is currently no external 1612 module available, so this configuration cannot be used yet
+        * Please note that there is currently no external 1612 module available, so this configuration cannot be used at the moment
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -62,9 +97,9 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         sensor_pin:SB2040:gpio28
         ```
 
-### Bed Mesh Configuration
+### bed_mesh Configuration
 
-    * In [bed_mesh], the `horizontal_move_z` parameter is recommended to be set to 2, allowing Eddy to get as close to the platform as possible during scanning
+    * In [bed_mesh], it is recommended to set the `horizontal_move_z` parameter to 2, allowing Eddy to be as close to the platform as possible during scanning
 
     ```cfg
     [bed_mesh]
