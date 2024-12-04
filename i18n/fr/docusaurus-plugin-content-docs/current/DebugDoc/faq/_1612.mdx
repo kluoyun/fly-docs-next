@@ -1,100 +1,126 @@
+## Comment ajuster l'offset z
+* Étape 1 : Utilisez Prusa/OrcaSlicer/Cura/Bambu Studio pour découper une plaque carrée de 200x200mm de hauteur 0,2mm pour l'ajustement de l'offset z
+* Étape 2 : Accédez à `fluidd` ou `mainsail` via l'IP de l'imprimante, trouvez le tableau de bord `contrôle de déplacement`, ajustez l'offset z et notez la valeur ajustée
+<ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
+* Étape 3 : Redémarrez klippper avec la commande ci-dessous
+```bash
+FIRMWARE_RESTART
+```
+* Étape 4 : Ajustez l'offset z via l'interface UI qui apparaît après les commandes suivantes, la valeur ajustée est celle utilisée pendant l'impression
+```bash
+G28
+PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+```
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
+
+:::info
+* Si l'erreur `Eddy current sensor error` apparaît, augmentez la valeur z_offset dans la configuration eddy, consultez l'exemple
+
+<ImageView image={require('@site/docs/DebugDoc/faq/img/EDDYZOFF.webp').default} size="50%" align="left" />
+:::
+
 ## Instructions d'utilisation
 
     :::warning Attention
 
-    * Veuillez d'abord effectuer l'étalonnage du courant avant de calibrer la fréquence de la bobine.
-    * Les machines à plusieurs axes Z nécessitent un ajustement manuel de la planéité une fois toutes les calibrations effectuées, puis une nouvelle calibration.
-    * Le firmware de la machine doit être parfaitement compatible avec la version de Kliiper.
+    * Veuillez d'abord effectuer l'étalonnage du courant avant l'étalonnage de la fréquence de la bobine
+    * Les machines avec plusieurs axes Z nécessitent un nivellement manuel avant et après tous les étalonnages
+    * Assurez-vous que la version du firmware de la machine correspond exactement à celle de Kliiper
 
     :::
 
     :::info
 
-    * Veuillez d'abord effectuer l'étalonnage du courant avant de calibrer la fréquence de la bobine.
-    * Les machines à plusieurs axes Z nécessitent un ajustement manuel de la planéité une fois toutes les calibrations effectuées, puis une nouvelle calibration.
-    * Le firmware de la machine doit être parfaitement compatible avec la version de Kliiper.
+    * Veuillez d'abord effectuer l'étalonnage du courant avant l'étalonnage de la fréquence de la bobine
+    * Les machines avec plusieurs axes Z nécessitent un nivellement manuel avant et après tous les étalonnages
+    * Assurez-vous que la version du firmware de la machine correspond exactement à celle de Kliiper
 
     :::
 
-    * Veuillez utiliser le site web `FUIDD` pour ajouter la configuration ci-dessous avant d'effectuer les opérations suivantes :
+
+    * Utilisez la page web `FUIDD` pour ajouter la configuration ci-dessous avant d'effectuer les opérations suivantes
         ```cfg
         [force_move]
         enable_force_move: true
         ```
 
-    ### Calibrage du courant EDDY
+    ### Première étape : Calibrage du courant EDDY
 
-        * Entrez la commande suivante dans la console :
+        * 1: Entrez la commande suivante dans la console
             ```bash
             SET_KINEMATIC_POSITION z=80
             ```
-        * Réinitialiser les axes X et Y :
+        * 2: Rétablissez X et Y, déplacez la tête d'outil au centre du lit
             ```bash
             G28 X Y
             ```
-        * Après avoir terminé les étapes ci-dessus, il est nécessaire de calibrer le courant de la sonde Eddy. Tout d'abord, déplacez Eddy au centre du lit chauffant, puis soulevez la buse à une distance de 20 mm du lit. Ensuite, exécutez la commande suivante dans la console pour obtenir automatiquement le courant et utilisez `SAVE_CONFIG` pour enregistrer les paramètres. La valeur normale devrait être autour de 16 ; si elle est 0 ou 30, vérifiez le câblage.
-        * Veuillez noter que la distance doit être de 20 mm du lit.
+        * Après ces étapes, il faut étalonner le courant Eddy. D'abord, positionnez EDDY au centre du lit puis ajustez la buse pour qu'elle touche juste le lit. Ensuite, exécutez la commande suivante dans la console pour obtenir automatiquement le courant, puis sauvegardez les paramètres avec `SAVE_CONFIG`. Une valeur de retour autour de 15 est normale, si vous obtenez 0 ou 30, vérifiez les connexions (mauvais contact)
             ```bash
             LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
             ```
-        * La valeur de retour normale devrait être autour de `15`.
-        * Après la calibration, utilisez `SAVE_CONFIG` pour enregistrer les paramètres.
+        * La valeur de retour normale devrait être autour de `15`
+        * Après l'étalonnage, sauvegardez les paramètres avec `SAVE_CONFIG`
 
-    ### Calibrage de la fréquence Eddy
+    ### Deuxième étape : Calibrage de la fréquence Eddy
+
 
         :::info
 
-        * Lors de l'installation d'Eddy, la base doit être au moins 1 à 2 mm au-dessus de la buse.
-        * Lors de la calibration de la fréquence Eddy, la PCB de la bobine doit être à au moins 5 mm du lit chauffant.
+        * Lors de l'installation d'Eddy, la position de la partie inférieure doit être au moins 1-2 mm au-dessus de la buse
+        * Pendant l'étalonnage de la fréquence Eddy, assurez-vous que le PCB de la bobine est à au moins 5mm du lit
 
         :::
 
-        * Ensuite, déplacez la tête d'impression au centre de la plateforme (notez que cette étape doit s'assurer que la machine n'a pas de heightmap chargé).
-        * Commencez la calibration manuelle du décalage Z [Test du papier](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+        * Ensuite, déplacez la tête d'impression au centre de la plateforme (Notez : assurez-vous que la machine n'a pas chargé de heightmap)
+        * Commencez l'ajustement manuel de l'offset z [Test du papier](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
             ```bash
             PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
             ```
-        * Après la calibration, utilisez `SAVE_CONFIG` pour enregistrer les paramètres.
-        * Pour les imprimantes avec la fonction `z_tilt` ou `quad_gantry_level（QGL）`, exécutez d'abord `Z_TILT_ADJUST` ou `QUAD_GANTRY_LEVEL` une fois, puis recalibrez la fréquence Eddy.
+        * Après l'étalonnage, sauvegardez les paramètres avec `SAVE_CONFIG`
+        :::info
+        * Pour les imprimantes équipées de `z_tilt` ou `quad_gantry_level（QGL）`, ajustez d'abord la parallélisme `i3 ajuste la parallélisme de l'axe X, Trident ajuste la parallélisme du lit, Voron 2.4 ajuste la parallélisme du portique avant de recalibrer la fréquence Eddy
+        :::
+    ### Troisième étape : Compensation de température
 
-    ### Explication de la compensation de température
+        * Rétablissez tous les axes
+       ```bash
+       G28
+       ```
 
-        * Réinitialiser tous les axes.
-        * Si vous avez `quad_gantry_level` ou `z_tilt`, exécutez d'abord `Z_TILT_ADJUST` ou `QUAD_GANTRY_LEVEL`, puis réinitialisez une fois.
-        * Dans la console, entrez G0 Z5 ou déplacez l'axe Z à 5 mm au-dessus du lit via le web.
-        * Exécutez le code suivant pour prolonger le `idle timeout` de la machine, évitant un timeout pendant le processus de chauffage :
+        * Si vous avez `[quad_gantry_level]` ou `[z_tilt]`, exécutez d'abord `Z_TILT_ADJUST` ou `QUAD_GANTRY_LEVEL` puis rétablissez une fois
+        * Dans la console, entrez G0 Z5 ou utilisez la page web pour déplacer l'axe Z à 5mm au-dessus du lit
+        * Exécutez le code suivant pour prolonger le `idle timeout` de la machine, évitant ainsi un timeout pendant le processus de chauffage
             ```bash
-            SET_IDLE_TIMEOUT TIMEOUT=36000
+            SET_IDLE_TIMEOUT TIMEOUT=65000
             ```
-        * Exécutez la commande suivante pour commencer la calibration :
+        * Exécutez la commande suivante pour commencer l'étalonnage
             ```bash
             TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
             ```
         :::warning Attention
 
-        * Note : Dans la commande ci-dessus, la température cible est fixée à `56℃`, ce qui convient à la plupart des appareils.
-        * Si la température réelle de la chambre de votre imprimante 3D est plus élevée, vous pouvez augmenter la température cible.
-        * Veuillez noter que plus la température cible est élevée, plus le temps de calibration sera long, car Eddy nécessite plus de temps pour atteindre l'équilibre thermique.
+        * Remarque : Dans la commande ci-dessus, la température cible d'EDDy est fixée à `56℃`, ce qui convient à la plupart des appareils.
+        * Si la température réelle de la chambre de votre imprimante 3D est plus élevée, vous pouvez augmenter la température cible en conséquence.
+        * Veuillez noter que plus la température cible est élevée, plus le temps d'étalonnage sera long, car Eddy prendra plus de temps pour atteindre l'équilibre thermique.
 
         :::
-
-        1. Après avoir effectué cette opération, l'interface utilisateur affichera une boîte d'ajustement de l'axe Z. Utilisez la méthode manuelle [Test de décalage Z (Test du papier)](https://www.klipper3d.org/Bed_Level.html#the-paper-test) mentionnée ci-dessus pour insérer une feuille de papier entre la buse et le lit, puis confirmez cette valeur.
-        2. Après avoir accepté la valeur, ajustez la température du lit à la valeur maximale et celle de la buse à 220℃.
-        3. Si vous êtes dans une pièce climatisée ou avec des fenêtres ouvertes, il est conseillé de fermer la climatisation ou les fenêtres pour garantir l'augmentation de la température d'Eddy, car le vent peut affecter la montée en température.
-        4. À mesure que la température d'Eddy augmente, le système vous invitera automatiquement à effectuer un test de décalage Z manuel toutes les 4℃. La température du lit est très élevée, soyez prudent pour éviter les brûlures !!!
-        5. Répétez le test de décalage Z manuel (Test du papier) jusqu'à ce que la calibration soit terminée. Si la température d'Eddy ne semble plus augmenter, vous pouvez utiliser les commandes suivantes pour terminer la calibration prématurément.
-
-        * Les commandes gcode supplémentaires disponibles pendant la calibration de dérive incluent : TEMPERATURE_PROBE_NEXT
-            * `TEMPERATURE_PROBE_NEXT`    Peut être utilisé pour forcer l'échantillonnage de nouvelles données avant d'atteindre l'incrément de pas.
-            * `TEMPERATURE_PROBE_COMPLETE`    Peut être utilisé pour terminer la calibration avant d'atteindre la cible.
-            * `ABORT`  Peut être utilisé pour annuler la calibration et ignorer les résultats.
-        * Après avoir terminé ces étapes, Eddy sera capable de fournir d'excellents résultats d'impression de la première couche sur une large plage de températures !
+    
+        1. Après avoir exécuté cette opération, l'UI affichera la boîte de réglage de l'axe Z. Utilisez la méthode manuelle [Ajustement de l'offset z (Test du papier)](https://www.klipper3d.org/Bed_Level.html#the-paper-test) mentionnée ci-dessus pour placer une feuille de papier entre la buse et le lit, puis confirmez cette valeur.
+        2. Après avoir accepté la valeur, ajustez la température du lit à son maximum et la température de la buse à 220℃.
+        3. Si vous êtes dans une pièce climatisée ou avec des fenêtres ouvertes, il est recommandé de fermer la climatisation ou les fenêtres pour assurer la montée en température d'Eddy, car le vent peut affecter cette montée.
+        4. Avec l'augmentation de la température d'Eddy, le système vous invitera automatiquement à effectuer un ajustement manuel de l'offset z toutes les 4℃. Attention, la température du lit est très élevée, soyez vigilant pour éviter les brûlures !!!
+        5. Répétez l'ajustement manuel de l'offset z (Test du papier) jusqu'à ce que l'étalonnage soit terminé. Si vous constatez que la température d'Eddy ne monte plus, vous pouvez utiliser les commandes suivantes pour terminer l'étalonnage prématurément.
+        
+        * Pendant l'étalonnage de dérive, les commandes gcode supplémentaires disponibles incluent : TEMPERATURE_PROBE_NEXT
+            * `TEMPERATURE_PROBE_NEXT`    Pour forcer EDDy à échantillonner de nouvelles données avant d'atteindre la température cible `56℃`.
+            * `TEMPERATURE_PROBE_COMPLETE`    Pour terminer l'étalonnage si EDDy n'atteint pas la température cible `56℃`.
+            * `ABORT`  Pour annuler l'étalonnage et ignorer les résultats.
+        * Une fois ces étapes terminées, Eddy sera capable de fournir d'excellents résultats d'impression de la première couche sur une large gamme de températures !
 ## Diverses macros d'optimisation
 
-    ### Optimisation de `[quad_gantry_level]`
-
-        * Si vous avez configuré `[quad_gantry_level]`, vous pouvez ajouter la macro ci-dessous à votre configuration, sinon, cela n'est pas nécessaire.
-        * Cette macro réduira la hauteur de détection en fonction de la différence de hauteur du portique.
+    ### Optimisation du scan du lit `[quad_gantry_level]`
+        * Si vous avez configuré `[quad_gantry_level]`, vous pouvez ajouter la macro suivante à votre configuration, sinon ce n'est pas nécessaire
+        * Cette macro réduira la hauteur de scan en fonction de la différence de hauteur du portique
             ```cfg
             [gcode_macro QUAD_GANTRY_LEVEL]
             rename_existing: _QUAD_GANTRY_LEVEL
@@ -109,10 +135,10 @@
                 RESTORE_GCODE_STATE NAME=STATE_QGL
             ```
 
-    ### Optimisation de `[z_tilt]`
+    ### Optimisation du scan du lit `[z_tilt]`
 
-        * Si vous avez configuré `[z_tilt]`, vous pouvez ajouter la macro ci-dessous à votre configuration, sinon, cela n'est pas nécessaire.
-        * Cette macro réduira la hauteur de détection en fonction de la différence de hauteur du portique.
+        * Si vous avez configuré `[z_tilt]`, vous pouvez ajouter la macro suivante à votre configuration, sinon ce n'est pas nécessaire
+        * Cette macro réduira la hauteur de scan en fonction de la différence de hauteur du portique
             ```cfg
             [gcode_macro Z_TILT_ADJUST]
             rename_existing: _Z_TILT_ADJUST
@@ -127,10 +153,10 @@
                 RESTORE_GCODE_STATE NAME=STATE_Z_TILT
             ```
 
-    ### Optimisation de la détection du lit
+    ### Optimisation du scan du lit
 
-        * Si vous utilisez un lit chauffant à courant alternatif de haute puissance (plus de 500W)
-        * La macro ci-dessous éteint le lit chauffant pendant la détection du lit, puis le réchauffe une fois la détection terminée.
+        * Si vous utilisez un lit chauffant AC puissant (plus de 500W)
+        * La macro ci-dessous désactive le lit pendant le scan et le réchauffe après
             ```cfg
             [gcode_macro BED_MESH_CALIBRATE]
             rename_existing: _BED_MESH_CALIBRATE
@@ -140,13 +166,13 @@
                 _BED_MESH_CALIBRATE {rawparams}
                 M140 S{TARGET_TEMP}
             ```
-    ## Commandes de lit
-
-        * Commande pour scanner le lit complet :
+    ## Commandes de scan du lit
+    
+        * Commande pour scanner tout le lit
             ```bash
             BED_MESH_CALIBRATE METHOD=rapid_scan
             ```
-        * Commande pour le lit local, assurez-vous que Klipper peut utiliser la fonction d'exclusion d'objet, il est recommandé de l'ajouter à la macro de démarrage.
+        * Commande de scan local, assurez-vous que Klipper peut utiliser la fonction d'exclusion d'objet, il est recommandé de l'ajouter à la macro de début
             ```bash
             BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
             ```
