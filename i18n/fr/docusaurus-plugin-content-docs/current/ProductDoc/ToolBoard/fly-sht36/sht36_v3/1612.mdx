@@ -10,10 +10,10 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
     :::info
 
-    * Veuillez noter que la numérisation du lit doit utiliser une limite Z séparée, il n'est pas recommandé d'utiliser la numérisation du lit comme limite Z
-    * Lors de l'installation d'Eddy, la position de la buse doit être au moins à 1-2 mm au-dessus de la buse
-    * Lors de l'étalonnage de la fréquence d'Eddy, le PCB de la bobine doit être à au moins 5 mm du lit chauffant
-    * Veuillez ne pas tester avec le lit chauffant à température ambiante, et ne pas allumer le lit chauffant pendant le test
+    * Veuillez noter que la numérisation du lit suggère d'utiliser une limite Z séparée, il n'est pas recommandé d'utiliser la numérisation du lit comme limite Z
+    * Lors de l'installation d'Eddy, la position de la partie inférieure par rapport à la buse doit être au moins 1-2 mm au-dessus de la buse
+    * Lors de l'étalonnage de la fréquence d'Eddy, la PCB de la bobine doit être éloignée du lit chauffant d'au moins 5 mm
+    * Veuillez ne pas tester le lit chauffant à température ambiante et ne pas allumer le lit chauffant pendant les tests
 
     :::
 
@@ -27,12 +27,12 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 ## Configuration de référence et instructions d'utilisation
    
     ### Modification de la fréquence par défaut de ldc16121612
-    Cette méthode est uniquement destinée à sht36-v3/SB2040-v3 ou SB2040-Pro-v3
-    Utilisez l'outil Mobaxterm pour exécuter les commandes
+    Cette méthode est uniquement utilisée pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3
+    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes
     
-    Téléchargez l'outil <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button> requis
+    Téléchargez l'outil nécessaire <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button>
     
-    [Pour plus de détails, consultez](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+    [Pour une utilisation détaillée, veuillez consulter](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
 
 
     Exécutez la première commande et appuyez sur Entrée
@@ -45,7 +45,7 @@ sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/ex
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    Si le remplacement réussit, une ligne contenant `LDC1612_FREQ = 40000000` sera retournée, ce qui signifie que le remplacement a été effectué avec succès. Si aucune ligne n'est retournée, cela signifie que le remplacement n'a pas réussi.
+    Si la ligne contenant `LDC1612_FREQ = 40000000` est renvoyée, le remplacement a réussi. S'il n'y a aucun retour, cela signifie que le remplacement n'a pas réussi.
     Ou utilisez cette commande pour vérifier si le remplacement a réussi
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
@@ -53,7 +53,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   Conseil : Après la modification, veuillez utiliser cette commande pour redémarrer le service klipper et réexécuter l'étalonnage de la fréquence d'Eddy
+   Astuce : Après modification, veuillez utiliser cette commande pour redémarrer le service klipper et réexécuter l'étalonnage de la fréquence d'Eddy
    ```cfg
    systemctl restart klipper
    ```
@@ -78,7 +78,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-        * Veuillez noter qu'il n'y a actuellement aucun module externe 1612 disponible, donc cette configuration ne peut pas être utilisée pour le moment
+        * Veuillez noter qu'il n'y a actuellement aucun module 1612 externe disponible, donc cette configuration est temporairement inutilisable
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -100,9 +100,9 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         sensor_pin:SHT36:gpio28
         ```
 
-### Configuration de bed_mesh
+### Configuration bed_mesh
 
-    * Le paramètre `horizontal_move_z` dans [bed_mesh], il est recommandé de le régler à 2, pour que Eddy soit le plus près possible du plateau lors de la numérisation
+    * Dans [bed_mesh], le paramètre `horizontal_move_z` doit être défini sur 2 pour que, lors de la numérisation de la plateforme, Eddy soit le plus proche possible de la plateforme
 
     ```cfg
     [bed_mesh]
