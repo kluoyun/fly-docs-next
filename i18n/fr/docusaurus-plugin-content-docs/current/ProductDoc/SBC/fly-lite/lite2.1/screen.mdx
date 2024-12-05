@@ -11,9 +11,10 @@ import HDMI from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/f
 
 
 # Connexion et configuration de l'écran
+
 :::info
 
-* lite2.1 nécessite une connexion SSH au système, puis l'entrée de la commande suivante pour utiliser la configuration de l'écran Fly Tools
+* La version lite2.1 nécessite une connexion SSH au système et l'entrée de la commande ci-dessous pour utiliser la configuration de l'écran Fly Tools
 ```bash
 sudo sed -i 's/board=fly-lite2/board=fly-lite2.1/g' /boot/FlyOS-Env.txt
 ```
@@ -21,38 +22,119 @@ sudo sed -i 's/board=fly-lite2/board=fly-lite2.1/g' /boot/FlyOS-Env.txt
 
 :::info
 
-* Fly Tools nécessite que la machine hôte soit connectée à Internet pour accéder via l'`IP+:9999` de la machine hôte
-* Par exemple `192.168.6.110:9999`
+* Fly Tools nécessite que l'ordinateur hôte soit connecté au réseau et que l'adresse IP de l'ordinateur hôte soit saisie sous la forme `IP+:9999` pour accéder
+* Par exemple, `192.168.6.110:9999`
 
-:::
+<Tabs>
+    <TabItem value="tft" label="Écran TFT" default>
+        * Il est nécessaire d'activer KS dans FLY TOOLS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="Configuration de l'écran capacitif TFT" default>
+## Méthode 1    
+         * La configuration capacitive nécessite l'utilisation de la commande suivante pour la configurer en `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Veuillez confirmer que le commutateur DIP à l'arrière de l'écran est réglé sur `Cap`
+    * Utilisez la commande suivante pour vérifier si la modification a réussi
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * Pour changer la configuration de l'écran capacitif en écran résistif, utilisez la commande suivante
 
-    <Tabs>
-        <TabItem value="tft" label="Connexion TFT" default>
-            * Il est nécessaire d'activer KS dans FLY TOOLS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
-                        <Tabs>
-                            <TabItem value="tft" label="Configuration de l'écran capacitif TFT" default>
-                                * La configuration capacitive doit être définie sur `fly-tft-v2-c`
-                                * Veuillez vérifier que le commutateur sur le dos de l'écran est sur `Cap`
-                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
-                            </TabItem>
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+## Méthode 2
+* Utilisez les outils suivants : un lecteur de carte, une carte SD/TF avec l'image lite2 installée
+* Insérez la carte SD/TF dans le lecteur de carte, puis connectez-le au port USB de l'ordinateur. À ce moment, l'ordinateur affichera ce symbole de disque boot
 
-                            <TabItem value="hdmi" label="Configuration de l'écran résistif TFT">
-                                * La configuration capacitive doit être définie sur `fly-tft-v2-r`
-                                * Veuillez vérifier que le commutateur sur le dos de l'écran est sur `Resi`
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* Clic droit sur le symbole de disque boot pour afficher les fichiers illustrés ci-dessous
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* Trouvez un fichier nommé `FlyOS-Env.txt`
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* Clic droit et double clic pour ouvrir le fichier `FlyOS-Env.txt`
+* Trouvez les lignes 8 et 11 comme illustré dans l'image et configurez-les en conséquence
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1c.webp').default} size="80%" align="center" />
+
+</TabItem>
+
+        <TabItem value="hdmi" label="Configuration de l'écran résistif TFT">
+## Méthode 1        
+           * La configuration de l'écran résistif nécessite l'utilisation de la commande suivante pour la configurer en `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Veuillez confirmer que le commutateur DIP à l'arrière de l'écran est réglé sur `Resi`
+        * Utilisez la commande suivante pour vérifier si la modification a réussi
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
                                     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
-                            </TabItem>
+ * Pour changer la configuration de l'écran résistif en écran capacitif, utilisez la commande suivante
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+## Méthode 2
+* Utilisez les outils suivants : un lecteur de carte, une carte SD/TF avec l'image lite2 installée
+* Insérez la carte SD/TF dans le lecteur de carte, puis connectez-le au port USB de l'ordinateur. À ce moment, l'ordinateur affichera ce symbole de disque boot
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* Clic droit sur le symbole de disque boot pour afficher les fichiers illustrés ci-dessous
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* Trouvez un fichier nommé `FlyOS-Env.txt`
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* Clic droit et double clic pour ouvrir le fichier `FlyOS-Env.txt`
+* Trouvez les lignes 8 et 11 comme illustré dans l'image et configurez-les en conséquence
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1r.webp').default} size="80%" align="center" />
+
+
+ </TabItem>
                         </Tabs>
+        * Connexion de l'écran TFT FLY-Lite
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="center" />
+    </TabItem>
 
+    <TabItem value="hdmi" label="Configuration HDMI">
+        * Il est nécessaire de configurer l'écran dans FLY TOOLS et d'activer KS comme indiqué ci-dessous
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />               
+## Méthode
+* Utilisez les outils suivants : un lecteur de carte, une carte SD/TF avec l'image lite2 installée
+* Insérez la carte SD/TF dans le lecteur de carte, puis connectez-le au port USB de l'ordinateur. À ce moment, l'ordinateur affichera ce symbole de disque boot
 
-            * Connexion de l'écran TFT FLY-Lite
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="center" />
-        </TabItem>
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
 
-        <TabItem value="hdmi" label="Connexion HDMI">
-            * Il est nécessaire de configurer l'écran dans FLY TOOLS comme indiqué ci-dessous et d'activer KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi.webp').default} size="80%" align="center" />               
-            * Connexion de l'écran HDMI FLY-Lite
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi1.webp').default} size="80%" align="center" />
-        </TabItem>
-    </Tabs>
+* Clic droit sur le symbole de disque boot pour afficher les fichiers illustrés ci-dessous
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* Trouvez un fichier nommé `FlyOS-Env.txt`
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* Clic droit et double clic pour ouvrir le fichier `FlyOS-Env.txt`
+* Trouvez les lignes 8 et 11 comme illustré dans l'image et configurez-les en conséquence
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi.webp').default} size="80%" align="center" />
+
+        
+        * Connexion de l'écran HDMI FLY-Lite
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi1.webp').default} size="80%" align="center" />
+    </TabItem>
+</Tabs>

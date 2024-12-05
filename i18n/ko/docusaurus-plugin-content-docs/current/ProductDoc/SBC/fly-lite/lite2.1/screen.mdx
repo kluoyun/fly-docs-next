@@ -11,9 +11,10 @@ import HDMI from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/f
 
 
 # 화면 연결 및 설정
+
 :::info
 
-* lite2.1은 시스템에 SSH로 연결한 후 아래 명령어를 입력해야 Fly Tools 화면 설정을 사용할 수 있습니다.
+* lite2.1은 SSH를 통해 시스템에 연결한 후 아래 명령어를 입력해야 Fly Tools 화면 설정을 사용할 수 있습니다
 ```bash
 sudo sed -i 's/board=fly-lite2/board=fly-lite2.1/g' /boot/FlyOS-Env.txt
 ```
@@ -21,38 +22,119 @@ sudo sed -i 's/board=fly-lite2/board=fly-lite2.1/g' /boot/FlyOS-Env.txt
 
 :::info
 
-* Fly Tools는 상위 기기 네트워크 연결 후 상위 기기의 `IP+:9999`로 접근해야 합니다.
-* 예: `192.168.6.110:9999`
+* Fly Tools는 상위 컴퓨터가 네트워크에 연결된 후 상위 컴퓨터의 `IP+:9999`로 접근할 수 있습니다
+* 예를 들어 `192.168.6.110:9999`
 
-:::
+<Tabs>
+    <TabItem value="tft" label="TFT 화면" default>
+        * FLY TOOLS에서 KS를 켜야 합니다
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFT 정전식 화면 설정" default>
+## 방법 1    
+         * 정전식 설정은 아래 명령어를 사용하여 `fly-tft-v2-c`로 설정해야 합니다
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * 화면 뒷면의 스위치가 `Cap`으로 설정되어 있는지 확인하십시오
+    * 아래 명령어를 사용하여 설정이 성공적으로 수정되었는지 확인하십시오
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * 정전식 화면을 저항식 화면으로 변경하려면 아래 명령어를 사용하십시오
 
-    <Tabs>
-        <TabItem value="tft" label="TFT 연결" default>
-            * FLY TOOLS에서 KS를 활성화해야 합니다.
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
-                        <Tabs>
-                            <TabItem value="tft" label="TFT 정전식 화면 설정" default>
-                                * 정전식 설정은 `fly-tft-v2-c`로 설정해야 합니다.
-                                * 화면 뒷면의 스위치를 `Cap`에 맞춰야 합니다.
-                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
-                            </TabItem>
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+## 방법 2
+* 사용 도구: 카드 리더기, lite2 이미지가 설치된 SD/TF 카드 
+* SD/TF 카드를 카드 리더기에 삽입한 후 컴퓨터 USB 포트에 연결하면 boot 드라이브가 나타납니다
 
-                            <TabItem value="hdmi" label="TFT 저항식 화면 설정">
-                                * 저항식 설정은 `fly-tft-v2-r`로 설정해야 합니다.
-                                * 화면 뒷면의 스위치를 `Resi`에 맞춰야 합니다.
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* 마우스 오른쪽 버튼으로 boot 드라이브를 클릭하면 아래 이미지 파일이 나타납니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* `FlyOS-Env.txt`라는 파일을 찾습니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* `FlyOS-Env.txt` 파일을 오른쪽 더블 클릭하여 엽니다
+* 이미지에서 8행 11행을 찾아 이미지에 따라 설정을 수정합니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1c.webp').default} size="80%" align="center" />
+
+</TabItem>
+
+        <TabItem value="hdmi" label="TFT 저항식 화면 설정">
+## 방법 1        
+           * 저항식 화면 설정은 아래 명령어를 사용하여 `fly-tft-v2-r`로 설정해야 합니다 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * 화면 뒷면의 스위치가 `Resi`로 설정되어 있는지 확인하십시오
+        * 아래 명령어를 사용하여 설정이 성공적으로 수정되었는지 확인하십시오
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
                                     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
-                            </TabItem>
+ * 저항식 화면을 정전식 화면으로 변경하려면 아래 명령어를 사용하십시오
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+## 방법 2
+* 사용 도구: 카드 리더기, lite2 이미지가 설치된 SD/TF 카드 
+* SD/TF 카드를 카드 리더기에 삽입한 후 컴퓨터 USB 포트에 연결하면 boot 드라이브가 나타납니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* 마우스 오른쪽 버튼으로 boot 드라이브를 클릭하면 아래 이미지 파일이 나타납니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* `FlyOS-Env.txt`라는 파일을 찾습니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* `FlyOS-Env.txt` 파일을 오른쪽 더블 클릭하여 엽니다
+* 이미지에서 8행 11행을 찾아 이미지에 따라 설정을 수정합니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1r.webp').default} size="80%" align="center" />
+
+
+ </TabItem>
                         </Tabs>
+        * FLY-Lite TFT 화면 연결
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="center" />
+    </TabItem>
 
+    <TabItem value="hdmi" label="HDMI 설정">
+        * FLY TOOLS에서 아래와 같이 화면을 설정하고 KS를 켜야 합니다
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />               
+## 방법
+* 사용 도구: 카드 리더기, lite2 이미지가 설치된 SD/TF 카드 
+* SD/TF 카드를 카드 리더기에 삽입한 후 컴퓨터 USB 포트에 연결하면 boot 드라이브가 나타납니다
 
-            * FLY-Lite TFT 화면 연결
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="center" />
-        </TabItem>
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
 
-        <TabItem value="hdmi" label="HDMI 연결">
-            * FLY TOOLS에서 아래와 같이 화면을 설정하고 KS를 활성화해야 합니다.
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi.webp').default} size="80%" align="center" />               
-            * FLY-Lite HDMI 화면 연결
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi1.webp').default} size="80%" align="center" />
-        </TabItem>
-    </Tabs>
+* 마우스 오른쪽 버튼으로 boot 드라이브를 클릭하면 아래 이미지 파일이 나타납니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* `FlyOS-Env.txt`라는 파일을 찾습니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* `FlyOS-Env.txt` 파일을 오른쪽 더블 클릭하여 엽니다
+* 이미지에서 8행 11행을 찾아 이미지에 따라 설정을 수정합니다
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi.webp').default} size="80%" align="center" />
+
+        
+        * FLY-Lite HDMI 화면 연결
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi1.webp').default} size="80%" align="center" />
+    </TabItem>
+</Tabs>

@@ -11,6 +11,7 @@ import HDMI from '@site/docs/General/fly-os/_hdmi.mdx';
 
 
 # 屏幕接线与配置
+
 :::info
 
 * lite2.1 需要使用SSH连接到系统后输入下方指令后才可以使用Fly Tools屏幕配置
@@ -24,35 +25,116 @@ sudo sed -i 's/board=fly-lite2/board=fly-lite2.1/g' /boot/FlyOS-Env.txt
 * Fly Tools需要上位机联网后输入上位机的`IP+:9999`访问
 * 比如`192.168.6.110:9999`
 
-:::
+<Tabs>
+    <TabItem value="tft" label="TFT屏幕" default>
+        * 需要在FLY TOOLS中打开KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFT电容屏配置" default>
+## 方法一    
+         * 电容配置需要使用下方命令配置成`fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * 请确认屏幕背面拨码拨到`Cap`
+    * 使用下方命令查看是否修改成功
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * 电容屏修改电阻屏配置使用下方命令
 
-    <Tabs>
-        <TabItem value="tft" label="TFT接线" default>
-            * 需要在FLY TOOLS中打开KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
-                        <Tabs>
-                            <TabItem value="tft" label="TFT电容屏配置" default>
-                                * 电容配置需要配置成`fly-tft-v2-c`
-                                * 请确认屏幕背面拨码拨到`Cap`
-                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
-                            </TabItem>
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+## 方法二
+* 使用工具：一个读卡器，一个刷好lite2镜像sd/TF卡 
+* 把sd/tf卡插入读卡器,插到电脑usb口,此时电脑会出现这个boot盘符
 
-                            <TabItem value="hdmi" label="TFT电阻屏配置">
-                                * 电容配置需要配置成`fly-tft-v2-r`
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* 鼠标右键点击一下boot盘符会出现下方图片文件
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* 找到一个名称为`FlyOS-Env.txt`的文件
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* 右键双击打开`FlyOS-Env.txt`的文件
+* 找到图片里面的8行11行按照图片进行修改配置
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1c.webp').default} size="80%" align="center" />
+
+</TabItem>
+
+        <TabItem value="hdmi" label="TFT电阻屏配置">
+## 方法一        
+           * 电阻屏配置需要使用下方命令配置成`fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
                                 * 请确认屏幕背面拨码拨到`Resi`
+        * 使用下方命令查看是否修改成功
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
                                     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
-                            </TabItem>
+ * 电阻屏修改电容屏配置使用下方命令
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+## 方法二
+* 使用工具：一个读卡器，一个刷好lite2镜像sd/TF卡 
+* 把sd/tf卡插入读卡器,插到电脑usb口,此时电脑会出现这个boot盘符
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* 鼠标右键点击一下boot盘符会出现下方图片文件
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* 找到一个名称为`FlyOS-Env.txt`的文件
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* 右键双击打开`FlyOS-Env.txt`的文件
+* 找到图片里面的8行11行按照图片进行修改配置
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1r.webp').default} size="80%" align="center" />
+
+
+ </TabItem>
                         </Tabs>
+        * FLY-Lite TFT屏接线
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="center" />
+    </TabItem>
 
+    <TabItem value="hdmi" label="HDMI配置">
+        * 需要在FLY TOOLS中按下方配置屏幕并且打开KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />               
+## 方法
+* 使用工具：一个读卡器，一个刷好lite2镜像sd/TF卡 
+* 把sd/tf卡插入读卡器,插到电脑usb口,此时电脑会出现这个boot盘符
 
-            * FLY-Lite TFT屏接线
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="center" />
-        </TabItem>
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
 
-        <TabItem value="hdmi" label="HDMI接线">
-            * 需要在FLY TOOLS中按下方配置屏幕并且打开KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi.webp').default} size="80%" align="center" />               
-            * FLY-Lite HDMI屏接线
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi1.webp').default} size="80%" align="center" />
-        </TabItem>
-    </Tabs>
+* 鼠标右键点击一下boot盘符会出现下方图片文件
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* 找到一个名称为`FlyOS-Env.txt`的文件
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* 右键双击打开`FlyOS-Env.txt`的文件
+* 找到图片里面的8行11行按照图片进行修改配置
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi.webp').default} size="80%" align="center" />
+
+        
+        * FLY-Lite HDMI屏接线
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi1.webp').default} size="80%" align="center" />
+    </TabItem>
+</Tabs>
