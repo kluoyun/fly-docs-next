@@ -119,7 +119,7 @@ const config = {
             return items.filter((item) => !item.url.includes('/page/'));
           },
         },
-        googleAnalytics: {
+        gtag: {
           trackingID: 'G-HM4WKWBCZL',
           anonymizeIP: false,
         },
