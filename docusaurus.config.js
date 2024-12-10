@@ -119,6 +119,10 @@ const config = {
             return items.filter((item) => !item.url.includes('/page/'));
           },
         },
+        gtag: {
+          trackingID: 'G-HM4WKWBCZL',
+          anonymizeIP: false,
+        },
       }),
     ],
   ],
