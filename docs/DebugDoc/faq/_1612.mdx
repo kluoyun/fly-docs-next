@@ -169,9 +169,12 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
             ```
     ## 网床指令
     
-        * 扫描整个网床指令
+        * 在`printer.cfg`配置里面添加下面的宏
             ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan
+            [gcode_macro BED_MESH_CALIBRATE]
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
             ```
         * 局域网床指令，需要确保Klipper可以使用对象排除功能，建议添加到开始宏中
             ```bash
