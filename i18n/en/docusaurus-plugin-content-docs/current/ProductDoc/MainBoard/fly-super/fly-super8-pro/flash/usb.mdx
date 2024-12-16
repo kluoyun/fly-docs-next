@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USB firmware flashing
+sidebar_label: USB Firmware Flashing
 ---
 
 import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -8,14 +8,12 @@ import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-
-
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
 # USB Firmware Compilation
 
-## Getting Started with Compilation
+## Start Compilation
 
     <SSH />
 
@@ -23,12 +21,12 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Press the `Q` key, and when **Save configuration** appears, press the `Y` key again.
+    * Press `Q` key, when **Save configuration** appears, press `Y` key again
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * You should now have saved the configuration and exited to the command line interface.
-    * Enter `make -j4` to start compiling; this may take some time.
+    * The configuration should now be saved and you should be back at the command line interface
+    * Enter `make -j4` to start compilation, it will take some time
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following output is displayed at the end, compilation is successful:
+    * If the following content is output at the end, the compilation was successful
 
         ```bash
         Linking out/klipper.elf
@@ -36,6 +34,48 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Firmware Flashing
-
+## Flash Firmware
+    
     <TF />
+
+## Flash Firmware 2
+    <Tabs>
+        <TabItem value="linux" label="DFU Flashing">
+            * Follow the image below to connect the jumper cap `boot1` and then press `rst` to restart the mainboard
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
+            * Enter the command below to check if the mainboard has entered DFU mode
+            ```bash
+            lsusb
+            ```
+            * After pressing `Enter`, the following image will be displayed, indicating that the mainboard has successfully entered DFU mode
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. Flash Firmware
+
+            * Below are the DFU flashing commands
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. If the content at the arrow in the image below shows ``File downloaded successfully``, the flashing was successful
+
+            :::warning
+
+            Please ignore the **error message** following the line indicated by the red arrow!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            After flashing is complete, remove the jumper cap from the mainboard and press `rst` on the mainboard to restart it
+
+            :::
+
+        </TabItem>
+    </Tabs>

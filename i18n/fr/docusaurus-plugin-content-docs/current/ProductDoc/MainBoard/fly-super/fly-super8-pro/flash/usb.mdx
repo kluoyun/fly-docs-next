@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: Programmation du firmware USB
+sidebar_label: Flashage du firmware USB
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -13,7 +13,7 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
 # Compilation du firmware USB
 
-## Commencer la compilation
+## Début de la compilation
 
     <SSH />
 
@@ -26,7 +26,7 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
     * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
     * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * La compilation est réussie lorsque le contenu suivant est affiché :
+    * Si la compilation est réussie, le message suivant sera affiché :
 
         ```bash
         Linking out/klipper.elf
@@ -34,6 +34,48 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Programmation du firmware
+## Flashage du firmware
     
     <TF />
+
+## Flashage du firmware2
+    <Tabs>
+        <TabItem value="linux" label="Flashage dfu">
+            * Suivez l'image ci-dessous pour insérer le capuchon de jumper `boot1` puis appuyez sur `rst` pour redémarrer la carte mère
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
+            * Entrez la commande suivante pour vérifier si la carte mère est en mode dfu
+            ```bash
+            lsusb
+            ```
+            * Après avoir appuyé sur `Enter`, vous verrez le contenu de l'image ci-dessous, ce qui indique que la carte mère est entrée avec succès en mode dfu
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. Flashage du firmware
+
+            * Voici la commande pour flasher via dfu :
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. Si vous voyez le message **File downloaded successfully** comme indiqué par la flèche dans l'image ci-dessous, le flashage a réussi
+
+            :::warning
+
+            Ignorez l'erreur qui apparaît après la ligne indiquée par la flèche rouge !!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            Après le flashage, retirez le capuchon de jumper de la carte mère et appuyez sur `rst` pour redémarrer la carte mère
+
+            :::
+
+        </TabItem>
+    </Tabs>
