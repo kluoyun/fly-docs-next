@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Запись прошивки через USB
+sidebar_label: Загрузка прошивки через USB
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -8,14 +8,13 @@ import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_usb.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Компиляция прошивки через USB
+# Сборка прошивки через USB
 
-## Начало компиляции
+## Начало сборки
 
     <SSH />
 
@@ -23,24 +22,66 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Нажмите `Q`, появится **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, чтобы появилось **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, это займет некоторое время
+    * Теперь конфигурация должна быть сохранена, и вы должны вернуться к командной строке
+    * Введите `make -j4` для начала сборки, это может занять некоторое время
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * В конце вы увидите следующий вывод, если компиляция прошла успешно:
+    * Если в конце выводится следующий текст, значит сборка завершена успешно
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Запись прошивки
+## Загрузка прошивки
 
 :::tip
-Выполните следующую команду для записи прошивки:
+Выполните следующую команду для загрузки прошивки
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+
+## Загрузка прошивки
+    <Tabs>
+        <TabItem value="linux" label="dfu загрузка">
+            * Подключите перемычку `boot1` согласно изображению ниже, затем нажмите `rst` для перезагрузки платы
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
+            * Введите следующую команду, чтобы проверить, вошел ли контроллер в режим dfu
+            ```bash
+            lsusb
+            ```
+            * После ввода команды и нажатия `Enter` будет выведена следующая информация, указывающая на то, что контроллер успешно перешел в режим dfu
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. Загрузка прошивки
+
+            * Ниже приведена команда для записи прошивки через dfu
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. Если появится текст, указанный стрелкой на изображении ниже, ``File downloaded successfully``, загрузка прошивки завершена успешно
+
+            :::warning
+
+            Ошибки, указанные красной стрелкой, **после этой строки** можно игнорировать!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения загрузки прошивки, отсоедините перемычку от платы и нажмите кнопку `rst` для перезагрузки платы
+
+            :::
+
+        </TabItem>
+    </Tabs>
