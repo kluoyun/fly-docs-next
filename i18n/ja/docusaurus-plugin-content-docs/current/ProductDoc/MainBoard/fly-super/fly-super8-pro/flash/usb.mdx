@@ -11,7 +11,7 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# USB ファームウェアのコンパイル
+# USBファームウェアのコンパイル
 
 ## コンパイルの開始
 
@@ -21,10 +21,10 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q` キーを押して **Save configuration** が表示されたら、`Y` キーを押します
+    * `Q`キーを押して、**Save configuration**が表示されたら、`Y`キーを押して
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 設定が保存され、コマンドラインインターフェースに戻るはずです
-    * `make -j4` と入力してコンパイルを開始します。時間がかかります
+    * 今は設定が保存されてコマンドラインインターフェースに戻ったはずです
+    * `make -j4`を入力してコンパイルを開始します、時間が少しかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * 最後に以下の内容が出力されればコンパイル成功です
 
@@ -33,6 +33,49 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
         Creating hex file out/klipper.bin
         ```
 
-## ファームウェアの書き込み
 
+## ファームウェアの書き込み
+    
     <TF />
+
+## ファームウェアの書き込み2
+    <Tabs>
+        <TabItem value="linux" label="dfu書き込み">
+            *以下の画像に従ってジャンパーピンの`boot1`を挿してから`rst`を押して基板をリセットしてください
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
+            *以下のコマンドを入力して基板がdfuモードに入ったか確認してください
+            ```bash
+            lsusb
+            ```
+            *入力後、`Enter`キーを押すと以下の画像の内容が表示されます。画像内の内容が表示された場合、基板がdfuモードに入ったことを示します
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. ファームウェアの書き込み
+
+            * 以下はdfu書き込みコマンドです
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. 以下の画像の矢印の場所に``File downloaded successfully``と表示されたら書き込み成功です
+
+            :::warning
+
+            赤い矢印が指すこの行**後のエラー**は無視してください！！！
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            書き込みが完了したら、基板のジャンパーピンを取り外し、基板の`rst`を押して基板を再起動してください
+
+            :::
+
+        </TabItem>
+    </Tabs>

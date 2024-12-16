@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
-sidebar_label: USB 펌웨어 플래싱
+sidebar_label: USB 펌웨어 플래시
+
 ---
 
 import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -22,24 +23,66 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q` 키를 누르면 **Save configuration**이 나타나고, 이때 `Y` 키를 눌러 저장합니다.
+    * `Q` 키를 누르면 **Save configuration**이 나타납니다. 이때 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아갔을 것입니다.
+    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아갔어야 합니다.
     * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래 내용이 출력되면 컴파일이 성공적으로 완료된 것입니다.
+    * 마지막으로 아래 내용이 출력되면 컴파일이 성공한 것입니다.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 펌웨어 플래싱
+## 펌웨어 플래시
 
 :::tip
-아래 명령어를 실행하여 펌웨어를 플래싱합니다.
+아래 명령을 실행하여 펌웨어를 플래시합니다.
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+
+## 펌웨어 플래시
+    <Tabs>
+        <TabItem value="linux" label="dfu 플래시">
+            * 아래 그림에 따라 점퍼 캡 `boot1`을 연결한 후 `rst`를 눌러 메인보드를 재부팅합니다.
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
+            * 아래 명령을 입력하여 메인보드가 dfu 모드에 들어갔는지 확인합니다.
+            ```bash
+            lsusb
+            ```
+            * `Enter` 키를 눌러 아래 그림의 내용이 출력되면 메인보드가 성공적으로 dfu 모드에 들어갔음을 나타냅니다.
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. 펌웨어 플래시
+
+            * 아래는 dfu 플래시 명령어입니다.
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. 아래 그림의 화살표가 가리키는 내용 ``File downloaded successfully``가 나타나면 플래시가 성공한 것입니다.
+
+            :::warning
+
+            빨간 화살표가 가리키는 행 **뒤의 오류**는 무시하세요!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            플래시가 완료되면 메인보드의 점퍼 캡을 제거하고 `rst`를 눌러 메인보드를 재부팅합니다.
+
+            :::
+
+        </TabItem>
+    </Tabs>

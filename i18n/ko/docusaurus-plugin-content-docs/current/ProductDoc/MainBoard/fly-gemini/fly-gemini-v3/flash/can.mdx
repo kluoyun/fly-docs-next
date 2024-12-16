@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-sidebar_label: USB 브릿지 CAN 펌웨어 플래싱
+sidebar_label: USB 브리징 CAN 펌웨어 플래시
 ---
 
 import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB 브릿지 CAN 펌웨어 플래싱
+# USB 브리징 CAN 펌웨어 플래시
 
 ## 컴파일 시작
 
@@ -22,12 +22,12 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * `Q` 키를 눌러 **Save configuration**이 나타나면 `Y` 키를 다시 누릅니다.
+    * `Q` 키를 눌러 **Save configuration**을 선택하고, 다시 `Y` 키를 눌러 저장합니다
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아가야 합니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다.
+    * 이제 구성 파일이 저장되고 명령줄 인터페이스로 돌아갑니다
+    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 다소 걸릴 수 있습니다
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 다음 내용이 출력되면 컴파일이 성공적으로 완료된 것입니다.
+    * 마지막으로 아래 내용이 출력되면 컴파일이 성공적으로 완료된 것입니다
 
         ```bash
         Linking out/klipper.elf
@@ -35,12 +35,54 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
         ```
 
 
-## 펌웨어 플래싱
+## 펌웨어 플래시
 
 :::tip
-다음 명령을 실행하여 펌웨어를 플래싱합니다.
+아래 명령을 실행하여 펌웨어를 플래시합니다
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+
+    ## 펌웨어 플래시
+    <Tabs>
+        <TabItem value="linux" label="dfu 플래시">
+            * 아래 그림에 따라 점퍼 캡을 `boot1`에 연결하고 `rst` 버튼을 눌러 메인보드를 재부팅합니다
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
+            * 아래 명령을 입력하여 메인보드가 dfu 상태로 들어갔는지 확인합니다
+            ```bash
+            lsusb
+            ```
+            * 입력 후 `Enter`를 누르면 아래 이미지의 내용이 출력되며, 메인보드가 성공적으로 dfu 모드에 들어갔다면 이미지에 표시된 내용이 나타납니다
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. 펌웨어 플래시
+
+            * 아래는 dfu 플래시 명령어입니다
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. 아래 그림의 화살표가 가리키는 내용 `File downloaded successfully`가 나타나면 플래시가 성공적으로 완료된 것입니다
+
+            :::warning
+
+            빨간색 화살표가 가리키는 이 행 **뒤에 오는 오류**는 무시하십시오!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            플래시가 완료된 후 메인보드의 점퍼 캡을 제거하고 `rst` 버튼을 눌러 메인보드를 재부팅합니다
+
+            :::
+
+        </TabItem>
+    </Tabs>

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
-sidebar_label: Firmware flashing via USB to CAN bridge
+sidebar_label: USB à CAN Firmware Flash
+
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,7 +13,7 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Firmware flashing via USB to CAN bridge
+# USB à CAN Firmware Flash
 
 ## Début de la compilation
 
@@ -22,12 +23,12 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Appuyez sur la touche `Q`, puis sur `Y` lorsque **Save configuration** apparaît
+    * Appuyez sur la touche `Q`, puis sur **Save configuration** et ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous devriez revenir à l'interface de ligne de commande
+    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'invite de commande
     * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si le message suivant s'affiche à la fin, la compilation est réussie
+    * Si vous voyez le message ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
@@ -35,12 +36,54 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
         ```
 
 
-## Flashing du firmware
+## Flashage du firmware
 
 :::tip
-Exécutez la commande suivante pour flasher le firmware
+Exécutez la commande ci-dessous pour flasher le firmware
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+
+    ## Flashage du firmware
+    <Tabs>
+        <TabItem value="linux" label="Flashage DFU">
+            * Placez les jumpers `boot1` `boot1` comme illustré ci-dessous, puis appuyez sur `rst` pour redémarrer la carte mère
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
+            * Entrez la commande suivante pour vérifier si la carte mère est en mode DFU
+            ```bash
+            lsusb
+            ```
+            * Appuyez sur `Enter` pour voir le message ci-dessous, ce qui indique que la carte mère est en mode DFU
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. Flasher le firmware
+
+            * Voici la commande pour flasher en DFU
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. Si vous voyez le message `File downloaded successfully`, le flashage a réussi
+
+            :::warning
+
+            Ignorez l'erreur après la ligne indiquée par la flèche rouge !!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            Une fois le flashage terminé, retirez les jumpers de la carte mère et appuyez sur `rst` pour redémarrer la carte mère
+
+            :::
+
+        </TabItem>
+    </Tabs>
