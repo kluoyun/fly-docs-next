@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
-sidebar_label: Программирование прошивки USB-to-CAN моста
+sidebar_label: Прошивка моста USB-CAN
+
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -8,12 +9,11 @@ import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_utoc.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Программирование прошивки USB-to-CAN моста
+# Прошивка моста USB-CAN
 
 ## Начало компиляции
 
@@ -23,12 +23,12 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите клавишу `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4`, чтобы начать компиляцию, процесс займет некоторое время
+    * Теперь конфигурация должна быть сохранена и вы вернетесь в командную строку
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если в конце выводится следующее, значит компиляция завершилась успешно
+    * При успешной компиляции в конце будет выведено следующее:
 
         ```bash
         Linking out/klipper.elf
@@ -36,12 +36,54 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
         ```
 
 
-## Программирование прошивки
+## Прошивка
 
 :::tip
-Выполните следующую команду для программирования прошивки
+Выполните следующую команду для прошивки
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+
+    ## Прошивка
+    <Tabs>
+        <TabItem value="linux" label="dfu прошивка">
+            *Следуйте изображению ниже, чтобы подключить перемычку `boot1`, затем нажмите `rst` для перезагрузки платы
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
+            *Введите следующую команду, чтобы проверить, перешла ли плата в режим dfu
+            ```bash
+            lsusb
+            ```
+            *После ввода нажмите `Enter`, вы увидите содержимое изображения ниже, что означает успешный переход в режим dfu
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. Прошивка
+
+            * Ниже приведена команда для прошивки через dfu
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. Когда появится строка ``File downloaded successfully`` как показано стрелкой на изображении ниже, прошивка завершена успешно
+
+            :::warning
+
+            Игнорируйте **ошибки после этой строки**, на которую указывает красная стрелка!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки отключите перемычку платы и нажмите `rst` для перезагрузки платы
+
+            :::
+
+        </TabItem>
+    </Tabs>
