@@ -3,64 +3,65 @@ sidebar_position: 7
 sidebar_label: Eddy 사용
 ---
 
+
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddy 사용
 
     :::info
-
-    * 주의: 스캔 베드 사용 시 별도의 Z 제한을 사용하는 것이 좋습니다. 스캔 베드를 Z 제한으로 사용하지 않는 것이 좋습니다.
-    * Eddy를 설치할 때, 노즐 위치보다 최소 1-2mm 위에 위치시켜야 합니다.
-    * Eddy 주파수 보정 시, 코일 PCB는 히팅 베드에서 최소 5mm 이상 떨어져 있어야 합니다.
-    * 테스트 시 히팅 베드가 상온 상태인지 확인하고, 테스트 중 히팅 베드를 켜지 마십시오.
+    * Eddy를 설치할 때, 노즐 위치에서 노즐 위로 최소 1-2 mm 이상 떨어져 있어야 합니다.
+    * Eddy 주파수를 보정할 때, 코일 PCB는 히트베드에서 최소 5mm 이상 떨어져 있어야 합니다.
+    * 테스트 시 히트베드를 상온에서 진행하고, 테스트 중에는 히트베드를 켜지 마세요.
 
     :::
 
-## 배선 도식도
 
-    * 상표가 아래를 향하도록 하십시오.
+## 연결 다이어그램
+
+    * 상표가 아래를 향하도록
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
-## 참고 설정 및 사용 설명서
 
-    ### ldc16121612 기본 주파수 수정
+## 참조 설정 및 사용 설명
+
+    ### ldc1612 기본 주파수 수정
     이 방법은 sht36-v3/SB2040-v3 또는 SB2040-Pro-v3에만 사용됩니다.
     Mobaxterm 도구를 사용하여 명령을 실행할 수 있습니다.
+    
+    필요한 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구</Button>를 다운로드하세요.
+    
+    [자세한 사용 방법은 여기](/docs/ProductDoc/SBC/fly-pi-v2/ssh)를 참조하세요.
 
-    필요한 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구</Button> 다운로드
 
-    [자세한 사용법은 여기를 참조하십시오.](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
-
-
-    첫 번째 명령어를 입력하고 Enter 키를 누릅니다.
+    첫 번째 명령을 실행하고 엔터를 누릅니다.
 
     ```cfg
 sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
     ```
 
-    두 번째 명령어를 입력하고 Enter 키를 누릅니다.
+    두 번째 명령을 실행하고 엔터를 누릅니다.
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    치환 성공 시 `LDC1612_FREQ = 40000000`이 포함된 행이 반환됩니다. 치환이 성공하지 않았다면 아무것도 반환되지 않습니다.
-    또는 다음 명령어를 사용하여 성공 여부를 확인할 수 있습니다.
+    성공적으로 대체되면 `LDC1612_FREQ = 40000000`이 포함된 행이 반환됩니다. 아무것도 반환되지 않으면 대체가 실패한 것입니다.
+    또는 이 명령을 사용하여 성공 여부를 확인할 수 있습니다.
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   팁: 수정 후 klipper 서비스를 다시 시작하고 Eddy 주파수를 재보정하십시오.
+   팁: 수정 후 다음 명령을 사용하여 klipper 서비스를 재시작하고 eddy 주파수를 다시 보정하세요.
    ```cfg
    systemctl restart klipper
    ```
-   Eddy 주파수 보정 명령어
+   eddy 주파수 보정 명령
    ```cfg
    PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
    ```
 
 
-    ### 스캔 베드 설정
+    ### 베드 스캔 설정
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -99,7 +100,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 
 ### bed_mesh 설정
 
-    * [bed_mesh]의 `horizontal_move_z` 매개변수는 2로 설정하는 것이 좋습니다. 스캔 플랫폼 시 Eddy가 플랫폼에 최대한 가까워지도록 합니다.
+    * [bed_mesh]의 `horizontal_move_z` 매개변수를 2로 설정하여, 플랫폼을 스캔할 때 Eddy가 플랫폼에 최대한 가까워지도록 합니다.
 
     ```cfg
     [bed_mesh]
