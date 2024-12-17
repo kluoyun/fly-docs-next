@@ -3,16 +3,18 @@ sidebar_position: 7
 sidebar_label: Utilisation d'Eddy
 ---
 
+
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Utilisation d'Eddy
 
     :::info
-    * Lors de l'installation d'Eddy, la position du bas par rapport à la buse doit être au moins de 1 à 2 mm au-dessus de la buse.
-    * Lors de l'étalonnage de la fréquence Eddy, le PCB de la bobine doit être à au moins 5 mm du lit chauffant.
-    * Veuillez ne pas tester avec tout le lit à température ambiante, et ne pas allumer le lit pendant le test.
+    * Lors de l'installation d'Eddy, la position du fond par rapport à la buse doit être au moins à 1-2 mm au-dessus de la buse
+    * Lors de l'étalonnage de la fréquence d'Eddy, la PCB de la bobine doit être éloignée du lit chauffant d'au moins 5 mm
+    * Veuillez ne pas tester avec le lit chauffant à température ambiante, et ne pas allumer le lit chauffant pendant le test
 
     :::
+
 
 ## Schéma de câblage
 
@@ -22,13 +24,13 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 ## Configuration de référence et instructions d'utilisation
    
-    ### Modification de la fréquence par défaut de ldc16121612
-    Cette méthode est uniquement utilisée pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3.
-    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes.
+    ### Modification de la fréquence par défaut de ldc1612
+    Cette méthode est uniquement utilisée pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3
+    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes
     
-    Téléchargez l'outil nécessaire <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button>
+    Téléchargez l'outil <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button> nécessaire
     
-    [Pour des instructions détaillées, consultez](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+    [Pour une utilisation détaillée, consultez](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
 
 
     Exécutez la première commande et appuyez sur Entrée
@@ -41,15 +43,15 @@ sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/ex
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    Si le remplacement est réussi, une ligne contenant `LDC1612_FREQ = 40000000` sera retournée. Si aucune ligne n'est retournée, cela signifie que le remplacement n'a pas réussi.
-    Ou utilisez cette commande pour vérifier si le remplacement a réussi
+    Si la commande renvoie une ligne contenant `LDC1612_FREQ = 40000000`, le remplacement a réussi. S'il n'y a aucun retour, cela signifie que le remplacement n'a pas été effectué.
+    Ou utilisez cette commande pour vérifier le succès
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   Conseils : Après modification, veuillez utiliser cette commande pour redémarrer le service klipper et recalibrer la fréquence d'Eddy
+   Remarque : Après modification, utilisez cette commande pour redémarrer le service Klipper et recalibrer la fréquence d'Eddy
    ```cfg
    systemctl restart klipper
    ```
@@ -74,7 +76,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-        * Veuillez noter qu'actuellement, il n'y a pas de module externe 1612 disponible, cette configuration n'est donc pas encore utilisable.
+        * Veuillez noter que le module externe 1612 n'est pas encore disponible, donc cette configuration n'est pas encore utilisable
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -88,7 +90,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-    ### Configuration de la compensation thermique
+    ### Configuration de la compensation de température
 
         ```cfg
         [temperature_probe fly_eddy_probe]
@@ -98,7 +100,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 
 ### Configuration de bed_mesh
 
-    * Dans [bed_mesh], le paramètre `horizontal_move_z` est recommandé à 2 pour que Eddy soit le plus près possible de la plateforme lors du balayage.
+    * Dans [bed_mesh], le paramètre `horizontal_move_z` est recommandé d'être défini à 2, pour que lors du balayage de la plateforme, Eddy soit le plus proche possible de la plateforme
 
     ```cfg
     [bed_mesh]
