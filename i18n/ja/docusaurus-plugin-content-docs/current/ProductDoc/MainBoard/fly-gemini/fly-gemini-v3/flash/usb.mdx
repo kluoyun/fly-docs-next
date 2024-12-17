@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USBファームウェアの書き込み
+sidebar_label: USBファームウェアの焼き込み
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -12,9 +12,9 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBファームウェアのビルド
+# USBファームウェアのコンパイル
 
-## ビルドの開始
+## コンパイルの開始
 
     <SSH />
 
@@ -22,56 +22,56 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q`キーを押し、**Save configuration**が表示されたら、`Y`キーを押す
+    * `Q` キーを押して **Save configuration** が表示されたら、`Y` キーを押す
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 今、設定が保存されてコマンドラインのインターフェースに戻るはずです
-    * `make -j4`を入力してビルドを開始します。少し時間がかかります
+    * 今は設定を保存してコマンドラインインターフェースに戻っているはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかるので注意してください
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に下記の内容が出力されればビルド成功です
+    * 最後に以下の内容が出力されればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## ファームウェアの書き込み
+## ファームウェアの焼き込み
 
 :::tip
-以下のコマンドを実行してファームウェアを書き込みます
+以下のコマンドを実行してファームウェアを焼き込みます
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
 
-## ファームウェアの書き込み
+## ファームウェアの焼き込み
     <Tabs>
-        <TabItem value="linux" label="dfu書き込み">
-            * 以下の画像に従って、ジャンパーピンの`boot1``boot1`を挿し、`rst`を押してメインボードをリセットしてください
+        <TabItem value="linux" label="dfu焼き込み">
+            *下の画像に従ってジャンパーキャップ`boot1``boot1`を差し込み、`rst`を押してボードをリセットします
             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
-            * メインボードがdfuモードに入ったか確認するために以下のコマンドを入力します
+            *以下のコマンドを入力してボードがdfuモードに入っているか確認します
             ```bash
             lsusb
             ```
-            * 入力後、`Enter`キーを押すと、以下の画像の内容が表示され、画像内の内容が表示された場合、メインボードがdfuモードに入ったことを示します
+            *入力後、`Enter`キーを押すと以下の画像の内容が表示されます。画像内の内容が表示されればボードが成功にdfuモードに入っています
             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
            
             <dfu />
 
-            4. ファームウェアの書き込み
+            4. ファームウェアの焼き込み
 
-            * 下記はdfu書き込みコマンドです
+            * 以下のdfu書き込みコマンドです
                 ```bash
                 cd ~/klipper
                 ```
                 ```bash
                 make flash FLASH_DEVICE=0483:df11
                 ```
-            5. 下図の矢印の位置に`File downloaded successfully`と表示されれば書き込み成功です
+            5. 以下の画像の矢印部分に「File downloaded successfully」と表示されれば焼き込み成功です
 
             :::warning
 
-            赤い矢印で指された行の**後のエラー**は無視してください！！！
+            赤い矢印が指す行の**後ろのエラー**は無視してください！！！
 
             :::
 
@@ -79,9 +79,10 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
             :::tip
 
-            書き込み完了後、メインボードのジャンパーピンを取り外し、`rst`を押してメインボードをリセットしてください
+            焼き込み完了後、ボードのジャンパーキャップを外し、`rst`を押してボードを再起動してください
 
             :::
 
         </TabItem>
     </Tabs>
+

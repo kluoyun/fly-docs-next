@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USB 펌웨어 번인
+sidebar_label: USB 펌웨어 플래싱
 ---
 
 import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -21,12 +21,12 @@ import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q` 키를 누르면 **Save configuration**이 나타나고, 이때 `Y` 키를 다시 누릅니다.
+    * `Q` 키를 누르면 **Save configuration**이 나타납니다. 이때 `Y` 키를 눌러주세요.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령 줄 인터페이스로 돌아가야 합니다.
+    * 이제 설정이 저장되고 명령행 인터페이스로 돌아갔습니다.
     * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래 내용이 출력되면 컴파일이 성공적으로 완료된 것입니다.
+    * 마지막에 아래 내용이 출력되면 컴파일이 성공한 것입니다.
 
         ```bash
         Linking out/klipper.elf
@@ -34,6 +34,48 @@ import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## 펌웨어 번인
+## 펌웨어 플래싱
     
     <TF />
+
+## 펌웨어 플래싱2
+    <Tabs>
+        <TabItem value="linux" label="dfu 플래싱">
+            *아래 그림에 따라 점퍼 캡 `boot1`을 연결한 후 `rst`를 눌러 메인보드를 재부팅하세요.
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
+            *메인보드가 dfu 상태에 들어갔는지 확인하기 위해 아래 명령을 입력하세요.
+            ```bash
+            lsusb
+            ```
+            *입력 후 `Enter`를 누르면 아래 그림의 내용이 출력됩니다. 그림에 있는 내용이 표시되면 메인보드가 성공적으로 dfu 모드에 진입한 것입니다.
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
+           
+            <dfu />
+
+            4. 펌웨어 플래싱
+
+            * 아래는 dfu 플래싱 명령어입니다.
+                ```bash
+                cd ~/klipper
+                ```
+                ```bash
+                make flash FLASH_DEVICE=0483:df11
+                ```
+            5. 아래 그림의 화살표 부분에 표시된 내용 ``File downloaded successfully``가 나타나면 플래싱이 성공한 것입니다.
+
+            :::warning
+
+            빨간색 화살표가 가리키는 행 **뒤의 오류**는 무시하세요!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            플래싱이 완료되면 메인보드의 점퍼 캡을 제거하고 `rst`를 눌러 메인보드를 재부팅하세요.
+
+            :::
+
+        </TabItem>
+    </Tabs>
