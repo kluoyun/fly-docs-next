@@ -1,17 +1,10 @@
 
-
 :::tip
-
-使用Katapult固件可以方便以后直接通过SSH更新固件，无需在进入DFU烧录固件
+    * 安装烧录插件时需要联网，请确保您的上位机已经正常连接至互联网
+    * 如果已经安装过则无需再次安装
 :::
 
-## 安装烧录插件
-
-:::tip
-请注意安装烧录插件需要上位机能联网
-如果已经安装过则无需再次安装
-:::
-
+### 烧录插件安装
     * 安装`pip install pyserial`
 
         ```bash
@@ -26,60 +19,91 @@
 
     * 如果提示出现下方报错需要执行
 
-        <ImageView image={require('@site/docs/General/get-id/img/pyserial.webp').default} size="100%" align="left" />
-
         ```bash
         pip install pyserial --break-system-packages
         ```
+        <ImageView image={require('@site/docs/General/get-id/img/pyserial.webp').default} size="100%" align="center" />
 
-## 开始烧录固件
+### 开始烧录
 
-    * 使用下方指令搜索你的设备串口地址
+    * 使用下方指令搜索你的设备ID，应出现下图所示ID（注：图中所示ID仅供参考，每张主板的ID都不相同）
 
         ```bash
         ls /dev/serial/by-id/*
         ```
-
-    * 下方是参考
-        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult1.webp').default} size="100%" align="left" />
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult1.webp').default} size="80%" align="center" />
 
 
     * 烧录固件使用下方代码，请确保已经编译好固件，请注意`=`后面没有空格
     * 请注意你需要在klipper目录下才能烧录固件
 
         ```bash
-        make flash FLASH_DEVICE=
+        cd ~/klipper/ && make flash FLASH_DEVICE=
         ```
 
     * 下方是参考
-        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult2.webp').default} size="100%" align="left" />
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult2.webp').default} size="100%" align="center" />
 
     * 烧录完成参考
-        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="left" />
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
 
-## 更新固件方法
+## 固件更新
 
+<Tabs>
+    <TabItem value="w" label="USB固件的更新" default>
+    * 使用下方指令搜索你的设备ID，应出现下图所示ID（注：图中所示ID仅供参考，每张主板的ID都不相同）
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+    :::tip 注意
+        下图中`/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`为主板的ID
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
 
     * 更新USB固件需要在编译好最新固件后输入下方命令更新，请注意`=`后面没有空格
 
         ```bash
-        make flash FLASH_DEVICE=
+        cd ~/klipper/ && make flash FLASH_DEVICE=<你的主板ID>
         ```
-        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="100%" align="left" />
+       <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
+    </TabItem>
 
-    * 更新USB桥接CAN固件需要在编译好最新固件后输入下方命令重置进去Katapult
-    * 请注意只能给USB桥接CAN的klipper固件执行，其他固件执行会报错
+
+    <TabItem value="l" label="桥接CAN固件的更新">
+    * 更新USB桥接CAN固件，则需要在编译好最新固件之后，输入下方命令重置进去Katapult。(如下图所示，图中的ID仅供参考，请以您配置文件中的id为准)
+    :::tip 注意
+       * `<Your CANBUS UUID>`为您**printer.cfg**配置文件中——主板的CANBUS UUID
+    :::
+        
+        <br/>
 
         ```bash
-        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <MCU ID>
+        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <Your CANBUS UUID>
         ```
-
-        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="left" />
-    * 重置进去Katapult后在执行下方执行更新固件
+    :::tip 注意
+       * 下图中`f95cee90e1f9`为主板的CANBUS UUID
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
+    * 重置进去Katapult后，使用下方指令搜索你的主板ID，应出现下图所示ID（注：图中所示ID仅供参考，每张主板的ID都不相同）
 
         ```bash
-        make flash FLASH_DEVICE=<你的设备串口地址>
+        ls /dev/serial/by-id/*
         ```
+    :::tip 注意
+        下图中`/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`为主板的ID
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
+
+    * 请确保在新固件编译完成后，再执行烧录。请注意`=`后面没有空格。`<你的主板ID>`是您上一步所查询到的主板ID
+
+        ```bash
+        cd ~/klipper/ && make flash FLASH_DEVICE=<你的主板ID>
+        ```
+       <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
+    </TabItem>
+
+</Tabs>
 
 ## 刷错固件解决方法
 
