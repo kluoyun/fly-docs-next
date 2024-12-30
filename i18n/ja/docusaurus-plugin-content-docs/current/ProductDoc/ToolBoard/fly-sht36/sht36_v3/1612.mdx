@@ -3,28 +3,25 @@ sidebar_position: 7
 sidebar_label: Eddyの使用
 ---
 
-
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddyの使用
 
     :::info
-    * Eddyをインストールする際、ノズルの位置はノズルの上に少なくとも1-2 mmの隙間が必要です
-    * Eddyの周波数を校正する際、PCBコイルはベッドから少なくとも5mm離しておく必要があります
-    * 常温下でベッド全体をテストしてください。また、テスト中はベッドをオンにしないでください
+    * Eddyをインストールする際、ノズルの下に少なくとも1-2mmのスペースが必要です
+    * Eddyの周波数を校正する際、コイルPCBはヒートベッドから最低5mm離す必要があります
+    * ヒートベッドは常温でテストし、テスト中はヒートベッドを開けないでください
 
     :::
 
-
 ## 配線図
 
-    * 商標を下に向けて
+    * 商標は下向き
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
-
 
 ## 参照設定と使用説明
 
-##### `printer.cfg`設定ファイルに以下の設定を追加し、eddyのデバッグを行います
+##### `printer.cfg`設定ファイルに以下の設定を追加し、eddyをデバッグしてください
 
     ### ベッドスキャン設定
 
@@ -41,7 +38,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * 注意：現在、外部1612モジュールはリリースされていないため、この設定はまだ使用できません
+        * 現在、外部1612モジュールがリリースされていないため、この設定は一時的に使用できません
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -63,33 +60,34 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         sensor_pin:SHT36:gpio28
         ```
 
-    ## ベッドメッシュコマンド
-    
-        * `printer.cfg`設定に以下のマクロを追加してください
+    ## ネットベッドコマンド
+
+        * `printer.cfg`設定ファイルに下記のマクロを追加してください
             ```bash
             [gcode_macro BED_MESH_CALIBRATE]
              rename_existing: _BED_MESH_CALIBRATE
              gcode: 
                    _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
             ```
-        * ローカルネットワークベッドコマンドを使用する場合、Klipperがオブジェクト排除機能を使用できることを確認してください。開始マクロに追加することをお勧めします
+        * 局域ネットベッドコマンドは、Klipperがオブジェクト排除機能を使用できることを確認する必要があります。開始マクロに追加することをお勧めします。
             ```bash
             BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
             ```
 
 ### bed_mesh設定
 
-    * [bed_mesh] 内の`horizontal_move_z`パラメータを2に設定することをお勧めします。これにより、プラットフォームをスキャンする際にEddyがプラットフォームにできるだけ近づきます
+    * [bed_mesh]の`horizontal_move_z`パラメータは、2に設定することをお勧めします。これにより、プラットフォームスキャン時にEddyが可能な限りプラットフォームに近づきます。
 
     ```cfg
     [bed_mesh]
     horizontal_move_z: 2
     ```
+
 ## 衝突防止マクロ
 
-    ### `[quad_gantry_level]`ベッドスキャンの最適化
-        * `[quad_gantry_level]`が設定されている場合、以下のマクロを設定に追加してください。設定されていない場合は追加する必要はありません
-        * このマクロは、ガントリーの高低差に応じて探査高度を下げます
+    ### `[quad_gantry_level]`スキャン最適化
+        * `[quad_gantry_level]`が設定されている場合、以下のマクロを設定に追加してください。設定されていない場合は追加する必要はありません。
+        * このマクロは、ゲートの高さの差に応じて探査高さを下げます
             ```cfg
             [gcode_macro QUAD_GANTRY_LEVEL]
             rename_existing: _QUAD_GANTRY_LEVEL
@@ -104,10 +102,10 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
                 RESTORE_GCODE_STATE NAME=STATE_QGL
             ```
 
-    ### `[z_tilt]`ベッドスキャンの最適化
+    ### `[z_tilt]`スキャン最適化
 
-        * `[z_tilt]`が設定されている場合、以下のマクロを設定に追加してください。設定されていない場合は追加する必要はありません
-        * このマクロは、ガントリーの高低差に応じて探査高度を下げます
+        * `[z_tilt]`が設定されている場合、以下のマクロを設定に追加してください。設定されていない場合は追加する必要はありません。
+        * このマクロは、ゲートの高さの差に応じて探査高さを下げます
             ```cfg
             [gcode_macro Z_TILT_ADJUST]
             rename_existing: _Z_TILT_ADJUST
@@ -122,10 +120,10 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
                 RESTORE_GCODE_STATE NAME=STATE_Z_TILT
             ```
 
-    ### eddyの大型ベッド干渉スキャン最適化マクロ
+    ### eddyが高い確率でヒートベッドに干渉するスキャン最適化マクロ
 
-        * 大型の交流ベッド（500W以上）を使用している場合
-        * 以下のマクロは、スキャン中にベッドをオフにし、スキャンが完了した後に再加熱します
+        * 大出力ACヒートベッド（500W以上）を使用する場合
+        * 以下のマクロは、ベッドスキャン時にヒートベッドをオフにし、スキャンが完了した後で再度加熱します
             ```cfg
             [gcode_macro BED_MESH_CALIBRATE]
             rename_existing: _BED_MESH_CALIBRATE
@@ -137,36 +135,35 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
             ```
 
    # デバッグ手順：
-   ## 第一歩：周波数の変更
+   ## 第一歩：周波数変更
 
-    ### ldc1612のデフォルト周波数の変更
-    この方法はsht36-v3/SB2040-v3またはSB2040-Pro-v3でのみ使用してください
+    ### ldc1612のデフォルト周波数変更
+    この方法はsht36-v3/SB2040-v3またはSB2040-Pro-v3にのみ使用されます
     Mobaxtermツールを使用してコマンドを実行できます
-    
-    必要な <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxtermツール</Button> をダウンロードしてください
-    
-    [詳細な使用方法はこちらを参照してください](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
 
+    <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxtermツールのダウンロード</Button>が必要です
 
-    最初のコマンドを実行してエンターキーを押してください
+    [詳細使用説明はこちら](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+
+    最初のコマンドを実行し、Enterキーを押します
 
     ```cfg
 sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
     ```
 
-    2番目のコマンドを実行してエンターキーを押してください
+    次のコマンドを実行し、Enterキーを押します
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    置換が成功すると`LDC1612_FREQ = 40000000`を含む行が返されます。置換が成功していない場合、何も返されません。
-    または、成功したかどうかを確認するためにこのコマンドを使用してください
+    置換が成功すると、`LDC1612_FREQ = 40000000`を含む行が返されます。返事がない場合は置換が失敗しています。
+    または、このコマンドで置換が成功したかどうか確認できます
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   温馨なヒント：変更後、以下のコマンドを使用してklipperサービスを再起動し、eddyの周波数を再校正してください
+   温かいヒント：変更後、以下のコマンドでklipperサービスを再起動し、eddyの周波数を再度校正してください
    ```cfg
    systemctl restart klipper
    ```

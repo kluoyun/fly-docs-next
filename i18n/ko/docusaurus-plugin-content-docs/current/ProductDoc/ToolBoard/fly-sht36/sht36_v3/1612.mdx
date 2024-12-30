@@ -3,30 +3,27 @@ sidebar_position: 7
 sidebar_label: Eddy 사용
 ---
 
-
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddy 사용
 
     :::info
-    * Eddy 설치 시, 노즐 위치에서 바닥과의 거리는 최소 1-2 mm 이상이어야 합니다.
-    * Eddy 주파수 보정 시, 코일 PCB는 히트베드에서 최소 5mm 이상 떨어져 있어야 합니다.
-    * 히트베드가 상온 상태에서 테스트하고, 테스트 중에는 히트베드를 켜지 마십시오.
+    * Eddy를 설치할 때, 노즐 위치에서 바닥이 적어도 노즐 위 1-2 mm에 있어야 합니다.
+    * Eddy 주파수 캘리브레이션 시, 코일 PCB는 적어도 히트베드에서 5mm 이상 떨어져 있어야 합니다.
+    * 테스트 시 히트베드를 상온에서 진행하고, 테스트 중 히트베드를 켜지 마세요.
 
     :::
 
+## 배선도
 
-## 배선 도식도
-
-    * 상표가 아래를 향하도록 합니다.
+    * 상표는 아래를 향하도록
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
-
-## 참조 설정 및 사용 설명
+## 참조 구성 및 사용 설명
 
 ##### `printer.cfg` 설정 파일에 다음 설정을 추가하여 Eddy를 디버깅합니다.
 
-    ### 스캔 베드 설정
+    ### 스캔 베드 구성
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -41,7 +38,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * 현재 외부 1612 모듈이 출시되지 않았기 때문에 이 설정은 사용할 수 없습니다.
+        * 주의: 현재 외부 1612 모듈이 출시되지 않아 이 설정은 사용할 수 없습니다.
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -55,7 +52,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-    ### 온도 보정 설정
+    ### 온도 보정 구성
 
         ```cfg
         [temperature_probe fly_eddy_probe]
@@ -63,8 +60,8 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         sensor_pin:SHT36:gpio28
         ```
 
-    ## 베드 메시 명령어
-    
+    ## 베드 메쉬 명령어
+
         * `printer.cfg` 설정에 아래 매크로를 추가합니다.
             ```bash
             [gcode_macro BED_MESH_CALIBRATE]
@@ -72,14 +69,14 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
              gcode: 
                    _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
             ```
-        * 로컬 네트워크 베드 명령어, Klipper가 객체 제거 기능을 사용할 수 있도록 해야하며, 시작 매크로에 추가하는 것을 권장합니다.
+        * 로컬 네트워크 베드 명령어, Klipper가 객체 제외 기능을 사용할 수 있도록 보장해야 하며, 시작 매크로에 추가하는 것이 좋습니다.
             ```bash
             BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
             ```
 
-### bed_mesh 설정
+### bed_mesh 구성
 
-    * [bed_mesh]의 `horizontal_move_z` 매개변수는 2로 설정하는 것이 좋습니다. 스캔 플랫폼 시 Eddy가 최대한 플랫폼에 가까워지도록 합니다.
+    * [bed_mesh]의 `horizontal_move_z` 매개변수는 스캔 플랫폼 시 Eddy가 플랫폼에 최대한 가까워지도록 2로 설정하는 것이 좋습니다.
 
     ```cfg
     [bed_mesh]
@@ -88,8 +85,8 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 ## 충돌 방지 매크로
 
     ### `[quad_gantry_level]` 스캔 베드 최적화
-        * `[quad_gantry_level]`이 설정되어 있다면 아래 매크로를 설정에 추가하고, 그렇지 않으면 추가할 필요가 없습니다.
-        * 이 매크로는 게이트리 높이 차이에 따라 탐지 높이를 낮춥니다.
+        * `[quad_gantry_level]`가 구성된 경우 아래 매크로를 설정에 추가할 수 있으며, 그렇지 않으면 추가할 필요가 없습니다.
+        * 이 매크로는 게이트의 고저 차이에 따라 탐지 높이를 낮춥니다.
             ```cfg
             [gcode_macro QUAD_GANTRY_LEVEL]
             rename_existing: _QUAD_GANTRY_LEVEL
@@ -106,8 +103,8 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
     ### `[z_tilt]` 스캔 베드 최적화
 
-        * `[z_tilt]`이 설정되어 있다면 아래 매크로를 설정에 추가하고, 그렇지 않으면 추가할 필요가 없습니다.
-        * 이 매크로는 게이트리 높이 차이에 따라 탐지 높이를 낮춥니다.
+        * `[z_tilt]`가 구성된 경우 아래 매크로를 설정에 추가할 수 있으며, 그렇지 않으면 추가할 필요가 없습니다.
+        * 이 매크로는 게이트의 고저 차이에 따라 탐지 높이를 낮춥니다.
             ```cfg
             [gcode_macro Z_TILT_ADJUST]
             rename_existing: _Z_TILT_ADJUST
@@ -122,10 +119,10 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
                 RESTORE_GCODE_STATE NAME=STATE_Z_TILT
             ```
 
-    ### Eddy의 히트베드 간섭 최적화 매크로
+    ### Eddy의 고확률 히트베드 간섭 스캔 베드 최적화 매크로
 
         * 고출력 AC 히트베드(500W 이상)를 사용하는 경우
-        * 아래 매크로는 스캔 중에 히트베드를 끄고, 스캔이 완료되면 다시 가열합니다.
+        * 아래 매크로는 스캔 중 히트베드를 끄고 스캔이 완료되면 다시 가열합니다.
             ```cfg
             [gcode_macro BED_MESH_CALIBRATE]
             rename_existing: _BED_MESH_CALIBRATE
@@ -137,15 +134,15 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
             ```
 
    # 디버깅 단계:
-   ## 첫 번째 단계는 주파수 수정입니다.
+   ## 첫 번째 단계 주파수 수정
 
-    ### ldc1612 기본 주파수 수정
+    ### ldc16121612 기본 주파수 수정
     이 방법은 sht36-v3/SB2040-v3 또는 SB2040-Pro-v3에만 사용됩니다.
     Mobaxterm 도구를 사용하여 명령을 실행할 수 있습니다.
-    
-    필요한 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구</Button>를 다운로드하세요.
-    
-    [자세한 사용법은 참조하세요.](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+
+    <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구 다운로드</Button> 필요
+
+    [자세한 사용 방법은 참조](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
 
 
     첫 번째 명령을 실행하고 엔터를 누릅니다.
@@ -155,23 +152,24 @@ sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/ex
     ```
 
     두 번째 명령을 실행하고 엔터를 누릅니다.
-  ```cfg
+    ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    성공적으로 치환되면 `LDC1612_FREQ = 40000000`이 포함된 행이 반환됩니다. 반환된 내용이 없으면 치환이 성공하지 않은 것입니다.
-    또는 다음 명령을 사용하여 성공 여부를 확인하십시오.
+    ```
+    교체가 성공하면 `LDC1612_FREQ = 40000000`이 포함된 행이 반환됩니다. 반환된 내용이 없으면 교체가 성공하지 않았음을 의미합니다.
+    또는 이 명령을 사용하여 성공 여부를 확인할 수 있습니다.
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   주의: 수정 후 다음 명령으로 Klipper 서비스를 재시작하고 Eddy 주파수를 다시 보정하십시오.
+   주의: 수정 후 klipper 서비스를 재시작하고 Eddy 주파수를 다시 캘리브레이션하세요.
    ```cfg
    systemctl restart klipper
    ```
-   Eddy 주파수 보정 명령어
+   Eddy 주파수 캘리브레이션 명령어
    ```cfg
    PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
    ```
+
     <LDC1612 />

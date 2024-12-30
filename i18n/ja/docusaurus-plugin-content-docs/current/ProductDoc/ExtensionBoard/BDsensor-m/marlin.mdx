@@ -3,11 +3,15 @@ sidebar_position: 3
 sidebar_label: Marlinの使用
 ---
 
+
+
+
+
 # **BDsensor-m-m**のインストール
 
-## センサーケーブルをメインボードのEXP1インターフェースに接続する
-    * センサーケーブルが短い場合は、パッケージ内の延長ケーブルを使用できます
-    * BDsensor-m-mのCKLとSDA線は、どのGPIOピンにも接続できます。BDセンサーケーブルをBltouchポートに直接接続することもできます。例：
+## センサーケーブルをメインボードのEXP1ポートに接続する
+    * センサーのケーブルが届かない場合は、延長ケーブルを使用してください
+    * BDsensor-m-mのCKLとSDAラインは、基板の任意のGPIOピンに接続できます。BDセンサーケーブルを直接Bltouchポートに接続することもできます。例えば：
 
     ```bash
     BLtouch    |    BDsensor-m
@@ -18,46 +22,46 @@ sidebar_label: Marlinの使用
     Zmin     -->     SDA    (Input/Output) 
     ```
 
-    * 一部のピンがMCUのgpiosに直接接続されていない場合（例：フィルターコンデンサ、MOSFET、ダイオード、光カプラを介して分離されているが、抵抗や抵抗のプルアップ/プルダウンで分離されている場合も含む）、それらはBDsensor-mと一緒に使用できません。そしてファームウェアは接続エラーを報告します。例：
+    * メインボードコネクタ内のいくつかのピンはMCUのGPIOに直接接続されていない可能性があり（例えば、フィルターコンデンサが付いている場合や、MOSFET、ダイオード、またはオプトカプラで分離されている場合でも、抵抗や抵抗によるプルアップ/プルダウンで分離されている場合は使用可能です）、BDsensor-mと一緒に使用できません。そして、ファームウェアは接続エラーを報告します。例えば
 
-    * ファンとヒーターのコネクタはMOSFETで分離されています。
-    * 一部の基板では、温度サーミスタとエンドストップ/プローブのコネクタがGNDにフィルターコンデンサで接続されています。
+    * ファンやヒーターのコネクタはMOSFETで分離されています、
+    * 温度サーミスタやエンドストップ/プローブのコネクタは一部の基板でGNDにフィルターコンデンサで接続されていることが一般的です。
 
-1. 下図のように、BDセンサーをホットエンドの近くに取り付けます。 [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
+1. 以下の図のように、BDセンサーをホットエンドの近くに取り付けます。 [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/BDsensor-m/img/jxcs_webp.webp').default} size="100%" align="left" />
 
 
 
-## Marlinファームウェアにパッチをインストールする
+## Marlinファームウェアにパッチを適用する
 
-    BDセンサーはMarlin2.1.xに統合されています（2022.8.27以降）、
+    BDセンサーはMarlin2.1.xに統合されています（2022.8.27から）、
 
-    リリースバージョンをダウンロードできますが、最新のバグ修正バージョンをダウンロードすることをお勧めします：https://github.com/MarlinFirmware/Marlin
+    公開バージョンをダウンロードできますが、最新のバグ修正版をダウンロードすることをお勧めします：https://github.com/MarlinFirmware/Marlin
 
-    設定ファイルとピンファイルを変更する必要があります。
+    必要なのは、設定ファイルとピンファイルを変更することです。
 
-### configuration.hの編集
+### Configuration.hの編集
 
 1. BD_SENSORを有効にする
 
-    コメントを外します
+    コメントを解除
 
     ```bash
     #define BD_SENSOR`
     #define Z_SAFE_HOMING
-    #define BD_SENSOR_PROBE_NO_STOP //adding this new line for fast bed leveling without nozzle stop, 
+    #define BD_SENSOR_PROBE_NO_STOP // adding this new line for fast bed leveling without nozzle stop, 
     ```
 
     `BD_SENSOR_PROBE_NO_STOP`のみ
 
-    最新のマリン魚バグ修正：https://github.com/MarlinFirmware/Marlin
+    最新のMarlinバグ修正：https://github.com/MarlinFirmware/Marlin
 
     説明： https://github.com/MarlinFirmware/Marlin/pull/25847
 
 2. プローブでホームに戻る
 
-    `Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN`が無効になっていることを確認し、`USE_PROBE_FOR_Z_HOMING`を次のように有効にします。
+    `Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN`が無効になっていることを確認し、`USE_PROBE_FOR_Z_HOMING`を有効にする
 
     ```bash
     //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
@@ -67,17 +71,17 @@ sidebar_label: Marlinの使用
 
 
 
-3. 2回目のZホーム速度を遅くする
+3. 二番目のZホーム速度を遅くする
 
     ```bash
     #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 16)
     ```
 
-    ここで、BDsensor-mプロセスから読み取られたストッパーは通常のストッパーほどリアルタイムではないため、凸部ホーム速度とZホーム速度を遅くする必要があります。
+    ここでは、BDsensor-mプロセスから読み取られるストッパーの速度を通常のストッパーよりもリアルタイムで遅くする必要があります。
 
     ### Configuration_adv.hの編集
 
-    `#define BABYSTEPPING`を有効にして、リアルタイムレベリング機能を実現します。
+    `#define BABYSTEPPING`を有効にして、実時調整機能を実現
 
     ```bash
     #define HOMING_BUMP_DIVISOR { 2, 2, 8 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
@@ -85,7 +89,7 @@ sidebar_label: Marlinの使用
 
 ### pins_boardname.hの編集
 
-    BDsensor-mのSDAとSCLのピンを次の3行で設定します（例：`pins_PANDA_PI_V29.h`）
+    BDsensor-mのSDAとSCLのピンを設定するために、ピンファイル`pins_boardname.h`（例：`pins_PANDA_PI_V29.h`）に以下の3行を追加します。
 
         ```bash
         #define  I2C_BD_SDA_PIN    PC6   // Please change to the actual number which the SDA wire is connected to your mainboard
@@ -93,13 +97,13 @@ sidebar_label: Marlinの使用
         #define  I2C_BD_DELAY  20      // default value is 20, should be in the range [20,50].
         ```
 
-    自動ベッドレベリングプローブ（G29）をプリント前に行う場合、次のようにコメントを外します。
+    もし、通常のBLtouchのようにG29で自動ベッドレベリングプローブを行いたい場合は、以下の行をコメントアウトしてください。
 
         ```bash
         #define AUTO_BED_LEVELING_BILINEAR
         ```
 
-    以下の値を編集します。
+    そして、以下の値を編集してください。
 
         ```bash
         #define Z_CLEARANCE_DEPLOY_PROBE   0 // Z Clearance for Deploy/Stow
@@ -109,38 +113,38 @@ sidebar_label: Marlinの使用
 
 
 
-## BDセンサーの値を液晶画面に表示する
+## LCD画面にBDセンサーの値を表示する
 
-    * プリンタがステータス表示をサポートしている場合（M117 gcodeをサポート）、例えばLCD12864や一部のuartスクリーン、例えばender3V2 ...
+    * プリンタがステータス表示をサポートしている場合（M117 gcodeをサポート）、例えばLCD12864や一部uartスクリーン、Ender3V2など...
 
 ## キャリブレーション
 
-    1. ノズルを清掃し、Z軸を動かしてノズルがベッドに触れるまで移動します（BDsensor-mはこの位置を0点として使用するため、z_offsetは不要で、値を0に設定します）。
-    2. `M102 S-6` gcodeコマンドを送信し、プリンタはZ軸を0.1mmずつゆっくりと上げ、4mmに達するまで移動します。センサーを取り付ける前にM102 S-6を実行しないでください。また、キャリブレーション中にプリンタの電源を切らないでください。そうしないと、古いキャリブレーションデータが削除されます。その場合、再キャリブレーションしてください。
+    1. ノズルを清掃し、コンソールからZ軸を動かし、ノズルがベッドに触れるまで下げます（BDsensor-mはこの位置を0点として使用するため、z_offsetは不要で、値を0に設定します）。
+    2. gcodeコマンド`M102 S-6`を送信すると、プリンタはZ軸を0.1mmずつゆっくりと上昇させ、4mmに達するまで続けます。センサーを取り付ける前にM102 S-6を実行しないでください。また、キャリブレーション中にプリンタの電源を切らないでください。そうすると、古いキャリブレーションデータが削除されます。その場合は再キャリブレーションしてください。
 
-    3. `M102 S-5`を送信して、BDセンサーが正常にキャリブレーションされたかどうかを確認できます。これは、BDセンサー内に保存されている元のキャリブレーション情報を返します。
+    3. `M102 S-5`を送信することで、BDセンサーが正しくキャリブレーションされたかどうかを確認できます。これにより、BDセンサーに保存されている元のキャリブレーションが返されます。
 
-    また、これを行うためのキャリブレーション・ツールもあります：https://github.com/markniu/Bed_Distance_sensor/raw/new/marlin/BD_Config_Tool_Marlin.zip ![img](https://raw.githubusercontent.com/markniu/Bed_Distance_sensor/main/doc/images/Read.jpg)
+    キャリブレーション用のツールもあります：https://github.com/markniu/Bed_Distance_sensor/raw/new/marlin/BD_Config_Tool_Marlin.zip ![img](https://raw.githubusercontent.com/markniu/Bed_Distance_sensor/main/doc/images/Read.jpg)
 
-    注意：データ値1015または>1010は、センサーの範囲外を示します。最初の5点（0~0.5mm）またはそれ以上の値が0から1000の範囲内で、増加した値のdeltaが>=10の場合、キャリブレーションが成功したことを示します。上のグラフのように。
+    注意：データ値1015または>1010は、センサーの範囲外であることを示します。最初の5点（0~0.5mm）またはそれ以上の値が0から1000の範囲内にあり、増加する値のdeltaが>=10の場合、キャリブレーションは成功です。上のグラフのように。
 
-    M102 S-5が返す最初の元キャリブレーション・データが400より大きい場合、センサーが高すぎる位置に取り付けられていることを意味し、ベッドにより近い位置に再インストールする必要があります。また、2番目のデータが1番目のデータより10以上大きくなることを確認してください。
+    M102 S-5で返される最初の元のキャリブレーションが400以上の場合、センサーが高すぎて取り付けられていることを意味し、ベッドに近づけて再取り付けする必要があります。また、2番目のデータが最初のデータ値より10以上大きくなることを確認してください。
 
 ## テストとプリント
 
-    メニュー・ベッドレベル
+    メニューベッド
 
-    自動ベッドレベル
+    自動ベッド
 
-## 自動ベッドレベリングを行う方法は2つあります：
+## ベッドを自動レベリングする方法は2つあります：
 
-    **1.最初の数層をM102でリアルタイムレベル化**
+    **1. M102を使用して最初の数層をリアルタイムでレベリング**
 
-        これを有効にしたり、無効にしたりするために、gcodeコマンドを送信したり、gcodeファイルにgcodeを追加したりすることが簡単にできます。
+        gcodeコマンドを送信するか、gcodeファイルに追加することで、この自動レベリングを簡単に有効にしたり、無効にしたりできます。
 
-        Kuraでベッドレベリングを有効にするには、プリンターマシン設定の「スタートGコード」セクションのG102（すべての軸をホームに戻す）Gコードの直下にM28 Gコードを追加します。例えば、G28の下にこれを追加すると、Z軸の高さが0.2mm未満の場合にのみベッドレベリングが行われます。`M102 S2`
+        Kuraでベッドレベリングを有効にするには、プリンターマシンの設定の「スタートGコード」セクションのG102（すべての軸をホームに戻す）Gコードの直下にM28 Gコードを追加してください。例えば、G28の下にこれを追加すると、Z軸の高さが0.2mm以下の場合にのみベッドレベリングが行われます。`M102 S2`
 
-        BDセンサーによるベッドレベリングを無効にするには、M102 S0`G28``M18`を送信します。ちなみに、デフォルトでは無効です。
+        BDセンサーを使用してベッドレベリングを無効にするには、送信するか、`M102 S0``G28``M18`
 
         ```bash
         M102   S-1     //Read sensor information, and we can use this for connection checking.
@@ -152,7 +156,7 @@ sidebar_label: Marlinの使用
 
     **2. G29自動ベッドレベリング**
 
-        G29のようなもう一つの自動ベッドレベリング方法は、G29の下に1行G28を追加するだけです。
+        もう一つの自動ベッドレベリングの方法は、G29のBLtouchと同じように、G29の下に行を追加するだけです。
 
         [インストールビデオ](https://www.pandapi3d.com/post/install-bed-distance-sensor-video)
 
@@ -160,7 +164,7 @@ sidebar_label: Marlinの使用
 
 ### Zエンドストップの確認`M119`
 
-    このステップを確認する前に、Z軸をホームに戻さないでください。そうしないと、ノズルがベッドに当たる可能性があります。
+    このステップを確認する前に、Z軸をホームに戻さないでください。そうしないと、ノズルがプリンターベッドに接触する可能性があります。
 
     これはM119コマンド（エンドストップ状態を報告）を送信した後の返信メッセージです。
 
@@ -169,11 +173,11 @@ sidebar_label: Marlinの使用
     Recv: x:open y:open z:open
     ```
 
-    z minが開いていない場合、設定を確認してください。`#define Z_MAX_ENDSTOP_HIT_STATE HIGH`
+    z minが開いていない場合は、設定を確認してください。`#define Z_MAX_ENDSTOP_HIT_STATE HIGH`
 
-    - Zモーターがオフ/アンロックされていることを確認
-    - 手でZ軸を下げ、ノズルがベッドに触れるまで移動
-    - `M102 S-2`を送信すると、戻り値は0.00mmで、再度M119を送信すると、zエンドストップがトリガーされていることがわかります。
+    - Zモーターがオフ/ロック解除されていることを確認
+    - 手でZ軸を下げ、ノズルがベッドに触れるまで
+    - `M102 S-2`を送信すると、返り値が0.00mmになるはずです。その後、再びM119を送信すると、zエンドストップがトリガーされているのが確認できます。
 
     ```bash
     Send: M119
@@ -182,7 +186,7 @@ sidebar_label: Marlinの使用
 
     ### 接続の確認
 
-    `M102 S-1`で接続を確認します。これは返信メッセージの例で、接続やワイヤーの順序が空白または他の文字列を返すかどうかを確認します。
+    `M102 S-1`で接続を確認します。これが返信メッセージの例です。接続とワイヤーの順序が空白または他の文字列を返さないかどうか確認してください。
 
     ```bash
     Send: M102 S-1
@@ -191,5 +195,5 @@ sidebar_label: Marlinの使用
 
 
 
-##  上記のすべての手順が正しければ、Z軸をホームに戻すことができます。
+## 上記のすべてのステップが正しい場合、Z軸をホームに戻すことができます。
 
