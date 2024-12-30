@@ -1,17 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: Marlin Usage
+sidebar_label: Using Marlin
 ---
 
 
 
 
 
-# Install **BDsensor-m-m**
+# Installing **BDsensor-m-m**
 
 ## Connect the sensor cable to the EXP1 port on the motherboard
-    * If the sensor cable is not long enough, you can use the extension cable inside the package.
-    * The CKL and SDA lines of BDsensor-m-m can be connected to any GPIO pins on the board. You can also connect the BD sensor cable directly to the Bltouch port, for example:
+    * If the sensor cable is not long enough, use the extension cable included in the packaging
+    * The CKL and SDA lines of BDsensor-m-m can be connected to any GPIO pin on the board. You can also directly connect the BD sensor cable to the Bltouch port, for example:
 
     ```bash
     BLtouch    |    BDsensor-m
@@ -22,26 +22,26 @@ sidebar_label: Marlin Usage
     Zmin     -->     SDA    (Input/Output) 
     ```
 
-    * Some pins in the motherboard connector might not be directly connected to the MCU's GPIOs (e.g., they might have filtering capacitors or be isolated through MOSFETs, diodes, or optocouplers, but if they are isolated through resistors or resistor pull-ups/pull-downs, they can still be used), so they cannot be used with BDsensor-m. The firmware will report a connection error. For example:
+    * Due to some pins in the motherboard connector not being directly connected to the MCU's gpios (e.g., they might have filtering capacitors or be isolated by MOSFETs, diodes, or optocouplers, but if they are isolated by resistors or resistor pull-up/pull-down, they can still be used), they cannot be used with BDsensor-m. The firmware will report a connection error. For example
 
-    * Fan and heater connectors are isolated through MOSFETs,
-    * Connectors for temperature thermistors and endstops/probes in some boards are usually connected to GND through filtering capacitors,
+    * Fan and heater connectors are isolated by MOSFETs,
+    * Some boards' connectors for temperature thermistors and endstops/probes are usually connected to GND through filtering capacitors,
 
-1. As shown in the diagram, install the BD sensor near the hot end. [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
+1. Install the BD sensor near the hotend as shown in the image below. [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
 
-    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/bd-sensor/img/bd.webp').default} size="100%" align="left" />
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/BDsensor-m/img/jxcs_webp.webp').default} size="100%" align="left" />
 
 
 
-## Install the patch to the Marlin firmware
+## Installing the Patch to Marlin Firmware
 
     The BD sensor has been integrated into Marlin2.1.x (since 2022.8.27),
 
-    You can download the release version. But now it is recommended to download the latest bug fix version: https://github.com/MarlinFirmware/Marlin
+    You can download the release version. However, it is now recommended to download the latest bug fix version: https://github.com/MarlinFirmware/Marlin
 
-    You need to change the configuration file and pins file.
+    You need to change the configuration files and pins files.
 
-### Edit configuration.h
+### Editing configuration.h
 
 1. Enable BD_SENSOR
 
@@ -55,13 +55,13 @@ sidebar_label: Marlin Usage
 
     Only `BD_SENSOR_PROBE_NO_STOP`
 
-    Latest Marlin bug fixes: https://github.com/MarlinFirmware/Marlin
+    Latest Marlin bug fix: https://github.com/MarlinFirmware/Marlin
 
     Description: https://github.com/MarlinFirmware/Marlin/pull/25847
 
-2. Home with probe
+2. Homing with the probe
 
-    Make sure Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN is disabled, and `USE_PROBE_FOR_Z_HOMING` should be enabled as shown below.
+    Ensure `Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN` is disabled, and `USE_PROBE_FOR_Z_HOMING` should be enabled as shown below:
 
     ```bash
     //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
@@ -71,15 +71,15 @@ sidebar_label: Marlin Usage
 
 
 
-3. Slow down the second homing Z speed
+3. Slow down the second Z homing speed
 
     ```bash
     #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 16)
     ```
 
-    Here, we must slow down the bump homing speed and Z homing speed because the endstop read from the BDsensor-m process is not as real-time as a normal endstop.
+    Here, we must slow down the bump homing speed and Z homing speed because the stop signal from the BDsensor-m process is not as real-time as with a normal stop.
 
-    ### Edit Configuration_adv.h
+    ### Editing Configuration_adv.h
 
     `#define BABYSTEPPING` Enable this feature for real-time leveling functionality
 
@@ -87,9 +87,9 @@ sidebar_label: Marlin Usage
     #define HOMING_BUMP_DIVISOR { 2, 2, 8 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
     ```
 
-### Edit pins_boardname.h
+### Editing pins_boardname.h
 
-    Configure the SDA and SCL pins for BDsensor-m in the pins_boardname.h file by adding the following 3 lines (e.g., `pins_PANDA_PI_V29.h`):
+    Configure the SDA and SCL pins for BDsensor-m in the pins file pins_boardname.h by adding the following 3 lines (for example): `pins_PANDA_PI_V29.h`
 
         ```bash
         #define  I2C_BD_SDA_PIN    PC6   // Please change to the actual number which the SDA wire is connected to your mainboard
@@ -97,13 +97,13 @@ sidebar_label: Marlin Usage
         #define  I2C_BD_DELAY  20      // default value is 20, should be in the range [20,50].
         ```
 
-    If you want to do auto bed leveling probe (G29) before printing like a regular BLtouch, uncomment
+    If you want to perform auto bed leveling with the probe before printing (like a normal BLtouch with G29), uncomment
 
         ```bash
         #define AUTO_BED_LEVELING_BILINEAR
         ```
 
-    And edit the values as shown below
+    and edit the values as shown below
 
         ```bash
         #define Z_CLEARANCE_DEPLOY_PROBE   0 // Z Clearance for Deploy/Stow
@@ -113,60 +113,60 @@ sidebar_label: Marlin Usage
 
 
 
-## Display BD sensor value on the LCD screen
+## Display BD Sensor Values on the LCD Screen
 
-    * For printers with status display (supporting gcode M117), like LCD12864 or some UART screens, like ender3V2 ...
+    * For printers with status display (supporting gcode M117), like LCD12864 or some UART screens like ender3V2 ...
 
 ## Calibration
 
     1. Clean the nozzle, then move the Z-axis via the console until the nozzle just touches the bed (BDsensor-m will use this position as the 0 point, so no need for z_offset, we set the value to 0).
-    2. Send the gcode command `M102 S-6`, the printer will slowly move the Z-axis up by 0.1mm each time until it reaches 4mm. Do not run M102 S-6 before installing the sensor, or turn off the printer power during calibration, otherwise the old calibration data will be deleted. If this happens, just recalibrate.
+    2. Send the gcode command `M102 S-6`, the printer will slowly move the Z-axis up by 0.1mm each time until it reaches 4mm. Do not run M102 S-6 before installing the sensor, and do not turn off the printer power during calibration, or the old calibration data will be lost. In this case, just recalibrate
 
-    3. You can send `M102 S-5` to check if the BD sensor has been calibrated successfully, which will return the raw calibration data stored in the BD sensor.
+    3. You can send `M102 S-5` to check if the BD sensor has been successfully calibrated, which will return the raw calibration data stored in the BD sensor.
 
     There is also a calibration tool that can do this: https://github.com/markniu/Bed_Distance_sensor/raw/new/marlin/BD_Config_Tool_Marlin.zip ![img](https://raw.githubusercontent.com/markniu/Bed_Distance_sensor/main/doc/images/Read.jpg)
 
-    Note: A data value of 1015 or > 1010 indicates the sensor is out of range. If the first 5 points (0~0.5mm) or more values are within the range of 0 to 1000, and the increased value delta is >=10, then calibration is successful. Just like the chart shown above.
+    Note: A data value of 1015 or > 1010 indicates out of sensor range. If the first 5 points (0~0.5mm) or more values are within the range of 0 to 1000, and the increment values delta are >=10, then calibration is successful. Just like the chart shown above.
 
-    If the first raw calibration data returned by M102 S-5 is greater than 400, it means the sensor is installed too high and needs to be reinstalled closer to the bed. Also, ensure the second data value is more than 10 greater than the first.
+    If the first raw calibration data returned by M102 S-5 is greater than 400, it means the sensor is installed too high and needs to be reinstalled closer to the bed. Also, ensure the second data is 10 or more greater than the first.
 
 ## Testing and Printing
 
-    Menu Bed Level
+    Menu bed leveling
 
-    Auto Bed Level
+    Auto bed leveling
 
 ## There are two ways to automatically level the bed:
 
-    **1. Use M102 for real-time leveling of the first few layers**
+    **1. Using M102 for real-time leveling of the first few layers**
 
-        We can easily enable or disable this auto-level by sending gcode commands or adding gcode to the gcode file.
+        We can easily enable or disable this auto level by sending gcode commands or adding gcode to the gcode file.
 
-        To enable bed leveling in Cura, add the M28 gcode just below the G102 (home all axes) gcode in the "Start G-code" section of the printer machine settings. For example, below G28, this means it will only level the bed when the Z-axis height is less than 0.2mm. `M102 S2`
+        To enable bed leveling in Cura, add the M28 G-code right below the G102 (home all axes) G-code in the "Start G-code" section of the printer machine settings. For example, below G28, meaning it will only level the bed when the Z height is below 0.2mm. `M102 S2`
 
-        Sending or using the BD sensor to disable bed leveling, by the way, it is disabled by default. `M102 S0``G28``M18`
+        Sending or using BDsensor will disable bed leveling, by the way, it is disabled by default. `M102 S0``G28``M18`
 
         ```bash
         M102   S-1     //Read sensor information, and we can use this for connection checking.
         M102   S-2     //Read current distance value
         M102   S-5     //Read raw Calibrate data
-        M102   S-6     //Start Calibrate, before that make sure the nozzle is just touched the bed, and then the printer restarted. don't home z axis before this.
-        M102   S4      //Set the adjustable Z height value, e.g. M102 S4  means it will do adjusting while the Z height <=0.4mm , disable it by M102 S0.
+        M102   S-6     //Start Calibrate, before that make sure the nozzle is just touching the bed, and then the printer restarted. don't home z axis before this.
+        M102   S4      //Set the adjustable Z height value, e.g. M102 S4 means it will do adjusting while the Z height <=0.4mm, disable it by M102 S0.
         ```
 
     **2. G29 Auto Bed Leveling**
 
-        Another way to auto level the bed is like the G29 of BLtouch, just add a line G28 below G29.
+        Another way to automatically level the bed is like G29 with BLtouch, just add a line below G29.
 
         [Installation Video](https://www.pandapi3d.com/post/install-bed-distance-sensor-video)
 
         [Chris' Basement Installation Video](https://youtu.be/VLUfvkO2NFc?si=PF_6nhw39KhHBhcj)
 
-### Check Z Endstop `M119`
+### Checking Z Endstop `M119`
 
-    Do not home Z before checking this step, otherwise the nozzle might hit the print bed.
+    Do not home Z before checking this step, otherwise the nozzle might crash into the printer bed.
 
-    This is the return message after sending the M119 command (report endstop status).
+    This is the returned message after sending the M119 command (report endstop status).
 
     ```bash
     Send: M119
@@ -176,17 +176,17 @@ sidebar_label: Marlin Usage
     If z min is not open, check your configuration. `#define Z_MAX_ENDSTOP_HIT_STATE HIGH`
 
     - Ensure Z motor is off/unlocked
-    - Move the Z-axis down by hand until the nozzle touches the bed
-    - Send `M102 S-2`, the return value should be 0.00mm, then send M119 again, you can see that the z endstop is now triggered.
+    - Manually move Z axis down until nozzle touches the bed
+    - Send `M102 S-2`, the returned value should be 0.00mm, then send M119 again, you can see the z endstop is now triggered.
 
     ```bash
     Send: M119
     Recv: x:open y:open z:TRIGGERED
     ```
 
-    ### Check Connection
+    ### Checking Connection
 
-    Check the connection with `M102 S-1`. Here is an example of the return message, please check if the connection and wire order return blank or other strings.
+    Check the connection with `M102 S-1`. Here's an example of the returned message, check if the connection and wire order are correct or if it returns blank or another string.
 
     ```bash
     Send: M102 S-1
@@ -195,5 +195,5 @@ sidebar_label: Marlin Usage
 
 
 
-##  If all the above steps are correct, you can now home the Z-axis.
+## If all the above steps are correct, you can now home the Z axis.
 
