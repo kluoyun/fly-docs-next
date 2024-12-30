@@ -6,8 +6,8 @@ sidebar_label: Utilisation de Marlin
 # Installation du **BDsensor-m-m**
 
 ## Connecter le câble du capteur à l'interface EXP1 de la carte mère
-    *Si le câble du capteur est trop court, utilisez le câble d'extension inclus dans l'emballage
-    * Les lignes CKL et SDA du BDsensor-m-m peuvent être connectées à n'importe quelle broche GPIO de la carte. Vous pouvez également connecter directement le câble du capteur BD au port Bltouch, par exemple :
+    * Si le câble du capteur est trop court, vous pouvez utiliser le câble de rallonge fourni.
+    * Les fils CKL et SDA du BDsensor-m-m peuvent être connectés à n'importe quelle broche GPIO de la carte. Vous pouvez également connecter directement le câble du capteur BD au port Bltouch, par exemple :
 
     ```bash
     BLtouch    |    BDsensor-m
@@ -18,54 +18,52 @@ sidebar_label: Utilisation de Marlin
     Zmin     -->     SDA    (Input/Output) 
     ```
 
-    * En raison de certaines broches du connecteur de la carte mère qui ne sont pas directement connectées aux gpios du MCU (par exemple, elles peuvent avoir des condensateurs de filtrage ou être isolées par MOSFET, diode ou coupleur optique, mais peuvent être isolées par résistance ou pull-up/pull-down), elles ne peuvent pas être utilisées avec le BDsensor-m. Et le firmware signalera une erreur de connexion. Par exemple :
+    * En raison du fait que certaines broches des connecteurs de la carte mère peuvent ne pas être directement connectées aux GPIO du MCU (par exemple, elles peuvent avoir des condensateurs de filtrage ou être isolées par des MOSFET, des diodes ou des coupleurs optiques, mais si elles sont isolées par des résistances ou des résistances de pull-up/pull-down, elles peuvent être utilisées), elles ne peuvent pas être utilisées avec le BDsensor-m. Et le firmware signalera une erreur de connexion. Par exemple :
 
-    * Les connecteurs des ventilateurs et des radiateurs sont isolés par MOSFET,
-    * Certains connecteurs pour thermistances de température et fins de course/sondes sur certaines cartes sont généralement connectés à la GND via des condensateurs de filtrage,
+    * Les connecteurs des ventilateurs et des chauffages sont isolés par des MOSFET,
+    * Certains connecteurs de la carte utilisés pour les thermistances de température et les fins de course/les sondes sont généralement connectés à GND via des condensateurs de filtrage,
 
-1. Comme illustré ci-dessous, installez le capteur BD près de l'extrémité chaude. [STL du support](https://www.thingiverse.com/thing:6098131), [STL_mount_VzBot_Goliath court](https://discord.com/channels/829828765512106054/1163237892957671424)
+1. Comme illustré ci-dessous, installez le capteur BD à proximité de la buse chaude. [STL du support](https://www.thingiverse.com/thing:6098131), [STL_mount_VzBot_Goliath_short](https://discord.com/channels/829828765512106054/1163237892957671424)
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/BDsensor-m/img/jxcs_webp.webp').default} size="100%" align="left" />
 
 
 
-## Installation du patch dans le firmware Marlin
+## Installer le patch dans le firmware Marlin
 
-    Le capteur BD a été intégré dans Marlin2.1.x (depuis le 27 août 2022),
+    Le capteur BD a été intégré à Marlin2.1.x (depuis le 27/08/2022),
 
-    Vous pouvez télécharger la version publiée. Mais il est maintenant recommandé de télécharger la dernière version avec corrections de bogues : https://github.com/MarlinFirmware/Marlin
+    Vous pouvez télécharger la version publiée. Cependant, il est maintenant recommandé de télécharger la dernière version de correction d'erreurs : https://github.com/MarlinFirmware/Marlin
 
-    Vous devez modifier les fichiers de configuration et de broches.
+    Vous aurez besoin de modifier le fichier de configuration et le fichier de broches.
 
-### Édition du fichier configuration.h
+### Éditer le fichier configuration.h
 
 1. Activer BD_SENSOR
 
-    Décommentez
+    Décommenter
 
     ```bash
-    #define BD_SENSOR`
+    #define BD_SENSOR
     #define Z_SAFE_HOMING
-    #define BD_SENSOR_PROBE_NO_STOP //ajoutez cette nouvelle ligne pour un nivellement rapide du lit sans arrêt de la buse, 
+    #define BD_SENSOR_PROBE_NO_STOP // ajouter cette nouvelle ligne pour un nivellement de lit rapide sans arrêt de la buse,
     ```
 
-    Seulement `BD_SENSOR_PROBE_NO_STOP`
+    Seul `BD_SENSOR_PROBE_NO_STOP`
 
-    Dernière correction de bogues Marlin : https://github.com/MarlinFirmware/Marlin
+    Dernière correction d'erreurs Marlin : https://github.com/MarlinFirmware/Marlin
 
     Description : https://github.com/MarlinFirmware/Marlin/pull/25847
 
-2. Homing avec la sonde
+2. Utiliser la sonde pour le homing
 
     Assurez-vous que Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN est désactivé, et activez `USE_PROBE_FOR_Z_HOMING` comme suit :
 
     ```bash
     //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
-    // Force l'utilisation de la sonde pour le homing de l'axe Z
+    // Force the use of the probe for Z-axis homing
     #define USE_PROBE_FOR_Z_HOMING
     ```
-
-
 
 3. Ralentir la deuxième vitesse de homing Z
 
@@ -73,116 +71,116 @@ sidebar_label: Utilisation de Marlin
     #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 16)
     ```
 
-    Ici, nous devons ralentir la vitesse de homing du bloc et de l'axe Z car le signal d'arrêt de BDsensor-m n'est pas en temps réel.
+    Ici, nous devons ralentir la vitesse de homing de la bosse et la vitesse de homing Z, car les données lues par le processus BDsensor-m ne sont pas aussi en temps réel que celles d'un fin de course normal.
 
-    ### Édition de Configuration_adv.h
+### Éditer le fichier Configuration_adv.h
 
-    `#define BABYSTEPPING` activez cette fonction pour la fonction de nivellement en temps réel
+    Activer `#define BABYSTEPPING` pour activer la fonction de nivellement en temps réel
 
     ```bash
-    #define HOMING_BUMP_DIVISOR { 2, 2, 8 }       // Diviseur de vitesse de rebond (Divise la vitesse de homing)
+    #define HOMING_BUMP_DIVISOR { 2, 2, 8 }       // Diviseur de vitesse de rebond de homing (Divise la vitesse de homing)
     ```
 
-### Édition de pins_boardname.h
+### Éditer le fichier pins_boardname.h
 
-    Configurez les broches SDA et SCL de BDsensor-m dans le fichier de broches pins_boardname.h en ajoutant les 3 lignes suivantes (par exemple) : `pins_PANDA_PI_V29.h`
+    Configurez les broches SDA et SCL du BDsensor-m dans le fichier pins_boardname.h en ajoutant les 3 lignes suivantes (par exemple) : `pins_PANDA_PI_V29.h`
 
         ```bash
-        #define  I2C_BD_SDA_PIN    PC6   // Veuillez changer par le numéro réel auquel le fil SDA est connecté sur votre carte mère
-        #define  I2C_BD_SCL_PIN    PB2   // Veuillez changer par le numéro réel auquel le fil SLK est connecté sur votre carte mère
-        #define  I2C_BD_DELAY  20      // valeur par défaut est 20, doit être dans la plage [20,50].
+        #define  I2C_BD_SDA_PIN    PC6   // Veuillez modifier par le numéro réel auquel le fil SDA est connecté sur votre carte mère
+        #define  I2C_BD_SCL_PIN    PB2   // Veuillez modifier par le numéro réel auquel le fil SLK est connecté sur votre carte mère
+        #define  I2C_BD_DELAY  20      // La valeur par défaut est 20, devrait être dans la plage [20,50].
         ```
 
-    Si vous souhaitez effectuer un nivellement automatique du lit avant l'impression comme avec un BLtouch normal (G29), décommentez
+    Si vous souhaitez effectuer un nivellement de lit automatique avant l'impression comme avec un BLtouch (G29), décommenter
 
         ```bash
         #define AUTO_BED_LEVELING_BILINEAR
         ```
 
-    et modifiez les valeurs comme suit :
+    et éditer les valeurs suivantes
 
         ```bash
         #define Z_CLEARANCE_DEPLOY_PROBE   0 // Dégagement Z pour le déploiement/repli de la sonde
-        #define Z_CLEARANCE_BETWEEN_PROBES  1 // Dégagement Z entre les points de sonde
-        #define Z_CLEARANCE_MULTI_PROBE     1 // Dégagement Z entre les sondages multiples
+        #define Z_CLEARANCE_BETWEEN_PROBES  1 // Dégagement Z entre les points de la sonde
+        #define Z_CLEARANCE_MULTI_PROBE     1 // Dégagement Z entre plusieurs sondages
         ```
 
 
 
-## Affichage de la valeur du capteur BD sur l'écran LCD
+## Afficher la valeur du capteur BD sur l'écran LCD
 
-    * Pour les imprimantes avec affichage d'état (supportant la commande gcode M117), comme LCD12864 ou certains écrans UART comme Ender3V2 ...
+    * Pour les imprimantes équipées d'un affichage d'état (supportant la commande gcode M117), comme LCD12864 ou certains écrans UART, comme ender3V2 ...
 
 ## Calibration
 
-    1. Nettoyez la buse, puis déplacez l'axe Z via la console jusqu'à ce que la buse touche juste le lit (BDsensor-m utilisera cette position comme point zéro, donc pas besoin de z_offset, nous mettons la valeur à 0).
-    2. Envoyez la commande gcode `M102 S-6`, l'imprimante montera lentement l'axe Z de 0.1mm à chaque fois jusqu'à atteindre 4mm. Ne courez pas M102 S-6 avant d'avoir installé le capteur et ne coupez pas l'alimentation de l'imprimante pendant la calibration sinon les anciennes données de calibration seront supprimées. Dans ce cas, il suffit de recalibrer.
+    1. Nettoyez la buse, puis déplacez l'axe Z via la console jusqu'à ce que la buse touche légèrement le lit (le BDsensor-m utilisera cette position comme point zéro, donc aucun z_offset n'est nécessaire, nous définissons la valeur à 0).
+    2. Envoyez la commande gcode `M102 S-6`, l'imprimante montera lentement l'axe Z de 0.1mm à chaque fois jusqu'à atteindre 4mm. Ne pas exécuter M102 S-6 avant l'installation du capteur, et ne pas éteindre l'imprimante pendant la calibration, sinon les anciennes données de calibration seront supprimées. Dans ce cas, recalibrez simplement.
 
-    3. Vous pouvez envoyer `M102 S-5` pour vérifier si le capteur BD a été correctement calibré, cela renverra les données de calibration brute stockées dans le capteur BD.
+    3. Vous pouvez envoyer `M102 S-5` pour vérifier si le capteur BD a été calibré avec succès, cela retournera les données brutes de calibration stockées dans le capteur BD.
 
-    Il existe également un outil de calibration qui peut le faire : https://github.com/markniu/Bed_Distance_sensor/raw/new/marlin/BD_Config_Tool_Marlin.zip ![img](https://raw.githubusercontent.com/markniu/Bed_Distance_sensor/main/doc/images/Read.jpg)
+    Il existe également un outil de calibration qui peut faire cela : https://github.com/markniu/Bed_Distance_sensor/raw/new/marlin/BD_Config_Tool_Marlin.zip ![img](https://raw.githubusercontent.com/markniu/Bed_Distance_sensor/main/doc/images/Read.jpg)
 
-    Remarque : Une valeur de 1015 ou > 1010 indique que le capteur est hors de portée. Si les 5 premiers points (0~0.5mm) ou plus ont des valeurs dans la plage de 0 à 1000 et que les valeurs augmentent par delta >= 10, alors la calibration est réussie. Comme le montre le graphique ci-dessus.
+    Note : Une valeur de données de 1015 ou > 1010 indique que le capteur est hors de portée. Si les 5 premiers points (0~0.5mm) ou plus sont dans la plage de 0 à 1000, et que la valeur delta augmente de >=10, cela signifie que la calibration a réussi. Comme illustré sur le graphique ci-dessus.
 
-    Si M102 S-5 retourne une première donnée de calibration brute supérieure à 400, cela signifie que le capteur est installé trop haut et doit être réinstallé plus près du lit. Assurez-vous également que la deuxième donnée est supérieure à la première de plus de 10.
+    Si la première donnée brute de calibration retournée par M102 S-5 est supérieure à 400, cela signifie que le capteur est installé trop haut et doit être réinstallé à une position plus proche du lit. Assurez-vous également que la deuxième donnée est supérieure de plus de 10 à la première.
 
 ## Test et impression
 
-    Menu lit
+    Menu de nivellement du lit
 
     Nivellement automatique du lit
 
-## Il existe deux méthodes pour niveler automatiquement le lit :
+## Il y a deux méthodes pour le nivellement automatique du lit :
 
-    **1. Utilisation de M102 pour le nivellement en temps réel des premières couches**
+    **1. Utiliser M102 pour le nivellement en temps réel des premières couches**
 
-        Nous pouvons facilement activer ou désactiver ce nivellement automatique en envoyant des commandes gcode ou en ajoutant du gcode dans le fichier gcode.
+        Nous pouvons facilement activer ou désactiver ce niveau automatique en envoyant des commandes gcode ou en ajoutant des gcodes dans le fichier gcode.
 
-        Pour activer le nivellement du lit dans Cura, ajoutez le gcode M102 juste en dessous de G102 (homing de tous les axes) dans la section "G-code de démarrage" des paramètres de la machine. Par exemple, sous G28, cela signifie qu'il ne nivellera le lit que lorsque la hauteur Z est inférieure à 0.2mm. `M102 S2`
+        Pour activer le nivellement du lit dans Cura, ajoutez le gcode M102 juste en dessous du gcode G102 (homing de tous les axes) dans la section "G-code de démarrage" des paramètres de la machine. Par exemple, sous G28, cela signifie qu'il ne nivellera le lit que lorsque la hauteur Z est inférieure à 0.2mm. `M102 S2`
 
-        Envoi ou ajout de BDsensor pour désactiver le nivellement du lit, par défaut, il est désactivé. `M102 S0``G28``M18`
+        Envoyer ou ajouter l'utilisation du capteur BD pour désactiver le nivellement du lit, à noter que par défaut, il est désactivé. `M102 S0` `G28` `M18`
 
         ```bash
-        M102   S-1     //Lire les informations du capteur, et nous pouvons utiliser cela pour vérifier la connexion.
-        M102   S-2     //Lire la valeur de distance actuelle
-        M102   S-5     //Lire les données brutes de calibration
-        M102   S-6     //Démarrer la calibration, assurez-vous que la buse touche juste le lit avant cela, puis l'imprimante redémarre. Ne homing pas l'axe Z avant cela.
-        M102   S4      //Définir la valeur de hauteur Z ajustable, par exemple M102 S4 signifie qu'il ajustera lorsque la hauteur Z <=0.4mm, désactivez-le avec M102 S0.
+        M102   S-1     // Lire les informations du capteur, et nous pouvons l'utiliser pour vérifier la connexion.
+        M102   S-2     // Lire la valeur de distance actuelle
+        M102   S-5     // Lire les données brutes de calibration
+        M102   S-6     // Démarrer la calibration, assurez-vous que la buse vient juste de toucher le lit, puis l'imprimante redémarre. Ne pas homing l'axe Z avant cela.
+        M102   S4      // Définir la valeur de hauteur Z ajustable, par exemple, M102 S4 signifie qu'il ajustera lorsque la hauteur Z <=0.4mm, désactiver avec M102 S0.
         ```
 
-    **2. Nivellement automatique du lit avec G29**
+    **2. G29 Nivellement automatique du lit**
 
-        Une autre méthode de nivellement automatique du lit est comme avec G29 pour BLtouch, il suffit d'ajouter une ligne G28 en dessous.
+        Une autre méthode de nivellement automatique du lit est comme avec le G29 de BLtouch, il suffit d'ajouter une ligne G28 en dessous de G29.
 
         [Vidéo d'installation](https://www.pandapi3d.com/post/install-bed-distance-sensor-video)
 
-        [Vidéo d'installation de Chris's Basement](https://youtu.be/VLUfvkO2NFc?si=PF_6nhw39KhHBhcj)
+        [Vidéo d'installation de Chris' Basement](https://youtu.be/VLUfvkO2NFc?si=PF_6nhw39KhHBhcj)
 
-### Vérification de l'arrêt de fin de course Z `M119`
+### Vérifier le fin de course Z `M119`
 
-    Avant de vérifier cette étape, ne homing pas l'axe Z, sinon la buse pourrait heurter le lit de l'imprimante.
+    Ne homing pas Z avant de vérifier cette étape, sinon la buse pourrait heurter le lit de l'imprimante.
 
     Voici le message de retour après l'envoi de la commande M119 (rapport de l'état des fins de course).
 
     ```bash
     Send: M119
-    Recv: x:open y:open z:open
+    Recv: x:ouvert y:ouvert z:ouvert
     ```
 
     Si z min n'est pas ouvert, vérifiez votre configuration. `#define Z_MAX_ENDSTOP_HIT_STATE HIGH`
 
     - Assurez-vous que le moteur Z est désactivé/déverrouillé
-    - Déplacez manuellement l'axe Z vers le bas jusqu'à ce que la buse touche le lit
-    - Envoyez `M102 S-2`, la valeur retournée doit être de 0.00mm, puis renvoyez M119, vous verrez que l'arrêt de fin de course Z est maintenant déclenché.
+    - Déplacez l'axe Z à la main vers le bas jusqu'à ce que la buse touche le lit
+    - Envoyez `M102 S-2`, la valeur retournée devrait être 0.00mm, puis renvoyez M119, vous pourrez voir que le fin de course z est maintenant déclenché.
 
     ```bash
     Send: M119
-    Recv: x:open y:open z:TRIGGERED
+    Recv: x:ouvert y:ouvert z:DÉCLENCHÉ
     ```
 
-    ### Vérification de la connexion
+    ### Vérifier la connexion
 
-    Vérifiez la connexion avec `M102 S-1`. Voici un exemple de message de retour, assurez-vous que la connexion et l'ordre des fils ne renvoient pas de chaîne vide ou autre.
+    Vérifiez la connexion avec `M102 S-1`. Voici un exemple de message de retour, vérifiez la connexion et l'ordre des fils s'ils retournent une chaîne vide ou autre.
 
     ```bash
     Send: M102 S-1
@@ -191,5 +189,5 @@ sidebar_label: Utilisation de Marlin
 
 
 
-##  Si toutes les étapes ci-dessus sont correctes, vous pouvez maintenant homing l'axe Z.
+##  Si toutes les étapes ci-dessus sont correctes, vous pouvez maintenant homing l'axe z.
 

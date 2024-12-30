@@ -9,59 +9,24 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 # Eddy 사용
 
     :::info
-    * Eddy를 설치할 때, 노즐 위치에서 노즐 위로 최소 1-2 mm 이상 떨어져 있어야 합니다.
-    * Eddy 주파수를 보정할 때, 코일 PCB는 히트베드에서 최소 5mm 이상 떨어져 있어야 합니다.
-    * 테스트 시 히트베드를 상온에서 진행하고, 테스트 중에는 히트베드를 켜지 마세요.
+    * Eddy 설치 시, 노즐 위치에서 바닥과의 거리는 최소 1-2 mm 이상이어야 합니다.
+    * Eddy 주파수 보정 시, 코일 PCB는 히트베드에서 최소 5mm 이상 떨어져 있어야 합니다.
+    * 히트베드가 상온 상태에서 테스트하고, 테스트 중에는 히트베드를 켜지 마십시오.
 
     :::
 
 
-## 연결 다이어그램
+## 배선 도식도
 
-    * 상표가 아래를 향하도록
+    * 상표가 아래를 향하도록 합니다.
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
 
 ## 참조 설정 및 사용 설명
 
-    ### ldc1612 기본 주파수 수정
-    이 방법은 sht36-v3/SB2040-v3 또는 SB2040-Pro-v3에만 사용됩니다.
-    Mobaxterm 도구를 사용하여 명령을 실행할 수 있습니다.
-    
-    필요한 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구</Button>를 다운로드하세요.
-    
-    [자세한 사용 방법은 여기](/docs/ProductDoc/SBC/fly-pi-v2/ssh)를 참조하세요.
+##### `printer.cfg` 설정 파일에 다음 설정을 추가하여 Eddy를 디버깅합니다.
 
-
-    첫 번째 명령을 실행하고 엔터를 누릅니다.
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
-    ```
-
-    두 번째 명령을 실행하고 엔터를 누릅니다.
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    성공적으로 대체되면 `LDC1612_FREQ = 40000000`이 포함된 행이 반환됩니다. 아무것도 반환되지 않으면 대체가 실패한 것입니다.
-    또는 이 명령을 사용하여 성공 여부를 확인할 수 있습니다.
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
-
-   팁: 수정 후 다음 명령을 사용하여 klipper 서비스를 재시작하고 eddy 주파수를 다시 보정하세요.
-   ```cfg
-   systemctl restart klipper
-   ```
-   eddy 주파수 보정 명령
-   ```cfg
-   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-   ```
-
-
-    ### 베드 스캔 설정
+    ### 스캔 베드 설정
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -76,7 +41,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-        * 주의: 현재 외부 1612 모듈이 출시되지 않았으므로 이 설정은 현재 사용할 수 없습니다.
+        * 현재 외부 1612 모듈이 출시되지 않았기 때문에 이 설정은 사용할 수 없습니다.
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -98,13 +63,115 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         sensor_pin:SHT36:gpio28
         ```
 
+    ## 베드 메시 명령어
+    
+        * `printer.cfg` 설정에 아래 매크로를 추가합니다.
+            ```bash
+            [gcode_macro BED_MESH_CALIBRATE]
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
+            ```
+        * 로컬 네트워크 베드 명령어, Klipper가 객체 제거 기능을 사용할 수 있도록 해야하며, 시작 매크로에 추가하는 것을 권장합니다.
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
+            ```
+
 ### bed_mesh 설정
 
-    * [bed_mesh]의 `horizontal_move_z` 매개변수를 2로 설정하여, 플랫폼을 스캔할 때 Eddy가 플랫폼에 최대한 가까워지도록 합니다.
+    * [bed_mesh]의 `horizontal_move_z` 매개변수는 2로 설정하는 것이 좋습니다. 스캔 플랫폼 시 Eddy가 최대한 플랫폼에 가까워지도록 합니다.
 
     ```cfg
     [bed_mesh]
     horizontal_move_z: 2
     ```
+## 충돌 방지 매크로
 
+    ### `[quad_gantry_level]` 스캔 베드 최적화
+        * `[quad_gantry_level]`이 설정되어 있다면 아래 매크로를 설정에 추가하고, 그렇지 않으면 추가할 필요가 없습니다.
+        * 이 매크로는 게이트리 높이 차이에 따라 탐지 높이를 낮춥니다.
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### `[z_tilt]` 스캔 베드 최적화
+
+        * `[z_tilt]`이 설정되어 있다면 아래 매크로를 설정에 추가하고, 그렇지 않으면 추가할 필요가 없습니다.
+        * 이 매크로는 게이트리 높이 차이에 따라 탐지 높이를 낮춥니다.
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### Eddy의 히트베드 간섭 최적화 매크로
+
+        * 고출력 AC 히트베드(500W 이상)를 사용하는 경우
+        * 아래 매크로는 스캔 중에 히트베드를 끄고, 스캔이 완료되면 다시 가열합니다.
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
+
+   # 디버깅 단계:
+   ## 첫 번째 단계는 주파수 수정입니다.
+
+    ### ldc1612 기본 주파수 수정
+    이 방법은 sht36-v3/SB2040-v3 또는 SB2040-Pro-v3에만 사용됩니다.
+    Mobaxterm 도구를 사용하여 명령을 실행할 수 있습니다.
+    
+    필요한 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구</Button>를 다운로드하세요.
+    
+    [자세한 사용법은 참조하세요.](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+
+
+    첫 번째 명령을 실행하고 엔터를 누릅니다.
+
+    ```cfg
+sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+    ```
+
+    두 번째 명령을 실행하고 엔터를 누릅니다.
+  ```cfg
+grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+  ```
+    성공적으로 치환되면 `LDC1612_FREQ = 40000000`이 포함된 행이 반환됩니다. 반환된 내용이 없으면 치환이 성공하지 않은 것입니다.
+    또는 다음 명령을 사용하여 성공 여부를 확인하십시오.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
+```cfg
+sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
+```
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+
+   주의: 수정 후 다음 명령으로 Klipper 서비스를 재시작하고 Eddy 주파수를 다시 보정하십시오.
+   ```cfg
+   systemctl restart klipper
+   ```
+   Eddy 주파수 보정 명령어
+   ```cfg
+   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+   ```
     <LDC1612 />

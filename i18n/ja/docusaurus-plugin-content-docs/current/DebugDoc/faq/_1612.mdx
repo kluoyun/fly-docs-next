@@ -1,101 +1,76 @@
-## Zオフセットの微調整方法
+## 操作说明
 
-* 第一步：Pursa/OrcaSlicer/Cura/Bambu Studioを使って200x200、高さ0.2の方形を切り出してZオフセットを微調整するためのプリントを行います
-* 第二步：プリンターのIPアドレスを通じて`fluidd` `mainsail`に入り、ダッシュボードの`移動制御`でZ軸オフセットをさらに微調整し、その数値を記憶します
-<ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
-* 第三步：以下のコマンドでklipperを再起動します
-```bash
-FIRMWARE_RESTART
-```
-* 第四步：以下のコマンドでZオフセットのUIインターフェースを調整し、プリント中に調整した数値を入力します
-```bash
-G28
-PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-```
-<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
+    :::warning 注意事项
 
-:::info
-* エラー`Eddy current sensor error`が出た場合は、eddyの設定内のz_offsetの数値を大きくしてください、例を見てください
-
-<ImageView image={require('@site/docs/DebugDoc/faq/img/EDDYZOFF.webp').default} size="50%" align="left" />
-:::
-
-:::info
- * 上記の操作が完了してもベッドスキャンが失敗する場合は、Zリミットを仮想リミットに変更してください
-:::
-
-
-## 操作説明
-
-    :::warning 注意事項
-
-    * 電流校正を先に行い、その後にコイル周波数校正を行ってください
-    * 複数のZ軸を持つマシンは手動で一度調整し、全ての校正を完了後に再度調整を行い、再び校正してください
-    * 下位機器のファームウェアはKliiperのバージョンと完全に一致させる必要があります
+    * 電流校正後にコイル周波数を校正してください
+    * 複数のZ軸を持つ機械は、すべての校正を完了した後に一度手動でレベル調整し、再度校正を行ってください
+    * ファームウェアはKliiperのバージョンと完全に一致する必要があります
 
     :::
 
     :::info
 
-    * 電流校正を先に行い、その後にコイル周波数校正を行ってください
-    * 複数のZ軸を持つマシンは手動で一度調整し、全ての校正を完了後に再度調整を行い、再び校正してください
-    * 下位機器のファームウェアはKliiperのバージョンと完全に一致させる必要があります
+    * 電流校正後にコイル周波数を校正してください
+    * 複数のZ軸を持つ機械は、すべての校正を完了した後に一度手動でレベル調整し、再度校正を行ってください
+    * ファームウェアはKliiperのバージョンと完全に一致する必要があります
 
     :::
 
 
-    * `FUIDD`のウェブページに以下の設定を追加してから、後続の操作を行ってください
+    * `FUIDD`のウェブページを使用して、以下の設定を追加してから操作を続行してください
         ```cfg
         [force_move]
         enable_force_move: true
         ```
 
-    ### 第一步：EDDY電流の校正
+    ### 第二步：校正EDDY電流
 
-        * 1:コンソールに以下のコマンドを入力します
+        * 1: コンソールに以下のコマンドを入力してください
             ```bash
             SET_KINEMATIC_POSITION z=80
             ```
-        * 2:XとYをホームし、ツールヘッドをベッドの中央に移動させます
+        * 2: XとYを原点に戻し、ツールヘッドをホットベッドの中央に移動してください
             ```bash
             G28 X Y
             ```
-        * 上記のステップが完了したら、Eddy電流を校正する必要があります。まず、EDDYを移動させてベッドの中央に置き、ノズルがベッドに触れるまで下げます。その後、コンソールで以下のコマンドを実行して自動的に電流を取得し、最後に`SAVE_CONFIG`でパラメータを保存します。フィードバック値が約15なら正常です。フィードバックが0または30の場合は接続を確認してください（接触不良）
+        * 上記の手順が完了した後、Eddy電流を校正する必要があります。まず、Eddyをホットベッドの中央に移動し、ノズルがホットベッドに触れるようにします。その後、コンソールで以下のコマンドを実行して自動的に電流を取得し、最後に`SAVE_CONFIG`でパラメータを保存します。フィードバック値が約15であれば正常です。フィードバックが0または30の場合は、接続を確認してください（接触不良）
             ```bash
             LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
             ```
-        * 正常な戻り値は約`15`であるべきです
-        * 校正が完了したら`SAVE_CONFIG`でパラメータを保存します
+        * 正常な戻り値は`15`前後であるべきです
+        * 校正が完了したら`SAVE_CONFIG`でパラメータを保存してください
 
-    ### 第二步：Eddy周波数の校正
+    ### 第二步：校正Eddy 周波数
 
 
         :::info
 
-        * Eddyを設置する際、底部はノズルの上に少なくとも1-2mm置く必要があります
-        * Eddy周波数を校正する際、コイルPCBはベッドから少なくとも5mm離しておく必要があります
+        * Eddyを設置する際、eddy ocb板はノズルよりも少なくとも1-2 mm高くする必要があります
+        * Eddy周波数を校正する際、コイルPCBはホットベッドから少なくとも5mm離す必要があります
+        * ここで5mm離すのは、次のステップでティッシュを取るための`z_offset`を取得するために便利です
 
         :::
 
         * その後、ノズルをプラットフォームの中央に移動させます（注意：このステップでは、heightmapがロードされていないことを確認してください）
-        * 手動Zオフセットの校正を開始します [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+        * 手動でzオフセットの校正を開始します [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
             ```bash
             PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
             ```
-        * 校正が完了したら`SAVE_CONFIG`でパラメータを保存します
+        * 校正が完了したら`SAVE_CONFIG`でパラメータを保存してください
         :::info
-        * `z_tilt`または`quad_gantry_level（QGL）`機能を持つプリンタは、まず平行度を調整してください。i3の場合はX軸の平行度を、三叉戟の場合はベッドの平行度を、Voron 2.4の場合はガントリーの平行度を調整してから再びEddy周波数を校正してください
+        * `z_tilt`または`quad_gantry_level（QGL）`機能を持つプリンターは、まず平行度を調整してください`i3はX軸の平行度を調整、三叉戟はホットベッドの平行度を調整、voron 2.4はガントリーの平行度を調整してから、再度Eddy周波数を校正してください
         :::
     ### 第三步：温度補償
+        * 第三步：温度補償を行う前に、すべての軸を正常に原点に戻すことができることを確認してください
 
-        * すべての軸をホームに戻します
+        * すべての軸を原点に戻す
        ```bash
        G28
        ```
 
-        * `QUAD_GANTRY_LEVEL`または`Z_TILT_ADJUST`がある場合は、まず`Z_TILT_ADJUST`または`QUAD_GANTRY_LEVEL`を一度実行し、その後再びホームに戻します
-        * コンソールにG0 Z5またはウェブページ等を通じて、Z軸をベッド上方`5mm`に移動させます
-        * 以下のコードを実行して、機器の`idle timeout`を長く設定し、昇温中にタイムアウトしないようにします
+        * `quad_gantry_level`または`z_tilt`がある場合は、`Z_TILT_ADJUST`または`QUAD_GANTRY_LEVEL`を一度実行した後、再度原点に戻してください
+        * コンソールに`G0 Z5`を入力するか、ウェブページ等を通じて、Z軸をホットベッド上方`5mm`に移動させます
+        * 以下のコードを実行して、プリンタの`idle timeout`を長く設定し、温度上昇中にタイムアウトしないようにします
             ```bash
             SET_IDLE_TIMEOUT TIMEOUT=65000
             ```
@@ -103,88 +78,52 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
             ```bash
             TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
             ```
-        :::warning 注意事項
+        :::warning 注意事项
 
-        * ヒント：上記のコマンドでは、EDDyの目標温度を`56℃`に設定しています。これはほとんどのデバイスに適しています。
-        * あなたの3Dプリンタの腔体温度が高い場合は、目標温度を適切に上げてください。
-        * 目標温度が高いほど、校正に必要な時間が長くなります。なぜなら、Eddyが温度平衡に達するまでに時間がかかるからです。
+        * 提示：上記のコマンドでは、EDDyの目標温度を`56℃`に設定しており、これは多くのデバイスに適しています。
+        * あなたの3Dプリンタのキャビネットの実際の温度が高い場合は、目標温度を適宜上げることができます。
+        * 目標温度が高ければ高いほど、校正にかかる時間が長くなります。なぜならEddyが温度平衡に達するまでに時間がかかるからです。
 
         :::
     
-        1. この操作を行った後、UIはZ軸の調整ボックスを表示します。上述の手動 [Z軸オフセット校正（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)を使用して、紙をノズルとベッドの間に挟み、その値を確認してください。
-        2. 値を受け入れた後、ベッド温度を最高温度に、ノズル温度を220℃に設定します。
-        3. エアコンや窓を開けた部屋で作業する場合は、Eddyの温度が上がるようにエアコンや窓を閉めることをお勧めします。風が温度上昇に影響を与えるからです。
-        4. Eddyの温度が上昇するにつれて、システムは4℃ごとに手動Zオフセット校正を要求します。ベッド温度が非常に高いので、火傷に注意してください。
-        5. 手動Zオフセット校正（Paper Test）を繰り返して校正を完了します。Eddyの温度が上昇しなくなった場合は、以下の関連コマンドを使用して校正を早期に終了することができます。
+        1. この操作を実行すると、UIにZ軸調整ボックスが表示されます。手動で[Z軸オフセット校正（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)を使用して、ノズルとベッドの間に紙を挟んでその値を確認してください。
+        2. 値を受け入れた後、ホットベッドの温度を最高まで上げ、ノズルの温度を220℃に設定します。
+        3. エアコンや窓を開けた部屋で作業する場合、Eddyの温度上昇を確実にするために、エアコンや窓を閉めることをお勧めします。風が温度上昇に影響を与える可能性があります。
+        4. Eddyの温度が上昇するにつれて、システムは自動的に4℃ごとに手動でZオフセット校正を行うように指示します。ホットベッドの温度が高いので、火傷に注意してください!!!
+        5. 手動のZオフセット校正（Paper Test）を繰り返して校正を完了します。Eddyの温度が上昇しなくなった場合、以下の関連コマンドを使用して校正を早期に終了することができます。
         
-        * 漂流校正中には以下の追加のgcodeコマンドが使用できます：TEMPERATURE_PROBE_NEXT
-            * `TEMPERATURE_PROBE_NEXT`    EDDyが設定した目標温度`56℃`に達する前に新しいデータを強制的にサンプリングします。
-            * `TEMPERATURE_PROBE_COMPLETE`    EDDyが設定した温度`56℃`に達しない場合に校正を完了します。
+        * ドリフト校正中に使用可能な追加のgcodeコマンドには、TEMPERATURE_PROBE_NEXTが含まれます
+            * `TEMPERATURE_PROBE_NEXT`    Eddyが設定された目標温度`56℃`に達する前に新しいデータを強制的にサンプリングするためのものです。
+            * `TEMPERATURE_PROBE_COMPLETE`    Eddyが設定温度`56℃`に達しない場合、校正を完了するためのものです。
             * `ABORT`  校正を中止し、結果を無視するために使用します。
-        * これらのステップを完了すると、Eddyは幅広い温度範囲で優れた初層プリントを提供できるようになります！
-## 各種最適化マクロ
+        * これらの手順を完了すると、Eddyは広範囲の温度で優れた初層プリントを提供することができます！
 
-    ### `[quad_gantry_level]`ベッドスキャンの最適化
-        * `quad_gantry_level`が設定されている場合は、以下のマクロを設定ファイルに追加してください。設定されていない場合は追加する必要はありません
-        * このマクロはガントリーの高低差が小さくなるにつれて探査高さを下げます
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
 
-    ### `[z_tilt]`ベッドスキャンの最適化
+## z—offsetの微調整方法
+* 第一步：Pursa/OrcaSlicer/Cura/Bambu Studioを使用して、200x200、高さ0.2の四角いスライスを作成し、z—offsetの微調整のためにプリントしてください
+* 第二步：プリンタのIPアドレスを使用して`fluidd` `mainsail`にアクセスし、ダッシュボードの`移動制御`セクションでz軸オフセットをさらに微調整し、微調整した値を記憶してください
+<ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
+* 第三步：以下のコマンドでklipperを再起動します
+```bash
+FIRMWARE_RESTART
+```
+* 第四步：以下のコマンドでZ—offsetを調整するUIを表示し、プリント中に調整した値を入力してください
+```bash
+G28
+PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+```
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
 
-        * `z_tilt`が設定されている場合は、以下のマクロを設定ファイルに追加してください。設定されていない場合は追加する必要はありません
-        * このマクロはガントリーの高低差が小さくなるにつれて探査高さを下げます
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
+:::info
+* エラー`Eddy current sensor error`が発生した場合は、Eddyの設定内のz_offsetの値を大きくしてください。図を参照してください
 
-    ### ベッドスキャンの最適化
+<ImageView image={require('@site/docs/DebugDoc/faq/img/EDDYZOFF.webp').default} size="50%" align="left" />
+:::
 
-        * 大出力の交流ベッド（500W以上）を使用している場合
-        * 以下のマクロはベッドスキャン中にベッドをオフにし、ベッドスキャンが完了したら再加熱します
-            ```cfg
-            [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode:
-                {% set TARGET_TEMP = printer.heater_bed.target %}
-                M140 S0
-                _BED_MESH_CALIBRATE {rawparams}
-                M140 S{TARGET_TEMP}
-            ```
-    ## ネットベッドコマンド
-    
-        * `printer.cfg`設定ファイルに以下のマクロを追加します
-            ```bash
-            [gcode_macro BED_MESH_CALIBRATE]
-             rename_existing: _BED_MESH_CALIBRATE
-             gcode: 
-                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
-            ```
-        * ローカルネットベッドコマンドは、Klipperがオブジェクト排除機能を使用できることを確認し、開始マクロに追加することをお勧めします
-            ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
-            ```
+:::info
+ * 上記の操作を完了してもスキャンベッドが失敗する場合は、z制限を仮想制限に変更してください
+:::
+
 
 ## コイルモデルのダウンロードリンク
 

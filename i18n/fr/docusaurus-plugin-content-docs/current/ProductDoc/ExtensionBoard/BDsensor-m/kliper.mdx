@@ -7,10 +7,10 @@ sidebar_label: Utilisation de Klipper
 
 
 
-# Installation de **BDsensor-m**
+# Installation du **BDsensor-m**
 
 ## Connecter le câble du capteur à l'interface EXP1 de la carte mère
-    * Si le câble du capteur est trop court, vous pouvez utiliser le câble d'extension fourni dans l'emballage.
+    * Si le câble du capteur est trop court, utilisez le câble d'extension fourni dans l'emballage.
     * Les lignes CKL et SDA du BDsensor-m peuvent être connectées à n'importe quelle broche GPIO de la carte. Vous pouvez également connecter directement le câble du capteur BD au port Bltouch, par exemple :
 
     ```bash
@@ -22,11 +22,11 @@ sidebar_label: Utilisation de Klipper
     Zmin     -->     SDA    (Input/Output) 
     ```
 
-    * En raison du fait que certaines broches des connecteurs de la carte mère peuvent ne pas être directement connectées aux GPIO du MCU (par exemple, elles peuvent avoir des condensateurs de filtrage ou être isolées par un MOSFET, une diode ou un optocoupleur, mais si elles sont isolées par une résistance ou une résistance de tirage/poussée, cela peut également fonctionner), elles ne peuvent pas être utilisées avec `BDsensor-m` et le firmware signalera une erreur de connexion. Par exemple :
-    * Les connecteurs des ventilateurs et des chauffages sont isolés par un MOSFET,
-    * Certains connecteurs de cartes pour thermistances de température et fins de course/sondes sont généralement connectés à la terre via des condensateurs de filtrage,
+    * En raison de certaines broches dans le connecteur de la carte mère qui peuvent ne pas être directement connectées aux gpios de l'MCU (par exemple, elles peuvent avoir des condensateurs de filtrage ou être isolées par MOSFET, diodes ou coupleurs optiques, mais si elles sont isolées par des résistances ou des résistances pull-up/pull-down, elles peuvent également être utilisées), elles ne peuvent pas être utilisées avec le `BDsensor-m`. Et le firmware signalera une erreur de connexion. Par exemple :
+    * Les connecteurs des ventilateurs et des radiateurs sont isolés par MOSFET,
+    * Certains connecteurs pour thermistances de température et fins de course/sondes sont généralement connectés à la GND via des condensateurs de filtrage dans certaines cartes,
 
-1. Comme illustré ci-dessous, installez le capteur BD à proximité de la buse. [STL du support](https://www.thingiverse.com/thing:6098131), [STL_mount_VzBot_Goliath court](https://discord.com/channels/829828765512106054/1163237892957671424)
+1. Comme illustré ci-dessous, installez le capteur BD près de l'extrémité chaude. [STL du support](https://www.thingiverse.com/thing:6098131), [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/BDsensor-m/img/jxcs_webp.webp').default} size="100%" align="left" />
 
@@ -42,7 +42,7 @@ sidebar_label: Utilisation de Klipper
         git pull
         ```
 
-    * Clonez le dernier code du capteur BD
+    * Clonez le code le plus récent du capteur BD
 
         ```bash
         cd && git clone https://github.com/markniu/Bed_Distance_sensor.git
@@ -64,9 +64,9 @@ sidebar_label: Utilisation de Klipper
         make
         ```
 
-    * Flashez le firmware sur la carte mère connectée au capteur BD
+    * Flashez le firmware sur la carte mère connectée au BDsensor
 
-## Si votre imprimante fonctionne avec Moonraker, ajoutez la section suivante à moonraker.conf, puis vous pourrez mettre à jour BDsensor en un clic via la page web ou l'écran Klipper.
+## Si votre imprimante fonctionne avec Moonraker, ajoutez la section suivante à moonraker.conf, puis vous pourrez mettre à jour le BDsensor en un clic via la page web ou klipperscreen.
 
     ```bash
     [update_manager BDsensor]
@@ -79,32 +79,32 @@ sidebar_label: Utilisation de Klipper
     is_system_service: False
     managed_services: klipper
     info_tags:
-    desc=Capteur de Distance de Lit
+    desc=Bed Distance Sensor
     ```
 
 ## Édition de printer.cfg
 
-    * Copiez cette section dans votre **printer.cfg** et modifiez `sda_pin` et `scl_pin` dans `[BDsensor]`, n'oubliez pas non plus de désactiver les autres sections de sondes, comme **BLtouch**. Vous pouvez connecter le capteur BD à la carte mère ou au module CAN de la tête d'outil,
-    * Dans `[BDsensor]`, modifiez `speed` à 0.8. Cela ne s'applique qu'aux commandes Z TILT et PROBE_ACCURACY. Plus la valeur est petite, plus la précision est élevée lors de la détection, car le MCU ne lit pas le capteur BD en temps réel lors du retour à l'origine. `[BDsensor]`
-    * Pour utiliser le capteur BD comme fin de course lors du retour à l'origine de l'axe Z, modifiez `endstop_pin` dans `[stepper_z]` à `endstop_pin: probe:z_virtual_endstop`
-    * Assurez-vous que **printer.cfg** contient `[safe_z_home]` 
-    * Modifiez la valeur de `[bed_mesh]` et `[z_tilt]` ou `[quad_gantry_level]` à 1 (recommandé entre 0,7 et 1,0 mm) dans les valeurs par défaut de Klipper qui sont de 5 mm, sinon cela pourrait dépasser la portée du capteur
-    * **La hauteur de la buse ne doit être ajustée que dans `z_adjust:`, un nombre positif rapproche la buse du lit, un nombre négatif l'éloigne. Les autres réglages de hauteur de la buse peuvent causer des bugs**
+    * Copiez cette section dans votre **printer.cfg** et modifiez `sda_pin` et `scl_pin` de `[BDsensor]`, et n'oubliez pas de désactiver les autres sections de sondes comme **BLtouch**. Vous pouvez connecter le capteur BD sur la carte mère ou sur un module CAN de la tête d'outil,
+    * Dans `[BDsensor]`, modifiez `speed` à 0.8. Cela ne s'applique qu'aux commandes Z_tilt et PROBE_ACCURACY. Une valeur plus petite signifie une précision plus élevée lors de la détection, car le MCU lit le capteur BD dans le circuit principal lors du retour à zéro, ce qui n'est pas en temps réel comme un fin de course normal. `[BDsensor]`
+    * Pour utiliser le capteur BD comme fin de course lors du retour à zéro de l'axe Z, modifiez `endstop_pin` dans `[stepper_z]` à `endstop_pin: probe:z_virtual_endstop`
+    * Assurez-vous que **printer.cfg** contient `[safe_z_home]`
+    * Modifiez la valeur de `z_tilt` ou `quad_gantry_level` dans `[bed_mesh]` et `[z_tilt]` ou `[quad_gantry_level]` à 1 (suggéré entre 0.7 et 1.0mm), sinon, cela pourrait dépasser la portée du capteur
+    * **La hauteur de la buse doit être ajustée uniquement via `z_adjust:`, un nombre positif rapproche la buse du lit, un nombre négatif l'éloigne, d'autres réglages de hauteur de buse peuvent causer des bugs**
     * Pour activer le balayage rapide du lit, supprimez le # devant `no_stop_probe:true`
-    * Voici un exemple de configuration.
+    * Voici un exemple de configuration :
 
         ```cfg
         [BDsensor] 
         scl_pin:PC6  # Port de signal du servomoteur
         sda_pin:PC3  # Port de signal de fin de course
-        delay: 20 # 20us par impulsion, cette valeur doit être >=20 mais doit être inférieure à 50
-        z_offset:0 # ce `z_offset` doit être réglé à 0. 
-        z_adjust:0.0 # ajustement de l'axe Z, remplace la fonction z_offset. entre -0,3 et 0,3 mm
+        delay: 20 # 20us par impulsion, cette valeur doit être >=20 mais inférieure à 50
+        z_offset:0 # cette `z_offset` doit être réglée à 0. 
+        z_adjust:0.0 # ajustement de l'axe Z, remplace la fonction z_offset. entre -0.3 et 0.3mm
         x_offset: -34
         y_offset: 0
-        #no_stop_probe:true # activez ceci pour un balayage rapide, la tête d'outil ne s'arrêtera pas au point de sondage.
-        position_endstop: 0.8 # l'axe Z s'arrêtera à cette position (mm) lors du retour à l'origine de Z, valeur recommandée entre 0,4 et 1,0
-        #speed:0.8 # cette vitesse ne fonctionne que pour les commandes Z TILT et PROBE_ACCURACY.
+        #no_stop_probe:true # activez cela pour une sonde rapide, la tête d'outil ne s'arrêtera pas au point de sonde.
+        position_endstop: 0.8 # l'axe Z s'arrêtera à cette position (mm) lors du retour à zéro, valeur recommandée entre 0.4 et 1.0
+        #speed:0.8 # cette vitesse ne fonctionne que pour les commandes z tilt et PROBE_ACCURACY.
 
         [stepper_z]
         endstop_pin: probe:z_virtual_endstop 
@@ -122,38 +122,38 @@ sidebar_label: Utilisation de Klipper
 
         ```
 
-## Après l'installation, vérifiez en envoyant les commandes Gcode suivantes :
+## Après l'installation, vérifiez en envoyant les commandes G-code suivantes
 
     ```bash
-    M102   S-1     # Lire les informations du capteur
-    M102   S-2     # Lire une valeur de distance
+    M102   S-1     # Lecture des informations du capteur
+    M102   S-2     # Lecture d'une valeur de distance
     ```
 
 ## Vérification de la connexion
 
-    * Envoyez `M102 S-1` via la **console**, voici un exemple de message de retour, si le retour est vide ou contient une autre chaîne, vérifiez la connexion et l'ordre des fils.
+    * Envoyez `M102 S-1` via la **console**, voici un exemple de message de retour, si le retour est vide ou contient une autre chaîne, vérifiez la connexion et l'ordre des fils
 
         ```bash
         Send: M102 S-1
         Recv: V1.0 pandapi3d.com
         ```
 
-## Étalonnage
+## Calibrage
 
-    * Nettoyez la buse, puis déplacez l'axe Z via la console jusqu'à ce que la buse touche juste le lit (BDsensor-m utilisera cette position comme position zéro, donc pas besoin de `z_offset`, c'est pourquoi la valeur dans la section [BDsensor-m] est 0)
-    * Envoyez la commande Gcode `M102 S-6` via la **console**, l'imprimante bougera lentement l'axe Z vers le haut de 0,1 mm à chaque fois, jusqu'à atteindre 4 mm. Ne courez pas M102 S-6 avant d'avoir installé le capteur, et ne coupez pas l'alimentation de l'imprimante pendant l'étalonnage, sinon les anciennes données d'étalonnage seront perdues. Dans ce cas, il suffit de ré-étalonner.
-    * Ensuite, vous pouvez vérifier si le capteur BD a été étalonné correctement avec `M102 S-5`, qui retournera les données d'étalonnage brutes stockées dans le capteur BD.
+    * Nettoyez la buse, puis déplacez l'axe Z via la console jusqu'à ce que la buse touche à peine le lit (le BDsensor-m utilisera cette position comme position zéro, donc pas besoin de `z_offset`, c'est pourquoi la valeur est 0 dans la section [BDsensor-m])
+    * Envoyez la commande G-code `M102 S-6` via la **console**, l'imprimante montera l'axe Z de 0.1mm à chaque fois jusqu'à atteindre 4mm. Ne lancez pas M102 S-6 avant d'avoir installé le capteur, et ne coupez pas l'alimentation de l'imprimante pendant le calibrage, sinon les anciennes données de calibrage seront effacées. Dans ce cas, recalibrez simplement.
+    * Ensuite, vous pouvez vérifier si le capteur BD a été correctement calibré avec `M102 S-5`, ce qui retournera les données de calibrage brutes stockées dans le capteur BD.
 
-**Remarques** :
+**Remarques**:
 
-* La vitesse de retour à l'origine de l'axe Z est préférablement de 5
+* La vitesse de retour à zéro de l'axe Z devrait être de 5.
 
-* Si M102 S-5 retourne une première donnée d'étalonnage brute supérieure à 400, cela signifie que le capteur est installé trop haut et doit être réinstallé plus près du lit. La valeur recommandée pour la première donnée est de 100. Assurez-vous également que la deuxième donnée est supérieure de plus de 10 à la première.
+* Si la première donnée brute de M102 S-5 est supérieure à 400, cela signifie que le capteur est installé trop haut et doit être réinstallé plus près du lit, la valeur recommandée pour la première donnée est de 100. Assurez-vous également que la deuxième donnée est supérieure de 10 ou plus à la première.
 
-  * FAQ : Si les données d'étalonnage commencent par 1, la deuxième valeur est 9, et la troisième est 24, qu'est-ce que cela signifie ?
+  * FAQ : Si les données de calibrage commencent par 1, la deuxième valeur est 9, et la troisième est 24, qu'est-ce que cela signifie ?
 
-  * Cela signifie que la résolution entre 0 et 0,1 mm est de seulement 9, tandis que la résolution entre 0,1 et 0,2 mm est de 15. Il est donc recommandé de réétalonner pour que la première résolution de 0 à 0,1 mm soit supérieure à 10.
+  * Cela signifie que la résolution entre 0 et 0.1 mm est de 9, tandis que la résolution entre 0.1 et 0.2 mm est de 15. Il est donc recommandé de recalibrer pour que la première résolution soit supérieure à 10.
 
-* N'oubliez pas d'ajuster la hauteur de l'axe Z après avoir exécuté G28 ou pour les commandes `Z_tilt` et `quad_gantry_level`
+* N'oubliez pas d'ajuster la hauteur de l'axe Z après G28 ou pour ces commandes `Z_tilt` et `quad_gantry_level`
 
 * Les noms de section doivent être correctement en majuscules et minuscules, sinon Klipper signalera `Unknown pin chip name 'probe'`
