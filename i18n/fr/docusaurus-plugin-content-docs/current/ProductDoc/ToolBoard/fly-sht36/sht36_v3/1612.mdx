@@ -3,18 +3,16 @@ sidebar_position: 7
 sidebar_label: Utilisation d'Eddy
 ---
 
-
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Utilisation d'Eddy
 
     :::info
-    * Lors de l'installation d'Eddy, la position du fond par rapport à la buse doit être au moins à 1-2 mm au-dessus de la buse
-    * Lors de l'étalonnage de la fréquence d'Eddy, la PCB de la bobine doit être éloignée du lit chauffant d'au moins 5 mm
-    * Veuillez ne pas tester avec le lit chauffant à température ambiante, et ne pas allumer le lit chauffant pendant le test
+    * Lors de l'installation d'Eddy, la position de la base par rapport à la buse doit être au moins 1-2 mm au-dessus de la buse.
+    * Lors du réglage de la fréquence d'Eddy, le PCB de la bobine doit être à au moins 5 mm du lit chauffant.
+    * Veuillez ne pas tester le lit chauffant à température ambiante et ne pas l'allumer pendant le test.
 
     :::
-
 
 ## Schéma de câblage
 
@@ -22,46 +20,11 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
 
-## Configuration de référence et instructions d'utilisation
-   
-    ### Modification de la fréquence par défaut de ldc1612
-    Cette méthode est uniquement utilisée pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3
-    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes
-    
-    Téléchargez l'outil <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button> nécessaire
-    
-    [Pour une utilisation détaillée, consultez](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+## Configuration et instructions d'utilisation
 
+##### Ajoutez la configuration suivante dans le fichier `printer.cfg` pour le débogage d'Eddy
 
-    Exécutez la première commande et appuyez sur Entrée
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
-    ```
-
-    Exécutez la deuxième commande et appuyez sur Entrée
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    Si la commande renvoie une ligne contenant `LDC1612_FREQ = 40000000`, le remplacement a réussi. S'il n'y a aucun retour, cela signifie que le remplacement n'a pas été effectué.
-    Ou utilisez cette commande pour vérifier le succès
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
-
-   Remarque : Après modification, utilisez cette commande pour redémarrer le service Klipper et recalibrer la fréquence d'Eddy
-   ```cfg
-   systemctl restart klipper
-   ```
-   Commande de calibration de la fréquence d'Eddy
-   ```cfg
-   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-   ```
-
-
-    ### Configuration du balayage du lit
+    ### Configuration de la détection du lit
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
@@ -76,7 +39,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-        * Veuillez noter que le module externe 1612 n'est pas encore disponible, donc cette configuration n'est pas encore utilisable
+        * Veuillez noter qu'actuellement, il n'y a pas de module externe 1612 disponible, donc cette configuration n'est pas utilisable pour le moment.
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -90,7 +53,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-    ### Configuration de la compensation de température
+    ### Configuration de compensation de température
 
         ```cfg
         [temperature_probe fly_eddy_probe]
@@ -98,13 +61,115 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         sensor_pin:SHT36:gpio28
         ```
 
+    ## Commandes de lit
+
+        * Ajoutez la macro suivante dans le fichier de configuration `printer.cfg`
+            ```bash
+            [gcode_macro BED_MESH_CALIBRATE]
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
+            ```
+        * Pour les commandes de lit en réseau, assurez-vous que Klipper peut utiliser la fonction d'exclusion d'objet. Il est recommandé de l'ajouter au début de la macro.
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
+            ```
+
 ### Configuration de bed_mesh
 
-    * Dans [bed_mesh], le paramètre `horizontal_move_z` est recommandé d'être défini à 2, pour que lors du balayage de la plateforme, Eddy soit le plus proche possible de la plateforme
+    * Dans `[bed_mesh]`, le paramètre `horizontal_move_z` est recommandé à 2 pour que Eddy soit aussi proche que possible du lit lors du scan.
 
     ```cfg
     [bed_mesh]
     horizontal_move_z: 2
     ```
+## Macro de prévention de collision
 
+    ### Optimisation de la détection du lit avec `[quad_gantry_level]`
+        * Si vous avez configuré `[quad_gantry_level]`, ajoutez la macro suivante dans la configuration, sinon ce n'est pas nécessaire.
+        * Cette macro réduira la hauteur de détection en fonction de la différence de hauteur du portique.
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### Optimisation de la détection du lit avec `[z_tilt]`
+
+        * Si vous avez configuré `[z_tilt]`, ajoutez la macro suivante dans la configuration, sinon ce n'est pas nécessaire.
+        * Cette macro réduira la hauteur de détection en fonction de la différence de hauteur du portique.
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### Macro d'optimisation de la détection du lit avec une forte probabilité d'interférence du lit chauffant
+
+        * Si vous utilisez un lit chauffant AC de forte puissance (plus de 500W)
+        * La macro ci-dessous désactive le lit chauffant pendant la détection et le réactive une fois la détection terminée.
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
+
+   # Étapes de débogage : 
+   ## Première étape : Modification de la fréquence
+
+    ### Modification de la fréquence par défaut de ldc1612
+    Cette méthode est uniquement utilisée pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3
+    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes
+
+    Téléchargez l'outil nécessaire <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button>
+
+    [Pour une utilisation détaillée, consultez](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+
+
+    Exécutez la première commande et appuyez sur Entrée
+
+    ```cfg
+sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+    ```
+
+    Exécutez la deuxième commande et appuyez sur Entrée
+  ```cfg
+grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+  ```
+    Si le remplacement a réussi, une ligne contenant `LDC1612_FREQ = 40000000` sera retournée. Si aucune ligne n'est retournée, cela signifie que le remplacement n'a pas fonctionné.
+    Ou utilisez cette commande pour vérifier si le remplacement a réussi
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
+```cfg
+sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
+```
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+
+   Astuce : Après avoir modifié, utilisez cette commande pour redémarrer le service Klipper et recalibrer la fréquence d'Eddy
+   ```cfg
+   systemctl restart klipper
+   ```
+   Commande de calibration de la fréquence Eddy
+   ```cfg
+   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+   ```
     <LDC1612 />

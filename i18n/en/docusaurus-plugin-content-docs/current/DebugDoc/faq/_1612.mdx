@@ -1,13 +1,113 @@
-## How to Fine-Tune Z-offset
+## Operation Instructions
 
-* Step One: Use Prusa/OrcaSlicer/Cura/Bambu Studio to slice a 200x200 square piece with a height of 0.2 for printing to fine-tune the z-offset.
-* Step Two: Access `fluidd` or `mainsail` through the printer's IP, locate the dashboard's `Movement Control`, and continue fine-tuning the z-offset. Remember the adjusted value.
+    :::warning Attention
+
+    * Please perform current calibration before coil frequency calibration
+    * Multi-Z axis machines need manual leveling once after all calibrations are done, then level again, and recalibrate
+    * The lower machine firmware must be completely consistent with the Kliiper version
+
+    :::
+
+    :::info
+
+    * Please perform current calibration before coil frequency calibration
+    * Multi-Z axis machines need manual leveling once after all calibrations are done, then level again, and recalibrate
+    * The lower machine firmware must be completely consistent with the Kliiper version
+
+    :::
+
+
+    * Please use the `FUIDD` webpage to add the following configuration before proceeding with the next operations
+        ```cfg
+        [force_move]
+        enable_force_move: true
+        ```
+
+    ### Step Two: Calibrate EDDY Current
+
+        * 1: Enter the following command in the console
+            ```bash
+            SET_KINEMATIC_POSITION z=80
+            ```
+        * 2: Home X and Y, move the toolhead to the center of the bed
+            ```bash
+            G28 X Y
+            ```
+        * After completing the above steps, calibrate the Eddy current. First, move Eddy to the center of the bed and then have the nozzle just touch the bed. Then execute the following command in the console to automatically obtain the current, finally `SAVE_CONFIG` to save the parameters. A feedback value around 15 is normal; if feedback is 0 or 30, check if the connection is good (poor contact)
+            ```bash
+            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
+            ```
+        * The normal return value should be around `15`
+        * After calibration, `SAVE_CONFIG` to save the parameters
+
+    ### Step Two: Calibrate Eddy Frequency
+
+
+        :::info
+
+        * When installing Eddy, the eddy ocb board must be at least 1-2 mm higher than the nozzle
+        * When calibrating Eddy frequency, the coil PCB should be at least 5mm away from the bed
+        * This 5mm distance is to facilitate the next step of obtaining the `z_offset` with tissue paper
+
+        :::
+
+        * Then move the nozzle to the center of the platform (note: ensure the machine does not have a heightmap loaded)
+        * Start manual z offset calibration [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+            ```bash
+            PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+            ```
+        * After calibration, `SAVE_CONFIG` to save the parameters
+        :::info
+        * For printers with `z_tilt` or `quad_gantry_level (QGL)` functionality, first adjust the parallelism (i3 adjust X-axis parallelism, trident adjust bed parallelism, voron 2.4 adjust gantry parallelism) then recalibrate Eddy frequency
+        :::
+    ### Step Three: Temperature Compensation
+        * Step Three: Temperature compensation can only be started after successful homing
+
+        * Home all axes
+       ```bash
+       G28
+       ```
+
+        * If there is `[quad_gantry_level]` or `[z_tilt]`, run `Z_TILT_ADJUST` or `QUAD_GANTRY_LEVEL` once, then home again
+        * In the console, enter G0 Z5 or move the Z-axis to 5mm above the bed through the webpage
+        * Execute the following code to set the machine's `idle timeout` longer to avoid timeout during the heating process
+            ```bash
+            SET_IDLE_TIMEOUT TIMEOUT=65000
+            ```
+        * Execute the following command to start calibration
+            ```bash
+            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
+            ```
+        :::warning Attention
+
+        * Note: In the above command, the EDDy target temperature is set to `56℃`, suitable for most devices.
+        * If the actual temperature of your 3D printer chamber is higher, you can appropriately increase the target temperature.
+        * Please note, the higher the target temperature, the longer the calibration will take, as Eddy needs more time to reach temperature equilibrium.
+
+        :::
+    
+        1. After executing this operation, the UI will display the Z-axis adjustment box. Please use the manual [Z offset calibration (Paper Test) method](https://www.klipper3d.org/Bed_Level.html#the-paper-test) mentioned above, insert paper between the nozzle and the bed, and confirm this value.
+        2. After accepting the value, set the bed temperature to its maximum and the nozzle temperature to 220℃.
+        3. If you are in a room with air conditioning or open windows, to ensure Eddy's temperature rises, it is recommended to turn off the air conditioning or close the windows, as wind can affect temperature rise.
+        4. As Eddy's temperature rises, the system will automatically prompt you to perform manual Z offset calibration every 4℃. The bed is very hot; be careful to avoid burns!!!
+        5. Repeat manual Z offset calibration (Paper Test) until calibration is complete. If Eddy's temperature stops rising, you can use the following commands to end the calibration early.
+        
+        * Additional gcode commands available during drift calibration include: TEMPERATURE_PROBE_NEXT
+            * `TEMPERATURE_PROBE_NEXT`    Used to force Eddy to sample new data before reaching the set target temperature `56℃`.
+            * `TEMPERATURE_PROBE_COMPLETE`    Used to complete calibration before Eddy reaches the set temperature `56℃`.
+            * `ABORT`  Can be used to terminate calibration and ignore results.
+        * After completing these steps, Eddy will be able to provide excellent first-layer print results across a wide temperature range!
+
+
+## How to Fine-Tune Z-offset
+* Step One: Slice a 200x200 square with a height of 0.2 using Prusa/OrcaSlicer/Cura/Bambu Studio to print and fine-tune z-offset
+* Step Two: Enter the printer's IP to access `fluidd` `mainsail`, find the dashboard `move control` to continue fine-tuning Z-offset, then remember the fine-tuned value
 <ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
-* Step Three: Restart Klipper with the following command:
+* Step Three: Restart Klipper with the following command
 ```bash
 FIRMWARE_RESTART
 ```
-* Step Four: Adjust the Z-offset with the following commands, and the value adjusted during printing will appear in the UI:
+* Step Four: Adjust Z-offset through the UI interface that pops up with the following commands, the adjusted value is the value adjusted during printing
 ```bash
 G28
 PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
@@ -15,173 +115,15 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
 
 :::info
-* If you encounter the error `Eddy current sensor error`, increase the z_offset value in the eddy configuration, as shown in the illustration.
+* If you encounter the error `Eddy current sensor error`, increase the z_offset value in the eddy configuration, see the example
 
 <ImageView image={require('@site/docs/DebugDoc/faq/img/EDDYZOFF.webp').default} size="50%" align="left" />
 :::
 
 :::info
- * If the bed leveling fails after completing the above steps, switch the z limit to a virtual limit.
+ * If the above operations are completed but bed leveling fails, please change the z limit to virtual limit
 :::
 
-## Operation Instructions
-
-    :::warning Attention
-
-    * Please perform current calibration before coil frequency calibration.
-    * Multi-Z axis machines need to manually level once, perform all calibrations, then level again before recalibrating.
-    * The firmware version of the lower machine must be identical to the Klipper version.
-
-    :::
-
-    :::info
-
-    * Please perform current calibration before coil frequency calibration.
-    * Multi-Z axis machines need to manually level once, perform all calibrations, then level again before recalibrating.
-    * The firmware version of the lower machine must be identical to the Klipper version.
-
-    :::
-
-    * Please add the following configuration to the `FUIDD` webpage before executing the subsequent steps:
-        ```cfg
-        [force_move]
-        enable_force_move: true
-        ```
-
-    ### Step One: Calibrating Eddy Current
-
-        * 1: Enter the following command in the console:
-            ```bash
-            SET_KINEMATIC_POSITION z=80
-            ```
-        * 2: Home X and Y, move the tool head to the center of the bed:
-            ```bash
-            G28 X Y
-            ```
-        * After completing the above steps, you need to calibrate the Eddy current. First, move Eddy to the center of the bed and ensure the nozzle just touches the bed. Then, execute the following command in the console to automatically obtain the current, and use `SAVE_CONFIG` to save the parameters. A normal feedback value is around 15; if it's 0 or 30, check the connections (poor contact):
-            ```bash
-            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
-            ```
-        * The normal return value should be around `15`.
-        * After calibration, use `SAVE_CONFIG` to save the parameters.
-
-    ### Step Two: Calibrating Eddy Frequency
-
-        :::info
-
-        * When installing Eddy, ensure the bottom is at least 1-2 mm above the nozzle.
-        * When calibrating Eddy frequency, keep the coil PCB at least 5 mm away from the bed.
-
-        :::
-
-        * Then move the nozzle to the center of the platform (Note: Ensure the machine does not have a loaded heightmap).
-        * Begin manual z-offset calibration [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test):
-            ```bash
-            PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-            ```
-        * After calibration, use `SAVE_CONFIG` to save the parameters.
-        :::info
-        * For printers with `z_tilt` or `quad_gantry_level (QGL)` functions, first adjust the parallelism (i3 adjust X-axis parallelism, trident adjust bed parallelism, Voron 2.4 adjust gantry parallelism) before recalibrating Eddy frequency.
-        :::
-    ### Step Three: Temperature Compensation
-
-        * Home all axes:
-       ```bash
-       G28
-       ```
-
-        * If there's `[quad_gantry_level]` or `[z_tilt]`, run `Z_TILT_ADJUST` or `QUAD_GANTRY_LEVEL` first, then home again.
-        * Enter G0 Z5 in the console or move the Z-axis 5mm above the bed via the webpage.
-        * Execute the following code to set the machine's `idle timeout` longer to avoid timeout during the heating process:
-            ```bash
-            SET_IDLE_TIMEOUT TIMEOUT=65000
-            ```
-        * Execute the following command to start calibration:
-            ```bash
-            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
-            ```
-        :::warning Attention
-
-        * Note: In the above command, the Eddy target temperature is set to `56℃`, suitable for most devices.
-        * If your 3D printer's chamber temperature is higher, you can increase the target temperature accordingly.
-        * Please note that the higher the target temperature, the longer the calibration will take, as Eddy needs more time to reach temperature equilibrium.
-
-        :::
-
-        1. After executing this operation, the UI will display the Z-axis adjustment box. Use the aforementioned manual [Z-offset Calibration (Paper Test) method](https://www.klipper3d.org/Bed_Level.html#the-paper-test), insert the paper between the nozzle and the bed, and confirm the value.
-        2. After accepting the value, set the bed temperature to its maximum, and the nozzle temperature to 220℃.
-        3. If you are in an air-conditioned or window-open room, it is recommended to turn off the air conditioning or close the windows to ensure Eddy's temperature rises, as wind affects the temperature increase.
-        4. As Eddy's temperature rises, the system will automatically prompt you to perform manual Z-offset calibration every 4℃. Be careful of burns due to the high bed temperature!
-        5. Repeat the manual Z-offset calibration (Paper Test) until calibration is complete. If Eddy's temperature does not rise, you can use the following related commands to end the calibration prematurely.
-
-        * Additional gcode commands available during drift calibration include: TEMPERATURE_PROBE_NEXT
-            * `TEMPERATURE_PROBE_NEXT`    Forces Eddy to sample new data before reaching the target temperature of `56℃`.
-            * `TEMPERATURE_PROBE_COMPLETE`    Completes calibration before Eddy reaches the set temperature of `56℃`.
-            * `ABORT`  Can be used to terminate calibration and ignore results.
-        * After completing these steps, Eddy will provide excellent first layer prints across a wide temperature range!
-## Various Optimization Macros
-
-    ### `[quad_gantry_level]` Bed Leveling Optimization
-        * If `[quad_gantry_level]` is configured, add the following macro to the configuration; if not, it's not needed.
-        * This macro reduces the probe height as the gantry height difference decreases:
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
-
-    ### `[z_tilt]` Bed Leveling Optimization
-
-        * If `[z_tilt]` is configured, add the following macro to the configuration; if not, it's not needed.
-        * This macro reduces the probe height as the gantry height difference decreases:
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
-
-    ### Bed Leveling Optimization
-
-        * If using a high-power AC bed (over 500W)
-        * The following macro turns off the bed during leveling and reheats it after leveling is complete:
-            ```cfg
-            [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode:
-                {% set TARGET_TEMP = printer.heater_bed.target %}
-                M140 S0
-                _BED_MESH_CALIBRATE {rawparams}
-                M140 S{TARGET_TEMP}
-            ```
-    ## Bed Mesh Commands
-    
-        * Add the following macro to the `printer.cfg` configuration:
-            ```bash
-            [gcode_macro BED_MESH_CALIBRATE]
-             rename_existing: _BED_MESH_CALIBRATE
-             gcode: 
-                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
-            ```
-        * Local bed mesh command, ensure Klipper can use the object exclusion feature, suggested to add to the start macro:
-            ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
-            ```
 
 ## Coil Model Download Links
 

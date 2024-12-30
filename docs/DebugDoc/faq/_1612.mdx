@@ -1,29 +1,4 @@
 
-## 如何微调z—offset
-* 第一步：使用pursa/OrcaSlicer/cura/Bambu Studio 切一个200x200高度0.2的一个方片去打印微调z—offset
-* 第二步：通过打印机ip进入`fluidd` `mainsail`找到仪表板`移动控制`z轴偏移继续微调z_OFFset然后记住微调的数值
-<ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
-* 第三步：通过下面命令重启klippper
-```bash
-FIRMWARE_RESTART
-```
-* 第四步：通过下面命令去调整Z—offset 弹出来的UI界面 调整`z—offset`调整的数值就是打印过程中调整的数值
-```bash
-G28
-PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-```
-<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
-
-:::info
-* 报错`Eddy current sensor error`这个调大eddy配置里面的z_offset数值，看图例
-
-<ImageView image={require('@site/docs/DebugDoc/faq/img/EDDYZOFF.webp').default} size="50%" align="left" />
-:::
-
-:::info
- * 以上操作完成但是在开始做扫床失败请把z限位改成虚拟限位
-:::
-
 
 ## 操作说明
 
@@ -50,7 +25,7 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
         enable_force_move: true
         ```
 
-    ### 第一步：校准EDDY 电流
+    ### 第二步：校准EDDY 电流
 
         * 1:在控制台输入下方命令
             ```bash
@@ -72,8 +47,9 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
 
         :::info
 
-        * 在安装 Eddy 时，底部之于喷嘴的位置需至少在喷嘴上面 1-2 mm
+        * 在安装 Eddy 时，eddy ocb板要高于喷嘴需至少1-2 mm
         * 校准校准Eddy频率时，线圈PCB要远离热床至少5mm
+        * 这里远离5mm是为了方便下一步做抽纸获取`z_offset`
 
         :::
 
@@ -87,6 +63,7 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
         * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，先调整一下平行度`i3调整一下X轴的平行度,三叉戟调整热床平行度  voron 2.4 调整一下龙门架平行度再校准一次校准Eddy频率
         :::
     ### 第三步：温度补偿
+        * 第三步：温度补偿 需能成功归位在开始做
 
         * 归位所有轴
        ```bash
@@ -122,69 +99,33 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
             * `TEMPERATURE_PROBE_COMPLETE`    用于EDDy达不到设定温度`56℃`前完成校准。
             * `ABORT`  可用于终止校准并忽略结果。
         * 完成这些步骤后，Eddy 将能够在广泛的温度范围内提供出色的首层打印效果！
-## 各类优化宏
 
-    ### `[quad_gantry_level]`扫床优化
-        * 如果有配置`[quad_gantry_level]`可以添加下方宏到配置里面，没有则不需要添加
-        * 此宏会随着龙门高低差降低降低探测高度
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
 
-    ### `[z_tilt]`扫床优化
+## 如何微调z—offset
+* 第一步：使用pursa/OrcaSlicer/cura/Bambu Studio 切一个200x200高度0.2的一个方片去打印微调z—offset
+* 第二步：通过打印机ip进入`fluidd` `mainsail`找到仪表板`移动控制`z轴偏移继续微调z_OFFset然后记住微调的数值
+<ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
+* 第三步：通过下面命令重启klippper
+```bash
+FIRMWARE_RESTART
+```
+* 第四步：通过下面命令去调整Z—offset 弹出来的UI界面 调整`z—offset`调整的数值就是打印过程中调整的数值
+```bash
+G28
+PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+```
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
 
-        * 如果有配置`[z_tilt]`可以添加下方宏到配置里面，没有则不需要添加
-        * 此宏会随着龙门高低差降低降低探测高度
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
+:::info
+* 报错`Eddy current sensor error`这个调大eddy配置里面的z_offset数值，看图例
 
-    ### 扫床优化
+<ImageView image={require('@site/docs/DebugDoc/faq/img/EDDYZOFF.webp').default} size="50%" align="left" />
+:::
 
-        * 如果使用大功率交流热床（500W以上）
-        * 下方宏是在扫床时候关闭热床扫床完成后重新加热
-            ```cfg
-            [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode:
-                {% set TARGET_TEMP = printer.heater_bed.target %}
-                M140 S0
-                _BED_MESH_CALIBRATE {rawparams}
-                M140 S{TARGET_TEMP}
-            ```
-    ## 网床指令
-    
-        * 在`printer.cfg`配置里面添加下面的宏
-            ```bash
-            [gcode_macro BED_MESH_CALIBRATE]
-             rename_existing: _BED_MESH_CALIBRATE
-             gcode: 
-                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
-            ```
-        * 局域网床指令，需要确保Klipper可以使用对象排除功能，建议添加到开始宏中
-            ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
-            ```
+:::info
+ * 以上操作完成但是在开始做扫床失败请把z限位改成虚拟限位
+:::
+
 
 ## 线圈模型下载链接
 
