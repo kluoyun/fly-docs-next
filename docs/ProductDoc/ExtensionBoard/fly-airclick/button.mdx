@@ -1,11 +1,7 @@
 ---
-sidebar_position: 4
-sidebar_label: 无线连接配置
+sidebar_position: 6
+sidebar_label: 按钮添加
 ---
-
-
-
-
 
 # 无线按钮添加
 
@@ -33,14 +29,80 @@ sidebar_label: 无线连接配置
     :::
 
 ## 自定义GCODE
-    * 自定义`GCODE`，可以在红色框内输入你需要执行的代码或者宏名字， AirClick会自动发送到klipper执行
+    * 自定义`GCODE`，可以在红色框内输入你需要执行的代码或者宏名字， AirClick会自动发送到打印机执行
         <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/gcode.webp').default} size="80%" align="Center" />
 
 ## 请求API
-    * 可以实现自定义宏、急停、klipper重启、固件重启、关闭系统等
+
+<Tabs>
+    <TabItem value="ka" label="Klipper API设置" default>
+
+        1. 预定义API可以实现自定义宏、急停、klipper重启、固件重启、关闭系统等
         <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/api.webp').default} size="80%" align="Center" />
 
-## 触发GPIO
+        2. 自定义API说明
+            - 所有API参考文档[Moonraker API](https://moonraker.readthedocs.io/en/latest/web_api/)
+            - `method` 与MoonrakerAPI的`method`保持一致
+            - `params` 与MoonrakerAPI的`params`保持一致
+        3. 下面以开始打印指定文件API为例
+            - 下图为Moonraker官方文档示例
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-1.webp').default} size="80%" align="Center" />
+            - 下面为AirClick的API填写示例
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-2.webp').default} size="80%" align="Center" />
+        4. 保存这个按钮，就可以实现开始打印指定文件了
+    </TabItem>
+    <TabItem value="ra" label="RRF API设置">
+        1. 自定义API说明
+            - 所有API参考文档[RepRapFirmware HTTP API](https://github.com/Duet3D/RepRapFirmware/wiki/HTTP-requests)
+            - 只支持GET 请求接口
+            - `method` 与RRF HTTP API的`uri`保持一致
+            - `params` 与RRF HTTP API的`url query`保持一致
+        2. 下面以删除指定文件或文件夹API为例
+            - 下图为RRF官方文档示例
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-1.webp').default} size="80%" align="Center" />
+            - 下面为AirClick的API填写示例
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-2.webp').default} size="80%" align="Center" />
+            - 这里的params需要将URL参数改写成JSON格式，如`/?aaaa=bbb&cccc=ddd`
+            - 修改后为
+                ```json
+                {
+                    "aaaa": "bbb",
+                    "cccc": "ddd"
+                }
+                ```
+        3. 保存这个按钮，就可以实现删除指定文件或文件夹了
+    </TabItem>
+
+    <TabItem value="ba" label="BambuLab API设置">
+        1. 预定义API可以实现暂停打印，取消打印，led控制等
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-1.webp').default} size="80%" align="Center" />
+            - LED控制建议使用自动开关模式，此模式下，将自动检测LED状态，自动切换状态。实现一键开或关
+        2. 自定义API说明
+            - BambuLab API需自行查找相关Github Open BambuAPI文档
+        3. 下面以设置打印速度的API为例
+            - 下面为BambuLab局域网MQTT发送完整参数
+                ```json
+                {
+                    "print": {
+                        "sequence_id": "0",
+                        "command": "print_speed",
+                        "param": "2" // Print speed level as a string
+                                     // 1 = silent
+                                     // 2 = standard
+                                     // 3 = sport
+                                     // 4 = ludicrous
+                    }
+                }
+                ```
+            - 下图为AirClick的API填写示例
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-2.webp').default} size="80%" align="Center" />
+        4. 保存这个按钮，就可以实现设置打印速度了
+    </TabItem>
+
+</Tabs>
+    
+
+## 触发GPIO (仅Klipper)
     * 触发GPIO需要STM32F072与klipper连接
     * 固件烧录与连接需要查看此文档 <Button variant="contained" disableElevation href="/docs/ProductDoc/ExtensionBoard/fly-airclick/offline-operation-support">固件烧录与连接</Button>
     * 可以使用的IO有`PB0`到`PB9`一共十个IO，正常刷好固件连接Klipper后只需要正常配置即可下方是参考配置
