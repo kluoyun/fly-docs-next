@@ -22,8 +22,8 @@ class Translater:
         self.running = True
         self.file_list = file_list
         self.client = OpenAI(
-            api_key=os.getenv("OPENAI_API_KEY"),
-            base_url="https://api.x.ai/v1",
+            api_key="f05de70a-ba57-4cd3-a97e-da59bca2d416",
+            base_url="https://ark.cn-beijing.volces.com/api/v3",
         )
 
     def stop(self) -> None:
@@ -74,7 +74,7 @@ class Translater:
                         }
                     )
                 completion: ChatCompletion = self.client.chat.completions.create(
-                    model="grok-beta",
+                    model="ep-20250116164055-48q6q",
                     messages=msg,
                     timeout=60,
                 )
@@ -125,7 +125,7 @@ class Translater:
             if os.path.exists(target_file):
                 # 已存在翻译文件，跳过
                 continue
-            if file.endswith("cfg.mdx") or file.endswith("voron0.mdx"):
+            if file.endswith("cfg.mdx") or file.endswith("voron0.mdx") or file.endswith("voron2.4.mdx"):
                 # 暂不翻译cfg，跳过
                 continue
             tr_file_list.append({"src_file": file, "target_file": target_file})
