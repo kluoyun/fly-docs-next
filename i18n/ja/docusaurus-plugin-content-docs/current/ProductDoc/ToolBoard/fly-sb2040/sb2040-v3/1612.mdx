@@ -1,72 +1,38 @@
 ---
 sidebar_position: 7
-sidebar_label: Eddyの使用
+sidebar_label: エディの使用
 ---
+
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
-# Eddyの使用
+# エディの使用
 
     :::info
 
-    * ベッドスキャンには個別のZリミットを使用することをお勧めします。ベッドスキャンをZリミットとして使用することはお勧めしません。
-    * Eddyをインストールする際、ノズルの位置から1-2mm上に底部を配置する必要があります。
-    * Eddyの周波数を較正する際、コイルPCBは少なくとも熱ベッドから5mm以上離す必要があります。
-    * すべてのベッドが常温下でテストされていることを確認し、テスト中は熱ベッドをオンにしないでください。
+    * ベッド掃除のためのZ限界は別々に設定することをおすすめします。ベッド掃除をZ限界として使用することはおすすめしません。
+    * エディを設置する際、ボトムがノズルの位置に対して少なくともノズルの上1 - 2mmになるようにする必要があります。
+    * エディの周波数を較正する際、コイルPCBはホットベッドから少なくとも5mm離れている必要があります。
+    * ホットベッド全体を常温でテストしないでください。また、テスト時にホットベッドをオンにしないでください。
 
     :::
 
 ## 配線図
 
-    * 商標が下を向くように
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.webp').default} size="100%" align="left" />
+    * 商標を下に向ける
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly - sb2040/sb2040 - v3/img/1612.webp').default} size="100%" align="left" />
 
 
-## 設定と使用説明
+## 参考設定と使用説明
 
-### ldc1612 1612デフォルト周波数の変更
-    この方法はsht36-v3/SB2040-v3またはSB2040-Pro-v3でのみ使用されます。
-    Mobaxtermツールを使用してコマンドを実行できます。
+##### `printer.cfg`設定ファイルに以下の設定を追加し、エディのデバッグを行います
 
-    必要なツールをダウンロードしてください <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxtermツール</Button>
-
-    
-    [詳細な使用方法はこちらを参照してください](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
-
-
-    最初のコマンドを実行してEnterキーを押します。
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
-    ```
-
-    二つ目のコマンドを実行してEnterキーを押します。
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    置換が成功すると、`LDC1612_FREQ = 40000000`を含む行が返されます。成功した場合、何も返されない場合、置換が失敗したことを意味します。
-    または、次のコマンドで成功を確認できます。
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
-
-   注意：変更後は次のコマンドを使用してKlipperサービスを再起動し、Eddyの周波数を再度較正してください。
-   ```cfg
-   systemctl restart klipper
-   ```
-   Eddyの周波数較正コマンド
-   ```cfg
-   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-   ```
-
-    ### ベッドスキャン設定
+    ### ベッド掃除設定
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
-        z_offset: 1.0
+        z_offset: 2.0
         i2c_address: 43
         i2c_mcu: SB2040
         i2c_bus: i2c1b
@@ -76,21 +42,7 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         lift_speed: 5
         ```
 
-        * 注意：現在、外部1612モジュールがリリースされていないため、この設定は使用できません。
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 1.0
-        i2c_address: 42
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### 温度補正設定
+    ### 温度補償設定
 
         ```cfg
         [temperature_probe fly_eddy_probe]
@@ -98,13 +50,109 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         sensor_pin:SB2040:gpio28
         ```
 
+    ## ネットベッドコマンド
+
+        * `printer.cfg`設定に以下のマクロを追加します
+            ```bash
+            [gcode_macro BED_MESH_CALIBRATE]
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
+            ```
+        * ローカルエリアネットワークベッドコマンドは、Klipperがオブジェクト除外機能を使用できることを確認する必要があります。開始マクロに追加することをおすすめします
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
+            ```
+
 ### bed_mesh設定
 
-    * [bed_mesh] の`horizontal_move_z`パラメータは、2に設定することをお勧めします。ベッドスキャン中にEddyがプラットフォームにできるだけ近づくようにします。
+    * [bed_mesh]の`horizontal_move_z`パラメータは、2に設定することをおすすめします。これにより、スキャンプラットフォームの際、エディができるだけプラットフォームに近づきます
 
     ```cfg
     [bed_mesh]
     horizontal_move_z: 2
     ```
+## 衝突防止マクロ
+
+    ### `[quad_gantry_level]`ベッド掃除最適化
+        * `[quad_gantry_level]`が設定されている場合は、以下のマクロを設定に追加できます。設定されていない場合は追加する必要はありません
+        * このマクロは、ガントリの高さ差に応じて探査高度を下げます
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### `[z_tilt]`ベッド掃除最適化
+
+        * `[z_tilt]`が設定されている場合は、以下のマクロを設定に追加できます。設定されていない場合は追加する必要はありません
+        * このマクロは、ガントリの高さ差に応じて探査高度を下げます
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### エディがおそらくホットベッドの干渉を受けてベッド掃除を最適化するマクロ
+
+        * 高出力交流ホットベッド（500W以上）を使用している場合
+        * 以下のマクロは、ベッド掃除時にホットベッドをオフにし、掃除が完了した後に再び加熱します
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
+
+   # デバッグ手順： 
+   ## 最初のステップ：周波数を変更する
+
+    ### ldc16121612のデフォルト周波数の変更
+    この方法はsht36 - v3 / SB2040 - v3またはSB2040 - Pro - v3にのみ使用できます
+    Mobaxtermツールを使用してコマンドを実行できます
+
+    必要な<Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxtermツール</Button>をダウンロードします
+
+    [詳細な使用方法は](/docs/ProductDoc/SBC/fly - pi - v2/ssh)を参照してください
+
+
+    最初のコマンドを実行し、エンターキーを押します
+
+    ```cfg
+sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+    ```
+
+    2番目のコマンドを実行し、エンターキーを押します
+  ```cfg
+grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+  ```
+    置換が成功すると、`LDC1612_FREQ = 40000000`を含む行が返されます。そうでない場合は、置換が失敗しています。
+    または、このコマンドを使用して成功かどうかを確認できます
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly - sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
+```cfg
+sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
+```
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly - sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
     <LDC1612 />
+
+ 
