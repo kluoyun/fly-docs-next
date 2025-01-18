@@ -3,34 +3,136 @@ sidebar_position: 7
 sidebar_label: Utilisation d'Eddy
 ---
 
+
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Utilisation d'Eddy
 
     :::info
 
-    * Veuillez noter que l'utilisation d'un lit de balayage suggère l'utilisation d'une limite Z séparée, et il n'est pas recommandé d'utiliser le lit de balayage comme limite Z
-    * Lors de l'installation d'Eddy, la partie inférieure doit être au moins à 1-2 mm au-dessus de la buse
-    * Lors de l'étalonnage de la fréquence Eddy, la PCB de la bobine doit être à au moins 5 mm du lit chauffant
-    * Veuillez ne pas effectuer de tests à température ambiante sur l'ensemble du lit chauffant, et ne pas allumer le lit chauffant pendant les tests
+    * Veuillez noter qu'il est recommandé d'utiliser une limite Z séparée pour le balayage du lit et de ne pas utiliser le balayage du lit comme limite Z.
+    * Lors de l'installation d'Eddy, la position du bas par rapport à la buse doit être d'au moins 1 - 2 mm au-dessus de la buse.
+    * Lors du calibrage de la fréquence d'Eddy, le PCB de la bobine doit être à au moins 5 mm de la plaque chauffante.
+    * Veuillez ne pas tester toute la plaque chauffante à température ambiante et ne pas activer la plaque chauffante lors du test.
 
     :::
 
 ## Schéma de câblage
 
-    * Marque vers le bas
+    * Le logo est vers le bas
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="100%" align="left" />
 
 
 ## Configuration de référence et instructions d'utilisation
 
-### Modification de la fréquence par défaut de ldc1612 1612
-    Cette méthode est uniquement destinée à sht36-v3/SB2040-v3 ou SB2040-Pro-v3
-    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes
+##### Ajoutez la configuration suivante dans le fichier de configuration `printer.cfg` pour effectuer le débogage d'Eddy
 
-    Téléchargez l'outil nécessaire <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button>
+    ### Configuration du balayage du lit
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 2.0
+        i2c_address: 43
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### Configuration de la compensation de température
+
+        ```cfg
+        [temperature_probe fly_eddy_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SB2040:gpio28
+        ```
+
+    ## Instructions de la grille de réseau
+
+        * Ajoutez la macro suivante dans la configuration `printer.cfg`
+            ```bash
+            [gcode_macro BED_MESH_CALIBRATE]
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
+            ```
+        * Pour les instructions de la grille de réseau du réseau local, assurez-vous que Klipper peut utiliser la fonction d'exclusion d'objet et il est recommandé de l'ajouter au macro de début
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
+            ```
+
+### Configuration de bed_mesh
+
+    * Pour le paramètre `horizontal_move_z` dans `[bed_mesh]`, il est recommandé de le définir sur 2 afin que, lors du balayage de la plateforme, Eddy soit aussi proche que possible de la plateforme.
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+## Macro anti-collision
+
+    ### Optimisation du balayage du lit pour `[quad_gantry_level]`
+        * Si `[quad_gantry_level]` est configuré, vous pouvez ajouter la macro suivante à la configuration. Sinon, il n'est pas nécessaire de l'ajouter.
+        * Cette macro réduira la hauteur de détection en fonction de l'écart de hauteur du portique.
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### Optimisation du balayage du lit pour `[z_tilt]`
+
+        * Si `[z_tilt]` est configuré, vous pouvez ajouter la macro suivante à la configuration. Sinon, il n'est pas nécessaire de l'ajouter.
+        * Cette macro réduira la hauteur de détection en fonction de l'écart de hauteur du portique.
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### Macro d'optimisation du balayage du lit pour les interférences probables de la plaque chauffante d'Eddy
+
+        * Si vous utilisez une plaque chauffante à courant alternatif de forte puissance (plus de 500 W)
+        * Cette macro éteint la plaque chauffante lors du balayage du lit et la rallume après l'avoir terminé.
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
+
+   # Étapes de débogage: 
+   ## Première étape : Modifier la fréquence
+
+    ### Modification de la fréquence par défaut de ldc16121612
+    Cette méthode est uniquement utilisée pour sht36-v3 / SB2040-v3 ou SB2040-Pro-v3
+    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes.
     
-    [Pour une utilisation détaillée, veuillez consulter](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+    Téléchargez l' <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">outil Mobaxterm</Button> dont vous avez besoin.
+    
+    [Veuillez consulter pour une utilisation détaillée](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
 
 
     Exécutez la première commande et appuyez sur Entrée
@@ -43,67 +145,14 @@ sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/ex
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    Si le remplacement est réussi, une ligne contenant `LDC1612_FREQ = 40000000` sera retournée. Si aucune ligne n'est retournée, cela signifie que le remplacement n'a pas été effectué.
-    Ou utilisez cette commande pour vérifier si le remplacement a été effectué
+    Si le remplacement est réussi, une ligne contenant `LDC1612_FREQ = 40000000` sera renvoyée, ce qui signifie que le remplacement a réussi. Si rien n'est renvoyé, cela signifie que le remplacement n'a pas réussi.
+    Ou utilisez cette commande pour vérifier si le remplacement a réussi
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   Remarque : Après la modification, veuillez utiliser cette commande pour redémarrer le service Klipper et recalibrer la fréquence Eddy
-   ```cfg
-   systemctl restart klipper
-   ```
-   Commande de calibration de la fréquence Eddy
-   ```cfg
-   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-   ```
-
-    ### Configuration du balayage de lit
-
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 1.0
-        i2c_address: 43
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-        * Veuillez noter que le module externe 1612 n'a pas encore été publié, donc cette configuration n'est pas encore utilisable
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 1.0
-        i2c_address: 42
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### Configuration de compensation thermique
-
-        ```cfg
-        [temperature_probe fly_eddy_probe]
-        sensor_type:Generic 3950
-        sensor_pin:SB2040:gpio28
-        ```
-
-### Configuration bed_mesh
-
-    * Le paramètre `horizontal_move_z` dans [bed_mesh] devrait être défini sur 2 pour que le balayage de la plateforme soit aussi proche que possible de la plateforme
-
-    ```cfg
-    [bed_mesh]
-    horizontal_move_z: 2
-    ```
-
     <LDC1612 />
+
+ 

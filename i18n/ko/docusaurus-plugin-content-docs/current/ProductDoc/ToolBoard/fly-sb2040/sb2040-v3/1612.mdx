@@ -1,37 +1,138 @@
 ---
 sidebar_position: 7
-sidebar_label: Eddy 사용
+sidebar_label: 에디 사용
 ---
+
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
-# Eddy 사용
+# 에디 사용
 
     :::info
 
-    * 스캔 베드를 Z 리미트로 사용하는 것은 권장하지 않으며, 별도의 Z 리미트를 사용하는 것이 좋습니다.
-    * Eddy를 설치할 때, 노즐 위치에서 최소 1-2mm 위에 있어야 합니다.
-    * Eddy 주파수 보정 시, 코일 PCB는 히트 베드에서 최소 5mm 이상 떨어져 있어야 합니다.
-    * 베드가 상온 상태에서 테스트하며, 테스트 중에 히트 베드를 켜지 마십시오.
+    * 침대 청소를 위해서는 별도의 Z 제한을 사용하는 것이 권장되며, 침대 청소를 Z 제한으로 사용하지 않는 것이 좋습니다.
+    * 에디를 설치할 때, 바닥이 노즐에 비해 최소 1 - 2mm 위에 위치해야 합니다.
+    * 에디 주파수를 보정할 때, 코일 PCB는 핫 베드에서 최소 5mm 떨어져 있어야 합니다.
+    * 핫 베드를 모두 상온에서 테스트하지 말고, 테스트 시 핫 베드를 켜지 마세요.
 
     :::
 
-## 접선 도식도
+## 배선 다이어그램
 
-    * 상표를 아래로 향하게 하여
+    * 상표는 아래쪽을 향하게 합니다.
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.webp').default} size="100%" align="left" />
 
 
-## 참조 설정 및 사용 설명서
+## 참고 구성 및 사용 설명
 
-### ldc1612 1612 기본 주파수 수정
+##### `printer.cfg` 구성 파일에 다음 구성을 추가하고 에디를 디버그합니다.
+
+    ### 침대 청소 구성
+
+        ```cfg
+        [probe_eddy_current fly_eddy_probe]
+        sensor_type: ldc1612
+        z_offset: 2.0
+        i2c_address: 43
+        i2c_mcu: SB2040
+        i2c_bus: i2c1b
+        x_offset: 0
+        y_offset: 0
+        speed:40
+        lift_speed: 5
+        ```
+
+    ### 온도 보상 구성
+
+        ```cfg
+        [temperature_probe fly_eddy_probe]
+        sensor_type:Generic 3950
+        sensor_pin:SB2040:gpio28
+        ```
+
+    ## 그물 침대 명령
+
+        * `printer.cfg` 구성에 아래의 매크로를 추가합니다.
+            ```bash
+            [gcode_macro BED_MESH_CALIBRATE]
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
+            ```
+        * LAN 그물 침대 명령은 Klipper가 객체 배제 기능을 사용할 수 있는지 확인해야 하며, 시작 매크로에 추가하는 것이 좋습니다.
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
+            ```
+
+### bed_mesh 구성
+
+    * [bed_mesh]의 `horizontal_move_z` 매개변수는 2로 설정하는 것이 좋습니다. 이렇게 하면 스캔 플랫폼을 할 때 에디가 플랫폼에 가능한 한 가까이 갈 수 있습니다.
+
+    ```cfg
+    [bed_mesh]
+    horizontal_move_z: 2
+    ```
+## 충돌 방지 매크로
+
+    ### `[quad_gantry_level]` 침대 청소 최적화
+        * `[quad_gantry_level]`가 구성되어 있다면 아래의 매크로를 구성에 추가할 수 있으며, 없다면 추가할 필요가 없습니다.
+        * 이 매크로는 용문의 높낮이 차이에 따라 탐지 높이를 낮춥니다.
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### `[z_tilt]` 침대 청소 최적화
+
+        * `[z_tilt]`가 구성되어 있다면 아래의 매크로를 구성에 추가할 수 있으며, 없다면 추가할 필요가 없습니다.
+        * 이 매크로는 용문의 높낮이 차이에 따라 탐지 높이를 낮춥니다.
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### 에디가 대략적으로 핫 베드 간섭으로 침대 청소를 최적화하는 매크로
+
+        * 고출력 교류 핫 베드(500W 이상)를 사용하는 경우
+        * 아래의 매크로는 침대 청소 시 핫 베드를 끄고 청소가 완료되면 다시 가열합니다.
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
+
+   # 디버그 단계: 
+   ## 첫 번째 단계 주파수 수정
+
+    ### ldc16121612 기본 주파수 수정
     이 방법은 sht36-v3/SB2040-v3 또는 SB2040-Pro-v3에만 사용됩니다.
     Mobaxterm 도구를 사용하여 명령을 실행할 수 있습니다.
-
-    필요한 도구를 다운로드하세요 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구</Button>
-
     
-    [자세한 사용 방법은 여기를 참조하세요](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
+    필요한 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm 도구</Button>를 다운로드합니다.
+    
+    [자세한 사용 방법은](/docs/ProductDoc/SBC/fly-pi-v2/ssh)를 참조하세요.
 
 
     첫 번째 명령을 실행하고 엔터를 누릅니다.
@@ -44,67 +145,11 @@ sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/ex
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    `LDC1612_FREQ = 40000000`가 포함된 행이 반환되면 교체가 성공적으로 완료된 것입니다. 아무것도 반환되지 않으면 교체가 실패한 것입니다.
-    또는 이 명령으로 성공 여부를 확인할 수 있습니다.
+    대체가 성공하면 `LDC1612_FREQ = 40000000`을 포함하는 한 줄이 반환되고, 그렇지 않으면 대체가 실패한 것입니다. 또는 이 명령을 사용하여 성공 여부를 확인할 수 있습니다.
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-   따뜻한 팁: 수정이 완료되면 다음 명령을 사용하여 klipper 서비스를 재시작하고 Eddy 주파수를 다시 보정하십시오.
-   ```cfg
-   systemctl restart klipper
-   ```
-   Eddy 주파수 보정 명령
-   ```cfg
-   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-   ```
-
-    ### 스캔 베드 설정
-
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 1.0
-        i2c_address: 43
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-        * 현재 외부 1612 모듈이 출시되지 않았기 때문에 이 설정은 현재 사용할 수 없습니다.
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 1.0
-        i2c_address: 42
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### 온도 보정 설정
-
-        ```cfg
-        [temperature_probe fly_eddy_probe]
-        sensor_type:Generic 3950
-        sensor_pin:SB2040:gpio28
-        ```
-
-### bed_mesh 설정
-
-    * [bed_mesh]의 `horizontal_move_z` 매개변수를 2로 설정하여 스캔 중에 Eddy가 가능한 한 플랫폼에 가깝게 위치하도록 권장합니다.
-
-    ```cfg
-    [bed_mesh]
-    horizontal_move_z: 2
-    ```
-
-    <LDC1612 />
+    <LDC1612 /> 

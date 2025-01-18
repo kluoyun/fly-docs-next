@@ -3,85 +3,37 @@ sidebar_position: 7
 sidebar_label: Eddy Usage
 ---
 
+
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddy Usage
 
     :::info
 
-    * Please note that it is recommended to use a separate Z endstop for bed leveling, rather than using the bed leveling as a Z endstop
-    * When installing Eddy, the bottom should be at least 1-2 mm above the nozzle
-    * When calibrating Eddy frequency, the coil PCB should be at least 5mm away from the heated bed
-    * Please ensure the entire heated bed is at room temperature during testing, and do not turn on the heated bed during the test
+    * Please note that it is recommended to use a separate Z limit for bed sweeping, and it is not recommended to use the bed sweeping as the Z limit.
+    * When installing Eddy, the position of the bottom relative to the nozzle should be at least 1 - 2 mm above the nozzle.
+    * When calibrating the Eddy frequency, the coil PCB should be at least 5 mm away from the heated bed.
+    * Please do not test the entire heated bed at room temperature, and do not turn on the heated bed during the test.
 
     :::
 
 ## Wiring Diagram
 
-    * With the logo facing down
+    * The trademark should face down.
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.webp').default} size="100%" align="left" />
 
 
 ## Reference Configuration and Usage Instructions
 
-### Modifying the default frequency of ldc1612 1612
-    This method is only applicable to sht36-v3/SB2040-v3 or SB2040-Pro-v3
-    You can use the Mobaxterm tool to execute commands
+##### Add the following configuration to the `printer.cfg` configuration file to debug Eddy.
 
-    Download the required <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm tool</Button>
-
-    
-    [For detailed usage, please refer to](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
-
-
-    Execute the first command and press Enter
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
-    ```
-
-    Execute the second command and press Enter
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    If the replacement is successful, a line containing `LDC1612_FREQ = 40000000` will be returned. If there is no return, the replacement was not successful.
-    Alternatively, use this command to check if the modification was successful
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
-
-   Friendly reminder: After modification, please use this command to restart the klipper service and recalibrate the Eddy frequency
-   ```cfg
-   systemctl restart klipper
-   ```
-   Eddy calibration frequency command
-   ```cfg
-   PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-   ```
-
-    ### Bed Leveling Configuration
+    ### Bed Sweeping Configuration
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
-        z_offset: 1.0
+        z_offset: 2.0
         i2c_address: 43
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-        * Please note that there is currently no external 1612 module available, so this configuration cannot be used at the moment
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 1.0
-        i2c_address: 42
         i2c_mcu: SB2040
         i2c_bus: i2c1b
         x_offset: 0
@@ -98,13 +50,107 @@ sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
         sensor_pin:SB2040:gpio28
         ```
 
-### Bed Mesh Configuration
+    ## Mesh Bed Commands
 
-    * The `horizontal_move_z` parameter in [bed_mesh], it is recommended to set it to 2, so that Eddy is as close to the platform as possible during scanning
+        * Add the following macro to the `printer.cfg` configuration.
+            ```bash
+            [gcode_macro BED_MESH_CALIBRATE]
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
+            ```
+        * For the local area network bed command, it is necessary to ensure that Klipper can use the object exclusion function. It is recommended to add it to the start macro.
+            ```bash
+            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
+            ```
+
+### bed_mesh Configuration
+
+    * For the `horizontal_move_z` parameter in [bed_mesh], it is recommended to set it to 2 to make Eddy as close to the platform as possible when scanning the platform.
 
     ```cfg
     [bed_mesh]
     horizontal_move_z: 2
     ```
+## Anti-collision Macro
 
-    <LDC1612 />
+    ### `[quad_gantry_level]` Bed Sweeping Optimization
+        * If `[quad_gantry_level]` is configured, the following macro can be added to the configuration. If not, there is no need to add it.
+        * This macro will reduce the detection height as the height difference of the gantry decreases.
+            ```cfg
+            [gcode_macro QUAD_GANTRY_LEVEL]
+            rename_existing: _QUAD_GANTRY_LEVEL
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_QGL
+                BED_MESH_CLEAR
+                {% if not printer.quad_gantry_level.applied %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_QGL
+            ```
+
+    ### `[z_tilt]` Bed Sweeping Optimization
+
+        * If `[z_tilt]` is configured, the following macro can be added to the configuration. If not, there is no need to add it.
+        * This macro will reduce the detection height as the height difference of the gantry decreases.
+            ```cfg
+            [gcode_macro Z_TILT_ADJUST]
+            rename_existing: _Z_TILT_ADJUST
+            gcode:
+                SAVE_GCODE_STATE NAME=STATE_Z_TILT
+                BED_MESH_CLEAR
+                {% if not printer.z_tilt.applied %}
+                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+                {% endif %}
+                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+                # G28 Z
+                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+            ```
+
+    ### Eddy is likely to be interfered by the heated bed during bed sweeping optimization macro
+
+        * If a high-power AC heated bed (above 500W) is used.
+        * The following macro is to turn off the heated bed during bed sweeping and reheat it after the bed sweeping is completed.
+            ```cfg
+            [gcode_macro BED_MESH_CALIBRATE]
+            rename_existing: _BED_MESH_CALIBRATE
+            gcode:
+                {% set TARGET_TEMP = printer.heater_bed.target %}
+                M140 S0
+                _BED_MESH_CALIBRATE {rawparams}
+                M140 S{TARGET_TEMP}
+            ```
+
+   # Debugging Steps: 
+   ## The First Step: Modify the Frequency
+
+    ### Default Frequency Modification of ldc16121612
+    This method is only for sht36-v3/SB2040-v3 or SB2040-Pro-v3.
+    The Mobaxterm tool can be used to execute the commands.
+
+    Download the required <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm tool</Button>.
+
+    [For detailed usage, please refer to](/docs/ProductDoc/SBC/fly-pi-v2/ssh).
+
+
+    Execute the first command and press Enter.
+
+    ```cfg
+sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+    ```
+
+    Execute the second command and press Enter.
+  ```cfg
+grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
+  ```
+    If the replacement is successful, a line with `LDC1612_FREQ = 40000000` will be returned, indicating that the replacement is successful. If there is no return, it means the replacement is not successful.
+    Or use this command to check if it is successful.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
+```cfg
+sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
+```
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+
+    <LDC1612 /> 

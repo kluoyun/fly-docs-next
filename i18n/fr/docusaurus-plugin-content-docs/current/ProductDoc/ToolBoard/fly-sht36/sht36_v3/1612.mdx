@@ -3,34 +3,35 @@ sidebar_position: 7
 sidebar_label: Utilisation d'Eddy
 ---
 
+
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Utilisation d'Eddy
 
     :::info
-    * Lors de l'installation d'Eddy, la position de la base par rapport à la buse doit être au moins 1 à 2 mm au-dessus de la buse.
-    * Lors du réglage de la fréquence d'Eddy, le PCB de la bobine doit être éloigné de au moins 5 mm du lit chauffant.
-    * Veuillez ne pas tester le lit chauffant à température ambiante et ne pas l'allumer pendant le test.
+    * Lors de l'installation d'Eddy, la position du bas par rapport à la buse doit être d'au moins 1 - 2 mm au-dessus de la buse.
+    * Lors de l'étalonnage de la fréquence d'Eddy, la PCB de la bobine doit être à au moins 5 mm de la plaque chauffante.
+    * Veuillez ne pas tester toute la plaque chauffante à température ambiante et ne pas l'activer lors du test.
 
     :::
 
 
 ## Schéma de câblage
 
-    * Logo vers le bas
+    * Le logo est orienté vers le bas
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
 
 ## Configuration de référence et instructions d'utilisation
 
-##### Ajoutez la configuration suivante dans le fichier de configuration `printer.cfg` pour debugger Eddy
+##### Ajoutez la configuration suivante dans le fichier de configuration `printer.cfg` pour déboguer Eddy
 
-    ### Configuration de la sonde
+    ### Configuration de balayage de la plaque
 
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
-        z_offset: 1.0
+        z_offset: 2.0
         i2c_address: 43
         i2c_mcu: SHT36
         i2c_bus: i2c1e
@@ -40,21 +41,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         lift_speed: 5
         ```
 
-        * Veuillez noter que le module externe 1612 n'est pas encore disponible, donc cette configuration n'est pas utilisable pour le moment.
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 1.0
-        i2c_address: 42
-        i2c_mcu: SHT36
-        i2c_bus: i2c1e
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### Configuration de compensation thermique
+    ### Configuration de température compensée
 
         ```cfg
         [temperature_probe fly_eddy_probe]
@@ -62,33 +49,33 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         sensor_pin:SHT36:gpio28
         ```
 
-    ## Commandes du lit
+    ## Commandes de réseau de plaque
 
-        * Ajoutez la macro suivante dans la configuration `printer.cfg`
+        * Ajoutez le macro suivant dans la configuration `printer.cfg`
             ```bash
             [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode: 
-                _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
+             rename_existing: _BED_MESH_CALIBRATE
+             gcode: 
+                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
             ```
-        * Pour les commandes de lit en réseau local, assurez-vous que Klipper peut utiliser la fonction d'exclusion d'objet, il est recommandé de l'ajouter dans la macro de démarrage.
+        * Pour la commande de réseau de plaque en réseau local, assurez-vous que Klipper peut utiliser la fonction d'exclusion d'objet. Il est recommandé de l'ajouter au macro de démarrage.
             ```bash
             BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
             ```
 
 ### Configuration de bed_mesh
 
-    * Dans `[bed_mesh]`, il est recommandé de définir le paramètre `horizontal_move_z` à 2 pour que Eddy soit le plus près possible du lit lors du balayage.
+    * Pour le paramètre `horizontal_move_z` dans `[bed_mesh]`, il est recommandé de le définir sur 2 afin que lors du balayage de la plateforme, Eddy soit le plus près possible de la plateforme.
 
     ```cfg
     [bed_mesh]
     horizontal_move_z: 2
     ```
-## Macro de protection contre les collisions
+## Macro anti-collision
 
-    ### Optimisation de la sonde `[quad_gantry_level]`
-        * Si `[quad_gantry_level]` est configuré, ajoutez la macro ci-dessous dans la configuration, sinon ce n'est pas nécessaire.
-        * Cette macro réduira la hauteur de détection en fonction de la différence de hauteur du portique.
+    ### Optimisation du balayage de la plaque pour `[quad_gantry_level]`
+        * Si vous avez configuré `[quad_gantry_level]`, vous pouvez ajouter le macro suivant à la configuration. Sinon, vous n'avez pas besoin de l'ajouter.
+        * Ce macro réduit la hauteur de détection en fonction de l'écart de hauteur du portique.
             ```cfg
             [gcode_macro QUAD_GANTRY_LEVEL]
             rename_existing: _QUAD_GANTRY_LEVEL
@@ -103,10 +90,10 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
                 RESTORE_GCODE_STATE NAME=STATE_QGL
             ```
 
-    ### Optimisation de la sonde `[z_tilt]`
+    ### Optimisation du balayage de la plaque pour `[z_tilt]`
 
-        * Si `[z_tilt]` est configuré, ajoutez la macro ci-dessous dans la configuration, sinon ce n'est pas nécessaire.
-        * Cette macro réduira la hauteur de détection en fonction de la différence de hauteur du portique.
+        * Si vous avez configuré `[z_tilt]`, vous pouvez ajouter le macro suivant à la configuration. Sinon, vous n'avez pas besoin de l'ajouter.
+        * Ce macro réduit la hauteur de détection en fonction de l'écart de hauteur du portique.
             ```cfg
             [gcode_macro Z_TILT_ADJUST]
             rename_existing: _Z_TILT_ADJUST
@@ -121,10 +108,10 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
                 RESTORE_GCODE_STATE NAME=STATE_Z_TILT
             ```
 
-    ### Macro d'optimisation de la sonde pour éviter les interférences du lit chauffant
+    ### Macro d'optimisation du balayage de la plaque pour les interférences probables de la plaque chauffante d'Eddy
 
-        * Si vous utilisez un lit chauffant à haute puissance (500W ou plus)
-        * La macro ci-dessous éteint le lit chauffant pendant le balayage et le réchauffe après.
+        * Si vous utilisez une plaque chauffante à courant alternatif de forte puissance (plus de 500 W)
+        * Ce macro est utilisé pour désactiver la plaque chauffante lors du balayage de la plaque et la réactiver après le balayage.
             ```cfg
             [gcode_macro BED_MESH_CALIBRATE]
             rename_existing: _BED_MESH_CALIBRATE
@@ -138,13 +125,14 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
    # Étapes de débogage : 
    ## Première étape : Modifier la fréquence
 
-    ### Modification de la fréquence par défaut de ldc1612
-    Cette méthode est uniquement pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3
+    ### Modification de la fréquence par défaut de ldc16121612
+    Cette méthode est uniquement utilisée pour sht36-v3/SB2040-v3 ou SB2040-Pro-v3
     Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes.
+    
+    Téléchargez l' <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">outil Mobaxterm</Button> dont vous avez besoin.
+    
+    [Veuillez vous référer à](/docs/ProductDoc/SBC/fly-pi-v2/ssh) pour une utilisation détaillée.
 
-    Téléchargez l'outil requis <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm</Button>
-
-    [Pour des instructions détaillées, consultez](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
 
     Exécutez la première commande et appuyez sur Entrée
 
@@ -156,12 +144,12 @@ sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/ex
   ```cfg
 grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
   ```
-    Si la substitution est réussie, une ligne contenant `LDC1612_FREQ = 40000000` sera retournée. Si aucune ligne n'est retournée, cela signifie que la substitution n'a pas réussi.
-    Ou utilisez cette commande pour vérifier le succès
+    Si la substitution est réussie, une ligne avec `LDC1612_FREQ = 40000000` sera renvoyée, ce qui signifie que la substitution a réussi. Si rien n'est renvoyé, cela signifie que la substitution n'a pas réussi.
+    Ou vous pouvez utiliser cette commande pour vérifier si la substitution a réussi
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
 ```cfg
 sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
 ```
    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
 
-    <LDC1612 />
+    <LDC1612 /> 
