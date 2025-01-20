@@ -1,52 +1,54 @@
-## Rechercher un tutoriel USB
+## Rechercher le tutoriel USB
 
-## Points à noter avant de rechercher un dispositif
+## Conseils avant de rechercher l'appareil
 
-    * Avant de rechercher un ID USB, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour accéder")
-    * Assurez-vous d'utiliser le réseau pour vous connecter à SSH et non le port série
-    * Assurez-vous que la carte mère avec le firmware USB est correctement connectée et que le câble de données connecté à l'ordinateur hôte permet la transmission de données
+    * Avant de rechercher l'ID USB, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour accéder")
+    * Veuillez noter qu'il faut s'assurer de se connecter à SSH via le réseau et non via le port série.
+    * Veuillez vous assurer que la carte mère avec le firmware USB est bien connectée et que le câble de données reliant l'ordinateur hôte et l'appareil inférieur a une fonction de transmission de données.
 
-## Rechercher un dispositif
-
-    * Maintenant que vous êtes connecté normalement à l'ordinateur hôte, vous pouvez entrer `lsusb` pour rechercher le dispositif. Voici les situations possibles :
-        * Si `lsusb` indique que la commande `ls` n'est pas trouvée, vous pouvez installer la commande avec l'instruction suivante :
+## Rechercher l'appareil
+    * Veuillez vous assurer que l'ordinateur hôte peut se connecter normalement à Internet et que le câble de données reliant l'ordinateur hôte et l'appareil inférieur a une fonction de transmission de données.
+    * Après la connexion SSH à l'ordinateur hôte, tapez `lsusb` et appuyez sur Entrée. Si les informations encadrées sur l'image ci-dessous apparaissent, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est renvoyée, c'est un problème du système de l'ordinateur hôte. Nous n'y pouvons rien. Vous devez changer de système normal ou de l'ordinateur hôte.
+        * Si un message indique qu'il n'y a pas d'instruction `lsusb`, vous pouvez l'installer en exécutant cette commande :
             ```bash
             sudo apt-get install usbutils
             ```
-        * Si rien ne se passe après avoir entré `lsusb`, c'est un problème système que nous ne pouvons pas résoudre, vous devrez changer de système ou utiliser un système connu pour fonctionner correctement
-        * Si vous voyez les informations dans l'image ci-dessous, notez que c'est juste un exemple. Vous devez simplement vérifier les caractères après l'ID :
-            <ImageView image={require('@site/docs/General/get-id/img/614e.webp').default} size="100%" align="left" />
-    * `1d50:614e` est l'ID du dispositif que vous allez utiliser. Ignorez les messages suivants car des problèmes système peuvent entraîner des affichages incomplets ou absents.
-    * Si rien ne s'affiche, vérifiez si le câble de données est bien connecté et si le firmware est correctement installé.
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * `1d50:6177` est l'appareil que vous devez utiliser cette fois. Le suffixe `OpenMoko, Inc. stm32f407xx` a une certaine valeur de référence, mais n'est pas utilisé comme critère de jugement.
+        * Certains ordinateurs hôtes peuvent, en raison de problèmes de système, ne pas afficher complètement ou pas du tout.
+        * Si l'instruction `lsusb` peut afficher l'appareil, mais pas `1d50:6177`, veuillez essayer de changer le câble de données et d'essayer de connecter la carte mère à un autre port USB de l'ordinateur hôte.
+    * Si vous avez déjà effectué les étapes précédentes et que le firmware Klipper a été correctement gravé, que la carte mère fonctionne normalement et que vous voulez simplement mettre à jour le firmware Klipper, veuillez directement consulter le chapitre `Mise à jour du firmware` dans le menu latéral droit de cette page.
 
-:::warning Points à noter
-Vous ne pouvez rechercher l'ID USB que lorsque vous avez `1d50:614e`.
-:::
+    :::warning Conseils
+       Vous devez d'abord trouver l'appareil `1d50:6177` avant de passer à l'étape suivante.
+    :::
 
-## Rechercher l'ID USB
+## Rechercher l'USBID
 
     ```bash
     ls /dev/serial/by-id/*
     ```
 
-    * Entrez l'instruction ci-dessous et appuyez sur Entrée. Si tout fonctionne correctement, vous verrez un ID en bleu apparaître (l'exemple ci-dessous est juste une référence).
+    * Tapez l'instruction ci-dessous et appuyez sur Entrée. Si tout va bien, une ligne d'ID bleue apparaîtra. (Ci-dessous est juste une référence)
     <ImageView image={require('@site/docs/General/get-id/img/usb-id.webp').default} size="80%" align="left" />
-    * Si aucun ID n'apparaît après avoir entré la commande, mais que `lsusb` montre un dispositif, essayez de changer d'ordinateur hôte ou de système d'exploitation.
+    * Si aucune ID n'apparaît après avoir tapé l'instruction ci-dessous, mais que `lsusb` affiche l'appareil, veuillez changer d'ordinateur hôte ou de système d'ordinateur hôte.
 
-:::warning Points à noter
-Si plusieurs ID apparaissent, choisissez l'ID correspondant au modèle **MCU** de votre carte mère.
+
+:::warning Conseils
+Si plusieurs ID apparaissent, veuillez choisir l'ID correspondant au modèle **MCU** de votre carte mère.
 :::
 
 ### Remplir l'ID USB dans la configuration
 
-    * Ouvrez l'interface web de l'imprimante, dans la barre latérale à gauche, trouvez les options de configuration : pour fluidd, c'est : `{…}` ; pour mainsail, c'est : `Machine`, cliquez dessus pour accéder à `printer.cfg`
+    * Ouvrez l'interface web de l'imprimante, trouvez dans les options de configuration de la barre latérale gauche : pour fluidd : `{…}` ; pour mainsail : `Machine`, cliquez dessus et vous trouverez `printer.cfg`.
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copiez l'ID bleu et remplissez-le dans le fichier de configuration `printer.cfg` sous le noeud `[mcu]` à l'endroit de `serial: `. Sauvegardez et redémarrez pour connecter la carte mère. Si Klipper indique ``ADC out of range``, c'est normal. Connectez le lit chauffant et les thermistances, configurez correctement les broches de thermistance et de sortie pour la buse et le lit chauffant, puis sauvegardez et redémarrez.
+    * Copiez l'ID bleu, et remplissez-le dans `serial : ` du nœud `[mcu]` de la configuration `printer.cfg`. Après avoir enregistré et redémarré, vous pouvez vous connecter à la carte mère. Si Klipper indique ``ADC out of range``, c'est un phénomène normal. Connectez la plaque chauffante et le capteur de température, configurez les broches de température et de sortie de la buse et de la plaque chauffante, puis enregistrez et redémarrez à nouveau.
 
             <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
 
 :::danger
-Attention : Tous les ID mentionnés dans le document sont des exemples. Chaque carte mère a un ID unique, veuillez ajuster en fonction de l'ID réellement obtenu.
-:::
+Attention : Tous les ID apparaissant dans le document sont des exemples. L'ID de chaque carte mère est différent. Veuillez modifier et remplir en fonction de l'ID réellement obtenu.
+::: 
