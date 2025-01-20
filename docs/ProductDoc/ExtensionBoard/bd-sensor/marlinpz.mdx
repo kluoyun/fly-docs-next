@@ -1,0 +1,57 @@
+---
+sidebar_position: 4
+sidebar_label: Marlin自动Z-OFFSET
+---
+
+# Marlin的的碰撞感应
+
+:::info
+此功能要求BD传感器固件版本(您可以通过发送M102 S-1来获取该版本,而非传感器上的硬件版本)
+为V1.1b、大于V1.2b或者在2024年3月之后购买的,否则您需要使用外部硬件工具(如STlink)将固件刷入BD传感器。
+:::
+
+# 它是如何工作的
+
+* 在执行G28时自动进行z轴偏移校准:可以在归位(喷头接触平台后)触发——然后缓慢向上移动,直至喷头刚好离开平台——将此位置设定为z轴的0点。
+
+# 好处
+
+* 自动 z 轴偏移校准。
+* 同时您仍然可以针对不同的灯丝手动调整 z 轴偏移。
+* 克服温度漂移。
+* 温度漂移会改变 z 轴偏移，但不会改变带有 BD 传感器的床面网格高度图的范围。这意味着即使温度不同，床面网格也是相同的。
+
+:::info 提示
+此功能的代码在官方Marlin GitHub的拉取请求列表中:https://github.com/MarlinFirmware/Marlin/pull/27243
+所以请使用以下Marlin代码:https://github.com/markniu/MarlinPULL/tree/bugfix-2.1.x
+:::
+
+# 如何使用
+
+启用`BD_SENSOR`,并在`configuration.h`中添加`#define BD_SENSOR_CONTACT_PROBE`
+它应该如下所示：
+
+``` bash
+#define BD_SENSOR
+#if ENABLED(BD_SENSOR)
+  #define BD_SENSOR_PROBE_NO_STOP // Probe bed without stopping at each probe point`
+  #define BD_SENSOR_CONTACT_PROBE // it uses nozzle collision sensing to probe while homing`
+#endif
+```
+* 在configuration.h中提高探针的速度。
+
+* 灵敏度取决于速度,因此您需要调整Z轴的速度。
+* homing_speed(归位速度)和second_homing_speed(二次归位速度)应在3到10的范围内,这里是Z轴探针进给速度。
+* 例如：
+``` bash
+ #define Z_PROBE_FEEDRATE_FAST  (5*60)
+ #define Z_PROBE_FEEDRATE_SLOW  (5*60)
+```
+* 在Configuration_adv.h中将Z轴的归位抬升增加到大于4毫米。
+``` bash
+#define HOMING_BUMP_MM      { 5, 5, 5 } 
+```
+# 测试归位
+* 请发送大约10次`G28 Z`指令，或者使用`M48`指令，以查看其是否稳定。
+
+<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=DzmGyJNS9bY">演示视频</Button>
