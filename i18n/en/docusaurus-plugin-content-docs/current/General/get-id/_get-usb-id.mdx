@@ -1,56 +1,54 @@
+## Search for USB Tutorial
 
+## Precautions before searching for devices
 
+    * Before searching for the USB ID, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Click to jump")
+    * Please note that it is necessary to ensure that the SSH is logged in using the network rather than the serial port.
+    * Please ensure that the motherboard with the USB firmware flashed is connected, and ensure that the data cable connecting the upper computer has a data transmission function.
 
-## Search USB Tutorial
-
-## Precautions Before Searching for Devices
-
-    * Before searching for the USB ID, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump")
-    * Please make sure you are logging in via network SSH rather than serial port SSH
-    * Please ensure that the motherboard with the USB firmware installed is properly connected, and the data cable connecting it to the host computer has data transfer capability
-
-## Search for Devices
-
-    * Now that you have successfully logged into the host machine, you can enter `lsusb` to search for devices. You will encounter one of the following scenarios:
-        * If entering `lsusb` prompts that the `ls` command is not found, you can enter the following command to install the command:
+## Search for devices
+    * Please ensure that the upper computer can be connected to the network normally, and ensure that the data cable connecting the lower computer to the upper computer has a data transmission function.
+    * After connecting to the upper computer via SSH, enter `lsusb` and press Enter. If the information circled in the image below appears, you can proceed to the next step.
+        * If there is no information feedback, this is a system problem of the upper computer, and we are powerless. You need to replace the system with a confirmed normal one or replace the upper computer.
+        * If the `lsusb` command is not found, you can execute this command to install it:
             ```bash
             sudo apt-get install usbutils
             ```
-        * If entering `lsusb` produces no response, this indicates a system issue beyond our control. You need to change the system or use a confirmed working system.
-        * If you see the information shown in the image below, note that this is just a reference. You only need to confirm the characters after the ID.
-            <ImageView image={require('@site/docs/General/get-id/img/614e.webp').default} size="100%" align="left" />
-    * `1d50:614e` belongs to the device you will be using. Ignore the rest of the prompt as the system issue may cause it to display incompletely or not at all.
-    * If none of the above occur, please check if the data cable is properly connected and if the firmware is correctly installed.
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * `1d50:6177` is the device you need to use this time. The suffix `OpenMoko, Inc. stm32f407xx` has a certain reference value, but it is not used as a judgment basis.
+        * Some upper computers may have incomplete or no display due to system problems.
+        * If the `lsusb` command can display the device, but there is no `1d50:6177`, please try to change the data cable and try to connect the motherboard to other USB ports of the upper computer.
+    * If you have previously performed the above steps and successfully burned the Klipper firmware, and the motherboard is operating normally, but only need to update the Klipper firmware, please directly view the `Firmware Update` chapter in the right sidebar of this page.
 
-:::warning Note
-You can only search for the USB ID when you have `1d50:614e`.
-:::
+    :::warning Precautions
+       The next step can only be performed after the `1d50:6177` device is found.
+    :::
 
-## Search for USB ID
+## Search for USBID
 
     ```bash
     ls /dev/serial/by-id/*
     ```
 
-    * Enter the command below and press Enter. If everything is normal, a blue ID will appear (the one below is just an example).
+    * Enter the following command and press Enter. If everything is normal, a blue ID will appear in the following line. (The following is just for reference)
     <ImageView image={require('@site/docs/General/get-id/img/usb-id.webp').default} size="80%" align="left" />
-    * If no ID appears after entering the command below, but `lsusb` shows devices, try changing the host machine or the host machine's system.
+    * If there is no ID after entering the following command, but there is a device in `lsusb`, please replace the upper computer or the upper computer system.
 
-:::warning Note
-If multiple IDs appear, select the appropriate one based on your motherboard's **MCU** model.
+
+:::warning Precautions
+If multiple IDs appear, please select the corresponding ID according to the **MCU** model of your motherboard.
 :::
 
-### Fill in the USB ID in the Configuration
+### Fill in the USB ID in the configuration
 
-    * Open the printer web interface, find the configuration option in the left sidebar: for fluidd, it is `{...}`; for mainsail, it is `machine`, and click to access `printer.cfg`.
+    * Open the printer web interface, find in the configuration options on the left sidebar: for fluidd: `{…}`; for mainsail: `Machine`, click to enter, and you can find `printer.cfg`.
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copy the blue ID and fill it into the `[mcu]` section of the `serial:` parameter in the `printer.cfg` configuration file. Save and restart to connect to the motherboard. If Klipper displays ``ADC out of range``, it is normal. Connect the bed and thermistor properly, configure the hotend and bed thermistor and output pins, then save and restart.
+    * Copy the blue ID and fill it in the `serial: ` of the `[mcu]` node in the `printer.cfg` configuration. After saving and restarting, the motherboard can be connected. If Klipper prompts ``ADC out of range``, it is a normal phenomenon. Connect the heated bed and the thermistor, configure the thermistor pins and output pins of the nozzle and the heated bed, and then save and restart.
 
             <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
 
 :::danger
-Note: All IDs mentioned in the document are examples. The actual ID for each motherboard is unique. Please modify according to the actual ID obtained.
-:::
-
+Note: All IDs appearing in the document are examples. The actual ID of each motherboard is different. Please modify and fill in according to the ID actually obtained.
+::: 
