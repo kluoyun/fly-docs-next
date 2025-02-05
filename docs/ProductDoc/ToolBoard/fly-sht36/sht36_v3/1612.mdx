@@ -10,7 +10,6 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
     :::info
     * 在安装 Eddy 时，底部之于喷嘴的位置需至少在喷嘴上面 1-2 mm
-    * 校准校准Eddy频率时，线圈PCB要远离热床至少5mm
     * 请不要全部热床是在常温下测试，并且测试时候不要打开热床
 
     :::
@@ -24,10 +23,11 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 ## 参考配置与使用说明
 
-##### 在`printer.cfg`配置文件里面添加以下配置，在进行调试eddy
+##### 在`printer.cfg`配置文件里面添加以下配置，在进行调试
 
     ### 扫床配置
-
+    * 在`printer.cfg`配置文件里面找到`probe`或类似`probe`的配置覆盖添加以下配置
+    * 这里的`x_offset: 0 y_offset: 0` 偏移填eddy中心到喷嘴的距离,注意例如这里是参考数值-10那么`printer.cfg`配置文件里面找到x轴的配置参考`position_min:-5`这里的-5修改为-12,要比-10大两个数值
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
@@ -35,8 +35,8 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
         i2c_address: 43
         i2c_mcu: SHT36
         i2c_bus: i2c1e
-        x_offset: 0
-        y_offset: 0
+        x_offset: 0 
+        y_offset: 0  
         speed:40
         lift_speed: 5
         ```

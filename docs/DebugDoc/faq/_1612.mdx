@@ -27,41 +27,41 @@
 
     ### 第二步：校准EDDY 电流
 
-        * 1:在控制台输入下方命令
+        * 在控制台输入下方命令
             ```bash
             SET_KINEMATIC_POSITION z=80
-            ```
-        * 2:归位X与Y 移动工具头到热床中间
-            ```bash
             G28 X Y
             ```
-        * 上述步骤完成后，需要校准 Eddy电流，首先EDDY到移动热床中间然后喷嘴刚刚接触热床。然后在控制台执行下方命令自动获取电流，最后`SAVE_CONFIG`保存参数。反馈值15左右是正常值，反馈0或者30检查是否接好（接触不良）
+        * 上述步骤完成后，需要校准 Eddy电流，首先EDDY到移动热床中间然后喷嘴刚刚接触热床没有任何缝隙。然后在控制台执行下方命令自动获取电流，最后`SAVE_CONFIG`保存参数。反馈值15左右是正常值，反馈0或者30检查是否接好（接触不良）
             ```bash
             LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
             ```
         * 正常返回值应该在`15`左右
-        * 校准完成后`SAVE_CONFIG`保存参数
+        * 下一步校准Eddy 有效距离
 
-    ### 第二步：校准Eddy 频率
+    ### 第二步：校准Eddy 有效距离
 
 
         :::info
 
-        * 在安装 Eddy 时，eddy ocb板要高于喷嘴需至少1-2 mm
-        * 校准校准Eddy频率时，线圈PCB要远离热床至少5mm
-        * 这里远离5mm是为了方便下一步做抽纸获取`z_offset`
+        * 在安装 Eddy 时，eddy pcb板要高于喷嘴需至少1-2 mm
+        * 固定龙门架热床平行度，动龙门架调整龙门架平行度再校准Eddy频率
 
         :::
 
-        * 然后将喷头移动到平台中心（注意：此步骤要确保机器没有加载 heightmap）
-        * 开始手动 z 偏移校准 [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+        * 执行下面命令:校准Eddy 有效距离,执行了会有一个弹窗出来点`-0.1`,然后点`ACCEPT`
             ```bash
+            SET_KINEMATIC_POSITION
             PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
             ```
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
         * 校准完成后`SAVE_CONFIG`保存参数
+
         :::info
-        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，先调整一下平行度`i3调整一下X轴的平行度,三叉戟调整热床平行度  voron 2.4 调整一下龙门架平行度再校准一次校准Eddy频率
+        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，记得执行多z调平
         :::
+
+
     ### 第三步：温度补偿
         :::info
         * 在做温度补偿前请不要加热 `热床、喷嘴`
@@ -76,17 +76,16 @@
 
         * 如果有`[quad_gantry_level]`或者 `[z_tilt]`，先运行一次`Z_TILT_ADJUST`或者`QUAD_GANTRY_LEVEL`后，在归位一次
         * 在控制台输入G0 Z5或者通过网页等方式，将Z轴移动到热床上方`5mm`
-        * 执行下方代码将机器的`idle timeout`设置长一点，避免我们升温过程的时候 timeout
-            ```bash
-            SET_IDLE_TIMEOUT TIMEOUT=65000
-            ```
         * 执行下方指令开始校准
             ```bash
-            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=56 STEP=4
+            SET_IDLE_TIMEOUT TIMEOUT=65000
+            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=80 STEP=4
+            SET_HEATER_TEMPERATURE HEATER=extruder TARGET=240
+            SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=120
             ```
         :::warning 注意事项
 
-        * 提示：在上方命令中，EDDy目标温度设置为`56℃`，适用于多数设备。
+        * 提示：在上方命令中，EDDy目标温度设置为`80℃`，适用于多数设备。
         * 如果您的 3D 打印机腔体的实际温度更高，您可以适当提高目标温度。
         * 请注意，目标温度越高，校准所需时间将相应延长，因为 Eddy 需要更长时间来达到温度平衡。
 
@@ -99,10 +98,20 @@
         5. 重复手动 Z 偏移校准（Paper Test）直到校准完成。如果发现 Eddy 的温度不再上升，可以使用下面的相关命令提前结束校准。
         
         * 在漂移校准期间可用的额外 gcode 命令包括：TEMPERATURE_PROBE_NEXT
-            * `TEMPERATURE_PROBE_NEXT`    用于达到EDDy设置的目标温度`56℃`前强制EDDy采样新数据。
-            * `TEMPERATURE_PROBE_COMPLETE`    用于EDDy达不到设定温度`56℃`前完成校准。
+            * `TEMPERATURE_PROBE_NEXT`    用于达到EDDy设置的目标温度`80℃`前强制EDDy采样新数据。
+            * `TEMPERATURE_PROBE_COMPLETE`    用于EDDy达不到设定温度`80℃`前完成校准。
             * `ABORT`  可用于终止校准并忽略结果。
         * 完成这些步骤后，Eddy 将能够在广泛的温度范围内提供出色的首层打印效果！
+
+ ## 调整z—offset/z补偿
+* 通过下面命令去用A4纸调整Z—offset 弹出来的UI界面 调整`z—offset`数值调整前先看一下klipper文档的教程[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+```bash
+G28
+PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+```
+* 找到了合适的数值点`ACCEPT`
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
+* 校准完成后`SAVE_CONFIG`保存参数       
 
 
 ## 如何微调z—offset
@@ -113,13 +122,13 @@
 ```bash
 FIRMWARE_RESTART
 ```
-* 第四步：通过下面命令去调整Z—offset 弹出来的UI界面 调整`z—offset`调整的数值就是打印过程中调整的数值
+* 第四步：通过下面命令去调整Z—offset 弹出来的UI界面 调整`z—offset`调整的数值就是打印过程中调整的数值[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
 ```bash
 G28
 PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
 ```
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
-
+* 校准完成后`SAVE_CONFIG`保存参数
 :::info
 * 报错`Eddy current sensor error`这个调大eddy配置里面的z_offset数值，看图例
 
@@ -127,7 +136,7 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
 :::
 
 :::info
- * 以上操作完成但是在开始做扫床失败请把z限位改成虚拟限位
+ * 以上操作完成但是在开始做扫床失败请把z限位改成虚拟限位,覆盖原来的endstop_pin`endstop_pin: probe:z_virtual_endstop` 
 :::
 
 
