@@ -1,0 +1,126 @@
+---
+sidebar_position: 3
+sidebar_label: CAN固件编译与烧录
+---
+
+import CANFLASH from '@site/docs/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/docs/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/docs/General/dfu-flash/_can.mdx';
+
+# CAN 固件编译
+
+## 开始编译
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * 选择**GPIO pins to set at micro-controller startup**，输入：**!gpio18**
+    :::warning
+        请在英文输入法状态下输入`!gpio18`
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/can.webp').default} size="95%" align="center" />
+    * **请对照上图核对，确保与上图一致，再进进行下一步**
+    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 现在应该保存了配置并且退出到了命令行界面
+    * 输入 `make -j4` 开始编译，时间有点长
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最后输出下面的内容则编译成功
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+---
+
+## 上位机配置
+    :::warning
+        如果您的上位机为 **FLY** 的上位机，无需执行`上位机配置`这一步
+    :::
+
+    :::warning
+       如果您的上位机为 **非FLY** 的上位机，请执行以下步骤
+    :::
+
+    ### 检测上位机是否支持CAN
+
+    * 如果是**FLY上位机**则无需执行此操作
+    * 如果你的系统是`Ubuntu`需要`Ubuntu配置CAN0`，此文档还未更新
+    * 输入下方指令，检测系统是否支持CAN
+    ```bash
+    sudo modprobe can && echo "您的内核支持CAN" || echo "您的内核不支持CAN"
+    ```
+    * 输入以上指令后，如果您的内核支持CAN就会返回：`您的内核支持CAN`；如果不支持就会返回：`您的内核不支持CAN`。
+    :::tip
+        如果返回`您的内核支持CAN`则可以进行下一步配置CAN0，如果返回`您的内核不支持CAN`，则请您更换上位机系统或者更换上位机！
+    :::
+   
+   ### 配置CAN0
+
+    * 此命令是覆盖原来系统CAN0配置，执行完成后需要重启系统
+    * 请根据实际情况选择其中一项（**Klipper默认CAN速率为1M，建议使用1M速率**）
+
+    :::warning
+        1M速率输入下方命令
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig $IFACE txqueuelen 1024
+            pre-up ip link set can0 type can bitrate 1000000
+            pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    :::warning
+        500K速率输入下方命令
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 500000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    * 重启设备
+
+    ```bash
+    sudo reboot
+    ```
+
+## 搜索设备
+
+    <LS />
+
+
+## 烧录固件
+    * 烧录固件前使用XT30数据线将工具板连接到UTOC或者刷了桥接固件的主板，下方是参考接线图
+    * 请注意拨码是否拨到对应地方
+    ## KF接口的示意图
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/KF.webp').default} size="80%" align="left" />
+    ## XT30接口示意图
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/xt30.webp').default} size="80%" align="left" />
+    * 请确保CAN H与CAN L在断电情况下使用万用表测量阻值在`60Ω`左右，如果是`120Ω`则需要接上`120Ω`跳线，如果是`40Ω`左右需要将跳线移除
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/120r.webp').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## 确认固件是否启动
+
+    * 如果固件正常启动LED会亮起来
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+

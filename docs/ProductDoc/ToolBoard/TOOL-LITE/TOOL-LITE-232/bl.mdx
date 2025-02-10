@@ -1,0 +1,116 @@
+---
+sidebar_position: 6
+sidebar_label: BL固件编译教程
+---
+
+import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';
+
+
+    :::tip
+
+    * 请确保上位机可以正常联网
+    * 固件编译前需要使用SSH通过网络登录上位机
+    * 请不要使用串口工具登录上位机
+
+    :::
+
+# 编译Katapult固件
+### 开始编译
+  <SSH />
+  ### Katapult固件编译和配置页面操作说明
+
+    :::tip
+
+    请确保键盘输入法为半角模式，即英文模式
+
+    :::
+
+    1. 键盘上键`↑`，下键`↓`，用于上下移动光标来选中菜单项
+    2. 确认键`Enter` 或 空格键`Space`，用于勾选菜单或进入子菜单
+    3. 退出键`ESC`，用于返回上一级菜单
+    4. `Q`键，用于退出Katapult固件配置页面
+    5. `Y`键，在退出Katapult固件配置页面时，如果有提示，则点击`Y`键保存配置文
+
+    下面介绍如何编译固件：
+    * 连接到SSH后输入下面的命令并回车：
+
+        ```bash
+        cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+        ```
+
+    * 其中` rm -rf ~/Katapult/.config && rm -rf ~/Katapult/out`是删除之前编译数据与固件`make menuconfig`是编译固件,执行后应该出现下方界面
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * 选择`Micro-controller Architecture (LPC176x (Smoothieboard))`并且回车
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * 进入菜单然后选择**Raspberry Pi RP2040**回车
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+    * 选择`Build Katapult deployment application (Do not build)`，选择：**Do not build**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+    * 选择**Communication interface**，选择：**Serial (on UART0 GPIO1/GPIO0)**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/UART0.webp').default} size="100%" align="Center" />
+
+    * 选择**Enable Status LED**回车，选择`Status LED GPIO Pin (NEW)`输入：**!gpio18**
+    :::warning
+        请在英文输入法状态下输入`!gpio18`
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led1.webp').default} size="100%" align="center" />
+    * **请对照上图核对，确保与上图一致，再进进行下一步**
+    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 现在应该保存了配置并且退出到了命令行界面
+    * 输入 `make -j4` 开始编译，时间有点长
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最后输出下面的内容则编译成功
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+``` 
+
+## 进入烧录模式
+
+    :::tip
+
+    箭头所指为`BOOT按键`
+
+    :::
+
+    * 主板完全断电情况下，按着BOOT按键然后将带有数据传输的数据线一头接主板一头接你设备
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* 然后输入`lsusb`
+```bash
+lsusb
+```
+* 出现下面图片里面的代表已经进入boot模式
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* 输入下面的命令进行刷写固件然后回车
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+输入mellow是不会显示的
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* 如出现图片里面的情况输入`mellow`输入完成了直接回车 
+
+* 出现图片里面的提示那么`恭喜您`刷写成功
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## 确认固件是否启动
+
+* 如果固件正常启动LED会闪烁起来
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

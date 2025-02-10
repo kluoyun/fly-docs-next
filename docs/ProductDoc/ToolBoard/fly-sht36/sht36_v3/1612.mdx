@@ -27,18 +27,17 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
     ### 扫床配置
     * 在`printer.cfg`配置文件里面找到`probe`或类似`probe`的配置覆盖添加以下配置
-    * 这里的`x_offset: 0 y_offset: 0` 偏移填eddy中心到喷嘴的距离,注意例如这里是参考数值-10那么`printer.cfg`配置文件里面找到x轴的配置参考`position_min:-5`这里的-5修改为-12,要比-10大两个数值
         ```cfg
         [probe_eddy_current fly_eddy_probe]
         sensor_type: ldc1612
-        z_offset: 2.0
+        z_offset: 0.5
         i2c_address: 43
         i2c_mcu: SHT36
         i2c_bus: i2c1e
         x_offset: 0 
         y_offset: 0  
         speed:40
-        lift_speed: 5
+        lift_speed: 15.0
         ```
 
     ### 温补配置
@@ -73,40 +72,83 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     ```
 ## 防撞宏
 
-    ### `[quad_gantry_level]`扫床优化
-        * 如果有配置`[quad_gantry_level]`可以添加下方宏到配置里面，没有则不需要添加
-        * 此宏会随着龙门高低差降低降低探测高度
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
+### `[quad_gantry_level]`扫床优化
+* 如果有配置`[quad_gantry_level]`可以添加下方宏到配置里面，没有则不需要添加
+* 此宏会随着龙门高低差降低降低探测高度
+```cfg
+[gcode_macro QUAD_GANTRY_LEVEL]
+rename_existing: _QUAD_GANTRY_LEVEL 
+gcode:
+    # ========== 状态保存 ==========
+    SAVE_GCODE_STATE NAME=STATE_QGL 
+    
+    # ========== 环境准备 ==========
+    BED_MESH_CLEAR                       # 清除旧床网数据 
+    
+    # ========== 主调平流程 ==========
+    {% if not printer.quad_gantry_level.applied %}
+        # 首次快速粗调 
+        _QUAD_GANTRY_LEVEL 
+        G0 Z10 F6000                     # 使用标准 G-code 命令替代 HORIZONTAL_MOVE_Z
+        # 设置重试公差和速度
+        # 注意：具体参数取决于 _QUAD_GANTRY_LEVEL 宏的实现
+        # 例如，如果 _QUAD_GANTRY_LEVEL 支持 RETRY_TOLERANCE 参数：
+        # _QUAD_GANTRY_LEVEL RETRY_TOLERANCE=0.1 SPEED=200.0
+    {% endif %}
+    
+    # 精确二次调平 
+     _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+        G0 Z10 F6000                     # 使用标准 G-code 命令替代 HORIZONTAL_MOVE_Z
+        # 设置自动补偿算法、最大调整次数和速度
+        # 例如，如果 _QUAD_GANTRY_LEVEL 支持 METHOD 和 MAX_ADJUST 参数：
 
-    ### `[z_tilt]`扫床优化
+    # 注意：RETRY_TOLERANCE 可能在第一次调用时已经设置，或根据需要调整
+    
+    # ========== 后处理 ==========
+    G90                                 # 强制绝对坐标模式 
+    G0 Z10 F6000                        # 抬升Z轴到安全高度 
+    M117 QGL Completed                  # 显示完成状态 
+    G28                                 # 回到原点
+    # ========== 状态恢复 ==========
+    RESTORE_GCODE_STATE NAME=STATE_QGL 
+    M400                
+```
 
-        * 如果有配置`[z_tilt]`可以添加下方宏到配置里面，没有则不需要添加
-        * 此宏会随着龙门高低差降低降低探测高度
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
+### `[z_tilt]`扫床优化
+
+* 如果有配置`[z_tilt]`可以添加下方宏到配置里面，没有则不需要添加
+* 此宏会随着龙门高低差降低降低探测高度
+```cfg
+[gcode_macro Z_TILT_ADJUST]
+rename_existing: _Z_TILT_ADJUST
+gcode:
+    # ========== 状态保存 ==========
+    SAVE_GCODE_STATE NAME=STATE_Z_TILT
+    
+    # ========== 环境准备 ==========
+    BED_MESH_CLEAR                       # 清除旧床网数据 
+    
+    # ========== 主调平流程 ==========
+    {% if not printer.z_tilt.applied %}
+        # 首次快速粗调 
+        _Z_TILT_ADJUST 
+        G0 Z10 F6000                     # 使用标准 G-code 命令替代 HORIZONTAL_MOVE_Z
+    {% endif %}
+    
+    # 精确二次调平 
+     _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
+        G0 Z10 F6000                     # 使用标准 G-code 命令替代 HORIZONTAL_MOVE_Z
+
+    # ========== 后处理 ==========
+    G90                                 # 强制绝对坐标模式 
+    G0 Z10 F6000                        # 抬升Z轴到安全高度 
+    M117 z_tilt Completed                  # 显示完成状态 
+    G28                                 # 回到原点
+    # ========== 状态恢复 ==========
+    RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+    M400          
+```
+
 
     ### eddy大概率热床干扰扫床优化宏
 
