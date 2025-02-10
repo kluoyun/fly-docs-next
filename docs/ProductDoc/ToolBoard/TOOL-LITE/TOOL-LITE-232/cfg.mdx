@@ -1,0 +1,204 @@
+---
+sidebar_position: 5
+sidebar_label: 参考配置
+---
+
+    :::tip
+
+    请不要打开网页翻译时候修改配置
+
+    :::
+
+    :::warning 注意事项
+
+    请不要打开网页翻译时候修改配置
+
+    :::
+
+    :::danger 须知
+
+    请不要打开网页翻译时候修改配置
+
+    :::
+
+# 参考配置
+
+```cfg
+#####################################################################
+#      Notes
+#####################################################################
+## 工具板将使用以下几种配置，如果其他配置中使用到下面的配置可能会冲突
+## The tool plate will use the following configurations, 
+## and if the following configurations are used in other configurations, conflicts may occur.
+## [resonance_tester] && [extruder] && [tmc2209 extruder] && [fan] && [heater_fan my_hotend_fan]
+## [probe] && [bltouch] && [stepper_x]
+
+#####################################################################
+#      Master ID Configuration
+#####################################################################
+#TOOL-LITE配置
+#[mcu TOOL-LITE]
+#TOOL-LITEbus_uuid: 
+#搜索id命令
+#~/klippy-env/bin/python ~/klipper/scripts/TOOL-LITEbus_query.py can0
+#~/klippy-env/bin/python ~/klipper/scripts/TOOL-LITEbus_query.py can1
+
+#232配置
+[mcu TOOL-LITE]
+serial: /dev/serial/by-path/*
+baud: 250000   #请根据固件配置填写波特率
+restart_method:command
+#搜索id命令
+#ls /dev/serial/by-path/*
+
+[temperature_sensor TOOL-LITE]     # TOOL-LITE主板温度（可自行重命名）
+sensor_type: temperature_mcu     # 关联mcu（默认）
+
+[force_move]
+enable_force_move: true
+
+[extruder]
+step_pin:TOOL-LITE:gpio24
+dir_pin:TOOL-LITE:gpio23  #ORBTER V2.5 使用ldo36电机在pin前面加! (!是大写的）
+enable_pin:!TOOL-LITE:gpio29
+##挤出机步进值设置
+rotation_distance: 32.7
+#rotation_distance步进值
+#---------------T8齿轮电机--------------    
+#VZ-Hextrudort-Low plus 使用moons/LDO 36电机17mm/20MM T8步进值：29.7 
+#VZ-Hextrudort-Low 使用moons电机T8步进值：22.5  
+#VZ-Hextrudort-Low 使用LDO36 20MM/17M 电机T8步进值：23.37 
+#Sherpa Micro 使用LDO36 20MM/17MM 电机 T8步进值:23.37
+#Sherpa Micro 使用moons电机T8步进值：22.5
+#---------------T10齿轮电机--------------             
+#Sherpa Micro 使用moons电机T10步进值：23.8425
+#VZ-Hextrudort-Low 使用moons电机T10步进值：23.8425
+#VZ-Hextrudort-Low 使用LDO36 17MM/20MM 电机T10步进值：
+#VZ-Hextrudort-Low plus T10步进值：29.11 
+#ORBITER V2.5步进值:35.5
+
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## 校准步进值: 22.44=旧值22*实际值102/目标值100
+#gear_ratio:50:8 #VZ-Hextrudort-Low plus 减速比50:8（10齿电机8改10）
+## 减速比（伽利略齿比7.5:1 并且这行注释掉；BMG为50：17，输出轴在前，输入轴在后）
+microsteps:16
+full_steps_per_rotation: 200   
+nozzle_diameter:0.400
+filament_diameter:1.75
+sensor_type:NTC 100K MGB18-104F39050L32
+## Type of sensor - common thermistors are (Generic 3950, ATC Semitec 104GT-2)
+## 传感器类型-常见的热敏电阻器是 (Generic 3950, ATC Semitec 104GT-2)
+###------------------------------------------------------------------
+## If using PT1000, please connect the jumper next to the thermal sensitivity.
+## 如果使用PT1000请将热敏旁边跳线接上
+# sensor_type:PT1000
+# sensor_pin:SHT36:gpio27
+# pullup_resistor: 1000
+sensor_pin:TOOL-LITE:gpio28
+heater_pin:TOOL-LITE:gpio6
+min_temp:-200
+max_temp:350
+max_power:1.0
+min_extrude_temp:-200
+pressure_advance: 0.05
+pressure_advance_smooth_time: 0.040
+max_extrude_only_distance: 200.0   # 挤出流量报错可以注释这个，但是建议重新切片
+max_extrude_cross_section:200
+#喷嘴温度PID校准命令：  "PID_CALIBRATE HEATER=extruder TARGET=245
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+
+[tmc2209 extruder]
+uart_pin:TOOL-LITE:gpio25
+interpolate:False
+run_current: 0.5
+sense_resistor:0.110
+stealthchop_threshold:0
+
+
+[lis2dw]
+cs_pin:TOOL-LITE:gpio9
+spi_software_sclk_pin:TOOL-LITE: gpio10
+spi_software_mosi_pin:TOOL-LITE: gpio11
+spi_software_miso_pin:TOOL-LITE:gpio8
+
+[resonance_tester]
+accel_chip: lis2dw
+probe_points: 150, 150, 20
+# Somewhere slightly above the middle of your print bed
+# 在打印床的中间稍微偏上的位置
+min_freq: 5
+max_freq: 133
+accel_per_hz: 75
+hz_per_sec: 1 
+
+[fan]   #模型风扇
+pin:TOOL-LITE:gpio13
+max_power:0.6
+###------------------------------------------------------------------
+[heater_fan my_hotend_fan]  #喉管风扇
+pin:TOOL-LITE:gpio14
+heater: extruder
+heater_temp: 50.0
+fan_speed: 0.2
+
+## https://www.klipper3d.org/Config_Reference.html?h=probe#probe
+# [probe]
+# pin: TOOL-LITE:gpio19 #高压pin脚
+# x_offset: 0
+# y_offset: 25.0
+# z_offset: 0
+# speed: 10.0
+# samples: 3
+# samples_result: median
+# sample_retract_dist: 4.0
+# samples_tolerance: 0.010
+# samples_tolerance_retries: 3
+
+## https://www.klipper3d.org/Config_Reference.html?h=probe#probe
+# [probe]
+# pin: ^TOOL-LITE:gpio22
+# x_offset: 0
+# y_offset: 25.0
+# z_offset: 0
+# speed: 10.0
+# samples: 3
+# samples_result: median
+# sample_retract_dist: 4.0
+# samples_tolerance: 0.010
+# samples_tolerance_retries: 3
+
+## https://www.klipper3d.org/Config_Reference.html?h=probe#bltouch
+#[bltouch]
+#sensor_pin: ^TOOL-LITE:gpio22    # 信号接口
+#control_pin: TOOL-LITE:gpio7    # 舵机控制
+#x_offset: -26.1              # X轴-传感器相对喷嘴偏移量，需要自行确定偏移量
+#y_offset: -15.3              # Y轴-传感器相对喷嘴偏移量，需要自行确定偏移量
+#z_offset: 2.1                # Z轴-传感器相对喷嘴偏移量，需要自行确定偏移量
+
+
+
+# #自定义舵机配置
+# [servo my_servo]
+# pin:TOOL-LITE:gpio7
+# #   控制伺服的PWM输出引脚。
+# #   必须提供此参数。
+# maximum_servo_angle: 180
+# #   这个伺服可以设定的最大角度（以度为单位）。
+# #   默认是180度。
+# minimum_pulse_width: 0.0005
+# #   最小脉宽时间（以秒为单位）。这应该对应于0度的角度。
+# #   默认是0.001秒。
+# maximum_pulse_width: 0.0025
+# #   最大脉宽时间（以秒为单位）。这应该对应于maximum_servo_angle的角度。
+# #   默认是0.002秒。
+# initial_angle:0 
+# #   初始设定的伺服角度（以度为单位）。
+# #   默认启动时不发送任何信号。
+# #initial_pulse_width:
+# #   初始设定的脉宽时间（以秒为单位）。（只有在未设定initial_angle时才有效）。
+# #   默认启动时不发送任何信号。
+
+```

@@ -25,23 +25,7 @@
         enable_force_move: true
         ```
 
-    ### 第二步：校准EDDY 电流
-
-        * 在控制台输入下方命令
-            ```bash
-            SET_KINEMATIC_POSITION z=80
-            G28 X Y
-            ```
-        * 上述步骤完成后，需要校准 Eddy电流，首先EDDY到移动热床中间然后喷嘴刚刚接触热床没有任何缝隙。然后在控制台执行下方命令自动获取电流，最后`SAVE_CONFIG`保存参数。反馈值15左右是正常值，反馈0或者30检查是否接好（接触不良）
-            ```bash
-            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
-            ```
-        * 正常返回值应该在`15`左右
-        * 下一步校准Eddy 有效距离
-
-    ### 第二步：校准Eddy 有效距离
-
-
+    ### 第二步：校准EDDY
         :::info
 
         * 在安装 Eddy 时，eddy pcb板要高于喷嘴需至少1-2 mm
@@ -49,11 +33,19 @@
 
         :::
 
-        * 执行下面命令:校准Eddy 有效距离,执行了会有一个弹窗出来点`-0.1`,然后点`ACCEPT`
-            ```bash
-            SET_KINEMATIC_POSITION
+
+        * 重启之后归零x和y（g28 x y ,不要归零z），并将打印头移动到热床正中央
+        * 然后输入下面命令
+        ```bash
+            G28 X Y
+        ```
+        * 执行下面命令，控制打印头到热床中央2cm高的位置
+        ```bash
+            SET_KINEMATIC_POSITION x=50 y=50 z=150
+            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
             PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-            ```
+        ```
+        * 执行了会有一个弹窗出来做抽纸动作（也可以垫A4纸确保间隙合适）[Z轴偏移校准（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
             <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
         * 校准完成后`SAVE_CONFIG`保存参数
 

@@ -1,0 +1,69 @@
+---
+sidebar_position: 4
+sidebar_label: RS232固件编译与烧录
+---
+
+import USBFLASH from '@site/docs/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/docs/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/docs/General/dfu-flash/_uf2.mdx';
+
+    ## KF接线的示意图
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/kf2.webp').default} size="50%" align="left" />
+    ## XT30接线示意图
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/xt301.webp').default} size="50%" align="left" /> 
+# RS232 固件编译
+
+## 开始编译
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * 选择**GPIO pins to set at micro-controller startup**，输入：**!gpio18**
+    :::warning
+        请在英文输入法状态下输入`!gpio18`
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/rs232.webp').default} size="100%" align="center" />
+    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 现在应该保存了配置并且退出到了命令行界面
+    * 输入 `make -j4` 开始编译，时间有点长
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
+    * 最后输出下面的内容则编译成功
+       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+
+
+
+
+## 进入烧录模式
+
+    :::tip
+
+    箭头所指为`BOOT按键`
+
+    :::
+
+    * 工具板在**完全断电**情况下，按住**BOOT按键**，使用带有数据传输功能的TypeC数据线，将**工具板**连接至您**上位机的USB接口**，正确连接至上位机后即可松开**BOOT按键**
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="80%" align="center" />
+
+## 确认是否进入烧录模式
+
+    <LS />
+
+
+## 烧录RS232固件 
+    
+    <USBFLASH />
+    
+
+
+## 确认固件是否启动
+
+    * 如果固件正常启动，则下图所示的**LED会亮起来**
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+
