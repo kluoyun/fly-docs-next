@@ -11,7 +11,15 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     :::info
     * 在安装 Eddy 时，底部之于喷嘴的位置需至少在喷嘴上面 1-2 mm
     * 请不要全部热床是在常温下测试，并且测试时候不要打开热床
+    :::
 
+    :::warning 注意事项
+    * 多Z轴机器需要手动调平一次做好
+    :::
+
+    :::info
+    * 在安装 Eddy 时，eddy pcb板要高于喷嘴需至少1-2 mm
+    * 固定龙门架热床平行度，动龙门架调整龙门架平行度再校准Eddy频率
     :::
 
 
@@ -24,6 +32,79 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 ## 使用说明
    * 使用ssh工具通过ip登录终端，执行脚本
     下载需要的ssh工具 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm工具</Button>
-    
 
-    <LDC1612 />
+
+<Tabs>
+  <TabItem value="eddy1" label="国际使用">
+    # 国际请使用下面的命令
+    ### 下面开始安装eddy全自动脚本
+    * 打开下载的ssh工具，输入下面的命令回车，点击复制即可
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
+    ```
+   * 在`fluidd`网页里的`moonraker.conf`配置文件里添加下面的配置，方便以后更新
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1
+    managed_services: klipper
+    ```
+   * 如更新了请执行找这个命令
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
+    ```
+</TabItem>
+
+  <TabItem value="eddy2" label="国内使用">
+# 国内请使用下面的命令
+### 下面开始安装eddy全自动脚本
+    * 打开下载的ssh工具，输入下面的命令回车，点击复制即可
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
+    ```
+   * 在`fluidd`网页里的`moonraker.conf`配置文件里添加下面的配置，方便以后更新
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1
+    managed_services: klipper
+    ```
+    * 如更新了请执行找这个命令
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
+    ```
+  </TabItem>
+</Tabs>
+
+
+* 执行了出现如图显示输入你的上位机密码
+
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/EDDY1.webp').default} size="100%" align="left" />
+
+* 出现如图显示`选择输入`输入你打印机对应编号，有中文英文的选择，输入后回车
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" />
+
+* 出现如图显示那么成功
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy3.webp').default} size="70%" align="left" />
+
+* 如出现图片显示，那么你需要输入`Y`回车
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
+<LDC1612 />

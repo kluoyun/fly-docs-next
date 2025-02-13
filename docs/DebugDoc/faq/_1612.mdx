@@ -1,99 +1,36 @@
-
-
-## 操作说明
-
-    :::warning 注意事项
-
-    * 请注意需要先做电流校准后在做线圈频率校准
-    * 多Z轴机器需要手动调平一次做好全部校准后在进行调平一次，在重新做校准
-    * 下位机固件要与Kliiper版本完全一致
-
-    :::
-
     :::info
-
-    * 请注意需要先做电流校准后在做线圈频率校准
-    * 多Z轴机器需要手动调平一次做好全部校准后在进行调平一次，在重新做校准
-    * 下位机固件要与Kliiper版本完全一致
-
+        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，记得执行多z调平
     :::
 
+### 第一步校准EDDY
+* 点击如图片显示的宏命令`CALIBRATE_EDDY`点击执行
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy5.webp').default} size="50%" align="left" />
+* 然后会出现如下的UI界面
+* 用A4纸调整Z—offset 弹出来的UI界面 调整`z—offset`数值调整前先看一下klipper文档的教程[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+* 找到了合适的数值点`ACCEPT`
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
+* 校准完成后`SAVE_CONFIG`保存参数    
 
-    * 请使用`FUIDD`网页添加下方配置后在执行后面操作
-        ```cfg
-        [force_move]
-        enable_force_move: true
-        ```
+    ### 第二步：温度补偿
+    :::info
+    * 在做温度补偿前请不要加热 `热床、喷嘴`
+    :::
 
-    ### 第二步：校准EDDY
-        :::info
+* 执行下面图片出现的宏命令`TEMP_COMPENSATION`点击执行
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy6.webp').default} size="50%" align="left" />
 
-        * 在安装 Eddy 时，eddy pcb板要高于喷嘴需至少1-2 mm
-        * 固定龙门架热床平行度，动龙门架调整龙门架平行度再校准Eddy频率
-
-        :::
-
-
-        * 重启之后归零x和y（g28 x y ,不要归零z），并将打印头移动到热床正中央
-        * 然后输入下面命令
-        ```bash
-            G28 X Y
-        ```
-        * 执行下面命令，控制打印头到热床中央2cm高的位置
-        ```bash
-            SET_KINEMATIC_POSITION x=50 y=50 z=150
-            LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe
-            PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-        ```
-        * 执行了会有一个弹窗出来做抽纸动作（也可以垫A4纸确保间隙合适）[Z轴偏移校准（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
-            <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
-        * 校准完成后`SAVE_CONFIG`保存参数
-
-        :::info
-        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，记得执行多z调平
-        :::
-
-
-    ### 第三步：温度补偿
-        :::info
-        * 在做温度补偿前请不要加热 `热床、喷嘴`
-        :::
+    1. 执行此操作后，UI 将显示 Z 轴调整框。请使用上述提到的手动 [Z轴偏移校准（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)，将纸张夹在喷嘴和床面之间，然后确认该值。
+    2. 接受值后，将热床温度调至最高，喷嘴温度调至 220℃。
+    3. 如果您在有空调或开窗的房间中，为了确保 Eddy 的温度上升，建议关闭空调或窗户，因为风会影响温度的升高。
+    4. 随着 Eddy 温度的上升，系统会自动提示您每隔 4℃执行一次手动 Z 偏移校准。热床温度很高，谨防烫伤!!!
+    5. 重复手动 Z 偏移校准（Paper Test）直到校准完成。如果发现 Eddy 的温度不再上升，可以使用下面的相关命令提前结束校准。
         
-        * 第三步：温度补偿 需能成功归位在开始做
-
-        * 归位所有轴
-       ```bash
-       G28
-       ```
-
-        * 如果有`[quad_gantry_level]`或者 `[z_tilt]`，先运行一次`Z_TILT_ADJUST`或者`QUAD_GANTRY_LEVEL`后，在归位一次
-        * 在控制台输入G0 Z5或者通过网页等方式，将Z轴移动到热床上方`5mm`
-        * 执行下方指令开始校准
-            ```bash
-            SET_IDLE_TIMEOUT TIMEOUT=65000
-            TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET=80 STEP=4
-            SET_HEATER_TEMPERATURE HEATER=extruder TARGET=240
-            SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=120
-            ```
-        :::warning 注意事项
-
-        * 提示：在上方命令中，EDDy目标温度设置为`80℃`，适用于多数设备。
-        * 如果您的 3D 打印机腔体的实际温度更高，您可以适当提高目标温度。
-        * 请注意，目标温度越高，校准所需时间将相应延长，因为 Eddy 需要更长时间来达到温度平衡。
-
-        :::
-    
-        1. 执行此操作后，UI 将显示 Z 轴调整框。请使用上述提到的手动 [Z轴偏移校准（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)，将纸张夹在喷嘴和床面之间，然后确认该值。
-        2. 接受值后，将热床温度调至最高，喷嘴温度调至 220℃。
-        3. 如果您在有空调或开窗的房间中，为了确保 Eddy 的温度上升，建议关闭空调或窗户，因为风会影响温度的升高。
-        4. 随着 Eddy 温度的上升，系统会自动提示您每隔 4℃执行一次手动 Z 偏移校准。热床温度很高，谨防烫伤!!!
-        5. 重复手动 Z 偏移校准（Paper Test）直到校准完成。如果发现 Eddy 的温度不再上升，可以使用下面的相关命令提前结束校准。
-        
-        * 在漂移校准期间可用的额外 gcode 命令包括：TEMPERATURE_PROBE_NEXT
-            * `TEMPERATURE_PROBE_NEXT`    用于达到EDDy设置的目标温度`80℃`前强制EDDy采样新数据。
-            * `TEMPERATURE_PROBE_COMPLETE`    用于EDDy达不到设定温度`80℃`前完成校准。
-            * `ABORT`  可用于终止校准并忽略结果。
-        * 完成这些步骤后，Eddy 将能够在广泛的温度范围内提供出色的首层打印效果！
+    * 在漂移校准期间可用的额外 gcode 命令包括：TEMPERATURE_PROBE_NEXT
+    * `TEMPERATURE_PROBE_NEXT`    用于达到EDDy设置的目标温度`80℃`前强制EDDy采样新数据。
+    * `TEMPERATURE_PROBE_COMPLETE`    用于EDDy达不到设定温度`80℃`前完成校准。
+    * `ABORT`  可用于终止校准并忽略结果。
+    * 当校准完成使用`SAVE_CONFIG`去保存温度偏移设置果！
+    * 综上所述，与大多数其他程序相比，上述校准过程更具挑战性，也更耗时。它可能需要练习和多次尝试才能够在广泛的温度范围内提供出色的首层打印效果！
 
  ## 调整z—offset/z补偿
 * 通过下面命令去用A4纸调整Z—offset 弹出来的UI界面 调整`z—offset`数值调整前先看一下klipper文档的教程[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
@@ -121,11 +58,6 @@ PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
 ```
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
 * 校准完成后`SAVE_CONFIG`保存参数
-:::info
-* 报错`Eddy current sensor error`这个调大eddy配置里面的z_offset数值，看图例
-
-<ImageView image={require('@site/docs/DebugDoc/faq/img/EDDYZOFF.webp').default} size="50%" align="left" />
-:::
 
 :::info
  * 以上操作完成但是在开始做扫床失败请把z限位改成虚拟限位,覆盖原来的endstop_pin`endstop_pin: probe:z_virtual_endstop` 
