@@ -9,150 +9,102 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 # Eddy 使用
 
     :::info
-
-    * 请注意扫床建议使用单独Z限位，不建议将扫床当Z限位
-    * 在安装 Eddy 时，底部于喷嘴的位置需至少在喷嘴上面 1-2 mm
-    * 校准校准Eddy频率时，线圈PCB要远离热床至少5mm
-    * 请不要全部热床是在常温下测试，并且测试时候不要打开热床
-
+  * 在安装 Eddy 时，底部之于喷嘴的位置需至少在喷嘴上面 1-2 mm
+  * 请不要全部热床是在常温下测试，并且测试时候不要打开热床
+  * 使用前删除配置里的`probe`配置
     :::
+
+    :::warning 注意事项
+    * 多Z轴机器需要手动调平一次做好
+    :::
+
 
 ## 接线示意图
 
-    * 商标朝下
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="100%" align="left" />
+    * 商标朝热床安装
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="40%" align="left" />
 
 
-## 参考配置与使用说明
+## 使用说明
+   * 使用ssh工具通过ip登录终端，执行脚本
+    下载需要的ssh工具 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm工具</Button>
 
-##### 在`printer.cfg`配置文件里面添加以下配置，在进行调试eddy
 
-    ### 扫床配置
-    * 在`printer.cfg`配置文件里面找到`probe`或类似`probe`的配置覆盖添加以下配置
-    * 这里的`x_offset: 0 y_offset: 0` 偏移填eddy中心到喷嘴的距离,注意例如这里是参考数值-10那么`printer.cfg`配置文件里面找到x轴的配置参考`position_min:-5`这里的-5修改为-12,要比-10大两个数值
+<Tabs>
+  <TabItem value="eddy1" label="国际使用">
+    # 国际请使用下面的命令
+    ### 下面开始安装eddy全自动脚本
+    * 打开下载的ssh工具，输入下面的命令回车，点击复制即可
     
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 2.0
-        i2c_address: 43
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### 温补配置
-
-        ```cfg
-        [temperature_probe fly_eddy_probe]
-        sensor_type:Generic 3950
-        sensor_pin:SB2040:gpio28
-        ```
-
-    ## 网床指令
-    
-        * 在`printer.cfg`配置里面添加下面的宏
-            ```bash
-            [gcode_macro BED_MESH_CALIBRATE]
-             rename_existing: _BED_MESH_CALIBRATE
-             gcode: 
-                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
-            ```
-        * 局域网床指令，需要确保Klipper可以使用对象排除功能，建议添加到开始宏中
-            ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
-            ```
-
-### bed_mesh配置
-
-    * [bed_mesh] 里的`horizontal_move_z`参数，建议设置为 2， 使扫描平台的时候，Eddy 尽可能的靠近平台
-
-    ```cfg
-    [bed_mesh]
-    horizontal_move_z: 2
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
     ```
-## 防撞宏
-
-    ### `[quad_gantry_level]`扫床优化
-        * 如果有配置`[quad_gantry_level]`可以添加下方宏到配置里面，没有则不需要添加
-        * 此宏会随着龙门高低差降低降低探测高度
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
-
-    ### `[z_tilt]`扫床优化
-
-        * 如果有配置`[z_tilt]`可以添加下方宏到配置里面，没有则不需要添加
-        * 此宏会随着龙门高低差降低降低探测高度
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
-
-    ### eddy大概率热床干扰扫床优化宏
-
-        * 如果使用大功率交流热床（500W以上）
-        * 下方宏是在扫床时候关闭热床扫床完成后重新加热
-            ```cfg
-            [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode:
-                {% set TARGET_TEMP = printer.heater_bed.target %}
-                M140 S0
-                _BED_MESH_CALIBRATE {rawparams}
-                M140 S{TARGET_TEMP}
-            ```
-
-   # 调试步骤： 
-   ## 第一步修改频率
-
-    ### ldc16121612默认频率修改
-    此方法只用于sht36-v3/SB2040-v3或SB2040-Pro-v3
-    可使用Mobaxterm工具执行命令
-    
-    下载需要的 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm工具</Button>
-    
-    [详细使用请参考](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
-
-
-    执行第一条命令回车
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+   * 在`fluidd`网页里的`moonraker.conf`配置文件里添加下面的配置，方便以后更新
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1
+    managed_services: klipper
     ```
+   * 如更新了请执行找这个命令
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
+    ```
+</TabItem>
 
-    执行第二条命令回车
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    替换成功会返回一条带有`LDC1612_FREQ = 40000000`的行，那么替换就成功了。如果没有任何返回，则表示替换没有成功。
-    或者使用这条命令去查看是否成功
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+  <TabItem value="eddy2" label="国内使用">
+# 国内请使用下面的命令
+### 下面开始安装eddy全自动脚本
+    * 打开下载的ssh工具，输入下面的命令回车，点击复制即可
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
+    ```
+   * 在`fluidd`网页里的`moonraker.conf`配置文件里添加下面的配置，方便以后更新
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1
+    managed_services: klipper
+    ```
+    * 如更新了请执行找这个命令
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1
+    ./Eddy-Automated-Configuration-Script/eddy1
+    ```
+  </TabItem>
+</Tabs>
+
+
+* 执行了出现如图显示输入你的上位机密码
+
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/EDDY1.webp').default} size="100%" align="left" />
+
+* 出现如图显示`选择输入`输入你打印机对应编号，有中文英文的选择，输入后回车
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" />
+
+* 如你是`sb2040-v3-PROV3` 输入y回车
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/eddy7.webp').default} size="100%" align="left" />
+
+* 出现如图显示那么成功
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy3.webp').default} size="70%" align="left" />
+
+* 如出现图片显示，那么你需要输入`Y`回车
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
 
     <LDC1612 />
