@@ -4,16 +4,22 @@ sidebar_label: 屏幕接线与配置
 ---
 
 
-
-import TFT from '@site/docs/General/fly-os/_tft.mdx';
-
-
 # 屏幕接线与配置
 
-* c8 v1.0-1.3接线以及教程 <Button variant="contained" disableElevation href="/docs\ProductDoc\Screen\TFT\fpc">TFT</Button>
-:::info
+# c8 v1.0-1.2 屏幕接线与配置
 
-* FLY-TOOLS需要上位机联网后输入上位机的`IP+:9999`访问
+* c8 v1.0-1.2的接线图
+<ImageView image={require('@site/docs/ProductDoc/Screen/TFT/img/c8tft.webp').default} size="80%" align="center" />
+
+# c8 v1.3 屏幕接线
+
+* c8 v1.3的接线图
+<ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="left" />
+
+### c8 v1.0-1.2 G2T安装配置参考
+* <Button variant="contained" disableElevation href="/docs\ProductDoc\ExtensionBoard\fly-g2t\rpi">G2T</Button>
+
+* Fly Tools需要上位机联网后输入上位机的`IP+:9999`访问
 * 比如`192.168.6.110:9999`
 
 :::
@@ -36,4 +42,51 @@ import TFT from '@site/docs/General/fly-os/_tft.mdx';
         </TabItem>
     </Tabs>
 
+# TFT屏幕配置
+
+<Tabs>
+    <TabItem value="tft" label="TFT屏幕" default>
+        * 需要在FLY TOOLS中打开KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFT电容屏配置" default>
+## 方法一    
+         * 电容配置需要使用下方命令配置成`fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * 请确认屏幕背面拨码拨到`Cap`
+    * 使用下方命令查看是否修改成功
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * 电容屏修改电阻屏配置使用下方命令
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="TFT电阻屏配置">
+## 方法一        
+           * 电阻屏配置需要使用下方命令配置成`fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * 请确认屏幕背面拨码拨到`Resi`
+        * 使用下方命令查看是否修改成功
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * 电阻屏修改电容屏配置使用下方命令
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>
     ----
