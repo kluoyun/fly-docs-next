@@ -1,0 +1,91 @@
+
+
+## 搜索RS232 ID
+
+### 搜索设备前注意事项
+
+    * 搜索RS232 ID前，请先 <Button variant="contained" disableElevation href="/docs/DebugDoc/BasicTutorial/#使用网络ip连接到上位机ssh">连接到SSH</Button>
+    * 注意！请使用SSH软件通过WiFi连接至上位机！
+    * 请确保有连接好UTOR，并且确保连接上位机的数据线具有数据传输功能
+    * 如果使用G2T请确定系统是否支持使用UART链接
+
+### 搜索设备
+
+    * 现在你已经正常登录到上位机了可以输入`lsusb`搜索设备，将会以下几种情况之一
+        * 输入`lsusb`提示找不到`ls`指令,则可以输入下方指令来安装指令
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * 输入`lsusb`后什么反应都没有，这是系统问题这边无能为力，你需要更换系统或者使用确定正常的系统
+        * 出现下方图片中的信息，请注意这只是参考。你只需要确定ID后面的字符即可
+        <ImageView image={require('@site/docs/General/get-id/img/7523.webp').default} size="100%" align="left" />
+    * `1a86:7523` 属于本次你要用到的设备。后面的提示你不需要管，因为系统问题可能会导致他显示不全或者干脆不显示
+    * 如果没有，请自行检查数据线是否接好，固件有没有刷对。
+
+    :::warning 注意事项
+
+    有`1a86:7523`时候才能使用下方命令搜索RS232 ID
+
+    :::
+
+
+### 搜索RS232 ID
+
+    ```bash
+    ls /dev/serial/by-path/*
+    ```
+
+    <ImageView image={require('@site/docs/General/get-id/img/rs232-id.webp').default} size="100%" align="left" />
+    * 如果输入`ls /dev/serial/by-path/*`后没有ID出来，但是`lsusb`有设备请更换上位机或者更换上位机系统
+    * 请注意！UTOR在查询ID时，会出现两个ID！
+    * **两个ID中，只选择一个ID填入配置文件即可**，如果一个ID连不上，则填入另一个ID！请确保id后面带有`-port0`否则无法使用
+
+    :::warning 注意事项
+
+    请注意工具板与UTOR一定要供地！！！否则无法连接上工具版！！！
+
+    :::
+
+### 将RS232的ID，填写到到配置里面
+
+    * 打开打印机网页界面，在左侧边栏的配置选项里找到：fluidd为：`{…}` ；mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="80%" align="left" />
+
+    * 将蓝色的ID复制，填写到 `printer.cfg` 配置里的 `[mcu SHT36]` 节点的 `serial: ` 。保存重启后即可连上主板。若Klipper提示 ``ADC out of range``为正常现象，将热床和热敏连接好，配置好喷头、热床的热敏引脚和输出引脚，再保存重启即可。
+
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-rs232-id.webp').default} size="90%" align="left" />
+
+    :::warning 注意事项
+
+    * RS232 ID需要配置`baud:`与 `restart_method:command`
+    * 下方是参考配置
+
+    :::
+
+        ```cfg
+        [mcu SHT36]
+        serial: /dev/serial/by-path/platform-1c1c000.usb-usb-0:1.2:1.0-port0
+        baud: 250000
+        restart_method:command
+        ```
+
+    :::danger
+
+    注意：文档中所出现的所有ID均为示例，实际每个主板的ID均不一致，请根据实际获取到的ID修改填写。
+
+    :::
+
+    :::danger
+
+    请注意下方ID不可以使用！！！！
+
+    :::
+
+        ```cfg
+        serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        ```
+----
+
+
+
