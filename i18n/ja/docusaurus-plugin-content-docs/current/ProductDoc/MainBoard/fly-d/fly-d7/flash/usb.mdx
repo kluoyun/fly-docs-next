@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USBファームウェアの書き込み
+sidebar_label: USBファームウェアの焼成
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -11,10 +11,10 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB ファームウェアのビルド
+# USBファームウェアのコンパイル
 
 
-## ビルドの開始
+## コンパイルの開始
 
     <SSH />
 
@@ -22,21 +22,32 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q` キーを押して **Save configuration** が表示されたら、`Y` キーを押します
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインインターフェースに戻ります
-    * `make -j4` を入力してビルドを開始します、時間がかかることがあります
+    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 現在は設定が保存され、コマンドラインに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されたらビルド成功です
+    * コンパイルが成功すると、次の出力が表示されます
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## 書き込みモードに入っているか確認
+## ファームウェア焼成モードに入る
+
+    :::tip ヒント
+        2024年9月1日以降に出荷されたD7には既にKatapultファームウェアが焼成されています
+    :::
+    * 主基板をホストマシンにType-Cケーブルで接続し、**リセットボタンをダブルクリック**します。このとき、主基板上のLEDが点滅します。
+    :::warning 警告
+       * LEDが点滅しない場合は、katapultファームウェアを再焼成してください：<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#進入dfu燒錄模式">katapultファームウェアの焼成</Button>
+       * LEDが点滅しない場合は、katapultファームウェアの焼成後、再度実行してください
+    :::
+
+    <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
 
     <LS />
 
-## ファームウェアの書き込み
+## ファームウェアの焼成
     
     <CANBOOT />

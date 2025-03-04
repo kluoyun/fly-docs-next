@@ -1,39 +1,91 @@
 ---
-sidebar_position: 10
-sidebar_label: Connexion et configuration de l'écran
+position-sidebar: 10
+étiquette-de-la-colonne-côtère: Configuration et câblage de l'écran
 ---
 
+# Configuration et câblage de l'écran
 
+# c8 v1.0-1.2 Configuration et câblage de l'écran
 
-import TFT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tft.mdx';
+* Schéma de câblage pour la version c8 v1.0-1.2
+<ImageView image={require('@site/docs/ProductDoc/Screen/TFT/img/c8tft.webp').default} size="80%" align="center" />
 
+# c8 v1.3 Câblage de l'écran
 
+* Schéma de câblage pour la version c8 v1.3
+<ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="left" />
 
-# Connexion et configuration de l'écran
+### Référence d'installation et de configuration de la version c8 v1.0-1.2 G2T
+* <Button variant="contained" disableElevation href="/docs\ProductDoc\ExtensionBoard\fly-g2t\rpi">G2T</Button>
 
-:::info
-
-* FLY-TOOLS nécessite une connexion en réseau de l'hôte pour entrer l'IP de l'hôte suivi de `:9999` pour y accéder
+* Fly Tools nécessite une connexion à Internet pour entrer l'adresse IP du PC `IP+:9999` pour y accéder
 * Par exemple `192.168.6.110:9999`
 
 :::
 
     <Tabs>
-        <TabItem value="tft" label="Connexion TFT" default>
-            * Il est nécessaire de configurer l'écran dans FLY TOOLS comme ci-dessous et d'activer KS
+        <TabItem value="tft" label="Câblage TFT" default>
+            * Vous devez configurer l'écran dans FLY TOOLS en utilisant la configuration ci-dessous et en activant KS
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
-            * Connexion de l'écran TFT FLY-Pi
+            * Câblage de l'écran TFT pour FLY-Pi
                 <ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="center" />
 
         </TabItem>
-        <TabItem value="hdmi" label="Connexion HDMI">
-            * Il est nécessaire de configurer l'écran dans FLY TOOLS comme ci-dessous et d'activer KS
+        <TabItem value="hdmi" label="Câblage HDMI">
+            * Vous devez configurer l'écran dans FLY TOOLS en utilisant la configuration ci-dessous et en activant KS
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/hdmi.webp').default} size="80%" align="center" />               
-            * Utiliser le module FPC vers HDMI
-            * Veuillez noter qu'il est nécessaire de connecter un câble type-c avec fonction de transmission de données au module
+            * Utilisation d'un module de conversion FPC vers HDMI
+            * Veuillez noter que vous devez connecter un type-C avec fonction de transmission de données au module
                 <ImageView image={require('@site/docs/General/fly-os/img/screen/c8-hdmi.webp').default} size="80%" align="center" />
 
         </TabItem>
     </Tabs>
 
+# Configuration de l'écran TFT
+
+<Tabs>
+    <TabItem value="tft" label="Écran TFT" default>
+        * Vous devez activer KS dans FLY TOOLS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="Configuration de l'écran tactile TFT" default>
+## Méthode un    
+         * La configuration tactile nécessite d'utiliser la commande suivante pour configurer en `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Vérifiez que le commutateur à glissière sur l'arrière de l'écran est positionné sur `Cap`
+    * Utilisez la commande suivante pour vérifier si la modification a été effectuée avec succès
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * Pour modifier la configuration tactile en résistive, utilisez la commande suivante
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="Configuration de l'écran résistif TFT">
+## Méthode un        
+           * La configuration résistive nécessite d'utiliser la commande suivante pour configurer en `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Vérifiez que le commutateur à glissière sur l'arrière de l'écran est positionné sur `Resi`
+        * Utilisez la commande suivante pour vérifier si la modification a été effectuée avec succès
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * Pour modifier la configuration résistive en tactile, utilisez la commande suivante
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>
     ----

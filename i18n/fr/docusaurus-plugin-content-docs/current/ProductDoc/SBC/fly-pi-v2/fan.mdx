@@ -1,37 +1,34 @@
 ---
 sidebar_position: 8
-sidebar_label: Connecteur de ventilateur embarqué 5V
+sidebar_label: Entrée de ventilateur 5V embarquée
 ---
 
+# Entrée de ventilateur 5V embarquée
 
-
-
-# Connecteur de ventilateur embarqué 5V
-
-## Pi-V2 dispose d'une interface contrôlable de 5V pour la dissipation thermique du contrôleur principal, le branchement est illustré ci-dessous
+## La carte Pi-V2 embarque une interface contrôlable de 5V pour le refroidissement du contrôleur principal, avec la méthode de câblage comme indiqué ci-dessous
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.webp').default} size="80%" align="left" />
 
 
 ## Configuration de référence
 
     ```cfg
-    [mcu host]                      # FlyOS a généré un MCU Linux pour vous par défaut, il suffit de le définir pour l'utiliser           
+    [mcu host]                      # FlyOS a généré par défaut votre linux MCU, définissez-le pour l'utiliser           
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Température de l'hôte
+    [temperature_sensor FLY-π]      # Température du contrôleur supérieur
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # Ventilateur de refroidissement de l'hôte
-    pin: host:gpiochip1/gpio103     # Broche du ventilateur de l'hôte
+    [temperature_fan core_fan]      # Ventilateur de refroidissement du contrôleur supérieur
+    pin: host:gpiochip1/gpio103     # Broche du ventilateur du contrôleur supérieur
     max_power: 1.0
-    sensor_type: temperature_host   # Défini comme température du contrôleur principal de l'hôte
+    sensor_type: temperature_host   # Définir comme température du contrôleur principal
     control:watermark               # Mode de contrôle
-    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement de l'hôte
-    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
-    max_temp: 90                    # Température maximale, au-dessus de laquelle une erreur sera signalée
+    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement du contrôleur supérieur
+    min_temp: 0                     # Température minimale, une erreur sera signalée si elle est inférieure à celle-ci
+    max_temp: 90                    # Température maximale, une erreur sera signalée si elle est supérieure à celle-ci
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Vitesse maximale, à 80% de la puissance maximale
-    min_speed: 0.3                  # Vitesse minimale, à 30% de la puissance maximale
+    max_speed: 0.8                  # Vitesse maximale, correspondant à 80% de la puissance pleine
+    min_speed: 0.3                  # Vitesse minimale, correspondant à 30% de la puissance pleine
     ```

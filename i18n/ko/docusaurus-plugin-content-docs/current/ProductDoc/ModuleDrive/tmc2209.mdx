@@ -2,8 +2,6 @@
 sidebar_position: 1
 ---
 
-
-
 import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 2209
@@ -12,24 +10,24 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
 
 ## 기본 파라미터
 
-    * 입력 전압: 12V-24V
-    * 적용되는 펌웨어: Marlin/Klipper/RRF
-    * 모터가 쉽게 스텝을 놓치지 않음
-    * 조용한 모드 지원
-    * 넓은 면적의 팬 히트패드, 드라이버 작업 온도 낮춤
-    * 드라이버 모드 지원: TMC: UART
-    * 모터 정지 감지 지원
+    * 입력 전압 : 12V-24V
+    * 호환 펌웨어 : Marlin/Klipper/RRF
+    * 모터가 쉽게 실리지 않습니다.
+    * 무소음 모드 지원
+    * 넓은 면적의 팬 열패드로 드라이버 작동 온도 감소
+    * 드라이버 모드 지원 : TMC : UART
+    * 모터 블록 감지 지원
 
-## 메인보드 점퍼 설명
+## 메인보드 점선 설명
 
-    * TMC2209는 UART 점퍼를 사용합니다.
+    * TMC2209는 UART 점선을 사용합니다.
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
-    * FLY 드라이버의 UART 핀은 왼쪽에서 아래로 네 번째 핀, PDN 핀이 UART 핀입니다. 만약 메인보드가 해당 핀과 일치하지 않으면 UART를 사용할 수 없습니다.
-    * 다른 드라이버가 다섯 번째 핀을 사용하는 경우, 우리 메인보드를 사용할 수 있는 방법을 참고하세요.  <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">UART 사용 불가 해결 방법</Button>
+    * FLY 드라이버의 UART 핀은 왼쪽에서 아래로 네 번째 핀이며, PDN 핀은 UART 핀입니다. 메인보드가 해당 핀과 일치하지 않으면 UART를 사용할 수 없습니다.
+    * 다른 드라이버가 다섯 번째 핀을 사용하는 경우 FLY 메인보드를 사용하여 이 방법으로 문제를 해결할 수 있습니다.  <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%80-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">UART 사용에 대한 자세한 내용은 여기를 참조하십시오.</Button>
         
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/uart1.webp').default} size="80%" align="center" />
 
-## TMC2209 참조 설정
+## TMC2209 참고 설정
 
     :::danger
 
@@ -41,31 +39,31 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2209 stepper_x]
     uart_pin: 
     interpolate: False
-    run_current: 0.8                    # 모터 작동 전류 값 (단위: mA)
-    sense_resistor: 0.110               # 드라이버 샘플링 저항을 변경하지 마십시오.
+    run_current: 0.8                    # 모터 동작 전류 값 (단위 : mA)
+    sense_resistor: 0.110               # 드라이버 샘플링 저항 변경 금지
     stealthchop_threshold: 0
     ```
 
-## 무한위치 사용 설명
+## 제한없는 사용 설명
 
     <DIAG />
 
-    :::tip 무한위치 사용 팁
+    :::tip 제한없는 사용 팁
 
-    * 원래 `endstop_pin:`은 차단하거나 삭제해야 하며, `endstop_pin: tmc2209_stepper_x:virtual_endstop`를 추가해야 합니다.
-    * `diag_pin:`을 설정한 후, 리미트 상태를 새로고침하면 트리거되지 않습니다.
-    * `driver_SGTHRS:`는 적절한 값을 스스로 테스트해야 합니다.
+    * 기존의 `endstop_pin:`은 비활성화하거나 삭제하고 `endstop_pin: tmc2209_stepper_x:virtual_endstop`을 추가해야 합니다.
+    * `diag_pin:`을 구성한 후에는 리프레시된 제한 상태가 트리거되지 않습니다.
+    * `driver_SGTHRS:`를 구성하려면 적합한 값을 자체적으로 테스트해야 합니다.
 
     :::
 
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209diag.webp').default} size="80%" align="center" />
 
-    * 참조 설정
+    * 참고 설정
 
     :::tip
 
-    * FLY 2209 뒷면에 있는 딥 스위치를 다른 쪽으로 전환해야 합니다.
-    * FLY 2209C는 DIAG를 직접 연결하므로 이 단계가 필요 없습니다.
+    * FLY 2209는 뒷면에 스위치가 있으며, 다른 쪽으로 바꿔야 합니다.
+    * FLY 2209C는 직접 연결된 드라이버로 DIAG를 사용하지 않으므로 이 단계가 필요하지 않습니다.
 
     :::
 
@@ -73,7 +71,7 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc2209_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # 0으로 변경하지 않으면 홈 복귀 실패할 수 있습니다.
+    homing_retract_dist: 0        # 되돌아오는 거리는 0으로 유지해야 합니다. 0으로 설정하면 정확한 위치 결정이 실패할 수 있습니다.
 
     [tmc2209 stepper_x]
     diag_pin: ^

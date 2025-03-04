@@ -1,10 +1,7 @@
 ---
-sidebar_position: 3
-sidebar_label: Raspberry Pi and Other Hosts Using Ethernet Cable Tutorial
+sidebar_position: 5
+sidebar_label: Tutorial for Using Ethernet Cables with Raspberry Pi and Other Host Computers
 ---
-
-
-
 
 
 
@@ -14,15 +11,15 @@ sidebar_label: Raspberry Pi and Other Hosts Using Ethernet Cable Tutorial
 
     :::tip
 
-    The screen firmware needs to be manually updated.
+    The screen firmware needs to be manually updated
 
     :::
 
 ## Screen Firmware Download
 
-    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">Click to download screen firmware</Button>
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">Click to download the screen firmware</Button>
 
-    * A memory card no larger than 32GB is required, and the TF card transfer speed must be Class10 or higher. It is recommended to use brands such as SanDisk.
+    * A memory card with a capacity of no more than 32GB is required, and the transfer speed of the TF card must be class10 or above. It is recommended to use a TF card from brands like SanDisk.
 
 
 ## Ethernet Cable Wiring
@@ -30,32 +27,32 @@ sidebar_label: Raspberry Pi and Other Hosts Using Ethernet Cable Tutorial
     <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.webp').default} size="100%" align="left" />
 
 
-## System Package for Use with FLY Host
+## System Packages Suitable for FLY Host Computers
 
 :::tip
-Applicable to C8 PI_V2 PI GEMINI series
+Suitable for C8 PI_V2 PI GEMINI series
 :::
 
-    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">Download system package</Button>
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">Download the system package</Button>
 
 
-## Service Installation
+## Install Services
 
 :::tip
-Other hosts need to install services themselves.
+Other host computers need to install services by themselves
 :::
 
 :::warning Note
-The installation process requires internet access.
+The installation process requires an internet connection
 :::
     ```bash
     sudo apt install isc-dhcp-server
     ```
-## Network Configuration
+## Configure Network
 
 :::tip
-* This tutorial will occupy the host's network port, allowing only the screen to be used.
-* If not needed, simply delete all the modified and added configurations below.
+* This tutorial will occupy the host computer's Ethernet port, and only the connection to the screen can be used.
+* If not needed, just completely delete the modified and added configurations below.
 :::
     Modify `/etc/network/interfaces.d/eth0`
 
@@ -103,13 +100,13 @@ The installation process requires internet access.
     subnet 192.168.251.0 netmask 255.255.255.0 {
         range 192.168.251.100 192.168.251.200;
         option routers 192.168.251.1;
-        option domain-name-servers 8.8.8.8, 8.8.4.4; # Example using Google Public DNS
+        option domain-name-servers 8.8.8.8, 8.8.4.4; # Google Public DNS as an example
         default-lease-time 600; # Default lease time in seconds
         max-lease-time 7200;    # Maximum lease time in seconds
     }
     ```
 
-    Reboot the system first, then execute the following service restart
+    Restart the system first, then execute the following restart service
 
     Or restart the network service
 
@@ -117,7 +114,7 @@ The installation process requires internet access.
     sudo systemctl restart NetworkManager
     ```
 
-    This operation will cause a network disconnection and reconnection.
+    This operation will disconnect and reconnect the internet
 
     Restart the service
 
@@ -125,14 +122,14 @@ The installation process requires internet access.
     sudo systemctl restart isc-dhcp-server
     ```
 
-    The local IP address should be `192.168.251.100`.
+    The local IP address should be `192.168.251.100`
 
-## Increase WIFI Priority
+## Improve WIFI Priority
 
 :::tip
-* This command is to increase network priority. If not added, normal internet access and downloads will not be possible!!!
+* This command is to improve network priority. If it is not added, it will not be able to connect to the internet and download things properly!!!
 :::
-    * Please add the following instruction in `/etc/rc.local` on the host
+    * Please add the following instructions in `/etc/rc.local` on the host computer
 
     ```bash
     sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0

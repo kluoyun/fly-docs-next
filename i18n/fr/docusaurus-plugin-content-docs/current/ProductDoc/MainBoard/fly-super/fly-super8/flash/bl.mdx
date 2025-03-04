@@ -1,54 +1,51 @@
 ---
-sidebar_position: 6
-sidebar_label: Firmware BL, veuillez ignorer
+position-sidebar: 6
+label-sidebar: BL firmware, ignore this
+
 ---
-
-
-
-
 
 import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
-# Firmware BL
+# BL firmware
 
     :::tip
 
-    * Veuillez noter que le bootloader est déjà préinstallé, il n'est pas nécessaire de le reflasher
+    * Veuillez noter que le bootloader est déjà préinstallé en usine et n'a pas besoin d'être réinstallé.
 
     :::
 
-## Entrer en mode flash
+## Entrée en mode de programmation
 
-    * Il y a deux méthodes pour entrer en mode flash
-    * Première méthode : En cas de coupure totale de l'alimentation de la carte mère, court-circuitez BOOT puis connectez un câble de données à la carte mère et à votre appareil
-    * Deuxième méthode : Après avoir connecté un câble de données à la carte mère et à votre appareil, court-circuitez BOOT, appuyez sur la touche RST, puis relâchez RST et déconnectez le court-circuit de BOOT
+    * Il existe deux méthodes pour entrer en mode de programmation.
+    * Première méthode : Éteignez complètement la carte mère, puis court-circuitez BOOT, et branchez un câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur votre appareil.
+    * Deuxième méthode : Branchez un câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur votre appareil, puis court-circuitez BOOT, appuyez sur le bouton RST, relâchez le bouton RST, et enfin débranchez le court-circuit de BOOT.
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Flasher le firmware
+## Programmation du firmware
 
     <Tabs>
-        <TabItem value="win" label="Tutoriel de flash sous Windows" default>
-            * Le firmware bootloader de SUPER8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">Cliquez pour télécharger automatiquement le firmware</Button>
+        <TabItem value="win" label="Tutoriel de programmation Windows" default>
+            * Le firmware du bootloader pour SUPER8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">Cliquez pour télécharger automatiquement le firmware</Button>
             <WIN />
             
         </TabItem>
-        <TabItem value="linux" label="Tutoriel de flash via l'hôte">
+        <TabItem value="linux" label="Tutoriel de programmation de l'ordinateur principal">
             
             <Katapult />
-            4. Flasher le firmware
+            4. Programmation du firmware
             :::tip
-            Il suffit de flasher un seul firmware
+            Il suffit de programmer un seul firmware.
             :::
-            * Voici la commande pour flasher le firmware
+            * Ci-dessous sont les commandes de programmation du firmware
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER8.bin
                 ```
-            5. Si le message ``File downloaded successfully`` apparaît comme indiqué par la flèche ci-dessous, le flash a réussi
+            5. Si le contenu à l'endroit indiqué par la flèche ci-dessous est ``Fichier téléchargé avec succès``, alors la programmation est réussie.
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
             :::tip
-            Après le flash, il est nécessaire de couper complètement l'alimentation de la carte mère une fois.
+            Après la programmation, il est nécessaire de couper l'alimentation de la carte mère une fois pour la décharger complètement.
             :::
         </TabItem>
     </Tabs>

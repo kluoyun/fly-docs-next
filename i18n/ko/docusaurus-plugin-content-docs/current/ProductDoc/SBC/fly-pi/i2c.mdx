@@ -3,33 +3,28 @@ sidebar_position: 11
 sidebar_label: I2C 사용
 ---
 
-
-
-
-
-
 # I2C 사용
 
-    * 상위기기 40PIN의 I2C 인터페이스 사용
-    * 이번 튜토리얼에서는 FLY-PI V2LM75의 I2C 센서와 I2C2를 예시로 사용합니다!!!
-    * I2C1이 다른 장치에 의해 이미 점유된 경우 사용할 수 없습니다!!!
-    * 연결이 단단하고 안정적으로 연결되었는지 확인하세요!!!
+    * 상위 기기의 40핀 I2C 인터페이스를 사용합니다.
+    * 이번 튜토리얼은 FLY-PI V2LM75의 I2C 센서와 I2C2를 예로 들어 설명합니다!!!!
+    * 주의: 다른 장치에 의해 사용 중인 I2C1은 사용할 수 없습니다!!!!
+    * 접선이 단단하고 안정적으로 되었는지 확인해주세요!!!!
 
-## FLY Tools를 통해 I2C 활성화
+## FLY 도구를 사용하여 I2C 열기
 
-    * Overlays를 찾아서 뒤에 i2c2와 i2c0을 선택하세요
-    * I2C1이 다른 장치에 의해 이미 점유된 경우 사용할 수 없습니다!!!
-    * 저장 후 재부팅
+    * Overlays를 찾아서 그 뒤에 i2c2와 i2c0을 선택하세요
+    * 주의: 다른 장치에 의해 사용 중인 I2C1은 사용할 수 없습니다!!!!
+    * 저장하고 재부팅하세요
 
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c.webp').default} size="80%" align="center" />
 
 
-## 연결 및 검색
-    * 본 튜토리얼에서는 PI V2를 참고로 사용합니다
+## 접선 및 검색
+    * 이 튜토리얼은 PI V2를 참고합니다
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c2.webp').default} size="80%" align="center" />
 
-    * SSH를 사용하여 FLY 상위기기에 연결 후 아래 명령어를 입력하면 아래 내용이 출력됩니다
-    * `I2C0`을 사용할 경우 아래 명령어의 `2`를 `0`으로 교체해야 합니다
+    * SSH를 통해 FLY 상위 기기에 연결한 후 아래 명령어를 입력하면 아래 내용이 출력됩니다
+    * `I2C0`을 사용하는 경우 아래 명령어의 `2`를 `0`으로 바꾸어야 합니다
 
     ```cfg
     sudo i2cdetect -y -r 2
@@ -37,11 +32,11 @@ sidebar_label: I2C 사용
 
 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c1.webp').default} size="80%" align="center" />
 
-    * 정상적인 경우, 엔터를 누르면 즉시 위의 내용이 출력되고 주소가 함께 표시됩니다
-    * 주소는 무작위로 설정됩니다
-    * 선이 잘못 연결되거나, 선이 반대로 연결되거나, 설정이 활성화되지 않았거나, 모듈이 손상된 경우 정상적으로 출력되지 않습니다
-    * 주소는 16진수에서 10진수로 변환한 후 `i2c_address:` 뒤에 입력해야 합니다
-    * 온라인 진법 변환기를 사용하여 변환할 수 있습니다
+    * 주의: 정상 작동하는 경우, 엔터 후 바로 위의 내용이 주소와 함께 출력됩니다
+    * 주의: 주소는 무작위로 지정됩니다
+    * 주의: 선이 잘못 연결되었거나, 역방향으로 연결되었거나, 설정이 열리지 않았거나, 모듈이 손상된 경우 이상한 결과가 출력될 수 있습니다
+    * 주소는 16진수에서 10진수로 변환되어 설정의 `i2c_address:` 뒤에 작성되어야 합니다
+    * 브라우저에서 온라인 진법 변환기를 검색하여 변환할 수 있습니다
 
 ## 설정
 
@@ -52,8 +47,9 @@ sidebar_label: I2C 사용
     [temperature_sensor my_sensor]
     sensor_type: LM75
     i2c_address:72
-    # #   기본값은 72 (0x48). 일반 범위는 72-79 (0x48-0x4F)이며, 주소의 하위 3비트는 칩의 핀을 통해 설정됩니다
-    # #   (보통 점퍼나 하드와이어로 설정됨).
+    # #   Default is 72 (0x48). Normal range is 72-79 (0x48-0x4F) and the 3
+    # #   low bits of the address are configured via pins on the chip
+    # #   (usually with jumpers or hard wired).
     i2c_mcu:host
     i2c_bus:i2c.2
     # i2c_software_scl

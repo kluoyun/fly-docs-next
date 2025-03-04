@@ -1,0 +1,138 @@
+---
+sidebar_position: 6
+sidebar_label: BL 펌웨어 컴파일 가이드
+---
+
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+:::tip
+* 호스트 머신이 정상적으로 인터넷에 연결되어 있는지 확인하세요.
+* 펌웨어를 컴파일하기 전에 SSH를 통해 네트워크를 통해 호스트 머신에 로그인해야 합니다.
+* 시리얼 포트 도구를 사용하지 않고 호스트 머신에 로그인하지 마세요.
+:::
+
+# Katapult 펌웨어 컴파일
+### 컴파일 시작
+  <SSH />
+  ### Katapult 펌웨어 컴파일 및 구성 페이지 동작 설명
+
+:::tip
+키보드 입력 모드가 반각 모드, 즉 영문 모드인지 확인하세요.
+:::
+
+1. 키보드의 상향 화살표 키 `↑`, 하향 화살표 키 `↓`는 메뉴 항목을 선택하기 위해 위아래로 커서를 이동시키는 데 사용됩니다.
+2. 확인 키 `Enter` 또는 공백 키 `Space`는 메뉴 항목을 체크하거나 하위 메뉴로 들어가는 데 사용됩니다.
+3. 종료 키 `ESC`는 이전 메뉴로 돌아가기 위한 데 사용됩니다.
+4. `Q` 키는 Katapult 펌웨어 구성 페이지를 종료하는 데 사용됩니다.
+5. Katapult 펌웨어 구성 페이지를 종료할 때, 저장을 위한 프롬프트가 나타나면 `Y` 키를 누릅니다.
+
+다음은 펌웨어를 컴파일하는 방법입니다:
+* SSH에 연결한 후 아래 명령어를 입력하고 Enter 키를 누르세요:
+
+    ```bash
+    cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+    ```
+
+* 여기서 `rm -rf ~/Katapult/.config && rm -rf ~/Katapult/out`는 이전 컴파일 데이터와 펌웨어를 삭제하고, `make menuconfig`는 펌웨어를 컴파일합니다. 실행 후 아래 화면이 나타납니다.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+* `Micro-controller Architecture (LPC176x (Smoothieboard))`를 선택하고 Enter 키를 누르세요.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+* 메뉴로 진입한 후, **Raspberry Pi RP2040**를 선택하고 Enter 키를 누르세요.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+* `Build Katapult deployment application (Do not build)`를 선택하고, **Do not build**를 선택하세요.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+* **Communication interface**를 선택하고, **CAN bus**를 선택하세요.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/CAN-BUS.webp').default} size="100%" align="Center" />
+
+* `(4) CAN RX gpio number`를 선택하고, `4`를 삭제하고 `1`을 입력하세요.
+* `(5) CAN TX gpio number`를 선택하고, `5`를 삭제하고 `0`을 입력하세요.
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+* `CAN bus speed`는 기본적으로 1000000이며, 필요하다면 500000으로 변경하세요.
+* 이것은 1M의 것입니다.
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+* 이것은 5k의 것입니다.
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/5K.webp').default} size="100%" align="Center" />
+
+* **Enable Status LED**를 선택하고 Enter 키를 누르세요, `Status LED GPIO Pin (NEW)`에 `!gpio18`를 입력하세요.
+:::warning
+영문 입력 모드에서 `!gpio18`를 입력하세요.
+:::
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/led1.webp').default} size="100%" align="center" />
+* **위의 그림과 일치하는지 확인하고, 일치하면 다음 단계로 진행하세요.**
+* `Q` 키를 누르면 **Save configuration**이 나타나고, 그때 `Y` 키를 누르세요.
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+* 이제 구성이 저장되고 명령줄 인터페이스로 돌아왔습니다.
+* `make -j4`를 입력하여 컴파일을 시작하세요. 시간이 좀 걸립니다.
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+* 마지막으로 아래 내용이 출력되면 컴파일이 성공한 것입니다.
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+  Compiling out/src/deployer.o
+  Compiling out/src/generic/armcm_boot.o
+  Compiling out/src/generic/armcm_reset.o
+  Building out/deployer_ctr.o
+  Compiling out/katapult_payload.o
+  Preprocessing out/src/generic/armcm_deployer.ld
+  Linking out/deployer.elf
+  Creating hex file out/deployer.bin
+``` 
+
+## 플래싱 모드 진입
+
+:::tip
+화살표가 가리키는 것이 `BOOT 버튼`입니다.
+:::
+
+* 메인 보드가 완전히 전원이 꺼진 상태에서, BOOT 버튼을 누른 채 데이터 전송용 케이블의 한쪽 끝을 메인 보드에, 다른 한쪽 끝을 기기에 연결하세요.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* `lsusb`를 입력합니다.
+```bash
+lsusb
+```
+* 아래 이미지에서 볼 수 있는 것처럼, 부트 모드로 진입했다는 것을 나타냅니다.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* 아래 명령어를 입력하여 펌웨어를 플래시한 후 Enter 키를 누릅니다.
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+`mellow`를 입력하면 표시되지 않습니다.
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* 아래 이미지에서 볼 수 있는 경우, `mellow`를 입력하고 완료하면 바로 Enter 키를 누르세요.
+
+* 아래 이미지에서 볼 수 있는 메시지가 나타나면, `축하합니다` 펌웨어 플래시가 성공했습니다.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## 펌웨어가 제대로 시작되었는지 확인
+
+* 펌웨어가 정상적으로 시작되면 LED가 깜빡거립니다.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+
+* can ID를 검색하는 명령어를 입력한 후 Enter 키를 누릅니다.
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+```
+* 위 명령어가 can ID를 검색하지 못했다면, 아래 명령어를 시도해보세요.
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can1
+```
+입력 후 아래 이미지에서 볼 수 있는 ID가 나타납니다. 이 ID는 참고용이며 실제 사용에 불가능합니다.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/canid.webp').default} size="100%" align="center" />

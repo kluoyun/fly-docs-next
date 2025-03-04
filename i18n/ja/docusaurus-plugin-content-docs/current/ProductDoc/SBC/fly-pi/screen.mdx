@@ -1,42 +1,87 @@
 ---
 sidebar_position: 7
-sidebar_label: スクリーンの配線と設定
+sidebar_label: スクリーン接続と設定
 ---
-
-
 
 import TFT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tft.mdx';
 
 
 
-# スクリーンの配線と設定
+# スクリーン接続と設定
 
 :::info
 
-* FLY-TOOLSは上位機器に接続してから、上位機器の`IP+:9999`でアクセスする必要があります
-* 例えば`192.168.6.110:9999`
+* FLY-TOOLSは上位機器がネットワークに接続された後に、上位機器の`IP+:9999`にアクセスする必要があります
+* 例：`192.168.6.110:9999`
 
 :::
 
 
     <Tabs>
-        <TabItem value="tft" label="TFT配線" default>
-            * FLY TOOLSで下記のようにスクリーンを設定し、KSを有効にする必要があります
+        <TabItem value="tft" label="TFT接続" default>
+            * FLY TOOLSで下記の設定を行い、KSを開く必要があります
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
-            * FLY-Pi TFTスクリーンの配線
+            * FLY-Pi TFTスクリーン接続
                 <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="center" />
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/v2.webp').default} size="80%" align="center" />
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft_flyπ.webp').default} size="80%" align="center" />
 
         </TabItem>
-        <TabItem value="hdmi" label="HDMI配線">
-            * FLY TOOLSで下記のようにスクリーンを設定し、KSを有効にする必要があります
+        <TabItem value="hdmi" label="HDMI接続">
+            * FLY TOOLSで下記の設定を行い、KSを開く必要があります
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/hdmi.webp').default} size="80%" align="center" />               
-            * FPCからHDMIへの変換モジュールを使用します
-            * データ伝送機能付きのtype-cケーブルをモジュールに接続してください
+            * FPC変換HDMIモジュールを使用します
+            * データ転送機能付きType-Cをモジュールに接続する必要があります
                 <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
 
         </TabItem>
     </Tabs>
 
+# TFTスクリーン設定
+
+<Tabs>
+    <TabItem value="tft" label="TFTスクリーン" default>
+        * FLY TOOLSでKSを開く必要があります
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFTタッチスクリーン設定" default>
+## 方法一    
+         * タッチスクリーン設定には下記のコマンドを使用して`fly-tft-v2-c`に設定する必要があります
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * スクリーンの裏面のダイアルが`Cap`に設定されていることを確認してください
+    * 下記のコマンドを使用して設定が正常に行われたかどうか確認できます
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * タッチスクリーンをレジスタスクリーンに変更するには下記のコマンドを使用します
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="TFTレジスタスクリーン設定">
+## 方法一        
+           * レジスタスクリーン設定には下記のコマンドを使用して`fly-tft-v2-r`に設定する必要があります 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * スクリーンの裏面のダイアルが`Resi`に設定されていることを確認してください
+        * 下記のコマンドを使用して設定が正常に行われたかどうか確認できます
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * レジスタスクリーンをタッチスクリーンに変更するには下記のコマンドを使用します
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>
     ----

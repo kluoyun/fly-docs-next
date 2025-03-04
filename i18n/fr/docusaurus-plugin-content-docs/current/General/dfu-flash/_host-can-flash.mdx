@@ -1,58 +1,53 @@
-:::tip
+:::astuce
 
-* Il est recommandé de ne pas rechercher l'ID ou mettre à jour le firmware pendant l'impression.
-* Les firmwares CAN de Katapult et Klipper pour la même carte mère ou carte d'outils ont des ID complètement identiques.
-
-:::
-
-:::warning
-
-* Assurez-vous que le réseau CAN de l'hôte est configuré.
-* La commande de recherche d'ID CAN peut être utilisée uniquement après que `lsusb` montre `1d50:606f`.
-* La vitesse CAN de la carte d'outils doit correspondre à celle de l'hôte, sinon l'ID ne sera pas trouvé et le firmware ne pourra pas être flashé.
+* Il est suggéré de ne pas effectuer la recherche d'ID ou le flash du firmware pendant le processus d'impression.
+* Le même ID est partagé entre le firmware CAN du contrôleur mère ou de la carte d'outil Katapult et le firmware CAN de Kliper.
 
 :::
 
-* Exécutez la commande suivante pour interroger l'UUID de CANBus :
+:::avertissement
 
+* Assurez-vous que le réseau CAN de l'ordinateur supérieur est configuré.
+* Vous pouvez utiliser les commandes ci-dessous pour rechercher l'ID CAN uniquement si `lsusb` affiche `1d50:606f`.
+* Le taux de transmission CAN de la carte d'outil doit être identique à celui de l'ordinateur supérieur, sinon l'ID ne sera pas trouvé et la mise à jour ne pourra pas être effectuée.
+
+:::
+
+Exécutez la commande suivante pour rechercher l'UUID du CANBus :
+
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+```
+
+* Après l'exécution, vous rencontrerez l'une des situations suivantes, voici des références :
+    * Première situation : Si la carte mère a été flashée avec un firmware de pont, un ID sera affiché avec un message indiquant `Application: Klipper`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />  
+    * Deuxième situation : Si la carte mère a été flashée avec un firmware de pont et qu'elle est associée à une carte d'outil nécessitant un flash, deux IDs seront affichés
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />  
+    * Troisième situation : Utilisation de UTOC en association avec une carte d'outil nécessitant un flash
+    * Remarque : UTOC n'affiche pas d'ID
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />  
+    * Quatrième situation : Pas d'ID affiché, généralement c'est parce que Klipper est occupé, le taux de transmission CAN de l'ordinateur supérieur est incorrect, ou il y a une anomalie dans la connexion
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />  
+
+* Normalement, si la carte d'outil à flasher est en mode CANBOOT, elle affichera `Application: CanBoot` et la LED correspondante clignotera. Dans ce cas, vous devez flasher le firmware Kliper, sinon la connexion ne sera pas possible !!!
+* Remarque : Si c'est le firmware Kliper et que l'ID a déjà été inséré dans la configuration, l'ID ne sera pas affiché et sera occupé par Kliper. Vous devez alors masquer l'ID et redémarrer complètement la carte mère.
+
+:::avertissement
+
+* Si l'UUID n'a pas été trouvé, consultez le document ci-dessous  
+* <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">Références sur les problèmes CAN</Button>
+
+:::
+
+* Flashage du firmware
+
+* Remplacez `241696050c56` dans la commande suivante par l'UUID trouvé lors de la recherche. Veuillez noter qu'il y a un espace après `-u`
     ```bash
-    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
     ```
 
-    * Après avoir entré la commande, selon votre machine, vous pourriez voir les situations suivantes, ci-dessous des exemples :
-        * Premier cas : Une carte mère avec un firmware de pontage, un ID apparaît et indique `Application: Klipper`
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />  
-        * Deuxième cas : Une carte mère avec un firmware de pontage et une carte d'outils nécessitant un firmware, deux ID apparaissent
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />  
-        * Troisième cas : Utilisation d'UTOC avec une carte d'outils nécessitant un firmware
-        * Remarque : UTOC n'affiche aucun ID
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />  
-        * Quatrième cas : Aucun ID n'est indiqué, généralement parce que l'ID est occupé par Klipper, la vitesse CAN0 de l'hôte est incorrecte, ou le câblage est anormal
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />  
+* Comme illustré ci-dessous, si `CAN Flash Success` apparaît, cela signifie que le flash a réussi 
+    <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />  
 
-    * Normalement, la carte d'outils qui nécessite le flashe du firmware doit être en mode CANBOOT et affichera `Application: CanBoot` et la LED du firmware clignotera. À ce moment-là, vous devez flasher le firmware Klipper, sinon la connexion ne sera pas possible !!!
-    * Remarque : Si le firmware est Klipper et que l'ID a déjà été ajouté dans la configuration, l'ID ne sera pas affiché et sera occupé par Klipper. Vous devez masquer l'ID correspondant, puis redémarrer complètement la carte mère.
-
-    :::warning
-
-    * Si aucun UUID n'est trouvé, consultez le document ci-dessous  
-    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">Collection de problèmes CAN</Button>
-
-    :::
-
-* Flashing du firmware
-
-    * Remplacez `241696050c56` dans la commande ci-dessous par l'UUID trouvé, notez qu'il y a un espace après `-u`
-        ```bash
-        python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
-        ```
-
-    * Comme illustré ci-dessous, si `CAN Flash Success` apparaît, le flashage est réussi 
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />  
-
-* Si vous devez mettre à jour le firmware, il suffit de compiler le nouveau firmware et de réexécuter la commande de flashe pour mettre à jour, mais assurez-vous de pouvoir trouver l'ID ou que Klipper est déjà connecté.
-
-        ```bash
-        python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
-        ```
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash1.webp').default} size="100%" align="left" />  
+* Si vous avez besoin de mettre à jour le firmware, exécutez simplement la commande de flashage après avoir compilé le nouveau firmware, mais assurez-vous de pouvoir trouver l'ID ou que Kliper soit connecté

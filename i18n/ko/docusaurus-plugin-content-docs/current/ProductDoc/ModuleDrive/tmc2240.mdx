@@ -2,8 +2,6 @@
 sidebar_position: 2
 ---
 
-
-
 import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 2240
@@ -12,22 +10,22 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
 
 ## 기본 매개변수
 
-    * 입력 전압：12V-36V
-    * 적용 가능： Klipper/RRF 펌웨어
-    * 드라이브 모드 지원：TMC：SPI/UART
+    * 입력 전압 : 12V-36V
+    * 사용 가능 : Klipper/RRF 펌웨어
+    * 구동 모드 지원 : TMC : SPI/UART
     * 통합 온도 감지
-    * 범용 아날로그 입력 전체 보호 및 진단
-    * 완전히 통합된 무손실 전류 감지 (ICS)
-    * 마이크로 스텝 보간 microPlyer 포함 스텝/방향 인터페이스
-    * 단락 보호, 저전압 잠금, 칩 과열 보호（열 차단）
-    * stallGuard2 고정밀 센서리스 모터 부하 감지 지원
-    * 통합 StallGuard2 및 StallGuard4 센서리스 모터 부하 감지
-    * StealthChop 및 SpreadCycle의 무진동 조합, 모터의 점프 문제 해결.
-    * 더 큰 전력, 낮은 발열（더 큰 전압 지원, 3.0AMAX, 3D 프린팅 분야에서 더 넓은 범위 사용 가능, 장시간 작업 시 발열 및 손상이 적음.）
+    * 일반적인 아날로그 입력 전체 보호 및 진단
+    * 손실 없는 전류 감지(ICS) 완전 통합
+    * 마이크로플라이어를 통한 스텝/방향 인터페이스
+    * 단락 보호, 저전압 잠금, 칩 과열 보호(열 차단)
+    * stallGuard2 고정밀 무센서 모터 부하 검출 지원
+    * 통합 stallGuard2 및 stallGuard4 무센서 모터 부하 검출
+    * 스태일트탭과 스필드사이클의 조화를 이룬 무진동 조합, 모터 점프 문제 해결
+    * 출력이 더 크고 발열이 적습니다.(더 큰 전압을 지원, 3.0AMAX, 3D 프린팅 작업에 더 적합하며, 더 긴 시간 동안 작동하여 열화 및 손상 방지)
 
 ## 메인보드 점퍼 설명
 
-    * TMC2240 기본적으로 SPI 점퍼 사용
+    * TMC2240는 기본적으로 SPI 점퍼를 사용합니다.
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
     * TMC2240 UART 점퍼 사용 방법
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240uart.webp').default} size="100%" align="center" />
@@ -37,7 +35,7 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
 
     :::danger
 
-    드라이버 샘플링 저항은 `rref: 12300`로 설정하세요.
+    드라이버 샘플링 저항은 `rref: 12300`입니다. 잘못 설정하지 마십시오.
 
     :::
 
@@ -47,10 +45,10 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2240 stepper_x]
     cs_pin: 
     spi_bus: 
-    run_current: 0.65                   # 모터 운행 전류 값
-    interpolate: False                  # 256 마이크로 스텝 보간 활성화 여부（활성화 권장하지 않음）
+    run_current: 0.65                   # 모터 동작 전류 값
+    interpolate: False                  # 256 마이크로스텝 보간 기능 활성화 여부 (활성화하지 않는 것을 권장)
     rref: 12300
-    stealthchop_threshold: 0           # 무음 임계값（무음이 필요하지 않으면 값을 0으로 변경）
+    stealthchop_threshold: 0           # 조용한 상태 설정 값 (정숙성을 원하지 않을 경우 숫자를 0으로 변경)
     ```
 
 ### UART 모드 참조 설정
@@ -58,41 +56,41 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
     ```cfg
     [tmc2240 stepper_x]
     uart_pin:
-    run_current: 0.65                   # 모터 운행 전류 값
-    interpolate: False                  # 256 마이크로 스텝 보간 활성화 여부（활성화 권장하지 않음）
+    run_current: 0.65                   # 모터 동작 전류 값
+    interpolate: False                  # 256 마이크로스텝 보간 기능 활성화 여부 (활성화하지 않는 것을 권장)
     rref: 12300                         # 드라이버 샘플링 저항
-    stealthchop_threshold: 0            # 무음 임계값（무음이 필요하지 않으면 값을 0으로 변경）
+    stealthchop_threshold: 0            # 조용한 상태 설정 값 (정숙성을 원하지 않을 경우 숫자를 0으로 변경)
     ```
 
-    * 아래와 같은 오류가 발생하면
+    * 아래와 같은 오류가 발생할 경우
         
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240error.webp').default} size="80%" align="center" />
 
-    * klipper가 설치된 사용자로 SSH 터미널에서 로그인 후 이 코드를 실행해야 합니다.
+    * SSH 터미널에서 Klipper가 설치된 사용자 계정으로 로그인한 후 다음 코드를 실행해야 합니다.
 
         ```bash
         sed -i 's/"uart_pin"/\'"'"'uart_pin'\''/g' ~/klipper/klippy/extras/tmc2240.py
         ```
 
-## 무한정 사용 설명
+## 제한없음 사용 안내
 
     <DIAG />
 
-    :::tip 무한정 사용 팁
+    :::tip 제한없음 사용 팁
 
-    * 원래 `endstop_pin:`은 차단하거나 삭제하고, `endstop_pin: tmc2240_stepper_x:virtual_endstop`를 추가해야 합니다.
-    * `diag0_pin:`을 설정한 후, 한계 상태를 새로 고침하면 트리거되지 않음.
-    * `driver_SGT:` 설정은 적절한 값을 테스트하여야 하며, 일반적으로 `1`입니다.
+    * 기존의 `endstop_pin:`은 비활성화 또는 삭제되어야 합니다. 대신 `endstop_pin: tmc2240_stepper_x:virtual_endstop`를 추가합니다.
+    * `diag0_pin:`을 구성한 후에는 제한 상태가 트리거되지 않습니다.
+    * `driver_SGT:`을 구성하는 경우 적절한 값을 테스트해야 합니다. 일반적으로 `1`이 적합합니다.
 
     :::
 
-    * 참조 설정
+    * 참고 설정
 
     ```cfg
     [stepper_x]
-    # endstop_pin:PF3   # 원래 한계 포트를 차단하거나 삭제해야 합니다.
+    # endstop_pin:PF3   # 기존의 제한 포트는 비활성화 또는 삭제되어야 합니다.
     endstop_pin: tmc2240_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # 0으로 설정하지 않으면 홈 설정이 실패할 수 있음
+    homing_retract_dist: 0        # 0으로 되돌아가지 않으면 위치 설정 실패
 
     [tmc2240 stepper_x]
     diag0_pin: ^!PG12

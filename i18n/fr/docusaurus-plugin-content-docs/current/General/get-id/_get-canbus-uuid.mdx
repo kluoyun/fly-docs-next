@@ -1,76 +1,78 @@
-## Configuration CAN et recherche d'ID
+## Configuration CAN et Recherche d'ID
 
-* Si vous avez besoin d'utiliser le CAN, assurez-vous que votre machine hôte a été configurée pour le CAN
+* Si vous avez besoin d'utiliser CAN, assurez-vous que votre ordinateur de contrôle a été configuré pour CAN.
 
 ----
 
 :::danger À savoir
 
-Assurez-vous que la carte mère est bien connectée à la machine hôte avant de procéder aux étapes suivantes
+Assurez-vous que la carte mère est correctement connectée à l'ordinateur de contrôle avant de procéder aux opérations suivantes.
 
 :::
+
 
 :::warning
 
-Veuillez vous assurer que le réseau CAN de la machine hôte, la vitesse CAN de la carte mère de pontage et la vitesse de l'outil CAN sont totalement identiques
+Assurez-vous que le réseau CAN de l'ordinateur de contrôle, la vitesse CAN de la carte mère ponteuse et la vitesse CAN de la carte outil sont entièrement cohérentes.
 
 :::
 
-### Points à considérer avant de rechercher des dispositifs
+### Remarques avant la recherche d'appareils
 
-    * Avant de rechercher les ID CAN, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour accéder")
-    * Veuillez noter qu'il est nécessaire de se connecter via le réseau et non via le port série
-    * Assurez-vous d'avoir connecté un UTOC ou une carte mère avec un firmware de pontage CAN correctement flashé, et assurez-vous que le câble de données connecté à la machine hôte est fonctionnel
+    * Avant de rechercher l'ID CAN, veuillez [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder").
+    * Veuillez noter qu'il faut vous assurer d'être connecté à SSH via le réseau et non par port série.
+    * Assurez-vous d'avoir correctement connecté la carte UTOC ou une carte mère avec le firmware CAN bridge flashé, et assurez-vous que le câble de connexion à l'ordinateur de contrôle possède la fonction de transmission de données.
 
-### Recherche de dispositifs
+### Recherche d'appareils
 
-    * Maintenant que vous êtes connecté à la machine hôte, vous pouvez entrer `lsusb` pour rechercher les dispositifs, ce qui donnera l'une des situations suivantes :
-        * Si l'entrée de `lsusb` indique que la commande `ls` n'est pas trouvée, vous pouvez installer la commande en entrant la commande ci-dessous
+    * Maintenant que vous êtes connecté normalement à l'ordinateur de contrôle, vous pouvez entrer `lsusb` pour rechercher des appareils. Il y aura l'une des situations suivantes :
+        * Si vous entrez `lsusb` et que cela indique que la commande `ls` n'est pas trouvée, vous pouvez entrer la commande ci-dessous pour installer la commande :
             ```bash
             sudo apt-get install usbutils
             ```
-        * Si après l'entrée de `lsusb` rien ne se passe, c'est un problème système auquel nous ne pouvons rien faire, vous devrez changer de système ou utiliser un système connu pour fonctionner correctement
-        * Si les informations de l'image ci-dessous apparaissent, notez que c'est juste à titre indicatif. Vous devez simplement vous assurer que `1d50:606f` apparaît
+        * Si vous entrez `lsusb` et qu'il ne se passe rien, c'est un problème système auquel nous ne pouvons rien faire. Vous devez changer de système ou utiliser un système qui fonctionne correctement.
+        * Si vous obtenez les informations contenues dans l'image ci-dessous, veuillez noter que cela n'est qu'une référence. Vous n'avez besoin de vous assurer que `1d50:606f` apparaît.
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f` est le dispositif que vous devez utiliser cette fois-ci. Vous n'avez pas besoin de vous soucier des messages suivants, car des problèmes système peuvent entraîner des informations incomplètes ou non affichées
-    * Si plusieurs `1d50:606f` apparaissent, il est recommandé d'en éliminer un, sinon cela pourrait affecter le flashage ultérieur et la connexion du firmware, comme pour le `FLY MINI PAD`, il est recommandé d'utiliser l'UTOC intégré plutôt qu'un autre dispositif de pontage CAN
-    * Si aucun ne s'affiche, vérifiez vous-même si le câble de données est bien connecté et si le firmware est correctement flashé.
+    * `1d50:606f` appartient à l'appareil que vous utiliserez cette fois-ci. Les indications suivantes ne sont pas importantes car les problèmes du système peuvent entraîner une affichage incomplet ou même aucune affichage.
+    * Si plusieurs `1d50:606f` apparaissent, il est recommandé d'en exclure une, sinon cela affectera la gravure ultérieure et la connexion du firmware. Par exemple, si vous utilisez le `FLY MINI PAD`, il est recommandé d'utiliser le UTOC intégré plutôt que d'autres périphériques de pontage CAN.
+    * Si aucun appareil n'apparaît, veuillez vérifier si les câbles de données sont correctement connectés et si le firmware a été correctement flashé.
 
-:::warning Points à noter
-Vous pouvez rechercher l'ID CAN uniquement lorsqu'il y a `1d50:606f`
+:::warning Remarques
+Vous ne pouvez rechercher l'ID CAN qu'après avoir trouvé `1d50:606f`.
 :::
 
 ### Recherche de l'ID CAN
 
-    * Entrez la commande ci-dessous pour rechercher l'ID
+    * Entrez la commande ci-dessous pour rechercher l'ID :
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * Si un ID apparaît et que l'`Application:` à la fin indique `Klipper`, cela signifie que cet ID peut être utilisé directement
-    * Si un ID apparaît et que l'`Application:` à la fin indique `CANBOOT` ou `Katapult`, cela signifie qu'il faut flasher le firmware pour l'utiliser
+    * Si un ID apparaît et que la dernière partie `Application:` indique `Klipper`, cela signifie que cet ID peut être utilisé directement.
+    * Si un ID apparaît et que la dernière partie `Application:` indique `CANBOOT` ou `Katapult`, cela signifie que vous devez graver le firmware pour pouvoir l'utiliser.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
-### Collection de problèmes CAN
+
+### Ensemble des problèmes liés à CAN
 
     :::danger À savoir
 
-    * Si vous ne trouvez pas l'ID CAN, consultez le document ci-dessous  
-    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">Collection de problèmes CAN</Button>
+    * Si vous ne trouvez pas l'ID CAN, consultez le document ci-dessous.
+    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">Ensemble des problèmes liés à CAN</Button>
 
     :::
 
-### Ajouter l'ID CAN à la configuration
+### Remplissez l'ID CAN dans la configuration
 
-    * Ouvrez l'interface web de l'imprimante, dans la colonne de gauche, trouvez l'option de configuration : pour Fluidd c'est : `{…}` ; pour Mainsail c'est : `Machine`, cliquez dessus pour accéder à `printer.cfg`
+    * Ouvrez l'interface Web de l'imprimante, dans le menu latéral gauche, trouvez l'option de configuration : fluidd est `{…}` ; mainsail est `machine`, cliquez dessus pour accéder à `printer.cfg`.
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copiez l'UUID trouvé et ajoutez-le à la configuration de `printer.cfg` dans le noeud `[mcu]` à `canbus_uuid: `. Sauvegardez et redémarrez pour se connecter à la carte mère. Si Klipper indique que le firmware doit être mis à jour, qu'il y a des erreurs ADC, etc., cela signifie que Klipper est déjà connecté à la carte mère
+    * Copiez l'UUID que vous avez trouvé et collez-le dans la configuration `printer.cfg` à la section `[mcu]` sous `canbus_uuid:`. En sauvegardant et en redémarrant, vous pourrez connecter la carte mère. Si Klipper indique qu'un mise à jour du firmware est nécessaire, une erreur ADC, etc., cela signifie que Klipper s'est connecté à la carte mère.
 
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        Attention : Tous les ID mentionnés dans ce document sont des exemples. Chaque carte mère a un ID unique, veuillez modifier et ajouter en fonction de l'ID réellement obtenu.
+        Notez : Tous les ID mentionnés dans ce document sont des exemples. L'ID de chaque carte mère est différente. Modifiez et remplissez en fonction de l'ID réellement obtenue.
 
         :::

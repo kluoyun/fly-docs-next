@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USBブリッジCANファームウェアの書き込み
+sidebar_label: USBブリッジCANファームウェア焼付け
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,9 +11,9 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# USBブリッジCANファームウェアの書き込み
+# USBブリッジCANファームウェア焼付け
 
-## コンパイルの開始
+## コンパイル開始
 
     <SSH />
 
@@ -21,61 +21,18 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * `Q`キーを押し、**Save configuration**が表示されたら、`Y`キーを押します
+    * `Q` キーを押して、**Save configuration** が表示されたら、その後 `Y` キーを押す
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 設定が保存され、コマンドラインインターフェースに戻るはずです
-    * `make -j4`と入力してコンパイルを開始します。時間がかかります
+    * これで設定が保存され、コマンドラインに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されたら、コンパイルが成功しています
+    * 最後に以下の内容が出力されればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## ファームウェアの書き込み
-
+## ファームウェア焼付け
 
     <TF />
-
-## ファームウェアの書き込み2
-    <Tabs>
-        <TabItem value="linux" label="dfu書き込み">
-            *以下の画像に従って、ジャンパーピン`boot1`を差し込み、`rst`を押して基板をリセットしてください
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
-            *以下のコマンドを入力して、基板がdfuモードに入ったかどうかを確認します
-            ```bash
-            lsusb
-            ```
-            *入力後、`Enter`キーを押すと、以下の画像の内容が出力されます。画像内の内容が表示されれば、基板はdfuモードに入ったことを示します
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. ファームウェアの書き込み
-
-            * 下記はdfu書き込みコマンドです
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. 以下の画像の矢印で示されている内容``File downloaded successfully``が表示されれば、書き込みは成功しています
-
-            :::warning
-
-            赤い矢印で示されている行の**後のエラー**は無視してください！！！
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/flash/img/boot.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            書き込みが完了したら、基板のジャンパーピンを取り外し、`rst`を押して基板をリセットしてください
-
-            :::
-
-        </TabItem>
-    </Tabs>

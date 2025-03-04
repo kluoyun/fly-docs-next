@@ -2,11 +2,6 @@
 sidebar_position: 2
 ---
 
-
-
-
-
-
 import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 2240
@@ -15,31 +10,31 @@ import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDo
 
 ## Basic Parameters
 
-    * Input Voltage: 12V-36V
-    * Applicable to: Klipper/RRF firmware
-    * Drive Mode Support: TMC: SPI/UART
-    * Integrated Temperature Detection
-    * Universal Analog Input Full Protection and Diagnosis
-    * Fully Integrated Lossless Current Sensing (ICS)
-    * Stepper/Direction Interface with Microstep Interpolation microPlyer
-    * Short Circuit Protection, Undervoltage Lockout, Chip Overheat Protection (Thermal Shutdown)
-    * Supports stallGuard2 High Precision Sensorless Motor Load Detection
-    * Integrated StallGuard2 and StallGuard4 Sensorless Motor Load Detection
-    * Jitter-Free Combination of StealthChop and SpreadCycle, Solving the Motor Judder Problem at Chopper Switching Speed Points.
-    * Higher Power Output and Lower Heat Generation. (Supports higher voltage, 3.0A MAX, suitable for high-end 3D printing work, and can work for longer periods without overheating or damage.)
+    * Input voltage: 12V-36V
+    * Suitable for: Klipper/RRF firmware
+    * Drive mode support: TMC: SPI/UART
+    * Integrated temperature detection
+    * General analog input full protection and diagnosis
+    * Fully integrated lossless current sensing (ICS)
+    * Stepper/direction interface with microstepping interpolation microPlyer
+    * Short-circuit protection, undervoltage lockout, chip overheat protection (thermal shutdown)
+    * Supports stallGuard2 high-precision sensorless motor load detection
+    * Integrated StallGuard2 and StallGuard4 sensorless motor load detection
+    * StealthChop and SpreadCycle jitter-free combination, solving the motor jitter problem at the chopping speed switching point.
+    * Higher power, lower heat generation. (Supports higher voltage, 3.0AMAX, suitable for higher field 3D printing work, and longer working time without easy heating and damage.)
 
-## Mainboard Jumper Instructions
+## Motherboard Jumper Instructions
 
     * TMC2240 defaults to using SPI jumper
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
-    * Method to Use TMC2240 with UART Jumper
+    * TMC2240 uses UART jumper method
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240uart.webp').default} size="100%" align="center" />
 
 ## TMC2240 Reference Configuration
 
     :::danger
 
-    The drive sampling resistor is `rref: 12300`, please do not set it incorrectly.
+    The drive sampling resistor is `rref: 12300` please do not set incorrectly
 
     :::
 
@@ -49,10 +44,10 @@ import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2240 stepper_x]
     cs_pin: 
     spi_bus: 
-    run_current: 0.65                   # Motor Running Current Value
-    interpolate: False                  # Whether to Enable 256 Microstep Interpolation (Not Recommended)
+    run_current: 0.65                   # Motor running current value
+    interpolate: False                  # Whether to enable 256 microstepping interpolation (not recommended)
     rref: 12300
-    stealthchop_threshold: 0           # Silence Threshold (If Not Needed, Set the Value to 0)
+    stealthchop_threshold: 0           # Silence threshold (if silence is not required, change the value to 0)
     ```
 
 ### UART Mode Reference Configuration
@@ -60,31 +55,31 @@ import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDo
     ```cfg
     [tmc2240 stepper_x]
     uart_pin:
-    run_current: 0.65                   # Motor Running Current Value
-    interpolate: False                  # Whether to Enable 256 Microstep Interpolation (Not Recommended)
-    rref: 12300                         # Drive Sampling Resistor
-    stealthchop_threshold: 0            # Silence Threshold (If Not Needed, Set the Value to 0)
+    run_current: 0.65                   # Motor running current value
+    interpolate: False                  # Whether to enable 256 microstepping interpolation (not recommended)
+    rref: 12300                         # Drive sampling resistor
+    stealthchop_threshold: 0            # Silence threshold (if silence is not required, change the value to 0)
     ```
 
     * If the following error occurs
-    
+        
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240error.webp').default} size="80%" align="center" />
 
-    * You need to log in to the user who has installed Klipper via SSH terminal and then execute this code
+    * You need to log in to the user who installed klipper under the SSH terminal and then execute this code
 
         ```bash
         sed -i 's/"uart_pin"/\'"'"'uart_pin'\''/g' ~/klipper/klippy/extras/tmc2240.py
         ```
 
-## Infinite Limit Usage Instructions
+## Infinite Position Usage Instructions
 
     <DIAG />
 
-    :::tip Infinite Limit Usage Tip
+    :::tip Infinite Position Usage Tips
 
-    * The original `endstop_pin:` needs to be masked or deleted, add `endstop_pin: tmc2240_stepper_x:virtual_endstop`
-    * After configuring `diag0_pin:`, the limit status refresh is not triggered
-    * When configuring `driver_SGT:`, you need to test a suitable value, usually `1`
+    * The original `endstop_pin:` needs to be shielded or deleted, and add `endstop_pin: tmc2240_stepper_x:virtual_endstop`
+    * After configuring `diag0_pin:`, the limit status is not triggered after refreshing
+    * Configuring `driver_SGT:` requires you to test a suitable value normally `1`
 
     :::
 
@@ -92,9 +87,9 @@ import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDo
 
     ```cfg
     [stepper_x]
-    # endstop_pin:PF3   # Need to mask or delete the original limit port
+    # endstop_pin:PF3   # Need to shield or delete the original limit port
     endstop_pin: tmc2240_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # Do not change 0, as it may cause the homing to fail
+    homing_retract_dist: 0        # Retraction without changing to 0 may cause homing failure
 
     [tmc2240 stepper_x]
     diag0_pin: ^!PG12

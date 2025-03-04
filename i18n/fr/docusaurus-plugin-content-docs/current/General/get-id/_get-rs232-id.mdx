@@ -1,28 +1,28 @@
 ## Recherche de l'ID RS232
 
-### Précautions avant la recherche de l'appareil
+### Remarques avant la recherche du périphérique
 
-    * Avant de rechercher l'ID RS232, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour accéder directement")
-    * Veuillez noter que vous devez vous connecter à SSH via le réseau et non via le port série
-    * Assurez-vous que l'UTOR est bien connecté et que le câble de données connecté à l'ordinateur hôte a des capacités de transmission de données
-    * Si vous utilisez un G2T, assurez-vous que le système supporte la connexion UART
+    * Avant de rechercher l'ID RS232, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour sauter")
+    * Veuillez noter qu'il est nécessaire de vous assurer que vous vous connectez à SSH via le réseau et non via un port série
+    * Assurez-vous d'avoir bien connecté l'UTOR et que le câble de connexion au PC dispose de la fonctionnalité de transmission de données
+    * Si vous utilisez G2T, assurez-vous que le système prend en charge la connexion UART
 
-### Recherche de l'appareil
+### Recherche du périphérique
 
-    * Maintenant que vous êtes correctement connecté à l'ordinateur hôte, vous pouvez entrer `lsusb` pour rechercher l'appareil. Vous rencontrerez l'une des situations suivantes
-        * Si vous entrez `lsusb` et qu'il vous indique que la commande `ls` n'est pas trouvée, vous pouvez installer la commande en utilisant la commande ci-dessous
+    * Maintenant que vous êtes correctement connecté au PC, vous pouvez entrer `lsusb` pour rechercher des périphériques. Cela donnera l'un des cas suivants :
+        * Si vous entrez `lsusb` et que cela affiche une erreur indiquant que la commande `ls` n'est pas trouvée, vous pouvez entrer la commande ci-dessous pour installer la commande
             ```bash
             sudo apt-get install usbutils
             ```
-        * Si vous entrez `lsusb` et qu'il ne se passe rien, c'est un problème système et nous ne pouvons rien y faire. Vous devez changer de système ou utiliser un système qui fonctionne correctement
-        * Si les informations apparaissent comme dans l'image ci-dessous, veuillez noter que c'est juste à titre de référence. Vous devez seulement vérifier les caractères après l'ID
+        * Si vous entrez `lsusb` et qu'il ne se passe rien, c'est un problème système pour lequel nous ne pouvons rien faire, vous devrez changer de système ou utiliser un système qui fonctionne correctement
+        * Si vous obtenez les informations présentées dans l'image ci-dessous, notez que ce n'est qu'une référence. Vous n'avez besoin de vérifier que les caractères après l'ID
         <ImageView image={require('@site/docs/General/get-id/img/7523.webp').default} size="100%" align="left" />
-    * `1a86:7523` est l'appareil que vous devez utiliser cette fois. Vous n'avez pas besoin de prêter attention aux informations supplémentaires, car des problèmes système peuvent entraîner des affichages incomplets ou inexistants
-    * Si ce n'est pas le cas, vérifiez par vous-même si le câble de données est correctement connecté, si le micrologiciel est correctement installé.
+    * `1a86:7523` fait partie des appareils que vous utiliserez. Les indications suivantes ne sont pas importantes car elles peuvent ne pas s'afficher correctement ou ne pas s'afficher du tout en raison de problèmes système
+    * Si ce n'est pas le cas, vérifiez que le câble est bien branché et que la mise à jour du firmware a été effectuée correctement.
 
-    :::warning Précautions
+    :::warning Attention
 
-    Vous ne pouvez utiliser la commande ci-dessous pour rechercher l'ID RS232 que si vous avez `1a86:7523`
+    Vous ne pouvez utiliser la commande ci-dessous pour rechercher l'ID RS232 que si vous avez `1a86:7523`.
 
     :::
 
@@ -34,29 +34,29 @@
     ```
 
     <ImageView image={require('@site/docs/General/get-id/img/rs232-id.webp').default} size="100%" align="left" />
-    * Si vous entrez `ls /dev/serial/by-path/*` et qu'aucun ID n'apparaît, mais que `lsusb` montre l'appareil, changez d'ordinateur hôte ou changez de système sur l'ordinateur hôte
-    * Notez que l'UTOR sortira trois ID, et si vous avez déjà utilisé un autre système UTOR, il enregistrera les ID, ce qui peut entraîner l'apparition de plusieurs ID lors de la recherche
-    * Assurez-vous que l'ID se termine par `-port0`, sinon il ne pourra pas être utilisé
+    * Si vous entrez `ls /dev/serial/by-path/*` et qu'aucun ID n'apparaît, mais que `lsusb` montre des appareils, changez de PC ou de système d'exploitation sur le PC
+    * Notez que l'utilisation de l'UTOR produira trois identifiants, et si vous avez utilisé un autre système d'UTOR auparavant, il pourrait enregistrer ces identifiants précédemment, ce qui entraînera plusieurs identifiants lors de la recherche
+    * Assurez-vous que l'identifiant se termine par `-port0`, sinon il ne sera pas utilisable
 
-    :::warning Précautions
+    :::warning Attention
 
-    Veuillez vous assurer que la carte d'outils et l'UTOR sont bien mis à la terre!!! Sinon, vous ne pourrez pas vous connecter à la carte d'outils!!!
+    Assurez-vous que le panneau de contrôle et l'UTOR sont bien branchés ! Sinon, vous ne pourrez pas vous connecter au panneau de contrôle !
 
     :::
 
-### Remplir l'ID RS232 dans la configuration
+### Entrez l'ID RS232 dans la configuration
 
-    * Ouvrez l'interface web de l'imprimante, dans la colonne de gauche sous l'option de configuration, trouvez : fluidd c'est : `{…}` ; mainsail c'est : `machine`, cliquez pour entrer dans `printer.cfg`
+    * Ouvrez l'interface Web de l'imprimante, trouvez l'option de configuration dans le menu latéral gauche. Pour fluidd : `{…}`, pour mainsail : `machine`, cliquez dessus pour trouver `printer.cfg`
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="80%" align="left" />
 
-    * Copiez l'ID en bleu et remplissez-le dans le nœud `[mcu]` de la configuration `printer.cfg` sous `serial: `. Après avoir sauvegardé et redémarré, vous pourrez vous connecter à la carte mère. Si Klipper indique ``ADC out of range``, c'est un phénomène normal. Connectez correctement le lit chauffant et le thermocouple, configurez les broches du thermocouple de la buse et du lit, puis sauvegardez et redémarrez.
+    * Copiez l'ID bleu et collez-le dans la section `[mcu SHT36]` du fichier de configuration `printer.cfg`. Enregistrez et redémarrez pour vous connecter au contrôleur principal. Si Klipper affiche ``ADC out of range``, c'est un phénomène normal. Connectez bien la plaque chauffante et le thermocouple, configurez les broches de sortie pour le buse et la plaque chauffante, puis enregistrez et redémarrez.
 
-        <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-rs232-id.webp').default} size="90%" align="left" />
 
-    :::warning Précautions
+    :::warning Attention
 
-    * L'ID RS232 nécessite la configuration de `baud:` et `restart_method:command`
+    * L'ID RS232 doit être configuré avec `baud:` et `restart_method:command`
     * Voici une configuration de référence
 
     :::
@@ -70,13 +70,13 @@
 
     :::danger
 
-    Attention : Tous les ID mentionnés dans le document sont des exemples. L'ID de chaque carte mère est différent, veuillez les modifier et les remplir en fonction de l'ID réellement obtenu.
+    Note : Tous les ID mentionnés dans le document sont des exemples. Chaque carte mère a un ID unique. Veuillez modifier et remplir en fonction de l'ID réellement obtenu.
 
     :::
 
     :::danger
 
-    Veuillez noter que l'ID ci-dessous ne peut pas être utilisé !!!!
+    Veuillez noter que l'ID ci-dessous ne peut pas être utilisé !!!
 
     :::
 

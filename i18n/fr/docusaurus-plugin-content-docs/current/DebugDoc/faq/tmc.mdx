@@ -2,91 +2,94 @@
 sidebar_position: 3
 ---
 
-# Erreurs liées à TMC
+# Erreurs liées au TMC
 
-## `Impossible de lire le registre IFCNT de l'UART tmc 'stepper_x'` ou `Impossible de lire le registre SPI tmc 'stepper_x'`
+## `Impossible de lire l'enregistrement IFCNT du bus série UART 'stepper_x' du tmc` ou `Impossible de lire l'enregistrement de bus série SPI 'stepper_x' du tmc`
 
     1. Détails de l'erreur
 
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart.webp').default} size="80%" align="center" />
 
-    2. Causes de l'erreur
+    2. Cause de l'erreur
 
-        * Impossible de communiquer avec le driver
+        * Impossible de communiquer avec le pilote
 
-    3. Principales solutions
+    3. Méthodes principales pour résoudre le problème
 
-        * Vérifiez si les broches UART du driver correspondant sont correctement configurées
-        * Vérifiez si les cavaliers UART sont corrects
-        * Vérifiez si le driver est alimenté
-        * Changez le driver ou reconfigurez le port du driver pour diagnostiquer
-        * Si c'est un driver d'une autre marque, vérifiez si les broches UART correspondent à celles de FLY. Les broches UART du driver FLY sont la quatrième en partant du haut à gauche.
+        * Vérifier si la configuration des broches UART du pilote correspondante est correcte
+        * Les sauts UART sont-ils corrects ?
+        * Le pilote est-il alimenté ?
+        * Remplacer le pilote ou configurer la prise pour effectuer un diagnostic
+        * Si c'est un autre fabricant de pilotes, vous devez déterminer vous-même si les broches UART du pilote correspondent à celles de FLY. Les broches UART du pilote FLY sont la quatrième broche en partant du haut vers le bas.
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/2209uart.webp').default} size="80%" align="center" />
-        * Si votre driver a la broche UART sur la cinquième, vous pouvez résoudre le problème en suivant le schéma de cavaliers ci-dessous
+        * Si les broches UART de votre pilote sont sur la cinquième broche, vous pouvez résoudre cela avec les sauts mentionnés ci-dessous
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart1.webp').default} size="80%" align="center" />
 
-## `TMC XXXX signale une erreur : GSTAT: 00000001 reset=1(Reset) `
+## `Le TMC XXXX signale une erreur : GSTAT : 00000001 reset=1(RAZ)`
 
     1. Détails de l'erreur
 
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/reset.webp').default} size="80%" align="center" />
 
-    2. Causes de l'erreur
+    2. Cause de l'erreur
 
-        * Le driver a été réinitialisé
+        * Réinitialisation du pilote
 
-    3. Principales solutions
 
-        * Mauvais contact des câbles d'alimentation
-        * Fil de moteur débranché
-        * Vous pouvez connecter la coque métallique du moteur au GND de la carte mère ou de la carte d'outils
+    3. Méthodes principales pour résoudre le problème
 
-## `TMC 'extruder' signale une erreur : DRV_STATUS: c00d0103 otpw=1(Avertissement de surchauffe!) `
+        * Les câbles d'alimentation ne sont pas bien connectés
+        * Le fil du moteur est coupé
+        * Vous pouvez connecter l'enveloppe métallique du moteur au GND de la carte mère ou de l'outil
+
+## `Le TMC 'extrudeur' signale une erreur : DRV_STATUS : c00d0103 otpw=1(Avertissement de surchauffe !)`
 
     1. Détails de l'erreur
 
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/overtemperror.webp').default} size="80%" align="center" />
 
-    2. Causes de l'erreur
+    2. Cause de l'erreur
 
-        * Le driver surchauffe !
-        * Ce n'est pas le moteur qui surchauffe !
+        * Le pilote est surchauffé !
+        * Ce n'est pas le moteur qui est surchauffé !
 
-    3. Principales solutions
+    3. Méthodes principales pour résoudre le problème
 
         * Réduire le courant de fonctionnement
         * Supprimer le courant de maintien
-        * Vérifier la résistance d'échantillonnage du driver
-        * Améliorer la dissipation thermique du driver, par exemple en ajoutant un ventilateur
+        * Vérifier si les résistances de mesure du pilote sont correctes
+        * Améliorer la dissipation thermique du pilote, par exemple en ajoutant un ventilateur
 
-## `TMC 'extruder' signale une erreur : DRV_STATUS: 601f1000 s2vsa=1(Court-circuit sur l'alimentation_A!) csactual=31 ola=1(Charge ouverte_A!) olb=1(Charge ouverte_B!)`
-
-    1. Détails de l'erreur
-
-        * Aucune image pour le moment
-
-    2. Causes de l'erreur
-
-        * Vérifiez si le courant du driver est incorrect
-
-    3. Principales solutions
-
-        * Vérifiez si les résistances des deux bobines AB du moteur pas à pas sont identiques
-        * Vérifiez si les fils à l'intérieur du moteur pas à pas ou des composants sont desserrés ou en court-circuit
-        * Désactivez le mode silencieux
-
-## `TMC 'extruder' signale une erreur : DRV_STATUS: 00190060 s2vsb=1(Court-circuit sur l'alimentation_B!) ola=1(Charge ouverte_A!) cs_actual-25`
+## `Le TMC 'extrudeur' signale une erreur : DRV_STATUS : 601f1000 s2vsa=1(Courant court-circuité vers l'alimentation A!) csactual=31 ola=1(Charge ouverte A!) olb=1(Charge ouverte B!)`
 
     1. Détails de l'erreur
 
+        * Aucune image disponible
+
+    2. Cause de l'erreur
+
+        * La vérification du courant du pilote est incorrecte
+
+
+    3. Méthodes principales pour résoudre le problème
+        
+        * Vérifier si la résistance des deux bobines de l'entraînement du pas-à-pas est identique
+        * Vérifier si les fils internes du moteur de pas-à-pas ou des composants sont lâches ou en court-circuit
+        * Désactiver le mode silencieux
+
+## `Le TMC 'extrudeur' signale une erreur : DRV_STATUS : 00190060 s2vsb=1(Courant court-circuité vers l'alimentation B!) ola=1(Charge ouverte A!) cs_actual-25`
+
+    1. Détails de l'erreur
+    
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/ab.webp').default} size="80%" align="center" />
 
-    2. Causes de l'erreur
+    2. Cause de l'erreur
 
-        * Erreur de connexion ou problème avec le moteur lui-même
+        * Connexion incorrecte ou le moteur lui-même a un problème
 
-    3. Principales solutions
 
-        * Vérifiez si les résistances des deux bobines AB du moteur pas à pas sont identiques
-        * Vérifiez votre moteur pas à pas et ses connexions
-        * Vérifiez l'ordre des fils du moteur, s'ils sont groupés à gauche et à droite
+    3. Méthodes principales pour résoudre le problème
+        
+        * Vérifier si la résistance des deux bobines de l'entraînement du pas-à-pas est identique
+        * Vérifier votre moteur de pas-à-pas et vos connexions
+        * Vérifier l'ordre des fils, s'il s'agit d'un groupe à gauche et d'un groupe à droite

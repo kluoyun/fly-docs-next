@@ -1,0 +1,138 @@
+---
+sidebar_position: 6
+sidebar_label: Tutoriel de compilation du firmware BL
+---
+
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+:::tip
+* Assurez-vous que l'ordinateur principal est connecté à Internet
+* Avant la compilation du firmware, vous devez vous connecter à l'ordinateur principal via SSH par le réseau
+* N'utilisez pas d'outils de terminal série pour vous connecter à l'ordinateur principal
+:::
+
+# Compilation du firmware Katapult
+### Démarrage de la compilation
+  <SSH />
+  ### Explications sur les opérations de compilation et de configuration du firmware Katapult
+
+:::tip
+Assurez-vous que votre méthode de saisie au clavier est en mode demi-largeur, c'est-à-dire en mode anglais
+:::
+
+1. La touche flèche vers le haut `↑`, la touche flèche vers le bas `↓` sont utilisées pour déplacer le curseur verticalement pour sélectionner des éléments de menu
+2. La touche Entrée `Enter` ou la barre d'espace `Space` est utilisée pour cocher des cases ou entrer dans des sous-menus
+3. La touche Échap `ESC` est utilisée pour revenir au menu précédent
+4. La touche `Q` est utilisée pour quitter la page de configuration du firmware Katapult
+5. La touche `Y` est utilisée pour sauvegarder la configuration lors de la sortie de la page de configuration du firmware Katapult si une invite apparaît
+
+Voici comment compiler le firmware :
+* Connectez-vous via SSH, puis entrez la commande suivante et appuyez sur Entrée :
+
+    ```bash
+    cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+    ```
+
+* Ici, `rm -rf ~/Katapult/.config && rm -rf ~/Katapult/out` supprime les données de compilation précédentes et le firmware, tandis que `make menuconfig` compile le firmware, et il devrait apparaître l'interface suivante
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+* Sélectionnez `Micro-controller Architecture (LPC176x (Smoothieboard))` puis appuyez sur Entrée
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+* Entrez dans le menu, puis sélectionnez **Raspberry Pi RP2040** et appuyez sur Entrée
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+* Sélectionnez `Build Katapult deployment application (Do not build)`, choisissez : **Do not build**
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+* Sélectionnez **Communication interface**, choisissez : **CAN bus**
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/CAN-BUS.webp').default} size="100%" align="Center" />
+
+* Sélectionnez `(4) CAN RX gpio number`, effacez `4` et entrez `1`
+* Sélectionnez `(5) CAN TX gpio number`, effacez `5` et entrez `0`
+
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+* La vitesse du bus CAN est définie par défaut à 1000000, si vous voulez la modifier, mettez-la à `500000`
+* C'est pour 1M
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+* C'est pour 5k
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/5K.webp').default} size="100%" align="Center" />
+
+* Sélectionnez **Enable Status LED** puis appuyez sur Entrée, entrez : **!gpio18**
+:::warning
+Entrez `!gpio18` en mode anglais
+:::
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/led1.webp').default} size="100%" align="center" />
+* **Vérifiez soigneusement l'image ci-dessus pour vous assurer qu'elle correspond, puis passez à l'étape suivante**
+* Appuyez sur `Q` pour afficher **Save configuration**, puis appuyez sur `Y`
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+* Vous devriez maintenant avoir sauvegardé la configuration et être sorti dans l'interface de ligne de commande
+* Tapez `make -j4` pour démarrer la compilation, cela prend un certain temps
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+* Si la sortie finale contient le contenu suivant, alors la compilation a réussi
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+  Compiling out/src/deployer.o
+  Compiling out/src/generic/armcm_boot.o
+  Compiling out/src/generic/armcm_reset.o
+  Building out/deployer_ctr.o
+  Compiling out/katapult_payload.o
+  Preprocessing out/src/generic/armcm_deployer.ld
+  Linking out/deployer.elf
+  Creating hex file out/deployer.bin
+``` 
+
+## Entrée en mode de programmation
+
+:::tip
+La flèche indique le bouton `BOOT`
+:::
+
+* Dans l'état où la carte mère est complètement déconnectée de l'alimentation, maintenez le bouton `BOOT` enfoncé tout en connectant un câble de transmission de données entre la carte mère et votre appareil
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* Ensuite, tapez `lsusb`
+```bash
+lsusb
+```
+* Si l'image suivante apparaît, cela signifie que vous êtes en mode de démarrage
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* Tapez la commande suivante pour écrire le firmware, puis appuyez sur Entrée
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+Le texte `mellow` n'apparaîtra pas lors de l'entrée
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* Si l'image suivante apparaît, tapez `mellow` et appuyez directement sur Entrée 
+
+* Si l'image suivante apparaît, félicitations, vous avez réussi à écrire le firmware
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## Vérification de l'amorçage du firmware
+
+* Si le firmware démarre normalement, la LED va clignoter
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+
+* Tapez la commande suivante pour rechercher l'ID CAN, puis appuyez sur Entrée
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+```
+* Si la commande ci-dessus ne trouve pas l'ID, essayez la commande suivante
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can1
+```
+Après l'exécution, l'image suivante apparaît avec l'ID, qui est une valeur de référence et ne peut pas être utilisée
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/canid.webp').default} size="100%" align="center" />

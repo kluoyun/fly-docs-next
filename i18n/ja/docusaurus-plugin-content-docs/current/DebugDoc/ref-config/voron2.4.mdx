@@ -2,31 +2,32 @@
 sidebar_position: 4
 ---
 
-# VORON 2.4 リファレンス構成
+# VORON 2.4 リファレンス設定
+
 
 ```cfg
 
 #####################################################################
-#      変更/確認する項目
+#      変更/確認が必要な項目
 #####################################################################
-##***変更/確認が必要な項目：***
+##***変更/確認が必要な事項：***
 ## MCU パス                                [mcu] 
-## プリンタの動作範囲                       xyzのposition   
-## サーミスタの種類                         [extruder] と [heater_bed]
+## プリンターの活動範囲                    xyzのposition   
+## ヒータータイプ                          [extruder] と [heater_bed]
 ## Z軸リミットスイッチ停止位置              [safe_z_home] 
 ## Z軸リミットスイッチオフセット位置        [stepper_z] 
-## PID キャリブレーション                   [extruder] と [heater_bed] 
-## 押し出し機モータのステップ値の微調整       [extruder] 
+## PID カリブレーション                   [extruder] と [heater_bed] 
+## エキストルーダモーターのステップ値を微調整 [extruder] 
 
 #####################################################################
-#      ファイルの呼び出し
+#      ファイル呼び出し
 #####################################################################
-### fuiddまたはmainsailをフロントエンドとして使用する場合、#[include XXX.cfg]の前の#を削除してください。
+### fuiddまたはmainsailをフロントエンドとして使用する場合は、#[include XXX.cfg]の前の#を取り除いてください。
 ### When using fuidd or mainsail as the frontend, remove the '#' before #[include XXX.cfg].
 [include fluidd.cfg]
 #[include mainsail.cfg]
 
-### 以下/home/flyのflyをあなたの上位機ユーザー名に置き換えてください。ROOTユーザーでないことを確認してください。
+### 下記の/home/flyのflyはあなたのホストコンピュータのユーザー名に置き換えてください。rootユーザーではありません。
 ### Replace 'fly' in /home/fly with your host computer username, ensuring it's not the ROOT user.
 [virtual_sdcard]
 path: /home/fly/printer_data/gcodes
@@ -34,18 +35,18 @@ on_error_gcode: CANCEL_PRINT
 
 
 #####################################################################
-#      マスタID構成
+#      Master ID コンフィギュレーション
 #####################################################################
 [mcu]
 serial: /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00
-### USBファームウェアIDを探すには: ls /dev/serial/by-id/*を使用し、
+### USBファームウェアIDを確認し、
 ### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00を発見したIDに置き換えてください。
 ### Find the USB firmware ID with: ls /dev/serial/by-id/* and replace
 ### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00 with the ID you discover.
 
 #canbus_uuid: 114514114514
-### CANファームウェアIDの問い合わせ: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
-### CANのIDを探すには、'serial:'を'canbus_uuid:'に置き換え、IDを後ろに追加してください。
+### CANファームウェアIDを確認します：~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
+### CANのIDには'serial:'を'canbus_uuid:'に置き換え、その後IDを追加してください。
 ### Query the CAN firmware ID with: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
 ### Replace 'serial:' in the CAN ID with 'canbus_uuid:', then append the ID.
 
@@ -59,7 +60,7 @@ sensor_type: temperature_mcu
 sensor_type: temperature_host
 
 #####################################################################
-#      Tモデルと加速度
+#      Tmodelと加速度
 #####################################################################
 [printer]
 kinematics: corexy
@@ -70,24 +71,24 @@ max_z_accel: 300
 square_corner_velocity: 6.0
 
 #####################################################################
-#      X/Yステッパーセッティング
+#      X/Yステッパーモーター設定
 #####################################################################
 
 [stepper_x]
-## 参照: https://docs.vorondesign.com/build/startup/#v0
+## 参照：https://docs.vorondesign.com/build/startup/#v0
 step_pin:
-dir_pin:                                        # 上記のリンクでモーターの方向を確認してください。反転している場合、!gpio3の前に!を追加してください。
+dir_pin:                                        # モータ方向を上記リンクで確認。逆の場合、 gpio3 の前に!を追加
 enable_pin:! 
 rotation_distance: 40
 microsteps: 32
-full_steps_per_rotation: 200                    # 0.9°ステッパーモーターの場合は400に設定してください。1.8°ステッパーモーターの場合は200です。
+full_steps_per_rotation: 200                    # 0.9°ステッパモーターの場合は200を400に設定、1.8°ステッパモーターの場合は200
 endstop_pin:
 # endstop_pin: tmc2209_stepper_x:virtual_endstop
 # endstop_pin: tmc5160_stepper_x:virtual_endstop
 position_min: 0
 position_endstop: 300                           # (250mm-300mm-350mm)
 position_max: 300                               # (250mm-300mm-350mm)
-homing_speed: 40                                # センサーレスホーミングの場合は40mm/sを超えないように推奨されます。
+homing_speed: 40                                # センサレスホーミングでは40mm/sを超えないことを推奨
 homing_retract_dist: 0
 homing_positive_dir: true
 
@@ -96,13 +97,13 @@ uart_pin:
 interpolate: False
 run_current: 0.8
 sense_resistor: 0.110
-stealthchop_threshold: 0                        # ステルスチョップをオンにするには999999を設定し、0を設定するとスプレッドサイクルを使用します。
+stealthchop_threshold: 0                        # ステルスチョップをオンにするには999999を設定、使用しない場合は0
 diag_pin: ^
 driver_SGTHRS: 80
 
 [tmc5160 stepper_x]
 cs_pin:
-### spi_busとspi_softwareはどちらか一方のみ使用可能
+### spi_busとspi_softwareはどちらか一方のみを使用できます
 ### spi_bus and spi_software can only use one of them.
 # spi_bus:
 spi_software_mosi_pin:
@@ -110,17 +111,17 @@ spi_software_miso_pin:
 spi_software_sclk_pin:
 run_current: 1.0
 interpolate: False
-### ドライバーのサンプリング抵抗はドライバーに合わせて変更する必要があります。
-### The driver sampling resistor needs to be modified according to the driver.
+### ドライバサンプリング抵抗はドライバに合わせて修正する必要があります
+### The driver sampling resistor needs to be modified according to the driver
 sense_resistor: 0.075
 stealthchop_threshold: 0
 diag0_pin: ^!
 driver_SGT: 1
 
 [stepper_y]
-## 参照: https://docs.vorondesign.com/build/startup/#v0
+## 参照：https://docs.vorondesign.com/build/startup/#v0
 step_pin:
-dir_pin:                                        # 上記のリンクでモーターの方向を確認してください。反転している場合、!gpio0の前に!を追加してください。
+dir_pin:                                        # モータ方向を上記リンクで確認。逆の場合、 gpio0 の前に!を追加
 enable_pin:!
 rotation_distance: 40
 microsteps: 32
@@ -146,7 +147,7 @@ driver_SGTHRS: 80
 
 [tmc5160 stepper_y]
 cs_pin:
-### spi_busとspi_softwareはどちらか一方のみ使用可能
+### spi_busとspi_softwareはどちらか一方のみを使用できます
 ### spi_bus and spi_software can only use one of them.
 # spi_bus:
 spi_software_mosi_pin:
@@ -154,21 +155,21 @@ spi_software_miso_pin:
 spi_software_sclk_pin:
 run_current: 1.0
 interpolate: False
-### ドライバーのサンプリング抵抗はドライバーに合わせて変更する必要があります。
-### The driver sampling resistor needs to be modified according to the driver.
+### ドライバサンプリング抵抗はドライバに合わせて修正する必要があります
+### The driver sampling resistor needs to be modified according to the driver
 sense_resistor: 0.075
 stealthchop_threshold: 0
 diag0_pin: ^!
 driver_SGT: 1
 
 #####################################################################
-#      Zステッパーセッティング
+#      Zステッパーモーター設定
 #####################################################################
 
 [stepper_z]
-## 参照: https://docs.vorondesign.com/build/startup/#v0
+## 参照：https://docs.vorondesign.com/build/startup/#v0
 step_pin:
-dir_pin:!                                         # 上記のリンクでモーターの方向を確認してください。反転している場合、!gpio25の前に!を追加してください。
+dir_pin:!                                         # モータ方向を上記リンクで確認。逆の場合、 gpio25 の前に!を追加
 enable_pin: !
 rotation_distance: 8
 microsteps: 32
@@ -205,7 +206,7 @@ run_current: 0.8
 sense_resistor: 0.110
 stealthchop_threshold: 0
 
-##    Z2ステッパーモーター - 右後方 on Driver5
+##    Z2 ステッパーモーター - 右後方に配置 on Driver5
 [stepper_z2]
 step_pin:
 dir_pin:
@@ -240,5 +241,273 @@ interpolate: false
 run_current: 0.8
 sense_resistor: 0.110
 stealthchop_threshold: 0
+
+
+
+#####################################################################
+#      エキストルーダ
+#####################################################################
+[extruder]
+## センサーの種類 #一般的な熱電抵抗は(Generic 3950, ATC Semitec 104GT#2)
+## Sensor type # Common thermistors are (Generic 3950, ATC Semitec 104GT#2)
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: 
+#####################################################################
+## PT1000を使用する場合、熱感度の隣接するジャンパーを接続してください。
+## If using PT1000, please connect the jumper next to the thermal sensitivity.
+# sensor_type:PT1000
+# pullup_resistor: 1100
+# sensor_pin: 
+#####################################################################
+#      エキストルーダ
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html#extruder
+[extruder]
+step_pin:
+dir_pin:
+enable_pin: !
+rotation_distance: 21.84
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## Calibration step value: 22.44=old value 22 * actual value 102 / target value 100
+gear_ratio:50:10
+## Reduction ratio (Galileo gear ratio 7.5:1 and this line is commented out; BMG is 50：17, output shaft at front, input shaft at back)
+microsteps:16
+full_steps_per_rotation: 200    
+nozzle_diameter:0.400
+filament_diameter:1.75
+heater_pin:
+min_temp: -50
+max_temp: 300
+max_power: 1.0
+min_extrude_temp: 150
+pressure_advance: 0.05
+##Pressure in advance
+##圧力の前進
+##https://www.klipper3d.org/zh/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040
+#max_extrude_only_distance: 200.0   # If there is an error in extruding flow, comment this, but it is recommended to re-slice
+# Nozzle temperature PID calibration command: PID_CALIBRATE HEATER=extruder TARGET=245
+# Nozzle temperature PID calibration command: PID_CALIBRATE HEATER=extruder TARGET=245
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+step_pulse_duration: 0.000004
+
+[tmc2209 extruder]
+uart_pin:gpio9
+uart_address:3
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+#####################################################################
+#      ベッドヒーター
+#####################################################################
+[heater_bed]
+heater_pin: 
+## ヒータータイプを確認してください。一般的なヒータータイプについては https://www.klipper3d.org/Config_Reference.html#common#thermistors を参照してください。
+## Keenovoヒーターには"Generic 3950"を使用します
+sensor_type:
+sensor_pin:
+max_power: 1.0 
+min_temp: -50
+max_temp: 120
+# Heated bed temperature PID calibration command: PID_CALIBRATE HEATER=heater_bed TARGET=100
+# Heated bed temperature PID calibration command: PID_CALIBRATE HEATER=heater_bed TARGET=100
+control: pid
+pid_kp: 68.453
+pid_ki: 2.749
+pid_kd: 426.122
+
+#####################################################################
+#      ファン制御
+#####################################################################
+[fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5                                                # ファンが開始できない場合は、この値を増やすことがあります
+off_below: 0.13
+cycle_time: 0.010
+#####################################################################
+[heater_fan hotend_fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5
+heater: extruder
+heater_temp: 50.0
+
+#####################################################################
+#      フィラメントリーンアウトセンサー
+#####################################################################
+#[filament_switch_sensor Filament_Runout_Sensor]
+#pause_on_runout: True
+#runout_gcode: PAUSE
+#switch_pin: 
+
+#####################################################################
+#      プローブ
+#####################################################################
+### TAP
+[probe]
+pin:
+x_offset: 0
+y_offset: 0
+# z_offset: 0
+speed: 10.0
+samples: 3
+samples_result: median
+sample_retract_dist: 4.0
+samples_tolerance: 0.006
+samples_tolerance_retries: 3
+
+### EDDY
+# [probe_eddy_current fly_eddy_probe]
+# sensor_type: ldc1612
+# z_offset: 0.8
+# i2c_address: 43
+# i2c_mcu:
+# i2c_bus:
+# x_offset: 0
+# y_offset: 0
+# speed:40
+# lift_speed: 5
+
+
+#####################################################################
+#      ホーミングとガニトリーアジャストルーチン
+#####################################################################
+### safe_z_homeとhoming_overrideはどちらか一方のみを使用できます
+### You can only use either safe_z_home or homing_override
+#[safe_z_home]
+#home_xy_position: 206,300
+#speed: 100
+#z_hop: 5
+
+#[homing_override]
+#axes: z
+#set_position_z: 0
+#gcode:
+#   G90
+#   G0 Z15 F600
+#   G28 X Y
+#    ## Z 限位开关的 XY 位置
+#    ##通过后将X0和Y0更新为你的值（如X157、Y305）
+#    ## Z 轴限位位置定义
+#   G0 X185 Y250 F3600    #250mm   
+#   G28 Z
+#   G0 Z10 F1800
+
+#####################################################################
+#      quad_gantry_level
+#####################################################################
+[quad_gantry_level]
+#gantry_corners:
+#    -60,-10
+#    310,320
+#points:                      # 250mm
+#    50,25
+#    50,175
+#    200,175
+#    200,25
+
+gantry_corners:              # 300mm
+   -60,-10
+   360,370
+points:
+   50,25
+   50,225
+   250,225
+   250,25
+
+#gantry_corners:              # 350mm
+#    -60,-10
+#    410,420
+#points:
+#    50,25
+#    50,275
+#    300,275
+#    300,25
+
+speed: 100
+horizontal_move_z: 1
+retry_tolerance: 0.0075
+retries: 5
+max_adjust: 10
+
+
+#####################################################################
+# Macros
+#####################################################################
+[idle_timeout]
+### 30分以上アイドル状態になると、ヒーターベッドがオフになります。
+### If idle for more than 30 minutes, heated bed will be turned off.
+timeout: 1800 
+
+#[gcode_arcs]
+#### 弧補間を許可します
+#### Allowing arc interpolation
+#resolution: 1.0 
+
+[gcode_macro PRINT_START]          
+### PRINT_START を印刷開始時のマクロとして設定し、印刷前のカスタムアクションを定義します
+### Set PRINT_START as a macro for the start of printing, customize actions before printing.
+gcode:
+    G92 E0
+    BED_MESH_CLEAR
+    G28
+    quad_gantry_level
+    G28
+    G1 Z20 F3000
+    #BED_MESH_PROFILE LOAD=default  
+    BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
+
+[gcode_macro PRINT_END]            
+### PRINT_END を印刷終了時のマクロとして設定し、印刷後のカスタムアクションを定義します
+### Set PRINT_END as a macro for the end of printing, customize actions after printing completion
+gcode:
+    #   Get Boundaries
+    {% set max_x = printer.configfile.config["stepper_x"]["position_max"]|float %}
+    {% set max_y = printer.configfile.config["stepper_y"]["position_max"]|float %}
+    {% set max_z = printer.configfile.config["stepper_z"]["position_max"]|float %}
+    
+    #   Check end position to determine safe directions to move
+    {% if printer.toolhead.position.x < (max_x - 20) %}
+        {% set x_safe = 20.0 %}
+    {% else %}
+        {% set x_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.y < (max_y - 20) %}
+        {% set y_safe = 20.0 %}
+    {% else %}
+        {% set y_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.z < (max_z - 2) %}
+        {% set z_safe = 2.0 %}
+    {% else %}
+        {% set z_safe = max_z - printer.toolhead.position.z %}
+    {% endif %}
+ 
+    M400                              # バッファクリア待ち
+    G92 E0                            # エキストルーダをリセット
+    G1 E-10.0 F3600                   # フィラメントを巻き戻す
+    G91                               # 相対座標系に設定
+    G0 Z{z_safe} F3600                # ガニトリを上げる
+    G0 X{x_safe} Y{y_safe} F20000     # ノズルを移動してラインを除去
+    M104 S0                           # エキストルーダをオフ
+    M140 S0                           # ヒーターベッドをオフ
+    M106 S0                           # モデルファンをオフ
+    G90                               # 絶対座標系に設定
+    G0 X{max_x / 2} Y{max_y} F3600    # ノズルを後方に停止
+    BED_MESH_CLEAR                    # ネットベッドを解除
+
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
 
 ```

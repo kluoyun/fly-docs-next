@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-sidebar_label: Programmation du firmware RS232
+sidebar_label: RS232 mise à jour du firmware
 ---
 
 import USBFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
@@ -10,9 +10,9 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 
-# Compilation du firmware RS232
+# Mise à jour du firmware RS232
 
-## Débuter la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -20,46 +20,49 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Sélectionnez les broches GPIO à définir au démarrage du microcontrôleur, entrez : !gpio5 Veuillez noter que ! est en majuscule
+    * Sélectionnez **GPIO pins à définir au démarrage du micro-contrôleur**, entrez : **!gpio5**
+    :::warning
+        Veuillez entrer `!gpio5` en mode d'entrée anglaise.
+    :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, **Save configuration** apparaît, puis appuyez sur la touche `Y`
+    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous devriez revenir à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+    * La configuration devrait maintenant être sauvegardée et vous êtes sorti dans l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
     <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la compilation est réussie, vous verrez la sortie suivante :
+    * Si la sortie finale ressemble au contenu ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating uf2 file out/klipper.uf2
+        Création du fichier uf2 out/klipper.uf2
         ```
 
 
-## Entrer en mode de programmation
+## Entrer en mode de mise à jour
 
     :::tip
 
-    À gauche se trouve le bouton `RESET`, à droite se trouve le bouton `BOOT`
+    À gauche se trouve le bouton **RESET**, à droite se trouve le bouton **BOOT**
 
     :::
 
-    * Il y a deux méthodes pour entrer en mode DFU
-    * La première : avec la carte mère complètement déconnectée, maintenez le bouton BOOT enfoncé, puis connectez le câble de données d'un côté à la carte mère et de l'autre à l'ordinateur
-    * La deuxième : connectez le câble de données d'un côté à la carte mère et de l'autre à l'ordinateur, maintenez le bouton BOOT enfoncé, appuyez sur le bouton RST, relâchez le bouton RST et enfin relâchez le bouton BOOT
+    * Il existe deux méthodes pour entrer en DFU
+    * Première méthode : Dans le cas où la carte mère est complètement débranchée, maintenez enfoncé le bouton BOOT, puis branchez le câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur l'hôte
+    * Deuxième méthode : Branchez le câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur l'hôte, maintenez enfoncé le bouton BOOT, puis appuyez sur le bouton RST, relâchez ensuite le bouton RST et enfin relâchez le bouton BOOT
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Confirmer l'entrée en mode de programmation
+## Vérifier si le mode de mise à jour est activé
 
     <LS />
 
 
-## Programmer le firmware 
+## Flasher le firmware
     
     <USBFLASH />
     
 
 
-## Vérifier le démarrage du firmware
+## Vérifier si le firmware est démarré
 
     * Si le firmware démarre correctement, la LED s'allumera
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.webp').default} size="100%" align="center" />

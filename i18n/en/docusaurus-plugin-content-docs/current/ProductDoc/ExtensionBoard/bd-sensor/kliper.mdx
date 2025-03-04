@@ -1,22 +1,22 @@
 ---
 sidebar_position: 3
-sidebar_label: Using klipper
+sidebar_label: klipper use
 ---
 
 
 
 
 
-# Installation **BDsensor**
+# Install **BDsensor**
 
-## Connecting the sensor cable to the motherboard or CAN bus toolhead board.
+## Connect the sensor cable to the motherboard or CAN bus tool headboard.
 
-    * Please note that SB2040 cannot use Bdsensor
-    * Please note that SHT36 needs to connect the Bdsensor's CLK/SCL (Input) to a high voltage input port and attach the jumper
-    * The Bdsensor's CKL and SDA lines can be connected to any GPIO pin on the circuit board. You can also directly connect the BD sensor cable to the Bltouch port, for example:
+    * Please note that SB2040 cannot use BDsensor
+    * Please note that SHT36 needs to connect BDsensor's CLK/SCL (Input) to the high voltage input port, and connect the jumper
+    * BDsensor's CKL and SDA lines can be connected to any GPIO pin on the circuit board. You can also connect the BD sensor cable directly to the Bltouch port, for example:
 
     ```bash
-    BLtouch    |    Bdsensor
+    BLtouch    |    BDsensor
     5V       -->     5V
     GND      -->     GND
     S        -->     CLK/SCL    (Input)
@@ -24,19 +24,19 @@ sidebar_label: Using klipper
     Zmin     -->     SDA    (Input/Output) 
     ```
 
-    * Due to some pins in the motherboard connector may not be directly connected to the MCU's gpios (for example, they may have filter capacitors or are isolated through MOSFETs, diodes, or optocouplers, but if they are isolated through resistors or resistor pull-up/pull-down they can), therefore they cannot be used with Bdsensor. And the firmware will report connection errors. For example,
+    * Since some pins in the motherboard connector may not be directly connected to the MCU's gpios (for example, they may have filtering capacitors on them or be isolated by MOSFETs, diodes or optocouplers, but if they are isolated by resistors or resistor pull-up/pull-downs, they can be used), they cannot be used with BDsensor. And the firmware will report a connection error. For example
 
-    * Fans and heaters connectors are isolated through MOSFETs,
-    * Some boards' connectors for temperature thermistors and endstops/probes are usually connected to GND through filter capacitors,
+    * The connectors for fans and heaters are isolated by MOSFETs,
+    * The connectors for temperature thermistors and endstops/probes in some circuit boards are usually connected to GND through filtering capacitors,
 
-1. As shown in the following figure, install the BD sensor near the hot end. [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
+1. As shown in the figure below, install the BD sensor near the hot end. [STL of mount](https://www.thingiverse.com/thing:6098131),  [STL_mount_VzBot_Goliath short](https://discord.com/channels/829828765512106054/1163237892957671424)
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/bd-sensor/img/bd.webp').default} size="100%" align="left" />
 
 
-## Installing the patch into the klipper firmware
+## Install the patch into the klipper firmware
 
-    * Abandon the previously modified klipper files and update klipper
+    * Discard the previously modified klipper files and update klipper
 
         ```bash
         cd
@@ -45,7 +45,7 @@ sidebar_label: Using klipper
         git pull
         ```
 
-    * Clone the latest code for Bdsensor
+    * Clone the latest code of BDsensor
 
         ```bash
         cd && git clone https://github.com/markniu/Bed_Distance_sensor.git
@@ -67,12 +67,12 @@ sidebar_label: Using klipper
         make
         ```
 
-    * Burn the firmware to the MCU or CANbus toolhead board that the Bdsensor is connected to
+    * Burn the firmware to the MCU or CANbus tool headboard connected to the BD sensor
 
-## If your printer runs Moonraker, add the following section to moonraker.conf, then you can update the Bdsensor via the web or klipperscreen with one click.
+## If your printer is running Moonraker, add the following part to moonraker.conf, and then you can update BDsensor by clicking once through the web page or klipperscreen.
 
     ```bash
-    [update_manager Bdsensor]
+    [update_manager BDsensor]
     type: git_repo
     primary_branch: new
     channel: dev
@@ -82,31 +82,31 @@ sidebar_label: Using klipper
     is_system_service: False
     managed_services: klipper
     info_tags:
-    desc=Bdsensor
+    desc=Bed Distance Sensor
     ```
 
-## Editing printer.cfg
+## Edit printer.cfg
 
-    * Copy this section into your **printer.cfg** and edit the `[Bdsensor]` `sda_pin`  `scl_pin`, also don't forget to disable other probe sections like **BLtouch**. You can connect the Bdsensor to the motherboard or the toolhead CAN module, 
-    * In the `[Bdsensor]` modify `speed` to 0.8. This applies only to z tilt and PROBE_ACCURACY commands. The smaller the value, the higher the precision when probing, as the MCU does not read the BDsensor in real time like a normal stopper when homing. `[Bdsensor]`
-    * To use the BD sensor as a limit switch during the Z-axis homing, change the `endstop_pin` in `[stepper_z]` to `endstop_pin: probe:z_virtual_endstop`
-    * Ensure there is a `[safe_z_home]` in **printer.cfg** 
-    * Change the values of `[bed_mesh]` and `[z_tilt]` or `[quad_gantry_level]` to 1 (recommended 0.7-1.0mm) in klipper's default value is 5mm, otherwise it's easy to exceed the sensor range
-    * **Nozzle height is suitable only in `z_adjust:` setting, positive numbers bring the nozzle closer to the bed, negative numbers move it away from the bed, other settings for adjusting nozzle height will have bugs**
-    * To enable fast scanning, uncomment `no_stop_probe:true`
-    * Below is an example configuration.
+    * Copy this part to your **printer.cfg** and edit `[BDsensor]` `sda_pin`  `scl_pin`, and don't forget to disable other probe parts, such as **BLtouch**. You can connect the BD sensor on the motherboard or tool head CAN module,
+    * Change `speed` to 0.8 in `[BDsensor]`. This is only applicable to z tilt and PROBE_ACCURACY commands. The smaller the value, the higher the accuracy during probing, because the MCU does not read the BD sensor in the main loop in real-time like a normal stopper when homing. `[BDsensor]`
+    * To use the BD sensor as a limit switch when the Z axis homes, change `endstop_pin` in `[stepper_z]` to `endstop_pin: probe:z_virtual_endstop`
+    * Make sure there is `[safe_z_home]` in **printer.cfg**
+    * Change the value of `[quad_gantry_level]` in `[bed_mesh]` and `[z_tilt]` or `[quad_gantry_level]` to 1 (recommended 0.7-1.0mm). The default value in klipper is 5mm, otherwise it is easy to exceed the sensor range
+    * **Nozzle height is only suitable for setting in `z_adjust:`, positive numbers are close to the hot bed, negative numbers are away from the hot bed, other settings for adjusting nozzle height will have bugs**
+    * To enable fast bed leveling, delete the # in front of `no_stop_probe:true`
+    * Below is a configuration example.
 
         ```cfg
-        [Bdsensor] 
+        [BDsensor] 
         scl_pin:PC6  # Servo signal port
         sda_pin:PC3  # Limit signal port
         delay: 20 # 20us per pulse, this value should be >=20 but must be below 50
         z_offset:0 # this `z_offset` must be set to 0. 
-        z_adjust:0.0 # Z axis adjustment, replaces the z_offset function. within -0.3 to 0.3mm
+        z_adjust:0.0 # z axis adjustment, replace the z_offset function. within -0.3 to 0.3mm
         x_offset: -34
         y_offset: 0
         #no_stop_probe:true # enable this for fast probe, the toolhead will not stop at the probe point.
-        position_endstop: 0.8 # the Z axis will stop at this position (mm) while homing z, recommended value is 0.4~1.0
+        position_endstop: 0.8 # the Z axis will stop at this position (mm) while homing z, recommend value is 0.4~1.0
         #speed:0.8 # this speed only works for the z tilt and PROBE_ACCURACY command.
 
         [stepper_z]
@@ -125,16 +125,16 @@ sidebar_label: Using klipper
 
         ```
 
-## After installation, check using the following gcode commands
+## After installation, check by sending the following gcode commands
 
     ```bash
     M102   S-1     # Read sensor information
     M102   S-2     # Read a distance value
     ```
 
-## Checking Connection
+## Check the connection
 
-    * Send `M102 S-1` via **console**, here is an example of the returned message, if it returns blank or other strings, please check the connection and wire order
+    * Send `M102 S-1` through the **console**. This is an example of the returned message. If a blank or other string is returned, please check the connection and wire order
 
         ```bash
         Send: M102 S-1
@@ -143,20 +143,20 @@ sidebar_label: Using klipper
 
 ## Calibration
 
-    * Clean the nozzle, then control the Z-axis movement via console until the nozzle just touches the bed (the BDsensor will use this position as zero position, so no need for `z_offset`, which is why the value is 0 in the `[Bdsensor]` section)
-    * Send gcode command `M102 S-6` via **console**, the printer will slowly raise the Z-axis by 0.1mm each time until it reaches 4mm. Do not run M102 S-6 before installing the sensor or turn off the power during calibration, otherwise old calibration data will be deleted. If this happens, just calibrate again
-    * Afterwards, you can check if the BD sensor has been successfully calibrated by sending `M102 S-5`, which will return the original calibration data stored in the BD sensor.
+    * Clean the nozzle, then move the Z axis through the console until the nozzle just touches the bed plate (BDsensor will use this position as the zero position, so there is no need for `z_offset`, which is why the value in the [BDsensor] section is 0)
+    * Send the gcode command `M102 S-6` from the **console**, the printer will move the Z axis slowly upward by 0.1mm each time until it reaches 4mm. Do not run M102 S-6 before installing the sensor, nor turn off the printer power during calibration, otherwise the old calibration data will be deleted. If this happens, just calibrate again
+    * Afterwards, you can check whether the BD sensor has been successfully calibrated through `M102 S-5`, which will return the original calibration data stored in the BD sensor.
 
 **Notes**:
 
-* The best Z-axis homing speed is 5
+* The homing speed of the Z axis is best at 5
 
-* If the first raw calibration data returned by M102 S-5 is greater than 400, it means the sensor is installed too high and needs to be reinstalled closer to the bed. The recommended value for the first data is 100. Also ensure the second data value is more than 10 above the first data
+* If the first raw calibration data returned by M102 S-5 is greater than 400, it means that the sensor is installed too high and needs to be reinstalled closer to the bed. The recommended value for the first data is 100. Also, make sure that the second data value is more than 10 greater than the first data
 
   * FAQ: What does it mean if the calibration data starts with 1, the second value is 9, and the third value is 24?
 
-  * This means that the resolution between 0-0.1 millimeters is only 9, while the resolution between 0.1-0.2 millimeters is 15. Therefore, it is recommended to recalibrate to make the first resolution between 0-0.1 millimeters greater than 10.
+  * This means that the resolution between 0-0.1mm is only 9, while the resolution between 0.1-0.2mm is 15. Therefore, it is recommended to recalibrate to make the first resolution 0-0.1mm greater than 10.
 
-* Don't forget to adjust the Z-axis height after running G28 or adjusting Z-axis height for these commands `Z_tilt` and `quad_gantry_level`
+* Please don't forget to adjust the Z axis height after running G28 or for these commands `Z_tilt` and `quad_gantry_level`
 
-* The section names must be correctly capitalized and lowercased, otherwise klipper will report `Unknown pin chip name 'probe'`
+* The part names must be correctly capitalized and lowercased, otherwise klipper will report `Unknown pin chip name 'probe'`

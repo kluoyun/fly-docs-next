@@ -1,37 +1,34 @@
 ---
 sidebar_position: 8
-sidebar_label: Onboard 5V Fan Connector
+sidebar_label: Onboard 5V Fan Port
 ---
 
+# Onboard 5V Fan Port
 
-
-
-# Onboard 5V Fan Connector
-
-## Pi-V2 has an onboard 5V controllable interface for main control cooling, the wiring method is as follows
+## The Pi-V2 has an onboard 5V controllable interface for main controller cooling, with the wiring method as shown below
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.webp').default} size="80%" align="left" />
 
 
 ## Reference Configuration
 
     ```cfg
-    [mcu host]                      # FlyOS has already generated a Linux MCU for you by default, just define and use it           
+    [mcu host]                      # FlyOS has already generated a Linux MCU for you by default, define to use          
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Host temperature
+    [temperature_sensor FLY-π]      # Host machine temperature
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # Host cooling fan
-    pin: host:gpiochip1/gpio103     # Host fan pin
+    [temperature_fan core_fan]      # Host machine cooling fan
+    pin: host:gpiochip1/gpio103     # Host machine fan pin
     max_power: 1.0
-    sensor_type: temperature_host   # Set to host main control temperature
+    sensor_type: temperature_host   # Set to host machine main controller temperature
     control:watermark               # Control method
-    target_temp: 48                 # Host cooling fan start temperature
-    min_temp: 0                     # Minimum temperature, errors will occur below this temperature
-    max_temp: 90                    # Maximum temperature, errors will occur above this temperature
+    target_temp: 48                 # Host machine cooling fan start temperature
+    min_temp: 0                     # Minimum temperature, will report an error below this temperature
+    max_temp: 90                    # Maximum temperature, will report an error above this temperature
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Maximum speed, 80% of full power operation
-    min_speed: 0.3                  # Minimum speed, 30% of full power operation
+    max_speed: 0.8                  # Maximum speed, at 80% of full power operation
+    min_speed: 0.3                  # Minimum speed, at 30% of full power operation
     ```

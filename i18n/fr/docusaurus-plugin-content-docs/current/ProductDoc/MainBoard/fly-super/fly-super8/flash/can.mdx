@@ -1,7 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Programmation du firmware USB vers CAN
-
+sidebar_label: USB bridge vers le firmware CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,9 +11,9 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# Programmation du firmware USB vers CAN
+# USB bridge vers le firmware CAN
 
-## Début de la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -22,61 +21,19 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Appuyez sur la touche `Q`, **Save configuration** apparaît, puis appuyez sur la touche `Y`
+    * Appuyez sur `Q`, une fenêtre **Save configuration** apparaît, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Maintenant, la configuration devrait être sauvegardée et vous devriez être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prendra un peu de temps
+    * La configuration est maintenant sauvegardée et vous êtes revenu à l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la compilation est réussie, le contenu suivant sera affiché à la fin
+    * Si la sortie finale contient les lignes suivantes, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Programmation du firmware
+## Étapes de programmation du firmware
 
 
     <TF />
-
-## Programmation du firmware 2
-    <Tabs>
-        <TabItem value="linux" label="Programmation DFU">
-            * Suivez l'image ci-dessous pour insérer le jumper `boot1` et appuyez sur `rst` pour redémarrer la carte mère
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
-            * Entrez la commande suivante pour vérifier si la carte mère est en mode DFU
-            ```bash
-            lsusb
-            ```
-            * Après avoir appuyé sur `Enter`, le contenu suivant sera affiché, indiquant que la carte mère est en mode DFU
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. Programmation du firmware
-
-            * Voici la commande pour flasher via DFU
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. Si le contenu indiqué par la flèche apparaît, le firmware a été programmé avec succès
-
-            :::warning
-
-            Ignorez l'erreur après la ligne indiquée par la flèche rouge !!!
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/flash/img/boot.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            Après la programmation, retirez le jumper de la carte mère et appuyez sur `rst` pour redémarrer la carte mère
-
-            :::
-
-        </TabItem>
-    </Tabs>

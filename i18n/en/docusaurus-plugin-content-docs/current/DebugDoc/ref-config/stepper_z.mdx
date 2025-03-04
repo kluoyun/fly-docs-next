@@ -4,9 +4,9 @@ sidebar_position: 9
 
 # Multi-Z Reference Configuration
 
-## Dual Z Single Limit
+## Dual Z Single Endstop
 
-* In the second Z configuration, do not add `endstop_pin:`
+* No need to add `endstop_pin:` in the second Z configuration.
 
     ```cfg
     [stepper_z]
@@ -29,12 +29,12 @@ sidebar_position: 9
     rotation_distance: 4
     full_steps_per_rotation: 200
     microsteps: 16
-    step_pulse_duration: 0.000004
     ```
 
-## Dual Z Dual Limit
+## Dual Z Dual Endstops
 
-* In the second Z configuration, add `endstop_pin:`
+
+* Need to add `endstop_pin:` in the second Z configuration.
 
     ```cfg
     [stepper_z]
@@ -64,8 +64,9 @@ sidebar_position: 9
 
 ## Dual Z Using Probe or BL Touch
 
-* After `endstop_pin:` in the first Z configuration, change the pin to `probe:z_virtual_endstop`
-* Set up the Probe or BL Touch
+
+* Change the pin after `endstop_pin:` in the first Z configuration to `probe:z_virtual_endstop`.
+* Need to set up the Probe or BL Touch.
 
     ```cfg
     [stepper_z]
@@ -82,26 +83,16 @@ sidebar_position: 9
     homing_retract_dist: 5
     step_pulse_duration: 0.000004
 
-    [stepper_z1]
-    step_pin: PB10
-    dir_pin:  PB2
-    enable_pin: !PB11
-    rotation_distance: 4
-    full_steps_per_rotation: 200
-    microsteps: 16
-    step_pulse_duration: 0.000004
-    endstop_pin: ^!PA10
-
     [probe]
     pin: ^PB4                    # Signal interface
-    x_offset: 0                  # X-axis - sensor offset relative to nozzle
-    y_offset: 0                  # Y-axis - sensor offset relative to nozzle
-    #z_offset: 0                 # Z-axis - sensor offset relative to nozzle
+    x_offset: 0                  # X axis - sensor offset from nozzle
+    y_offset: 0                  # Y axis - sensor offset from nozzle
+    #z_offset: 0                 # Z axis - sensor offset from nozzle
     speed: 3.0                   # Leveling speed
-    lift_speed: 5                # Probe lifting speed
+    lift_speed: 5                # Lift probe speed
     samples: 3                   # Number of samples
-    samples_result: median       # Value calculation method (default is median)
+    samples_result: median       # Value selection method (default is median)
     sample_retract_dist: 3.0     # Retract distance during leveling
-    samples_tolerance: 0.075     # Sample tolerance (note that too small a value may increase the number of samples)
-    samples_tolerance_retries: 3 # Retry count for exceeding tolerance
+    samples_tolerance: 0.075     # Sample tolerance (note that a very small value may increase the number of samples)
+    samples_tolerance_retries: 3 # Retry count beyond tolerance
     ```

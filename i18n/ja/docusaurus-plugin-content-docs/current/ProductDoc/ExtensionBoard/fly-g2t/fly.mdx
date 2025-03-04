@@ -1,36 +1,36 @@
 ---
 sidebar_position: 3
-sidebar_label: FLY PI使用チュートリアル
+sidebar_label: FLY PI使用教程
 ---
 
-# FLY上位機の使用説明
+# FLY上位机使用说明
 
 ## 注意事項：
 
-    * 拡張ボードをインストールする前に、上位機の電源を切るようにしてください。
-    * 湿気やほこりが多い環境で拡張ボードを使用しないでください。
-    * 画面をインストールする際は、通電しないでください。画面の向きに注意し、損傷しないようにしてください。
-    * ファンをインストールする際は、ファンの電流と電圧仕様に注意してください。損傷しないようにしてください。
-    * FLY上位機は中央のRS232インターフェース、FANポート、FPC画面インターフェースのみ使用できます！！！
-    * FLY上位機で使用できるG2Tのモデルは`PI V2`、`C8`、`PRO X10`
-    * `Gemini`シリーズと`PI V1`は使用できません
+    * 確保在安裝擴展板前，上位機已經關閉電源。
+    * 避免在潮濕或灰塵環境中使用擴展板。
+    * 安裝屏幕時，請注意不要帶電拔插注意屏線方向，以免造成損壞。
+    * 安裝風扇時，請注意風扇的電流和電壓規格，以免造成損壞。
+    * FLY上位機只能使用中間的RS232介面，FAN口與FPC屏幕介面！！！
+    * FLY上位機中可以使用G2T的上位機有`PI V2`、`C8`、`PRO X10`
+    * `Gemini`系列與`PI V1`無法使用
 
-## G2Tのインストール
+## 安裝G2T
 
-    * 以下は参考資料です
+    * 下方是參考
         <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.webp').default} size="60%" align="left" />
-    * 配線参考
+    * 參考接線
         <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.webp').default} size="60%" align="left" />
 
 
-## 板載RS232接続ツールの使用方法
+## 使用板載RS232連接工具版方法
 
-    * FLY上位機に最新のシステムをインストールした後、**上位機のIP+:9999**にアクセスする必要があります
-    * FLY上位機は中央のRS232インターフェース、FANポート、FPC画面インターフェースのみ使用できます！！！
-    * システム設定で**UART1**を見つけ、保存して再起動してください
+    * FLY上位機刷好最新系統後需要訪問**上位機的IP+:9999**
+    * FLY上位機只能使用中間的RS232介面，FAN口與FPC屏幕介面！！！
+    * 在系統設置裡面找到**UART1**並且保存重新啟動
         <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.webp').default} size="100%" align="left" />
 
-    * 以下は参考設定です
+    * 下方是參考配置
 
         ```cfg
         [mcu] 
@@ -39,7 +39,7 @@ sidebar_label: FLY PI使用チュートリアル
         restart_method:command
         ```
 
-## 板載5VFANの使用
+## 板載5VFAN使用
 
             <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.webp').default} size="50%" align="left" />
 
@@ -50,28 +50,31 @@ sidebar_label: FLY PI使用チュートリアル
         [temperature_sensor FLY Pi]
         sensor_type: temperature_host
 
-        [temperature_fan core_fan]      # 上位機の冷却ファン
-        pin: host:gpiochip1/gpio102     # 上位機ファンのピン
+        [temperature_fan core_fan]      # 上位機散熱風扇
+        pin: host:gpiochip1/gpio102     # 上位機風扇pin腳
         max_power: 1.0
-        sensor_type: temperature_host   # 上位機の温度を設定
-        control:watermark               # 制御方法
-        target_temp: 48                 # 上位機冷却ファンの開始温度
-        min_temp: 0                     # 最低温度、これ以下の温度でエラーが発生します
-        max_temp: 90                    # 最高温度、これ以上の温度でエラーが発生します
+        sensor_type: temperature_host   # 設置為上位機主控溫度
+        control:watermark               # 控制方式
+        target_temp: 48                 # 上位機散熱風扇啟動溫度
+        min_temp: 0                     # 最低溫度，低於此溫度將會報錯
+        max_temp: 90                    # 最高溫度，高於此溫度將會報錯
         off_below: 0.10
         kick_start_time: 0.50
-        max_speed: 0.8                  # 最大速度、フルパワー時の80%
-        min_speed: 0.3                  # 最小速度、フルパワー時の30%
+        max_speed: 0.8                  # 最大轉速，為滿功率運轉時的80%
+        min_speed: 0.3                  # 最小轉速，為滿功率運轉時的30%
 
         ```
 
-## 画面の使用方法
+## 屏幕使用方法
 
-    * FLY上位機に最新のシステムをインストールした後、**上位機のIP+:9999**にアクセスする必要があります
-        * fly-tft-v2-cは3.5インチTFTキャパシタンススクリーンの選択肢です
-        * fly-tft-v2-rは3.5インチTFT抵抗スクリーンの選択肢です
+    * FLY上位機刷好最新系統後需要訪問**上位機的IP+:9999**
+        * fly-tft-v2-c是3.5寸TFT電容屏選擇
+        * fly-tft-v2-r是3.5寸TFT電阻屏選擇
             <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.webp').default} size="100%" align="left" />
 
-### 画面のインストール
+### 屏幕安裝
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.webp').default} size="60%" align="left" />
+
+# 模型下載
+    下載需要的 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/STEP/G2T.step">G2t模型</Button>

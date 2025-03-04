@@ -8,25 +8,25 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160.webp').default} size="80%" align="center" />
 
-## 基本パラメータ
+## 基本参数
 
     * 入力電圧：12V-24V
     * 最大電流：4.4A
-    * 適用ファームウェア：Marlin/Klipper/RRF
-    * サポートされるドライブモード：TMC：SPI
-    * マイクロステップ補間microPlyer付きのステップ/方向インターフェース
+    * 用途：Marlin/Klipper/RRF ファームウェア
+    * ドライバーモードサポート：TMC：SPI
+    * ステッピング/ディレクションインターフェースを備えたマイクロポライザー付き
     * 最高分解能は256分割
-    * stealthChop2による静音動作と滑らかな動きをサポート
-    * 中周波共振の抑制をサポート
-    * spreadCycleによる高ダイナミックモータ制御チョッパをサポート
-    * dcStepによる負荷依存速度制御をサポート
-    * stallGuard2による高精度センサレスモータ負荷検出をサポート
-    * coolStepによる電流制御をサポート、最大75%の省エネルギー
+    * スティールチャープ2による静かな動作とスムーズな動きをサポート
+    * 中周波共振の共振抑制をサポート
+    * スプレッドサイクルによる高ダイナミックモーターコントロールチョッパーをサポート
+    * dcStepによる負荷関連の速度制御をサポート
+    * stallGuard2による高精度な無センサーモーターロード検出をサポート
+    * coolStepによる電流制御をサポートし、最大で75％の省エネルギーが可能
 
-## マザーボードのジャンパ説明
+## メインボードジャンパ説明
 
-    * TMC5160はSPIジャンパを使用
-    * FLYドライブのSPIピンは左から数えて4番目のピン、CSピンはSPIピンです。マザーボードが対応するピンでない場合、SPIを使用できません
+    * TMC5160はSPIジャンパを使用します
+    * FLYドライバーのSPIピンは左から4番目のピンで、CSピンはSPIピンです。メインボードが対応するピン位置でない場合、SPIを使用できません
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
 
 
@@ -34,8 +34,8 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
 
     :::danger
 
-    * ドライバのサンプル抵抗は`sense_resistor: 0.075`です、誤った設定をしないでください
-    * spi_busとspi_softwareは二者択一です
+    * ドライバーのサンプリング抵抗は`sense_resistor: 0.075`に設定してください。間違った設定は避けてください
+    * spi_busとspi_softwareはどちらか一方を選択してください
     
     :::
 
@@ -48,8 +48,8 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
     # spi_software_mosi_pin:
     # spi_software_miso_pin:
     # spi_software_sclk_pin: 
-    run_current: 1.0                    # モータの運転電流値
-    interpolate: False                  # 256マイクロステップ補間を有効にするか（有効はTrue、無効はFalse）
+    run_current: 1.0                    # モーター運転電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするかどうか（有効はTrue、無効はFalse）
     sense_resistor: 0.075
     stealthchop_threshold: 0
     driver_DISS2G: 1
@@ -60,12 +60,12 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
 
     <DIAG />
 
-    :::tip 無限位使用のヒント
+    :::tip 無限位使用ヒント
 
-    * このドライバはDIAGピンを自分で溶接する必要があります、そうしないと無限位機能を使用できません
-    * 元の`endstop_pin:`はコメントアウトまたは削除し、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加する必要があります
-    * `diag1_pin:`を設定した後、リミットスイッチの状態が未トリガーであることを確認してください
-    * `driver_SGT: :`は適切な値を見つけるために自分でテストする必要があります
+    * このドライバーはDIAGピンを自力でハンダ付けする必要があります。それがないと無限位機能を使用できません
+    * 元の`endstop_pin:`は遮蔽または削除する必要があります。そして`tmc5160_stepper_x:virtual_endstop`を追加します
+    * `diag1_pin:`を設定した後、リミットスイッチの状態は未トリガーになります
+    * `driver_SGT:`は適切な値を見つけるために自分自身でテストする必要があります
 
     :::
 
@@ -75,15 +75,15 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc5160_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # 0に設定しないと原点復帰が失敗することがあります
+    homing_retract_dist: 0        # 復帰しない場合は0に設定すると、ホーム化が失敗する可能性があります
 
     [tmc5160 stepper_x]
     diag1_pin: ^!
     driver_SGT: 1
 
-    #   設定後、リミットスイッチの状態が未トリガーであることを確認してください
+    #   設定後はリミットスイッチの状態が未トリガーであることを確認してください
     #   このピンは通常、内部プルアップを有効にするために"^"プレフィックスを使用します
-    #   感度はベルトの張り具合に依存するため、調整が必要です
-    #  （driver_SGTHRSを適切な感度に設定することを確認してください）
+    #   センシティビティはベルトの緩みに依存するため、調整が必要です
+    #  （適切なセンシティビティをdriver_SGTHRSに設定することも忘れないでください）
 
     ```

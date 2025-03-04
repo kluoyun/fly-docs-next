@@ -2,36 +2,29 @@
 sidebar_position: 2
 ---
 
-
-
-
-
-
-
-
-# Common Debug Commands
+# Common Debugging Commands
 
     :::tip
 
-    * This tutorial is based on the Fuiidd web page
-    * This tutorial is for debugging purposes after the printer has been properly connected.
-    * This tutorial provides commonly used commands, but due to various issues, it may not be completely comprehensive.
+    * This tutorial is mainly based on the Fuiidd web page.
+    * This tutorial assumes that the printer is properly connected and ready for debugging.
+    * This tutorial provides commonly used commands, but due to various issues, the collection may not be complete.
 
     :::
 
 ## Driver Related
 
-    :::danger Notice
+    :::danger Note
 
-    * Please note that malfunctioning or improperly configured drivers cannot be checked.
-    * Ensure all drivers, power supply, motherboard, and driver jumpers and configurations are correct!!
+    * Please note that faulty or unconfigured drivers cannot be checked.
+    * Please ensure that all drivers are powered, motherboard is powered, and driver jumpers and configurations are correct!!
 
     :::
 
 
 ### Check Driver Status
 
-    * This command verifies the status of TMC drivers in SPI/UART mode.
+    * This command verifies the TMC driver status in SPI/UART mode.
         ```bash
         DUMP_TMC STEPPER=stepper_x
         DUMP_TMC STEPPER=stepper_x1
@@ -44,7 +37,7 @@ sidebar_position: 2
         DUMP_TMC STEPPER=extruder
         ```
 
-### Force Move Drivers
+### Force Move Driver
 
     * Add the following command in `printer.cfg`.
         ```bash
@@ -52,7 +45,7 @@ sidebar_position: 2
         enable_force_move: true
         ```
 
-    * Force back-and-forth movement by 1mm.
+    * Command for forced back-and-forth movement of 1mm.
         ```bash
         STEPPER_BUZZ STEPPER=stepper_x
         STEPPER_BUZZ STEPPER=stepper_x1
@@ -65,35 +58,33 @@ sidebar_position: 2
         STEPPER_BUZZ STEPPER=extruder
         ```
 
-    * Enable this option to force move through movement control.
+    * By enabling this option, you can force move through the control interface.
     * Please note that only one motor can be moved at a time.
-    * If multiple axes are involved, such as two Z axes, they need to be homed before controlling.
+    * If there are multiple axes, such as two Z axes, they need to be homed before controlling.
         <ImageView image={require('@site/docs/DebugDoc/faq/img/force.webp').default} size="80%" align="center" />
 
 ### Force Set Print Head Distance
 
-    * Enter the following command in the console to force set the print head position and directly control the movement.
+    * Enter the following command in the console to force set the print head position, after setting, it can be directly controlled to move.
         ```bash
         SET_KINEMATIC_POSITION x=100 y=100 z=100
         ```
-
-### Step Motor Step Value Calibration
-    * First ensure the extruder driver is functioning correctly, then confirm that `full_steps_per_rotation` and `gear_ratio` are correct; otherwise, extruder step value calibration will fail.
-    * Obtain the new `rotation_distance`, rounding it to three decimal places.
-    * Calibrate the step value: `rotation_distance = old_rotation_distance * actual_extrusion_length / requested_extrusion_length`
+### Stepper Motor Step Calibration
+    * First, check if the extruder driver is working normally. Then, ensure that `full_steps_per_rotation` and `gear_ratio` are correct, otherwise, the extruder step calibration cannot be performed.
+    * After obtaining the new `rotation_distance`, round it to three decimal places.
+    * Step calibration: rotation_distance = old rotation_distance * actual extrusion length / requested extrusion length
     
         ```bash
-        full_steps_per_rotation: 200        # Number of pulses per rotation (200 for 1.8°, 400 for 0.9°)
-        gear_ratio: 50:10                   # Gear ratio (Galileo gear ratio 7.5:1, comment out this line; BMG 50:17, output shaft first, input shaft second)
-        rotation_distance: 22.522           # Pulley circumference mm
+        full_steps_per_rotation: 200        # Number of pulses per revolution (200 for 1.8 degrees, 400 for 0.9 degrees)
+        gear_ratio: 50:10                   # Gear ratio (Galileo gear ratio 7.5:1 and this line is commented out; BMG is 50:17, output shaft first, input shaft second)
+        rotation_distance: 22.522           # Pulley circumference in mm
         ```
-
 ## Heating Related
 
 ### PID
     :::tip
-    * The `TARGET=` in the command sets the temperature, please set it according to your usual printing temperature.
-    * If you have multiple heating devices, you can use these commands for PID tuning.
+    * The `TARGET=` in the command is the set temperature, please set it to your usual printing temperature.
+    * If you have multiple heating devices, you can use this command for PID tuning.
     :::
 
     * Extruder
@@ -114,8 +105,8 @@ sidebar_position: 2
 ### Temperature Error Related
 
     :::tip
-    * If heating takes too long, refer to this method <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">Click to Jump</Button>
-    * Please note that if the temperature is unstable, use this method to resolve errors caused by unstable temperatures <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">Click to Jump</Button>
+    * If the heating takes too long, refer to this method <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">click to jump</Button>.
+    * Please note that if the temperature is unstable, you can use this method to solve the errors caused by unstable temperature <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">click to jump</Button>.
     :::
 
 ## Limit Switch Related
@@ -126,20 +117,20 @@ sidebar_position: 2
 
 ### Normal Limit Switch
     * Limit switch check command.
-    * Ensure the limit switch is a two-wire type. If it is a three-wire type, verify that the wiring sequence is correct; otherwise, it could damage the motherboard!!!
-    * Ensure the limit switch is normally open and not triggered by any object.
-    * Enter the following command in the console. If it works correctly, it will return the following information:
+    * Ensure that the limit switch is two-wire. If it's three-wire, make sure the wiring sequence is correct, otherwise, it may damage the motherboard!!!
+    * Ensure that the limit switch is in its normal open state and is not pressed by anything.
+    * Enter the following command in the console, if everything is normal, it will return the following information.
         ```bash
         QUERY_ENDSTOPS
         ```
         <ImageView image={require('@site/docs/DebugDoc/faq/img/query.webp').default} size="80%" align="center" />
-    * Ensure the limit switch is in the open state, then manually press the limit switch and enter `QUERY_ENDSTOPS`.
+    * Ensure that all limit switches are in their open state, then manually press the limit switch and enter `QUERY_ENDSTOPS`.
         <ImageView image={require('@site/docs/DebugDoc/faq/img/query1.webp').default} size="80%" align="center" />
-    * A change in the limit switch status indicates correct wiring.
+    * If the limit switch status changes, it indicates that the wiring is correct.
 
 ### No Limit Switch
-    * Note that the no-limit switch state should always be open; otherwise, there might be an issue with the configuration or wiring.
-    * Enter the following command in the console. If it works correctly, it will return the following information:
+    * Please note that the no-limit switch status must be open, otherwise, there is an issue with the configuration or wiring.
+    * Enter the following command in the console, if everything is normal, it will return the following information.
         ```bash
         QUERY_ENDSTOPS
         ```
@@ -149,31 +140,30 @@ sidebar_position: 2
 
 ### BL-TOUCH
 
-    * pin_down: Probe extends.
-    * pin_up: Probe retracts.
-    * touch_mode: Verify sensor.
+    * pin_down: probe extends
+    * pin_up: probe retracts
+    * touch_mode: verify sensor
     ```bash
     BLTOUCH_DEBUG COMMAND=pin_down
     BLTOUCH_DEBUG COMMAND=pin_up
     BLTOUCH_DEBUG COMMAND=touch_mode
-    touch_mode
     ```
 
 ### Probe & TAP
 
-    * Normally untriggered.
+    * Normally, it is not triggered.
     * It is recommended to add `^` when configuring the pin.
     ```bash
     QUERY_PROBE
     ```
         <ImageView image={require('@site/docs/DebugDoc/faq/img/probe.webp').default} size="80%" align="center" />
 
-### Repeatability Accuracy
-    * Ten times.
+### Repeatability
+    * Ten times
         ```bash
         probe_accuracy
         ```
-    * One hundred times.
+    * One hundred times
         ```bash
         probe_accuracy samples=100
         ```
@@ -183,18 +173,20 @@ sidebar_position: 2
 ### Servo
 
     :::tip
-    * Servos are available in 180° and 360° versions. Please distinguish between them.
+    * Servos are divided into 180-degree and 360-degree types, please distinguish them carefully.
     :::
 
-    * Reference configuration.
+    * Reference configuration
         ```cfg
         [servo my_servo]
         pin:PE6
         ```
 
-    * Reference command.
+    * Reference command
         ```bash
         SET_SERVO SERVO=my_servo ANGLE=360
         SET_SERVO SERVO=my_servo ANGLE=180
         SET_SERVO SERVO=my_servo ANGLE=0
         ```
+
+

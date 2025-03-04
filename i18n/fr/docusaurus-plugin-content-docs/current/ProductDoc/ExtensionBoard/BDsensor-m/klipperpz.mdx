@@ -1,42 +1,42 @@
 ---
 sidebar_position: 4
-sidebar_label: Offset Z automatique de klipper
+sidebar_label: klipper auto-z-offset
 ---
 
-# Installation de l'impact de la buse de klipper
+# Installation du capteur de collision de buse pour klipper
 
 :::info
-Cette fonctionnalité nécessite que la version du micrologiciel du capteur BD (vous pouvez obtenir cette version en envoyant M102 S - 1, et non la version matérielle du capteur) soit V1.1b, supérieure à V1.2b ou achetée après mars 2024. Sinon, vous devez utiliser un outil matériel externe (tel que STlink) pour flasher le micrologiciel dans le capteur BD.
+Cette fonctionnalité nécessite une version de firmware BD supérieure à V1.1b, supérieure à V1.2b ou une version achetée après mars 2024, sinon vous devrez utiliser un outil de programmation externe (comme STlink) pour flasher le firmware sur le capteur BD.
 
-Lorsque vous effectuez l'opération de retour à la maison avec du PEI souple (tel que Whambam), ne chauffez pas la buse excessivement, sinon la température élevée peut laisser des trous sur le PEI.
+Lorsque vous effectuez un homing avec un PEI mou (comme Whambam), ne chauffez pas la buse à une température trop élevée, car cela pourrait laisser des trous dans le PEI.
 :::
 
-# Comment cela fonctionne
-* Si la buse ou le lit s'arrêtent en raison d'un impact, les données de distance mesurées par le capteur bd cesseront également de changer, puis le capteur bd émettra rapidement un signal d'arrêt.
-* Le processus d'étalonnage automatique z_offset lors de l'exécution de G28 : il peut être déclenché après que la buse ait touché le lit lors du retour à la maison - puis elle se déplace lentement vers le haut jusqu'à ce que la buse quitte juste le lit - et cette position est définie comme la position 0 de l'axe z.
+# Comment ça marche
+* Si la buse ou la plaque d'impression s'arrête en raison d'une collision, les données de distance mesurées par le capteur BD cesseront également de changer, puis le capteur BD émettra rapidement un signal d'arrêt.
+* Le processus de calibration automatique z_offset lors de l'homing : il peut être déclenché lorsque la buse touche la plaque d'impression pendant l'homing - puis se déplace lentement vers le haut jusqu'à ce que la buse quitte légèrement la plaque d'impression - en définissant cette position comme la position z de 0.
 
 # Avantages
-* Étalonnage automatique de l'offset de l'axe z.
-* En même temps, vous pouvez toujours ajuster manuellement l'offset de l'axe z pour différents filaments.
-* Surmonter le décalage de température.
-* Le décalage de température modifie l'offset de l'axe z, mais ne modifie pas la plage de la carte de grille du lit avec le capteur BD. Cela signifie que même si la température est différente, la grille du lit est la même.
+* Calibration automatique de l'offset z-axe.
+* Vous pouvez toujours ajuster manuellement l'offset z-axe pour différents types de filaments.
+* Surmontez le dériveur de température.
+* La dérive de température change l'offset z-axe, mais ne change pas la plage de l'hauteur de la grille de la plaque d'impression avec un capteur BD. Cela signifie que même si la température est différente, la grille de la plaque d'impression reste la même.
 
-# Comment l'utiliser
+# Utilisation
 
-* Ajoutez `collision_homing` et `collision_calibrate` à la section [BDsensor].
+* Ajoutez `collision_homing` et `collision_calibrate` au [BDsensor] section.
 ``` bash
 [BDsensor] 
-collision_homing:0 # Définissez-le à 1 pour activer le retour à la maison avec la détection d'impact de la buse. Désactivez-le en le définissant à 0.
+collision_homing:0 # Définissez-le à 1 pour activer l'homing avec la détection de collision de buse. Désactivez-le en le définissant à 0. Définissez-le à 1 pour activer l'homing avec la détection de collision de buse. En le définissant à 0, vous pouvez désactiver cette fonction.
                    
-collision_calibrate:0 # Définissez-le à 1 pour activer l'étalonnage automatique du capteur BD avec la détection d'impact de la buse. Désactivez-le en le définissant à 0.
-# Cela signifie que nous n'avons pas besoin de déplacer manuellement la buse sur le lit et de faire le test du papier avant d'envoyer la commande d'étalonnage M102 S - 6.
+collision_calibrate:0 # Définissez-le à 1 pour activer l'étalonnage automatique du capteur BD avec la détection de collision de buse. Désactivez-le en le définissant à 0. Cela signifie que nous n'avons pas besoin de déplacer manuellement la buse sur la plaque et de faire un test de papier avant d'envoyer la commande de calibrage M102 S-6. Cela signifie que nous n'avons pas besoin de déplacer manuellement la buse sur la plaque et de faire un test de papier avant d'envoyer la commande de calibrage M102 S-6.
+# cela signifie que nous n'avons pas besoin de déplacer manuellement la buse sur la plaque et de faire un test de papier avant d'envoyer la commande de calibrage M102 S-6.
 ```
 
-* La sensibilité dépend de la vitesse, plus la vitesse est lente, plus la sensibilité est élevée. Par conséquent, vous devez ajuster la vitesse de l'axe Z, et la vitesse de retour à la maison (homing_speed) et la vitesse de deuxième retour à la maison (second_homing_speed) doivent être dans la plage de 2 à 5.
+* La sensibilité dépend de la vitesse, plus la vitesse est faible, plus la sensibilité est élevée, donc vous devez ajuster la vitesse de l'axe Z, la vitesse d'homing (vitesse d'homing) et la deuxième vitesse d'homing (deuxième vitesse d'homing) doivent être comprises entre 2 et 5.
 
 :::info
 La buse doit être nettoyée ou chauffée pour ramollir les résidus de filament.
-Veuillez ne pas régler la vitesse trop élevée ou trop basse. Si la vitesse est trop élevée, cela peut endommager votre extrudeuse chauffante ou le lit d'impression; si la vitesse est trop basse, cela peut déclencher en l'air et en fait, la buse n'a pas touché le lit d'impression.
+Ne définissez pas la vitesse trop haute ou trop basse. Si la vitesse est trop élevée, elle pourrait endommager votre hot-end ou votre plaque d'impression ; si la vitesse est trop basse, elle pourrait se déclencher dans l'air, en fait la buse n'a pas touché la plaque d'impression.
 :::
 
 # Configuration de référence
@@ -52,7 +52,7 @@ homing_retract_speed:2
 ```
 
 :::tip
-`z_hop` (Hauteur de recul de l'axe Z) et `homing_retract_dist` (Distance de recul lors du retour à zéro) doivent être supérieurs ou égaux à 5.
+`z_hop` (hauteur de retrait Z) et `homing_retract_dist` (distance de retrait de l'homing) doivent être supérieurs ou égaux à 5.
 :::
 # Configuration de référence
 
@@ -66,24 +66,24 @@ homing_retract_dist:5
 ```bash
 [BDsensor] 
 ...
-speed:3 # Cette vitesse fonctionne uniquement pour l'inclinaison de l'axe Z et la commande PROBE_ACCURACY. #
+speed:3 # cette vitesse ne fonctionne que pour la commande de tilting Z et PROBE_ACCURACY. # Cette vitesse ne fonctionne que pour la commande de tilting Z et PROBE_ACCURACY.
 ...
 
 ```
 :::tip Conseil
-Configuration de référence `zero_reference_position`
+Référence de configuration `zero_reference_position`
 :::
 
 ``` bash
 [bed_mesh]
-horizontal_move_z:1 # 0.7~1.0mm est recommandé 建议使用0.7~1.0毫米。
-zero_reference_position: 150, 160 # Définissez cette valeur pour qu'elle soit la même que la position home_xy_position qui est dans la section  ## Définissez cette valeur pour qu'elle soit la même que la position home_xy_position qui est dans la section safe_z_home.
+horizontal_move_z:1 # 0.7~1.0mm est recommandé recommandé. # 0.7~1.0mm est recommandé recommandé.
+zero_reference_position: 150, 160 # Définissez cette valeur pour qu'elle soit la même que celle de home_xy_position qui se trouve dans la section  ## Définissez cette valeur pour qu'elle soit la même que celle de home_xy_position qui se trouve dans la section.
 ....
 ```
 
-# Test de retour à la maison
-Envoyez environ 10 fois l'instruction `G28 Z`, puis vérifiez si les données de sortie sur la console sont stables après chaque envoi de l'instruction `G28 Z`.
+# Test de l'homing
+Envoyez environ 10 fois la commande `G28 Z`, puis vérifiez les données de sortie sur la console après chaque envoi de la commande `G28 Z`.
 ``` bash
 G28 Z
 ```
-<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=RuPoXbrSPDc">Vidéo de démonstration</Button> 
+<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=RuPoXbrSPDc">Vidéo de démonstration</Button>

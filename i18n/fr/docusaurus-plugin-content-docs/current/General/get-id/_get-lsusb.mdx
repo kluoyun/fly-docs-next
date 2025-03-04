@@ -1,29 +1,29 @@
-## Points à considérer avant de rechercher un appareil
+## Précautions avant de rechercher un périphérique
 
-    * Avant de commencer à obtenir l'ID, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour être redirigé") 
-    * Assurez-vous que le câble de données reliant le dispositif inférieur à l'ordinateur possède des fonctions de transmission de données
-    * Après la connexion SSH à l'ordinateur, entrez `lsusb` et appuyez sur Entrée, plusieurs types d'appareils peuvent apparaître
-    * Si le système ne supporte pas `lsusb`, vous pouvez exécuter la commande ci-dessous pour l'installer
-    * Si aucun appareil n'apparaît après `lsusb`, changez d'ordinateur !
+    * Avant de commencer à obtenir l'ID, veuillez d'abord [vous connecter via SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour sauter")
+    * Assurez-vous que le câble de connexion du périphérique inférieur au périphérique supérieur a la fonction de transmission de données
+    * Connectez-vous via SSH au périphérique supérieur et entrez `lsusb` puis appuyez sur Entrée, plusieurs périphériques peuvent apparaître
+    * Si le système ne prend pas en charge `lsusb`, vous pouvez exécuter la commande ci-dessous pour l'installer
+    * Si aucun périphérique n'apparaît après `lsusb`, changez de périphérique supérieur !
     ```
     sudo apt-get install usbutils
     ```
         <ImageView image={require('@site/docs/General/get-id/img/lsusb.webp').default} size="100%" align="left" />
         <ImageView image={require('@site/docs/General/get-id/img/rs232.webp').default} size="100%" align="left" />
-    * Assurez-vous que le firmware de la carte mère a été flashé correctement
-    * Si c'est un firmware USB, après `lsusb`, `1d50:614e` devrait apparaître
-    * Si c'est un firmware USB pour pont CAN, après `lsusb`, `1d50:606f` devrait apparaître
-    * Si c'est RS232, il doit être accompagné de UTOR ou G2T, où G2T ne nécessite pas de recherche de firmware, et pour UTOR, après `lsusb`, `1a86:7523` devrait apparaître
+    * Vérifiez si la carte mère est correctement flashée avec le firmware approprié
+    * Si c'est un firmware USB, `lsusb` devrait afficher `1d50:614e`
+    * Si c'est un firmware de pont USB-CAN, `lsusb` devrait afficher `1d50:606f`
+    * Si c'est un firmware RS232, il faut utiliser UTOR ou G2T, où G2T n'a pas besoin de rechercher de firmware, tandis qu'UTOR devrait afficher `1a86:7523` après `lsusb`
 
-## Points à considérer lors de la recherche d'un appareil
+## Précautions lors de la recherche de périphériques
 
-:::danger Avertissement
+:::danger À savoir
 Les commandes de recherche d'ID ne peuvent pas être mélangées !!!
 :::
 
     * Notez que le firmware USB ne peut être recherché que par l'ID USB
-    * Notez que le firmware USB pour pont CAN ne peut être recherché que par l'ID CAN
+    * Notez que le firmware de pont USB-CAN ne peut être recherché que par l'ID CAN
     * Notez que le firmware RS232 ne peut être recherché que par l'ID RS232
-    * Si `0483:df11` apparaît, cela peut signifier que le firmware a été flashé, mais que la carte mère n'a pas été redémarrée. Si le problème persiste après un redémarrage, vérifiez si le DFU (sautoir/commutateur/bouton) est bien déconnecté
-    * Si `2e8a:0003` apparaît, cela peut indiquer que le mauvais firmware a été flashé, notez que RP2040 ne peut flasher que le firmware UF2 compilé, pas d'autres firmwares. Après l'apparition de `2e8a:0003`, il est nécessaire de déconnecter BOOT (sautoir/commutateur/bouton) sinon la gravure échouera !!!
-    * Le firmware UF2 de RP2040 est compilé avec l'option `No bootloader` pour produire le firmware UF2
+    * Si `0483:df11` apparaît, cela pourrait signifier que le firmware a été flashé mais que la carte mère n'a pas été redémarrée, si elle ne change pas après avoir redémarré la carte mère, vérifiez si les DFU (jumper/dip-switch/bouton) sont déconnectés
+    * Si `2e8a:0003` apparaît, cela pourrait signifier que le mauvais firmware a été flashé, notez que RP2040 ne peut être flashé que par le firmware UF2 compilé, aucun autre firmware ne peut être flashé. Après l'apparition de `2e8a:0003`, déconnectez BOOT (jumper/dip-switch/bouton) sinon la programmation échouera !!!
+    * Le firmware UF2 de RP2040 est compilé uniquement lorsque `No bootloader` est sélectionné lors de la compilation

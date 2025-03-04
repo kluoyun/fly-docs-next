@@ -1,70 +1,66 @@
 ---
 sidebar_position: 4
-sidebar_label: CAN Issue Collection
-
+sidebar_label: CAN Problem Collection
 ---
-
-
-
 
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
 
-# CAN Issue Collection
+# CAN Problem Collection
 
 ## Precautions Before Searching for Devices
 
-    * Before searching for CAN ID, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump")
-    * Please note that you need to ensure that you are logging in via network SSH rather than serial port login
-    * Please make sure that the motherboard with UTOC installed or the motherboard flashed with CAN bridge firmware is properly connected, and the data cable connecting the motherboard to the host has data transmission capability
+    * Before searching for CAN ID, please [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump") first.
+    * Please note that you need to ensure that you are logging into SSH via the network rather than serial port login.
+    * Ensure that the UTOC or the motherboard with the CAN bridge firmware is properly connected and that the data cable connecting to the host computer has data transmission capability.
 
-## Determining if Devices Exist
+## Determine If There Are Devices
 
-    * Now that you have successfully logged into the host, you can enter `lsusb` to search for devices. You will encounter one of the following situations:
-        * If entering `lsusb` prompts that the `ls` command is not found, you can enter the following command to install the command
+    * Now that you have successfully logged into the host computer, you can enter `lsusb` to search for devices. It will result in one of the following scenarios:
+        * If entering `lsusb` prompts that the `ls` command is not found, you can enter the following command to install the command:
             ```bash
             sudo apt-get install usbutils
             ```
-        * If entering `lsusb` results in no response, this is a system issue beyond our control. You need to change the system or use a known working system.
-        * If the information shown in the image below appears, note that this is just a reference. You only need to confirm that `1d50:606f` appears.
+        * If entering `lsusb` results in no response, this indicates a system issue. We cannot help here; you need to change the system or use a confirmed normal system.
+        * If the information shown below appears, please note that this is just a reference. You only need to confirm that `1d50:606f` appears.
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f` belongs to the device you will be using. You do not need to worry about the subsequent prompts because system issues may cause them to display incompletely or not at all.
-    * If there are multiple `1d50:606f`, it is recommended to exclude one to avoid affecting subsequent firmware flashing and connection to the firmware. For example, if it's `FLY MINI PAD`, it is recommended to use the onboard UTOC and not other CAN bridge devices.
-    * If none appear, please check if the data cable is properly connected and if the firmware is correctly flashed.
+    * `1d50:606f` belongs to the device you will be using this time. Ignore the subsequent prompts as system issues may cause them to display incompletely or not at all.
+    * If there are multiple `1d50:606f`, it is recommended to exclude one to avoid affecting subsequent firmware burning and connection, such as `FLY MINI PAD`. In this case, it is recommended to use the onboard UTOC instead of other CAN bridge devices.
+    * If not, check whether the data cable is properly connected and whether the firmware is correctly flashed.
 
-:::warning Note
-You can only search for CAN ID when `1d50:606f` appears.
+:::warning Notice
+You can only go to search for CAN ID when there is `1d50:606f`.
 :::
 
-## Identifying Issues Based on Error Messages
+## Identify Issues Based on Error Messages
 
     * Below are common error messages:
         * OSError: [Errno 19] No such device
         * can.CanError: Failed to transmit: [Errno 100] Network is down
         * can.CanError: Failed to transmit: [Errno 105] No buffer space available
-    * The first one indicates that the host machine cannot find the CAN device (motherboard with USB bridge firmware or UTOC).
-    * The second one indicates that the host machine does not have CAN0 configured or configured incorrectly.
-    * The third one indicates that the host machine has insufficient cache or system issues leading to cache failure.
-    * Points two and three can be addressed by configuring CAN0 as shown below.
-    * If you cannot find the ID, refer to the section below.
+    * The first one indicates that the host computer cannot find the CAN device (the motherboard with the USB bridge firmware or UTOC).
+    * The second one indicates that the host computer has not configured or has incorrectly configured CAN0.
+    * The third one indicates that the host computer's cache is insufficient or there are system issues causing cache failure.
+    * The second and third points can be addressed by checking the configuration of CAN0 as described below.
+    * If you cannot find the ID, see the last section.
 
-## Checking if the Host Machine Supports CAN
+## Check if the Host Computer Supports CAN
 
-    * If you are using the FLY host machine, you do not need to perform this step.
-    * If your system is `Ubuntu`, you need to configure CAN0, but this document has not been updated.
-    * Enter the following command to determine if your system supports CAN
+    * If you are using the FLY host computer, you do not need to perform this operation.
+    * If your system is `Ubuntu`, you need to refer to the `Ubuntu Configuration CAN0` document which has not been updated yet.
+    * Enter the following command to determine if the system supports CAN:
 
     ```bash
     sudo modprobe can && echo "Your kernel supports CAN" || echo "Your kernel does not support CAN"
     ```
-    * After entering the above command, if your kernel supports CAN, it will return: `Your kernel supports CAN`. If it does not support CAN, it will return: `Your kernel does not support CAN`.
-    * If it returns `Your kernel supports CAN`, you can proceed to the next step to configure CAN0.
+    * After entering the above command, if your kernel supports CAN, it will return: `Your kernel supports CAN`; if not, it will return: `Your kernel does not support CAN`.
+    * If the return is `Your kernel supports CAN`, you can proceed to configure CAN0.
 
-## Configuring CAN0
+## Configure CAN0
 
-    * This command overwrites the original CAN0 configuration on the system and requires a system restart after execution.
-    * Choose one based on your actual situation
+    * This command overrides the original system CAN0 configuration. After execution, the system needs to be restarted.
+    * Choose one according to the actual situation.
 ----
-    * For 1M rate, enter the following command
+    * For 1M speed, enter the following command:
 
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
@@ -77,7 +73,7 @@ You can only search for CAN ID when `1d50:606f` appears.
     EOF
     ```
 ----
-    * For 500K rate, enter the following command
+    * For 500K speed, enter the following command:
 
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
@@ -96,40 +92,40 @@ You can only search for CAN ID when `1d50:606f` appears.
     sudo reboot
     ```
 
-## Things to Check After Not Finding an ID
+## Things to Note If You Cannot Find the ID
 
-    * If Klipper is configured with the corresponding ID, you need to disable the ID in the system settings before shutting down, disconnect power, and then turn on or press the reset button on the motherboard.
-    * Check if the CAN speed of the host machine matches the motherboard, tool board, etc.
-    * You can use the following code to determine the CAN speed of the host machine
-    * Make sure there are no disconnections.
-    * Check if a `120Ω` termination resistor is installed between the tool board and the device (motherboard with USB bridge firmware or UTOC).
-    * If a `120Ω` termination resistor is installed, use a multimeter to measure the resistance between CAN H and CAN L when the device is completely powered off to see if it is around `60Ω`.
-    * Ensure there are no disconnections.
+    * If Klipper has configured the corresponding ID, you need to disable the ID in the system configuration before shutting down, disconnecting power, and then turning on the device or pressing the reset button on the motherboard.
+    * Confirm whether the host computer CAN speed matches the motherboard, tool board, etc.
+    * You can use the following code to determine the host computer CAN speed.
+    * Confirm whether there is a broken wire.
+    * Confirm whether a `120Ω` jumper is installed between the tool board and the device (the motherboard with the USB bridge firmware or UTOC).
+    * If a `120Ω` jumper is installed, use a multimeter to measure the resistance between CAN H and CAN L under complete power-off conditions to check if it is around `60Ω`.
+    * Confirm whether there is a broken wire.
 
     ```bash
     ip -details link show can0
     ```
     
-    * The highlighted areas in the image below indicate the CAN speed and cache of the host machine.
-    * The above `1024` is the current CAN0 cache.
-    * The below `1000000` is the current CAN0 speed.
+    * The circled part in the image below shows the host computer CAN speed and cache.
+    * The `1024` above is the current CAN0 cache.
+    * The `1000000` below is the current CAN0 speed.
 
     <ImageView image={require('@site/docs/General/get-id/img/details.webp').default} size="80%" align="center" />
 
-    * If the UUID is still not found, carefully check the following notes:
+    * If the UUID still cannot be queried, carefully check the following points:
 
-        * Confirm whether the motherboard or CAN tool board is correctly connected.
-        * Ensure proper power supply, it is recommended to connect VCC power to the motherboard.
-        * Check if the host machine supports CAN networks.
-        * Check if the CAN resistance is around `60Ω`.
-        * Verify if the firmware compilation is correct.
+        * Check if the motherboard or CAN tool board is correctly connected.
+        * Confirm proper power supply, it is recommended to connect VCC power to the motherboard.
+        * Confirm whether the host computer supports CAN network.
+        * Confirm whether the CAN resistance is around `60Ω`.
+        * Confirm whether the firmware was compiled correctly.
 
-## Searching for ID
+## Search for ID
 
-    * Enter the following command to search for the ID
+    * Enter the following command to search for the ID:
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * If an ID appears and the `Application:` at the end shows `Klipper`, it means this ID can be used directly.
-    * If an ID appears and the `Application:` at the end shows `CANBOOT` or `Katapult`, it means you need to flash the firmware to use it.
+    * If an ID appears and the final `Application:` shows `Klipper`, it means this ID can be used directly.
+    * If an ID appears and the final `Application:` shows `CANBOOT` or `Katapult`, it means the firmware needs to be flashed before it can be used.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />

@@ -1,9 +1,7 @@
 ---
 sidebar_position: 1
-sidebar_label: Instructions de Flashage du Firmware
+sidebar_label: Explications sur la programmation de la mémoire vive
 ---
-
-
 
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
@@ -11,42 +9,42 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * Le firmware Katapult pour la connexion CAN de l'ERCF V2 est préinstallé avec un débit de 1M.
-    * Le firmware Katapult pour la connexion CAN de l'ERCF V2 peut être configuré à 500K ou 1M selon vos besoins.
-    * <Button variant="contained" disableElevation href="./bl">Flashage du firmware Katapult</Button>
+    * La version V2 d'ERCF pré-grave la mémoire vive CAN connectée à Katapult avec un taux de 1 M
+    * Le Katapult de la version V2 d'ERCF a une vitesse CAN de 500 K et 1 M, il peut être gravé par vous-même si nécessaire
+    * <Button variant="contained" disableElevation href="./bl">Programmation de la mémoire vive Katapult</Button>
 
 
 
     :::
 
-# Instructions de Flashage du Firmware
+# Explications sur la programmation de la mémoire vive
 
-    * L'ERCF V2 peut se connecter à l'ordinateur hôte via RS232 ou CAN.
-    * RS232 et CAN doivent être connectés via un câble `XT30(2+2)-F`.
-    * Voici le style du câble de données `XT30(2+2)-F` :
+    * La version V2 d'ERCF peut se connecter à l'ordinateur hôte via les modes de connexion RS232 et CAN
+    * RS232 et CAN nécessitent l'utilisation de `XT30(2+2)-F` pour la connexion
+    * Ci-dessous est le style du câble de données `XT30(2+2)-F`
         <ImageView image={require('@site/docs/General/get-id/img/xt30.webp').default} size="80%" align="left" />
 
-:::danger À Savoir
-* Le flashage du firmware de la carte mère nécessite l'utilisation de Katapult pour flasher Klipper.
-* Si vous êtes certain que la carte mère a déjà le firmware Katapult, il n'est pas nécessaire de flasher à nouveau le firmware Katapult, c'est juste une précaution au cas où le firmware Katapult de la carte mère n'aurait pas été flashé correctement.
-* Vous pouvez appuyer rapidement deux fois sur le bouton de réinitialisation pour vérifier si une LED clignote sur la carte mère, ce qui indiquerait que la carte mère est en mode Katapult.
+:::danger À savoir
+* La programmation de la mémoire vive de la carte mère doit passer par Katapult pour graver Klipper
+* Si la carte mère a déjà été gravée avec Katapult, il n'est pas nécessaire de programmer la mémoire vive Katapult à la fin, c'est juste une précaution au cas où la programmation de la mémoire vive Katapult n'aurait pas réussi
+* Vous pouvez appuyer deux fois rapidement sur le bouton de réinitialisation pour voir si une LED clignote sur la carte mère, s'il y en a une, cela signifie que la carte mère est déjà dans la mémoire vive Katapult
 :::
 
-## Comment déterminer quel firmware vous avez besoin
+## Comment déterminer quel type de mémoire vive vous avez besoin
 
-    * L'ERCF V2 peut se connecter à l'ordinateur hôte de la manière suivante :
-    * <Button variant="contained" disableElevation href="./can">Flashage du firmware CAN</Button>
-        * Avantages : Si le firmware `Katapult` est installé, il permet la mise à jour du firmware sans toucher à la carte mère et supporte la connexion par bus.
-        * Inconvénients : Peut causer des erreurs comme un dépassement de temps de retour à l'origine lorsqu'il est utilisé avec `KlipperScreen`.
-        * Conseil : Assurez-vous que l'ordinateur hôte supporte la CAN et qu'il est équipé d'un UTOC ou d'une carte mère avec un firmware de pont.
-    * <Button variant="contained" disableElevation href="./rs232">Flashage du firmware RS232</Button>
-        * Avantages : Peut être utilisé sans logiciel spécial, communication fiable et stable.
-        * Inconvénients : La mise à jour du firmware nécessite une entrée en mode DFU manuel ou un double clic sur RST pour entrer en mode `Katapult` pour la mise à jour.
-        * Conseil : Nécessite un G2T ou un UTOR pour fonctionner.
-    * <Button variant="contained" disableElevation href="./usb">Flashage du firmware USB</Button>
-        * Avantages : Si le firmware Katapult est installé, il permet la mise à jour sans toucher à la carte mère. Si vous utilisez une carte mémoire ou un flashage DFU, la mise à jour reste nécessaire comme avant, communication fiable et stable.
-        * Inconvénients : Avec plusieurs périphériques USB, cela peut affecter le transfert de données.
+    * La version V2 d'ERCF peut se connecter à l'ordinateur hôte via les méthodes suivantes
+    * <Button variant="contained" disableElevation href="./can">Programmation de la mémoire vive CAN</Button>
+        * Avantage : Si vous avez gravé la mémoire vive Katapult, vous pouvez mettre à jour la mémoire vive sans toucher la carte mère et elle prend en charge la connexion en bus
+        * Inconvénient : Elle peut causer des erreurs comme un dépassement de délai lors de l'utilisation conjointe de KlipperScreen
+        * Astuce : Si vous avez besoin d'utiliser CAN, assurez-vous que l'ordinateur hôte prend en charge CAN et qu'il faut utiliser UTOC ou une carte mère avec un firmware de pont
+    * <Button variant="contained" disableElevation href="./rs232">Programmation de la mémoire vive RS232</Button>
+        * Avantage : Elle peut être utilisée sans logiciel spécial, elle est fiable et stable pour la communication
+        * Inconvénient : Pour reprogrammer la mémoire vive, il faut entrer en mode DFU manuel ou double-cliquer sur RST pour entrer dans Katapult pour mettre à jour la mémoire vive
+        * Astuce : Elle nécessite G2T ou UTOR pour être utilisée
+    * <Button variant="contained" disableElevation href="./usb">Programmation de la mémoire vive USB</Button>
+        * Avantage : Si vous avez gravé la mémoire vive Katapult, vous pouvez mettre à jour la mémoire vive sans toucher la carte mère, si vous utilisez une carte mémoire ou DFU pour la programmation, vous devez suivre la méthode originale pour mettre à jour la mémoire vive, elle est fiable et stable pour la communication
+        * Inconvénient : Elle peut affecter la transmission des données si plusieurs périphériques USB sont présents
 
-## Explication du firmware Katapult
+## Explications sur la mémoire vive Katapult
 
     <CANBOOT />

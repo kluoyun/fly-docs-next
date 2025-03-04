@@ -2,7 +2,6 @@
 sidebar_position: 8
 ---
 
-
 import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TP 2209
@@ -10,32 +9,32 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp2209.webp').default} size="60%" align="center" />
 
 
-## 基本パラメータ
+## 基本参数
 
-    * 入力電圧：12V-24V
-    * 適用：Marlin/Klipper/RRF ファームウェア
-    * モーターがステップを失いにくい
-    * 静音モードをサポート
-    * 大面積ファン付きヒートシンク、ドライバーの動作温度を下げる
+    * 入力電圧 ：12V-24V
+    * 用途 ： Marlin/Klipper/RRF ファームウェア
+    * モーターは簡単にステップを失わない
+    * シークエンスモードをサポート
+    * 大面積のファンヒートパッドでドライバーの作動温度を下げます
     * ドライバーモードサポート：TMC：UART
-    * モーターストール検出をサポート
+    * ストール検出をサポート
 
 
 ## FLYマザーボードジャンパー
 
     :::tip
 
-    * TP2209はUARTモードを使用
-    * TP2209はドライバージャンパーピン不要、単に設定するだけ
-
+    * TP2209はUARTモードを使用します
+    * TP2209はドライバージャンパーキャップを使用する必要がありません。単純な設定だけで大丈夫です
+    
     :::
 
 
-## TP2209参考設定
+## TP2209リファレンス設定
 
     :::danger
 
-    ドライバーのサンプル抵抗は0.110、誤設定しないでください
+    ドライバーサンプリング抵抗は0.110に設定してください。間違えないでください
 
     :::
 
@@ -43,8 +42,8 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2209 stepper_x]
     uart_pin: 
     interpolate: False
-    run_current: 0.8                    # モーターの運行電流値（単位：mA）
-    sense_resistor: 0.110               # ドライバーのサンプル抵抗を変更しないでください
+    run_current: 0.8                    # モーター運転電流値（単位：mA）
+    sense_resistor: 0.110               # ドライバーサンプリング抵抗を変更しないでください
     stealthchop_threshold: 0
     ```
 
@@ -54,22 +53,21 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
 
     <DIAG />
 
-    :::tip 無限位使用ヒント
+    :::tip 無限位使用のヒント
 
-    * 元の`endstop_pin:`は遮断または削除が必要、新たに`endstop_pin: tmc2209_stepper_x:virtual_endstop`を追加
-    * `diag_pin:`を設定した後、リミットの状態を更新すると未トリガー
-    * `driver_SGTHRS:`の設定には適切な値を自分でテストする必要があります
+    * 元の`endstop_pin:`をコメントアウトまたは削除し、`endstop_pin: tmc2209_stepper_x:virtual_endstop`を追加します
+    * `diag_pin:`を設定した後、リミットスイッチの状態はトリガーされていません
+    * `driver_SGTHRS:`を設定するには、適切な値をテストする必要があります
 
     :::
 
-
-    * 参照設定
+    * 参考設定
 
     ```cfg
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc2209_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # 退避距離を0にしないとホーム位置に戻る可能性があります
+    homing_retract_dist: 0        # 後退距離を0に設定すると、ホーム動作が失敗する可能性があります
 
     [tmc2209 stepper_x]
     diag_pin: ^

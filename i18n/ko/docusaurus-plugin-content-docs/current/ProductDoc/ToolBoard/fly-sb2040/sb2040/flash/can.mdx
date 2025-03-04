@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: CAN 펌웨어 굽기
+sidebar_label: CAN 펌웨어 프래싱
 ---
 
 import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
 # CAN 펌웨어 컴파일
 
-## 컴파일 시작
+## 빌드 시작
 
     <SSH />
 
@@ -20,14 +20,14 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * 마이크로 컨트롤러 시작 시 GPIO 핀을 설정하세요. 입력: gpio24
+    * 마이크로 컨트롤러 시작 시 설정할 GPIO 핀을 선택, 입력: gpio24
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/can.webp').default} size="100%" align="center" />
-    * `Q` 키를 누르면 **Save configuration**이 나타나고, 이때 `Y` 키를 눌러주세요.
+    * `Q` 키를 누르면 **Save configuration**이 나타나고 이 때 다시 `Y` 키를 누름
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아갑니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸릴 수 있습니다.
+    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아감
+    * `make -j4`를 입력하여 빌드를 시작합니다. 시간이 꽤 걸립니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래 내용이 출력되면 컴파일이 성공한 것입니다.
+    * 마지막에 아래의 내용이 출력되면 빌드가 성공한 것입니다.
 
         ```bash
         Linking out/klipper.elf
@@ -39,18 +39,16 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
     <LS />
 
 
-## 펌웨어 굽기
+## 펌웨어 프래싱
 
-    * 펌웨어를 굽기 전에 XT30 데이터 케이블을 사용하여 도구 보드를 UTOC 또는 브리지 펌웨어가 설치된 메인보드에 연결하세요. 아래는 참조 연결도입니다.
+    * 펌웨어를 프래시하기 전에 XT30 데이터 케이블로 도구 보드를 UTOC 또는 브리지 펌웨어가 깔린 메인보드에 연결합니다. 아래는 참조 접선도입니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/sb2040_utoc.webp').default} size="80%" align="left" />
-    * 전원이 꺼진 상태에서 만능 테스터로 CAN H와 CAN L의 저항값을 측정하세요. 값이 `60Ω` 정도이면 정상입니다. `120Ω`이면 `120Ω` 점퍼를 연결해야 하고, `40Ω` 정도이면 점퍼를 제거해야 합니다.
+    * CAN H와 CAN L를 전원이 차단된 상태에서 멀티미터로 저항 값을 측정하면 `60Ω` 근처에 있어야 합니다. 만약 `120Ω`라면 `120Ω` 점퍼를 연결해야 하며, `40Ω` 근처라면 점퍼를 제거해야 합니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## 펌웨어가 정상적으로 시작되었는지 확인
+## 펌웨어 정상 작동 확인
 
-    * 펌웨어가 정상적으로 시작되면 LED가 켜집니다.
+    * 펌웨어가 정상적으로 작동하면 LED가 켜집니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/led.webp').default} size="50%" align="center" />
-
-

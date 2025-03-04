@@ -3,50 +3,46 @@ sidebar_position: 9
 sidebar_label: BLファームウェア、無視してください
 ---
 
-
-
-
-
 import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
-# ブートローダーファームウェア
+# bootloaderファームウェア
 
-## 書き込みモードへの進入
+## フラッシュモードに入る
 
     :::tip
  
-    右側が`BOOTボタン`、左側が`RESETボタン`
+    `BOOTボタン`は右側にあり、`RESETボタン`は左側にあります
 
     :::
 
-    * 書き込みモードに入る方法は2つあります
-    * 第一種：基板が完全に電源オフの状態で、BOOTボタンを押しながら、データ転送可能なケーブルの一方を基板に、もう一方をデバイスに接続します
-    * 第二種：データ転送可能なケーブルの一方を基板に、もう一方をデバイスに接続した後、BOOTボタンを押しながらRSTボタンを押して、RSTボタンを離し、BOOTボタンを最後に離します
+    * フラッシュモードに入るには2つの方法があります
+    * 方法1：マザーボードが完全に電源を切られている場合、BOOTボタンを押したままデータ転送用のケーブルをマザーボードとデバイスに接続します
+    * 方法2：データ転送用のケーブルをマザーボードとデバイスに接続した後、BOOTボタンを押したままRSTボタンを押して、その後RSTボタンを離し最後にBOOTボタンを離します
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/boot.webp').default} size="50%" align="center" />
 
-## ファームウェアの書き込み
+## ファームウェアをフラッシュする
     <Tabs>
-        <TabItem value="win" label="Windows書き込みガイド" default>
+        <TabItem value="win" label="Windowsのフラッシュチュートリアル" default>
 
-            * CDVのブートローダーファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/CDYV3_V2.bin">自動ダウンロード</Button>
+            * CDVのbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/CDYV3_V2.bin">ファームウェアを自動ダウンロードするにはこちらをクリック</Button>
             <WIN />
         </TabItem>
-        <TabItem value="linux" label="ホストマシン書き込みガイド">
+        <TabItem value="linux" label="アップストリームソフトウェアのフラッシュチュートリアル">
             <Katapult />
-            4. ファームウェアの書き込み
+            4. ファームウェアをフラッシュする
             :::tip
-            一つのファームウェアだけを書き込む必要があります
+            どちらか一方のファームウェアのみフラッシュする必要があります
             :::
-            * 以下はファームウェアの書き込みコマンドです
+            * 下記はファームウェア書き込みコマンドです
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/CDV/CDYV3_V2.bin
                 ```
-            5. 下図の矢印に示されている内容「File downloaded successfully」が表示されれば、書き込み成功です
+            5. 下図矢印部分に示されている内容「File downloaded successfully」が表示されたらフラッシュ成功です
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
             :::tip
-            書き込みが完了した後、基板を完全に電源オフにする必要があります。
+            フラッシュが完了したら、マザーボードを完全に電源を切る必要があります。
             :::
         </TabItem>
     </Tabs>

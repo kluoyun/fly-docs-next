@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USB Firmware Flashing
+sidebar_label: USB Firmware Burning
 ---
 
 import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -22,66 +22,24 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Press `Q` key, then press `Y` key when **Save configuration** appears
+    * Press `Q` key, and when **Save configuration** appears, press `Y` key
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * The configuration should now be saved and you should be back to the command line interface
-    * Enter `make -j4` to start compilation, which might take some time
+    * The configuration should now be saved and you should have exited to the command line interface
+    * Input `make -j4` to start compilation, it takes some time
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * The compilation is successful if the following content is output
+    * If the following content is output, the compilation is successful
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Firmware Flashing
+## Firmware Burning
 
 :::tip
-Execute the following command to flash the firmware
+Execute the following command to burn the firmware
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
-
-## Flashing Firmware
-    <Tabs>
-        <TabItem value="linux" label="dfu flashing">
-            *Follow the images below to insert the jumper cap on `boot1` and then press `rst` to restart the motherboard
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
-            *Enter the following command to check if the motherboard has entered dfu mode
-            ```bash
-            lsusb
-            ```
-            *Press `Enter` after inputting the command, it will output the content shown in the image below indicating the motherboard has successfully entered dfu mode
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. Flash the firmware
-
-            * Here are the dfu flashing commands
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. If the content shown by the arrow in the image below appears, then the firmware has been successfully flashed
-
-            :::warning
-
-            Please ignore the **error after the line indicated by the red arrow**!!!
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            After flashing is complete, remove the motherboard jumper cap and press the `rst` button on the motherboard to restart it
-
-            :::
-
-        </TabItem>
-    </Tabs>

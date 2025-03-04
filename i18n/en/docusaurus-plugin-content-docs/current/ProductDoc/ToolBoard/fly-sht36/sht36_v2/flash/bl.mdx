@@ -1,14 +1,9 @@
 ---
 sidebar_position: 6
-sidebar_label: BL Firmware, please ignore
+sidebar_label: BL firmware, please ignore!
 ---
 
-
-
-
-
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
-
 
 import APM from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
 import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
@@ -23,21 +18,19 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * SHT36 V2 can only use CAN connection
-    * Here we provide CAN firmware with 500K and 1M baud rates
+    * SHT36 V2 can only be connected via CAN
+    * CAN firmware is provided at both 500K and 1M rates
 
     :::
 
+    :::warning Note
 
-    :::warning Precautions
-
-    * APMF072 can only use a computer to flash firmware
-    * STM32F103 can only update firmware through the host software
+    * APMF072 can only be flashed using a computer
+    * STM32F103 can only be updated using a host computer
 
     :::
 
-
-## Entering Flash Mode
+## Entering Boot Mode
 
     :::tip
 
@@ -45,8 +38,8 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     :::
 
-    * STM32F103 does not need to follow this step!!!
-    * With the mainboard completely powered off, press and hold the BOOT button, then connect the data line to both the mainboard and your device
+    * STM32F103 does not need to perform this step！！！！
+    * With the motherboard completely powered off, press and hold the BOOT button while connecting a data cable with data transfer from one end of the motherboard to your device
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/boot.webp').default} size="100%" align="center" />
 
 ## Flashing Firmware
@@ -58,36 +51,36 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="STM32F072 Host Software Flashing Tutorial">
+        <TabItem value="linux" label="STM32F072 Host Computer Flashing Tutorial">
             
             <Katapult />
 
-            4. Flash the firmware
+            4. Flashing Firmware
 
             :::tip
 
-            You only need to flash one of the firmware files
+            Only one of the firmwares needs to be flashed
 
             :::
 
-            * Below is the firmware flashing command for 500K CAN baud rate
+            * Below are the firmware flashing commands for 500K CAN rate
             ```bash
             sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_500K.BIN
             ```
                        
-            * Below is the firmware flashing command for 1M CAN baud rate
+            * Below are the firmware flashing commands for 1M CAN rate
             ```bash
             sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_1M.BIN
             ```
 
 
-            5. If you see the content indicated by the arrow below, the firmware has been successfully flashed
+            5. If the message ``File downloaded successfully`` appears as shown by the arrow in the image below, the flashing is successful
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
             :::tip
 
-            After flashing, you need to completely power off the mainboard once.
+            After flashing, the motherboard needs to be completely powered off once.
 
             :::
 
@@ -104,29 +97,29 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
             <LS />
 
             * Pull precompiled firmware
-            * Here are all precompiled firmware files
-            * Please ensure the host can access the internet for installation
-            * The host needs to execute the following command to download the firmware package
+            * All are precompiled firmwares here
+            * Please note that the host computer needs to be able to access the internet to install
+            * The host computer needs to execute the following command to download the firmware package
 
             ```bash
             cd && git clone https://github.com/FengHua741/FLY_Katapult.git
             ```
 
-            * If you have already downloaded the firmware package, it is recommended to update it before proceeding
+            * If the firmware package has already been downloaded, it is recommended to update the firmware package before proceeding with the remaining operations
 
             ```bash
             cd ~/FLY_Katapult && git pull
             ```
 
-            * This method updates the existing Katapult firmware on the toolboard directly through CAN
-            * Replace `<Toolboard ID>` with the CAN ID of the toolboard controlled by STM32F103
-            * Below is the firmware update command for the 103 version with 1M CAN baud rate
+            * This method is to directly update the original Katapult firmware of the toolboard through the CAN update tool
+            * The `<Toolboard ID>` needs to be replaced with the CANID of the toolboard of the STM32F103 main control
+            * Below is the firmware update command for version 103 at 1M CAN rate
 
             ```bash
             ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_1M.BIN  -u <Toolboard ID>
             ```
 
-            * Below is the firmware update command for the 072 version with 500K CAN baud rate
+            * Below is the firmware update command for version 072 at 500K CAN rate
             ```bash
             ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_500K.BIN  -u <Toolboard ID>
             ```
@@ -136,5 +129,6 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
 ## Confirming Firmware Startup
 
-    * If the firmware starts correctly, the LED will start flashing
+    * If the firmware starts normally, the LED will start flashing
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.webp').default} size="100%" align="center" />
+

@@ -6,39 +6,39 @@ sidebar_position: 3
 
 This tutorial is only applicable to the FLY host machine.
 
-    :::danger Notice
+    :::danger Note
 
     * You need to install it yourself.
     * This tutorial will replace the `klipper/klippy/extras/virtual_sdcard.py` file in Klipper.
-    * It allows automatic copying of files selected from a USB drive to the system’s `/tmp` directory.
-    * After the copy is completed, it will prompt `File selected` in the web command line.
-    * This file will detect the `sdaX` folder; if not found, it will not execute (where X in sda represents A-Z and 0-9).
+    * It can automatically copy files from the selected USB drive to the system's `/tmp` directory.
+    * After copying, it will prompt `File selected` in the web command line.
+    * This file will detect the `sdaX` folder, and if it does not exist, it will not execute (where sdaX represents A-Z and 0-9).
     * Currently, only the FLY host machine has been tested; other host machines have not been tested.
 
     :::
 
-## Usage Instructions
+## Usage Method
 
 
 
-* Use an SSH software to connect to the host machine and execute the following command.
-* Please note that this command will restart the host machine!
+* Use SSH software to connect to the host machine and then execute the following command.
+* Please note that this command will cause the host machine to restart!
 * This step is to enable USB drive printing functionality.
     ```bash
-    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://upyun.pan.zxkxz.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
+    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://cdn.mellow.klipper.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
     ```
 
-## USB Drive Printing Instructions
+## USB Drive Printing Operation Method
 
 ### Backup and Download File
 
 * Please note that this command will stop Klipper.
-* This step is to enable automatic copying of selected USB drive files to the system’s `/tmp` directory.
+* This step is to enable the automatic copying of USB drive files to the system's `/tmp` directory when selecting a USB drive file.
     ```bash
     sudo systemctl stop klipper && mv ~/klipper/klippy/extras/virtual_sdcard.py ~/virtual_sdcard.py && curl -kfsSL https://cdn.mellow.klipper.cn/firmware/virtual_sdcard.py -o ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
     ```
 
-### Restore Original Files
+### This step is to restore the original file
 
 * Please note that this command is to restore the original Klipper.
     ```bash

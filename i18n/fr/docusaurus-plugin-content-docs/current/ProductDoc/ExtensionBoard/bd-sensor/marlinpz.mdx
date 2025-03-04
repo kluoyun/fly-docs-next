@@ -1,57 +1,57 @@
 ---
 sidebar_position: 4
-sidebar_label: Marlin automatique Z-OFFSET
+sidebar_label: Décalage automatique Z Marlin
 ---
 
-# Collision sensing de Marlin
+# Détection de collision Marlin
 
 :::info
-Cette fonctionnalité exige que la version du firmware du capteur BD (vous pouvez obtenir cette version en envoyant M102 S - 1, et non la version matérielle sur le capteur)
-soit V1.1b, supérieure à V1.2b ou achetée après mars 2024. Sinon, vous devez utiliser un outil matériel externe (tel que STlink) pour flasher le firmware dans le capteur BD.
+Cette fonction nécessite une version de firmware du capteur BD (vous pouvez obtenir cette version en envoyant M102 S-1, et non la version matérielle du capteur)
+de V1.1b, supérieure à V1.2b ou acheté après mars 2024, sinon vous devrez utiliser un outil de matériel externe (comme STlink) pour flasher le firmware sur le capteur BD.
 :::
 
-# Comment ça marche
+# Comment ça fonctionne
 
-* L'étalonnage de l'offset de l'axe z est effectué automatiquement lors de l'exécution de G28 : il peut être déclenché lors de l'homing (après que la buse ait touché la plateforme) - puis se déplacer lentement vers le haut jusqu'à ce que la buse quitte juste la plateforme - et cette position est définie comme le point zéro de l'axe z.
+* Le calibrage automatique du décalage Z est effectué lors de l'exécution de G28 : il peut être déclenché lorsque l'imprimante se positionne (après que la buse a touché la plateforme) - puis elle se soulève lentement jusqu'à ce que la buse vienne juste de quitter la plateforme - cette position est définie comme le point 0 de l'axe Z.
 
 # Avantages
 
-* Étalonnage automatique de l'offset de l'axe z.
-* En même temps, vous pouvez toujours ajuster manuellement l'offset de l'axe z pour différents filaments.
-* Surmonter la dérive de température.
-* La dérive de température modifie l'offset de l'axe z, mais n'altère pas la plage du graphique de hauteur de la grille de la surface de la couche avec le capteur BD. Cela signifie que même si la température est différente, la grille de la surface de la couche est la même.
+* Calibrage automatique du décalage Z.
+* Vous pouvez toujours ajuster manuellement le décalage Z pour différents filaments.
+* Surmontez le dérive thermique.
+* Le dérive thermique change le décalage Z, mais ne change pas la plage de l'hauteurs de la grille de lit avec un capteur BD. Cela signifie que même si la température est différente, la grille de lit reste la même.
 
-:::info Indication
-Le code de cette fonctionnalité est dans la liste des demandes de tirage sur le GitHub officiel de Marlin : https://github.com/MarlinFirmware/Marlin/pull/27243
-Alors, veuillez utiliser le code Marlin suivant : https://github.com/markniu/MarlinPULL/tree/bugfix - 2.1.x
+:::info Astuce
+Le code de cette fonction est dans la liste des demandes d'extraction officielles de Marlin GitHub : https://github.com/MarlinFirmware/Marlin/pull/27243
+Donc veuillez utiliser le code Marlin suivant : https://github.com/markniu/MarlinPULL/tree/bugfix-2.1.x
 :::
 
-# Comment l'utiliser
+# Utilisation
 
-Activez `BD_SENSOR` et ajoutez `#define BD_SENSOR_CONTACT_PROBE` dans `configuration.h`
-Il devrait ressembler à ceci :
+Activez `BD_SENSOR`, et ajoutez `#define BD_SENSOR_CONTACT_PROBE` dans `configuration.h`.
+Il doit ressembler à ceci :
 
 ``` bash
 #define BD_SENSOR
 #if ENABLED(BD_SENSOR)
-  #define BD_SENSOR_PROBE_NO_STOP // Probe bed without stopping at each probe point`
-  #define BD_SENSOR_CONTACT_PROBE // it uses nozzle collision sensing to probe while homing`
+  #define BD_SENSOR_PROBE_NO_STOP // Sonder das Bett ohne Anhalten bei jedem Sonde-Punkt
+  #define BD_SENSOR_CONTACT_PROBE // Es verwendet die Kollisionssensorik der Düse zum Sonderen während des Homing
 #endif
 ```
-* Augmentez la vitesse de la sonde dans configuration.h.
+* Augmentez la vitesse du sondeur dans `configuration.h`.
 
-* La sensibilité dépend de la vitesse, donc vous devez ajuster la vitesse de l'axe z.
-* La vitesse d'homing (homing_speed) et la vitesse d'homing secondaire (second_homing_speed) doivent être dans la plage de 3 à 10, voici la vitesse d'avance de la sonde de l'axe z.
+* La sensibilité dépend de la vitesse, donc vous devez ajuster la vitesse de l'axe Z.
+* `homing_speed` (vitesse de Home) et `second_homing_speed` (deuxième vitesse de Home) doivent être comprises entre 3 et 10, c'est ici la vitesse de feed du sondage Z.
 * Par exemple :
 ``` bash
  #define Z_PROBE_FEEDRATE_FAST  (5*60)
  #define Z_PROBE_FEEDRATE_SLOW  (5*60)
 ```
-* Augmentez le relèvement de l'homing de l'axe z à plus de 4 mm dans Configuration_adv.h.
+* Augmentez la montée de l'axe Z pendant le home à plus de 4 millimètres dans `Configuration_adv.h`.
 ``` bash
 #define HOMING_BUMP_MM      { 5, 5, 5 } 
 ```
-# Test de l'homing
-* Veuillez envoyer environ 10 fois l'instruction `G28 Z` ou utiliser l'instruction `M48` pour voir s'il est stable.
+# Test du home
+* Envoyez environ 10 fois la commande `G28 Z` ou utilisez la commande `M48` pour voir si cela est stable.
 
-<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=DzmGyJNS9bY">Vidéo de démonstration</Button> 
+<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=DzmGyJNS9bY">Vidéo de démonstration</Button>

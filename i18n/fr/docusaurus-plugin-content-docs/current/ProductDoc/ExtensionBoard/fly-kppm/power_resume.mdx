@@ -2,53 +2,53 @@
 sidebar_position: 2
 ---
 
-# Reprise d'impression après coupure de courant avec Klipper
+# Klipper Impression en Cas de Déconnexion
 
-:::danger Attention
+:::danger À Savoir
 
-* Ne convient qu'à certaines machines
+* Ne s'applique qu'à certains appareils.
 
 :::
 
-## Changer de branche
-    * Il faut se connecter au PC hôte via un réseau SS pour exécuter cette commande, assurez-vous que le PC hôte peut se connecter à Internet
+## Basculer de Branche
+    * Vous devez utiliser SS pour vous connecter à la machine principale via le réseau et vous assurer que la machine principale est connectée à Internet.
     ```bash
     git clone https://e.coding.net/g-ofpa1390/3D-Printers/klipper-dev.git -b fly-dev klipper
     ```
 
-## Configuration de référence
+## Configuration de Référence
 
     ```cfg
     [power_resume]
     power_pin: PA10
-    is_shutdown: True # Exécuter l'opération d'arrêt, activé par défaut
+    is_shutdown: True # Exécuter l'opération d'arrêt, par défaut activé
     start_gcode:
-        # G-code à exécuter avant de reprendre l'impression
-        # Tous les paramètres sauvegardés avant la coupure de courant peuvent être obtenus via {PR}
+        # GCODE exécuté avant de reprendre l'impression
+        # Tous les paramètres sauvegardés avant la déconnexion peuvent être récupérés via {PR}
         # Vous pouvez utiliser M118 {PR} pour afficher tous les paramètres disponibles
-        M118 Reprise d'impression: {PR.print_stats.filename}
+        M118 Commencer à imprimer : {PR.print_stats.filename}
         {% if PR.print_stats.info.total_layer %}
-            M118 Nombre total de couches: {PR.print_stats.info.total_layer}
-            M118 Couche interrompue: {PR.print_stats.info.current_layer}
+            M118 Nombre total de couches : {PR.print_stats.info.total_layer}
+            M118 Couche actuelle interrompue : {PR.print_stats.info.current_layer}
         {% endif %}
-        M118 Position interrompue: X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
-        M140 S{PR.bed.target}      ; Définir la température du lit
+        M118 Position d'interruption : X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
+        M140 S{PR.bed.target}      ; Définir la température du plateau chauffant
         # M104 S180                ; Définir la température de l'extrudeur
         # M109 S180                ; Attendre que l'extrudeur atteigne la température définie
         G91                        ; Coordonnées relatives
-        G1 Z2 F100                 ; Lever Z pour préparer l'homing de X et Y
+        G1 Z2 F100                 ; Lever Z, préparer X,Y à zéro
         G90                        ; Coordonnées absolues
-        G28 X Y                    ; Homing XY
-        M140 S{PR.bed.target}      ; Définir la température du lit
+        G28 X Y                    ; Réinitialiser X et Y
+        M140 S{PR.bed.target}      ; Définir la température du plateau chauffant
         M104 S{PR.extruder.target} ; Définir la température de l'extrudeur
-        M190 S{PR.bed.target}      ; Attendre que le lit atteigne la température définie
+        M190 S{PR.bed.target}      ; Attendre que le plateau chauffant atteigne la température définie
         M109 S{PR.extruder.target} ; Attendre que l'extrudeur atteigne la température définie
-        M106 S255                  ; Allumer le ventilateur de refroidissement du filament
+        M106 S255                  ; Allumer le ventilateur d'extraction
         M83                        ; Extrusion relative
         G1 E10 F400                ; Extruder un peu
         G90                        ; Coordonnées absolues
         G1 F{PR.gcode_move.speed}  ; Définir la vitesse de déplacement
-        G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; Se déplacer à la position de départ
+        G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; Se déplacer à la position de début
         {% if PR.gcode_move.absolute_coordinates %}
             G90 ; Mouvement absolu
         {% else %}
@@ -59,9 +59,9 @@ sidebar_position: 2
         {% else %}
             M83 ; Extrusion relative
         {% endif %}
-        G92 E{PR.POS_E} ; Définir la position de l'extrusion
+        G92 E{PR.POS_E} ; Définir la position d'extraction
     shutdown_gcode:
-        # G-code à exécuter avant l'arrêt
-        M118 Tension d'alimentation faible, arrêt
+        # GCODE exécuté avant l'arrêt
+        M118 Tension du courant faible, arrêt
         # M112 ; Arrêt d'urgence
     ```

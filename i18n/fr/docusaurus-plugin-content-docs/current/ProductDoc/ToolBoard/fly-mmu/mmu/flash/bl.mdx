@@ -1,11 +1,7 @@
 ---
 sidebar_position: 7
-sidebar_label: Firmware BL, veuillez ignorer
+sidebar_label: BL firmware, ignore this
 ---
-
-
-
-
 
 import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
@@ -13,78 +9,78 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
 # Firmware Katapult
 
-## Description du firmware Katapult
+## Explication du firmware Katapult
 
     <CANBOOT />
 
     :::tip
 
-    * Les trois types de MMU sont supportés
-    * Nous fournissons ici uniquement le firmware CAN et USB
+    * Les trois types de MMU sont pris en charge
+    * Seulement le firmware CAN et USB sont fournis ici
     :::
 
-## Mode de flashage
+## Entrer en mode de programmation
 
     :::tip
 
-    Le bouton en haut est `RESET`, celui en bas est `BOOT`
+    Au-dessus se trouve le bouton `RESET`, en dessous se trouve le bouton `BOOT`
 
     :::
 
-    * Il existe deux méthodes pour entrer en mode de flashage
-    * Première méthode : Avec la carte mère complètement déconnectée, maintenez le bouton BOOT enfoncé puis connectez le câble de données à la carte mère et à votre appareil
-    * Deuxième méthode : Après avoir connecté le câble de données à la carte mère et à votre appareil, maintenez le bouton BOOT enfoncé, appuyez sur le bouton RST, relâchez le bouton RST puis relâchez le bouton BOOT
+    * Il y a deux méthodes pour entrer en mode de programmation
+    * Première méthode : dans une situation où la carte mère est complètement déconnectée de l'alimentation, appuyez sur le bouton BOOT puis branchez le câble de transmission de données d'une extrémité à la carte mère et de l'autre extrémité à votre appareil
+    * Deuxième méthode : après avoir branché le câble de transmission de données d'une extrémité à la carte mère et de l'autre extrémité à votre appareil, appuyez sur le bouton BOOT puis appuyez sur le bouton RST, relâchez ensuite le bouton RST enfin relâchez le bouton BOOT
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Flashage du firmware
+## Flasher le firmware
     <Tabs>
         <TabItem value="win" label="Tutoriel de flashage pour Windows" default>
         
-            * Firmware Katapult pour MMU <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">Cliquez pour télécharger automatiquement le firmware</Button>
+            * Le firmware Katapult pour MMU <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">Cliquez pour télécharger automatiquement le firmware</Button>
             <WIN />
             
         </TabItem>
-        <TabItem value="linux" label="Tutoriel de flashage via l'hôte">
+        <TabItem value="linux" label="Tutoriel de flashage pour le PC">
             
             <Katapult />
 
-            4. Flashage du firmware
+            4. Flasher le firmware
 
             :::tip
 
-            Il suffit de flasher un seul firmware
+            Vous n'avez besoin de flasher qu'un seul firmware
 
             :::
 
-            * Voici la commande pour flasher le firmware à 500K CAN
+            * Ci-dessous est la commande pour flasher le firmware CAN avec un taux de 500K
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
                 ```
                        
-            * Voici la commande pour flasher le firmware à 1M CAN
+            * Ci-dessous est la commande pour flasher le firmware CAN avec un taux de 1M
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
                 ```
 
-            * Voici la commande pour flasher le firmware USB
+            * Ci-dessous est la commande pour flasher le firmware USB
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_USB.bin
                 ```
 
-            5. Si vous voyez le message `File downloaded successfully`, le flashage a réussi
+            5. Si vous voyez le contenu indiqué par la flèche ci-dessous ``File downloaded successfully`` alors le flashage a réussi
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
             :::tip
 
-            Après le flashage, il est nécessaire de couper complètement l'alimentation de la carte mère.
+            Après le flashage, vous devez débrancher complètement l'alimentation de la carte mère.
 
             :::
 
         </TabItem>
     </Tabs>
 
-## Vérification du démarrage du firmware
+## Vérifier si le firmware est démarré
 
-    * Si le firmware démarre correctement, la LED clignotera
+    * Si le firmware démarre normalement, la LED va clignoter
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />

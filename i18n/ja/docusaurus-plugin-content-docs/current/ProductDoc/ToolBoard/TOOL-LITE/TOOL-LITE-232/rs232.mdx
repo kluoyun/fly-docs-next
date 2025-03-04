@@ -1,0 +1,68 @@
+---
+sidebar_position: 4
+sidebar_label: RS232ファームウェアのコンパイルとフラッシュ
+---
+
+import USBFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+    ## KF接線の図
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/kf2.webp').default} size="50%" align="left" />
+    ## XT30接線図
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/xt301.webp').default} size="50%" align="left" /> 
+# RS232ファームウェアのコンパイル
+
+## コンパイル開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio18**
+    :::warning
+        `!gpio18`を入力する際は英語入力モードで入力してください。
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/rs232.webp').default} size="100%" align="center" />
+    * `Q` キーを押すと **設定の保存** が表示され、その後 `Y` キーを押します
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 現在設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかることがあります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
+    * 最後に以下のような出力が出ればコンパイル成功です
+       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+
+
+
+
+## フラッシュモードに入る
+
+    :::tip
+
+    矢印で示したのが`BOOTボタン`です。
+
+    :::
+
+    * ツールボードは**完全に電源を切った状態**で、**BOOTボタン**を押しながら、データ転送機能付きのTypeCケーブルを使用して、**ツールボード**を**ホストPCのUSBポート**に接続します。正しく接続されたら、**BOOTボタン**を放します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="80%" align="center" />
+
+## フラッシュモードに入ったか確認
+
+    <LS />
+
+
+## RS232ファームウェアのフラッシュ
+    
+    <USBFLASH />
+    
+
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動した場合、以下の画像にある**LEDが点灯します**
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

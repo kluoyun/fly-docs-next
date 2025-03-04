@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: Flashage du firmware USB
+sidebar_label: USB固件烧录
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -11,9 +11,9 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# Compilation du firmware USB
+# USB 固件编译
 
-## Début de la compilation
+## 开始编译
 
     <SSH />
 
@@ -21,12 +21,12 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Appuyez sur la touche `Q`, lorsque **Save configuration** apparaît, appuyez ensuite sur la touche `Y`
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, appuyez à nouveau sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+    * La configuration devrait maintenant être enregistrée et vous êtes sorti à l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la compilation est réussie, le message suivant sera affiché :
+    * Si la sortie finale ressemble au contenu suivant, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
@@ -34,38 +34,38 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Flashage du firmware
+## Burn the firmware
     
     <TF />
 
-## Flashage du firmware2
+## Burn the firmware2
     <Tabs>
-        <TabItem value="linux" label="Flashage dfu">
-            * Suivez l'image ci-dessous pour insérer le capuchon de jumper `boot1` puis appuyez sur `rst` pour redémarrer la carte mère
+        <TabItem value="linux" label="dfu burn">
+            *Insérez le jumper `boot1` comme indiqué dans l'image ci-dessous, puis appuyez sur `rst` pour redémarrer la carte mère
             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
-            * Entrez la commande suivante pour vérifier si la carte mère est en mode dfu
+            *Tapez la commande suivante pour vérifier si la carte mère est en mode dfu
             ```bash
             lsusb
             ```
-            * Après avoir appuyé sur `Enter`, vous verrez le contenu de l'image ci-dessous, ce qui indique que la carte mère est entrée avec succès en mode dfu
+            *Après avoir appuyé sur `Enter`, la sortie doit ressembler à l'image ci-dessous, qui indique que la carte mère est bien en mode dfu
             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
            
             <dfu />
 
-            4. Flashage du firmware
+            4. Burn the firmware
 
-            * Voici la commande pour flasher via dfu :
+            * Voici les commandes de dfu pour brûler le firmware
                 ```bash
                 cd ~/klipper
                 ```
                 ```bash
                 make flash FLASH_DEVICE=0483:df11
                 ```
-            5. Si vous voyez le message **File downloaded successfully** comme indiqué par la flèche dans l'image ci-dessous, le flashage a réussi
+            5. Si vous voyez le contenu indiqué par la flèche ci-dessous ``File downloaded successfully``, la brûlure est réussie
 
             :::warning
 
-            Ignorez l'erreur qui apparaît après la ligne indiquée par la flèche rouge !!!
+            Ignorez toute erreur affichée après cette ligne pointée en rouge !!!
 
             :::
 
@@ -73,7 +73,7 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
             :::tip
 
-            Après le flashage, retirez le capuchon de jumper de la carte mère et appuyez sur `rst` pour redémarrer la carte mère
+            Après la brûlure, retirez le jumper de la carte mère et appuyez sur `rst` pour redémarrer la carte mère
 
             :::
 
