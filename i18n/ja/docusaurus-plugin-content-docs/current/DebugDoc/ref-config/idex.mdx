@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-sidebar_label: 双x轴/idex参考配置
+sidebar_label: 双x軸/idex参考配置
 ---
 
-## slicer 起始代码 由哔哩哔哩up主 muimoon女生提供:
+## slicer 起始コード は bilibili のアップローダー muimoon女生が提供しました:
 ```bash
 M190 S【bed_temperature_initial_layer_single】
 {if is_extruder_used【0】}
@@ -14,7 +14,7 @@ M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
 {endif}
 ```
 
-## 第二个打印头设置
+## 第二のヘッド設定
 
 ```cfg
 [dual_carriage]
@@ -41,10 +41,10 @@ sense_resistor: 0.110
 stealthchop_threshold: 0
 ```
 
-复制或者镜像宏，需要在切片里面引用对应代码
+コピーまたはミラーマクロを再利用するには、スライサー内で対応するコードを参照する必要があります
 
-* ACTIVATE_COPY_MODE复制模式
-* ACTIVATE_MIRROR_MODE镜像模式
+* ACTIVATE_COPY_MODE コピー モード
+* ACTIVATE_MIRROR_MODE ミラー モード
 
 ```cfg
 [gcode_macro PARK_extruder1]
@@ -61,7 +61,7 @@ gcode:
     SET_DUAL_CARRIAGE CARRIAGE=1
     SET_GCODE_OFFSET Y=15
 
-# A helper script to activate copy mode
+# コピー モードをアクティブにするためのヘルパー スクリプト
 [gcode_macro ACTIVATE_COPY_MODE]
 gcode:
     SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
@@ -72,7 +72,7 @@ gcode:
     SET_DUAL_CARRIAGE CARRIAGE=1 MODE=COPY
     SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
 
-# A helper script to activate mirror mode
+# ミラー モードをアクティブにするためのヘルパー スクリプト
 [gcode_macro ACTIVATE_MIRROR_MODE]
 gcode:
     SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
@@ -84,7 +84,7 @@ gcode:
     SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
 ```
 
-* 双色配置
+* 双色設定
 
 ```cfg
 [gcode_macro CANCEL_PRINT]
@@ -142,7 +142,7 @@ gcode:
 ################################################################################
 ################################################################################
 
-# Helper script to park the carriage (called from T0 and T1 macros)
+# ヘルパー スクリプトでキャリッジを駐車する（T0 および T1 マクロから呼び出されます）
 [gcode_macro PARK_extruder]
 gcode:
 	RESPOND MSG="Parking the leftmost extruder"
@@ -661,5 +661,3 @@ gcode:
                   TEMPERATURE_WAIT SENSOR=extruder1 MINIMUM={s-3} MAXIMUM={s+3}   ; Wait for hotend temp (within 1 degree)
             {% endif %}
     {% endif %}
-```
-

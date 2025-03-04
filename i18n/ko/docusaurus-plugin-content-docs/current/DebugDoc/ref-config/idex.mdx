@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-sidebar_label: 双x轴/idex参考配置
+sidebar_label: 듀얼 x축/인덱스 참고 구성
 ---
 
-## slicer 起始代码 由哔哩哔哩up主 muimoon女生提供:
+## slicer 시작 코드는哔哩哔哩up主 muimoon女生 提供:
 ```bash
 M190 S【bed_temperature_initial_layer_single】
 {if is_extruder_used【0】}
@@ -14,7 +14,7 @@ M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
 {endif}
 ```
 
-## 第二个打印头设置
+## 두 번째 프린팅 헤드 설정
 
 ```cfg
 [dual_carriage]
@@ -41,10 +41,10 @@ sense_resistor: 0.110
 stealthchop_threshold: 0
 ```
 
-复制或者镜像宏，需要在切片里面引用对应代码
+복사하거나 미러링 매크로를 사용하려면 슬라이싱에 해당 코드를 참조해야 합니다.
 
-* ACTIVATE_COPY_MODE复制模式
-* ACTIVATE_MIRROR_MODE镜像模式
+* ACTIVATE_COPY_MODE 복사 모드
+* ACTIVATE_MIRROR_MODE 미러링 모드
 
 ```cfg
 [gcode_macro PARK_extruder1]
@@ -61,7 +61,7 @@ gcode:
     SET_DUAL_CARRIAGE CARRIAGE=1
     SET_GCODE_OFFSET Y=15
 
-# A helper script to activate copy mode
+# 복사 모드를 활성화하는 도우미 스크립트
 [gcode_macro ACTIVATE_COPY_MODE]
 gcode:
     SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
@@ -72,7 +72,7 @@ gcode:
     SET_DUAL_CARRIAGE CARRIAGE=1 MODE=COPY
     SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
 
-# A helper script to activate mirror mode
+# 미러링 모드를 활성화하는 도우미 스크립트
 [gcode_macro ACTIVATE_MIRROR_MODE]
 gcode:
     SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
@@ -84,7 +84,7 @@ gcode:
     SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
 ```
 
-* 双色配置
+* 두 색상 구성
 
 ```cfg
 [gcode_macro CANCEL_PRINT]
@@ -106,10 +106,10 @@ gcode:
     ##### calculate save lift position #####
     {% set max_z = (printer.toolhead.axis_maximum.z|float ) %} #leave some room for gcode z offset
     {% set act_z = printer.toolhead.position.z|float %}
- 	{% set new_z = act_z + lift_z %}
-	{% if new_z >  max_z %}
-		new_z = max_z
-	{% endif %}
+    {% set new_z = act_z + lift_z %}
+    {% if new_z >  max_z %}
+    new_z = max_z
+    {% endif %}
     SAVE_GCODE_STATE NAME=PAUSE_state
     BASE_PAUSE
     M83 ; set E to rel mode
@@ -142,10 +142,10 @@ gcode:
 ################################################################################
 ################################################################################
 
-# Helper script to park the carriage (called from T0 and T1 macros)
+# 도우미 스크립트로 카리지 주차 (T0 및 T1 매크로에서 호출됨)
 [gcode_macro PARK_extruder]
 gcode:
-	RESPOND MSG="Parking the leftmost extruder"
+	RESPOND MSG="Leftmost extruder parking"
 	#make sure we move the first carriage
 	SET_DUAL_CARRIAGE CARRIAGE=0
 	{% if not "x" in printer.toolhead.homed_axes %}
@@ -161,7 +161,7 @@ gcode:
 
 [gcode_macro PARK_extruder1]
 gcode:
-	RESPOND MSG="Parking the rightmost extruder"
+	RESPOND MSG="Rightmost extruder parking"
 	#make sure we move the second carriage. After all, we do not know which carriage is active
 	SET_DUAL_CARRIAGE CARRIAGE=1
 	{% if not "x" in printer.toolhead.homed_axes %}
@@ -177,8 +177,8 @@ gcode:
 
 
 [gcode_macro x_xoffset]
-# helper script, needed as the variable xoffset will be changed during macro execution
-# and macro expansion happens before that
+# 도우미 스크립트, 필요하다면 변수 xoffset이 매크로 실행 중 변경될 수 있습니다
+# 그리고 매크로 확장은 그 전에 발생하기 때문에
 gcode:
 	{% set offset = printer["gcode_macro set_stepper_x_range"].xoffset %}
 	RESPOND MSG="Xoffset will be set to: { offset }"
@@ -213,7 +213,7 @@ gcode:
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=0
 	
 
-# Activate the primary extruder
+# 기본 엑스트루더 활성화
 [gcode_macro T0]
 gcode:
 	RESPOND MSG="Selecting tool T0"
@@ -661,5 +661,3 @@ gcode:
                   TEMPERATURE_WAIT SENSOR=extruder1 MINIMUM={s-3} MAXIMUM={s+3}   ; Wait for hotend temp (within 1 degree)
             {% endif %}
     {% endif %}
-```
-

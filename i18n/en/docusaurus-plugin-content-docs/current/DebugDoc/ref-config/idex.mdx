@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-sidebar_label: 双x轴/idex参考配置
+sidebar_label: Dual X-Axis/Index Reference Configuration
 ---
 
-## slicer 起始代码 由哔哩哔哩up主 muimoon女生提供:
+## slicer starting code provided by Bilibili UP主 muimoon girls:
 ```bash
 M190 S【bed_temperature_initial_layer_single】
 {if is_extruder_used【0】}
@@ -14,7 +14,7 @@ M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
 {endif}
 ```
 
-## 第二个打印头设置
+## Second extruder settings
 
 ```cfg
 [dual_carriage]
@@ -41,10 +41,10 @@ sense_resistor: 0.110
 stealthchop_threshold: 0
 ```
 
-复制或者镜像宏，需要在切片里面引用对应代码
+Copy or mirror macros need to be referenced in the slicing software
 
-* ACTIVATE_COPY_MODE复制模式
-* ACTIVATE_MIRROR_MODE镜像模式
+* ACTIVATE_COPY_MODE Copy Mode
+* ACTIVATE_MIRROR_MODE Mirror Mode
 
 ```cfg
 [gcode_macro PARK_extruder1]
@@ -84,7 +84,7 @@ gcode:
     SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
 ```
 
-* 双色配置
+* Dual color configuration
 
 ```cfg
 [gcode_macro CANCEL_PRINT]
@@ -106,10 +106,10 @@ gcode:
     ##### calculate save lift position #####
     {% set max_z = (printer.toolhead.axis_maximum.z|float ) %} #leave some room for gcode z offset
     {% set act_z = printer.toolhead.position.z|float %}
- 	{% set new_z = act_z + lift_z %}
-	{% if new_z >  max_z %}
-		new_z = max_z
-	{% endif %}
+    {% set new_z = act_z + lift_z %}
+    {% if new_z >  max_z %}
+        new_z = max_z
+    {% endif %}
     SAVE_GCODE_STATE NAME=PAUSE_state
     BASE_PAUSE
     M83 ; set E to rel mode
@@ -661,5 +661,3 @@ gcode:
                   TEMPERATURE_WAIT SENSOR=extruder1 MINIMUM={s-3} MAXIMUM={s+3}   ; Wait for hotend temp (within 1 degree)
             {% endif %}
     {% endif %}
-```
-
