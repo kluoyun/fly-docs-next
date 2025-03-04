@@ -1,14 +1,11 @@
 ---
 sidebar_position: 4
-sidebar_label: WiFi 연결 및 Klipper 설정
+sidebar_label: WIFI 연결과 klipper 구성
 ---
 
+    :::팁
 
-
-
-    :::tip
-
-    출고 시 이미 펌웨어가 설치되어 있지만, 수동으로 한 번 업데이트하는 것이 좋습니다.
+    출하 시 사전에 펌웨어가 설치되어 있지만, 수동으로 한 번 업데이트하는 것이 좋습니다.
 
     :::
 
@@ -16,22 +13,22 @@ sidebar_label: WiFi 연결 및 Klipper 설정
 
     * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen5/WIFI/update.img">화면 펌웨어 다운로드</Button>
 
-    * 메모리 카드는 32GB 이하를 사용해야 하며, TF 카드의 전송 속도는 class10 이상이어야 합니다. 샌디스크 등 브랜드의 TF 카드 사용을 권장합니다.
+    * 최대 32GB 메모리 카드를 사용해야 합니다. TF 카드의 전송 속도는 Class10급 또는 그 이상이어야 하며, SanDisk 등 브랜드의 TF 카드를 권장합니다.
 
-## WiFi 연결 및 기본 조작
+## WIFI 연결과 기본 작업
 
-    [7인치 WiFi 터치 스크린으로 여러 기기 제어](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
+    [7인치 와이파이 전자식 화면이 여러 대의 기계를 제어합니다](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
 
-## Klipper 설정
+## Klipper 구성
 
-### LED 설정
+### LED 구성
 
     ```cfg
     [led LED]
     white_pin:PA15
     ```
 
-### PTC 설정
+### PTC 구성
 
     ```cfg
     [heater_generic warehouse]
@@ -46,7 +43,7 @@ sidebar_label: WiFi 연결 및 Klipper 설정
     pid_kd = 88.854
     ```
 
-### 팬 설정
+### FAN 구성
 
     ```cfg
     [fan_generic fan1]
@@ -63,9 +60,9 @@ sidebar_label: WiFi 연결 및 Klipper 설정
 
 ### 사용자 정의 Gcode
 
-    * 화면을 아래로 당기면 사용자 정의 Gcode가 나타납니다.
-    * 여러 Gcode를 하나의 버튼으로 보내는 형식:
-    * 예시:
+    * 화면을 아래로 내리면 사용자 정의 Gcode가 나타납니다.
+    * 하나의 버튼으로 여러 개의 Gcode 형식을 보내기:
+    * 예제:
 
     ```cfg
     G91 
@@ -73,7 +70,7 @@ sidebar_label: WiFi 연결 및 Klipper 설정
     G90
     ```
 
-    * 화면에 입력할 형식:(2행부터 각 명령어 앞에 \n 추가)
+    * 화면에서 입력 형식:(두 번째 줄부터 각 명령 앞에 \n 추가)
 
     ```cfg
     G91\nG1 X10 F6000\nG90
@@ -83,40 +80,40 @@ sidebar_label: WiFi 연결 및 Klipper 설정
 
 ## 객체 제외 사용
 
-    * moonraker를 교체해야 합니다.
+    * Moonraker를 대체해야 합니다.
 
-    * 먼저 SSH에 연결하고, 인터넷에 정상적으로 접속할 수 있는지 확인하세요.
+    * SSH에 먼저 연결하고 정상적으로 인터넷에 연결할 수 있는지 확인하세요.
 
-    1. moonraker 파일 백업
+    1. Moonraker 파일 백업
 
     ```bash
     mv ~/moonraker ~/moonraker-bak
     ```
 
-    2. moonraker 서비스 중지
+    2. Moonraker 서비스 중지
 
     ```bash
     sudo systemctl restart moonraker
     ```
 
-    3. moonraker 가져오기
+    3. Moonraker 가져오기
 
     ```bash
     git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
     ```
 
-    4. 브라우저에서 상위 기기를 찾아 `moonraker.conf`를 추가하고, 시스템을 재부팅합니다.
+    4. 브라우저에서 상위 기계를 찾아 `moonraker.conf`를 추가한 후 시스템 재시작
 
     ```bash
     [network]
     ```
 
-    5. 그런 다음 브라우저에 아래 주소를 입력합니다. IP는 상위 기기의 IP로 교체해야 합니다.
+    5. 그런 다음 브라우저에서 아래 주소 입력, IP는 상위 기계의 IP로 바꾸세요
 
     ```bash
     http://ip:7125/server/network/wifi/scan
     ```
 
-* 이 단계가 나타나면 작업이 완료된 것입니다.
+* 이 단계가 나타나면 작업이 완료되었습니다.
     
     <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.webp').default} size="100%" align="left" />

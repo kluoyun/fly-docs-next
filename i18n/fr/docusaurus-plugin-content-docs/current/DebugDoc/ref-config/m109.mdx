@@ -2,17 +2,17 @@
 sidebar_position: 2
 ---
 
-# Le temps d'attente pour la stabilisation de la température de démarrage de l'impression est trop long
+# Attente trop longue pour la stabilisation de la température initiale lors de l'impression
 
-    * Cette macro peut être placée directement dans la configuration
-    * Cette macro a pour but d'attendre normalement la montée en température, mais de passer à l'étape suivante une fois que la température cible est atteinte
+    * Ce macro peut être placé directement dans la configuration.
+    * Ce macro a pour effet d'attendre normalement que la température monte, mais de passer à l'étape suivante une fois que la température atteint sa cible.
     ```cfg title="printer.cfg"
     [gcode_macro M109]
     rename_existing: M109.1
     gcode:
         {% set s = params.S|float %}
-        M104 {% for p in params %}{'%s%s' % (p, params[p])}{% endfor %}  ; Set hotend temp
+        M104 {% for p in params %}{'%s%s' % (p, params[p])}{% endfor %}  ; Définir la température de l'hotend
         {% if s != 0 %}
-        TEMPERATURE_WAIT SENSOR=extruder MINIMUM={s} MAXIMUM={s+1}   ; Wait for hotend temp (within 1 degree)
+        TEMPERATURE_WAIT SENSOR=extruder MINIMUM={s} MAXIMUM={s+1}   ; Attendre que la température de l'hotend soit atteinte (dans une plage de 1 degré)
         {% endif %}	
     ```

@@ -2,8 +2,6 @@
 sidebar_position: 5
 ---
 
-
-
 import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 5160 Pro V1.5
@@ -13,43 +11,43 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
 ## Paramètres de base
 
     * Tension d'entrée : 24-48V
-    * Courant maximum : 6A
-    * Adapté pour : Firmware Marlin/Klipper/RRF
-    * Modes de pilotage pris en charge : TMC : SPI
-    * Interface pas à pas/direction avec interpolation microPlyer
-    * Résolution maximale de 256 micro-pas
-    * Prend en charge le fonctionnement silencieux stealthChop2 et des mouvements fluides
-    * Prend en charge la suppression des résonances à fréquence moyenne
-    * Prend en charge le contrôleur de moteur dynamique spreadCycle
-    * Prend en charge le contrôle de vitesse dcStep dépendant de la charge
-    * Prend en charge la détection de charge du moteur sans capteur stallGuard2 de haute précision
-    * Prend en charge le contrôle de courant coolStep, économisant jusqu'à 75% d'énergie
+    * Cour maximum : 6A
+    * Convient pour : Firmware Marlin/Klipper/RRF
+    * Mode de pilotage pris en charge : TMC : SPI
+    * Interface de pas/direction avec interpolation microPlyer
+    * Résolution maximale de 256 subdivisions
+    * Prise en charge du fonctionnement silencieux et des mouvements fluides avec stealthChop2
+    * Prise en charge de l'amortissement de résonance pour les résonances à fréquence moyenne
+    * Prise en charge du commutateur de découpe spreadCycle pour un contrôle moteur dynamique élevé
+    * Prise en charge du contrôle de vitesse lié à la charge avec dcStep
+    * Prise en charge de la détection de charge de moteur sans capteur avec stallGuard2 haute précision
+    * Prise en charge du contrôle de courant coolStep, pouvant économiser jusqu'à 75% d'énergie
 
-## Explication des cavaliers de la carte mère
+## Explications sur les sauts de carte mère
 
-    * TMC5160 Pro utilise des cavaliers SPI
-    * Les broches SPI du pilote FLY se trouvent sur le quatrième pied en partant du haut à gauche, la broche CS est la broche SPI. Si la carte mère n'a pas les broches correspondantes, le SPI ne peut pas être utilisé
+    * Le TMC5160 Pro utilise un saut SPI
+    * Les broches SPI de FLY sont la quatrième broche en partant du haut vers le bas, CS est la broche SPI. Si la carte mère n'a pas les broches correspondantes, l'utilisation de SPI n'est pas possible.
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
 
-## Installation FPC de la carte mère
+## Installation du FPC de la carte mère
 
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/line.webp').default} size="80%" align="center" />
 
-## Connexion du ventilateur 12V
+## Branchement du ventilateur 12V
 
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.webp').default} size="80%" align="center" />
 
 
-## Configuration de référence pour TMC5160 Pro
+## Références de configuration pour TMC5160 Pro
 
     :::danger
 
-    * La résistance d'échantillonnage du pilote est `sense_resistor: 0.033`, veuillez ne pas la configurer incorrectement
-    * Il faut choisir entre spi_bus et spi_software
+    * La résistance d'échantillonnage du pilote est `sense_resistor: 0.033` veuillez ne pas la configurer incorrectement
+    * `spi_bus` et `spi_software` ne peuvent être utilisés qu'en une seule option
     
     :::
 
-### Configuration de référence pour le mode SPI
+### Configuration de référence en mode SPI
 
     ```cfg
     [tmc5160 stepper_x]
@@ -59,23 +57,23 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     # spi_software_miso_pin:
     # spi_software_sclk_pin: 
     run_current: 1.0                    # Valeur du courant de fonctionnement du moteur
-    interpolate: False                  # Activer ou non l'interpolation de 256 micro-pas (True pour activer, False pour désactiver)
+    interpolate: False                  # Activer ou non l'interpolation de 256 micropas (activer est True, désactiver est False)
     sense_resistor: 0.033
     stealthchop_threshold: 0
     driver_DISS2G: 1
     driver_DISS2VS: 1
     ```
 
-## Instructions pour l'utilisation sans fin de course
+## Instructions d'utilisation sans fin de course
 
     <DIAG />
 
-    :::tip Conseils pour l'utilisation sans fin de course
+    :::tip Conseils d'utilisation sans fin de course
 
-    * Ce pilote nécessite l'installation du FPC à 4 broches pour fonctionner
-    * L'ancienne `endstop_pin:` doit être masquée ou supprimée, et ajouter `endstop_pin: tmc5160_stepper_x:virtual_endstop`
-    * Après configuration de `diag0_pin:`, l'état du fin de course doit être non déclenché
-    * La configuration de `driver_SGT: :` nécessite de tester une valeur appropriée
+    * Ce pilote nécessite que le FPC à 4 broches soit installé pour être utilisé
+    * L'ancienne `endstop_pin:` doit être masquée ou supprimée, puis ajouter `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * Après avoir configuré `diag0_pin:`, l'état de fin de course sera non déclenché
+    * La configuration de `driver_SGT:` nécessite un test d'une valeur appropriée
 
     :::
 
@@ -85,15 +83,15 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc5160_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # La rétractation ne doit pas être modifiée en 0, sinon cela peut entraîner un échec du retour à la position d'origine
+    homing_retract_dist: 0        # Aucun retrait lors du retour à la maison ne devrait pas être modifié à 0 pour éviter un échec du retour à la maison
 
     [tmc5160 stepper_x]
     diag0_pin: ^!
     driver_SGT: 1
 
-    #   Assurez-vous que l'état du fin de course est non déclenché après configuration
-    #   Cette broche utilise généralement le préfixe "^" pour activer la résistance de tirage interne
-    #   La sensibilité dépend de la tension de la courroie et doit être ajustée
-    #  (Assurez-vous également d'avoir configuré driver_SGTHRS avec une sensibilité appropriée)
+    #   Assurez-vous que l'état de fin de course est non déclenché après la configuration
+    #   Ce fil est généralement préfixé par "^" pour activer la résistance interne de tirage en haut
+    #   La sensibilité est liée à la tension de la courroie et doit être ajustée manuellement
+    #  (Assurez-vous également de définir driver_SGTHRS sur une sensibilité appropriée)
 
     ```

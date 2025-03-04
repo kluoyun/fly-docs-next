@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-sidebar_label: USBブリッジCANファームウェアの焼き込み
+sidebar_label: USBブリッジCANファームウェアの焼込
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,9 +12,9 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBブリッジCANファームウェアの焼き込み
+# USBブリッジCANファームウェアの焼込
 
-## コンパイルの開始
+## コンパイル開始
 
     <SSH />
 
@@ -22,12 +22,12 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、`Y` キーを押します
+    * Q キーを押すと **Save configuration** が表示され、その後 Y キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 設定が保存され、端末に戻ったはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * make -j4 を入力してコンパイルを開始します。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されれば、コンパイル成功です
+    * 最後に以下のメッセージが出力されればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
@@ -35,54 +35,12 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
         ```
 
 
-## ファームウェアの焼き込み
+## ファームウェアの焼込
 
 :::tip
-以下のコマンドを実行してファームウェアを焼き込みます
+以下のコマンドを実行してファームウェアを焼込みます
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
-
-    ## ファームウェアの焼き込み
-    <Tabs>
-        <TabItem value="linux" label="dfu焼き込み">
-            *下記の画像に従って、ジャンパーピン`boot1`を挿してから`rst`を押して基板をリセットします
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="50%" align="center" />
-            *以下のコマンドを入力して、基板がdfuモードに入っているか確認します
-            ```bash
-            lsusb
-            ```
-            *Enterキーを押すと、以下の画像の内容が出力され、画像内の内容が表示されれば、dfuモードに成功しています
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. ファームウェアの焼き込み
-
-            * 下記はdfu書き込みコマンドです
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. 下記の矢印が指す内容が表示されれば、`File downloaded successfully`と表示されれば、焼き込み成功です
-
-            :::warning
-
-            赤い矢印が指す行の**後のエラー**は無視してください！！！
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            焼き込みが完了したら、基板のジャンパーピンを外し、`rst`を押して基板をリセットしてください
-
-            :::
-
-        </TabItem>
-    </Tabs>

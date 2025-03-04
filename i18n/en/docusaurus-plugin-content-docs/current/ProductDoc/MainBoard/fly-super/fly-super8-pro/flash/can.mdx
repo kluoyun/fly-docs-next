@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USB Bridge CAN Firmware Flashing
+sidebar_label: USB Bridge to CAN Firmware Flashing
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +11,7 @@ import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# USB Bridge CAN Firmware Flashing
+# USB Bridge to CAN Firmware Flashing
 
 ## Start Compilation
 
@@ -21,10 +21,10 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Press `Q` key, when **Save configuration** appears, press `Y` key again
+    * Press the `Q` key, a **Save configuration** prompt will appear, then press the `Y` key
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * The configuration should now be saved and you should be back at the command line interface
-    * Enter `make -j4` to start compiling, it will take some time
+    * Now the configuration should be saved and you should exit back to the command line interface
+    * Enter `make -j4` to start compiling, it takes some time
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * If the following content is output at the end, the compilation is successful
         ```bash
@@ -32,48 +32,7 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
         Creating hex file out/klipper.bin
         ```
 
-## Firmware Flashing
+## Flash Firmware
+
 
     <TF />
-
-## Firmware Flashing 2
-    <Tabs>
-        <TabItem value="linux" label="DFU Flashing">
-            * Follow the picture below to insert the jumper cap `boot1` and then press `rst` to restart the motherboard
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
-            * Enter the command below to check if the motherboard has entered DFU mode
-            ```bash
-            lsusb
-            ```
-            * After entering and pressing `Enter`, the following content will be output. If the content in the picture is displayed, it means the motherboard has successfully entered DFU mode
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. Flash Firmware
-
-            * Below is the DFU flashing command
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. If the content at the arrow in the picture below appears, `File downloaded successfully`, then the flashing was successful
-
-            :::warning
-
-            Please ignore the error message after the red arrow!!!
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            After flashing, remove the jumper cap from the motherboard and press `rst` to restart the motherboard
-
-            :::
-
-        </TabItem>
-    </Tabs>

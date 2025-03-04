@@ -1,41 +1,40 @@
-1. 설치 도구 설치
+    1. 프로그래밍 도구 설치
 
-    * FLY 상위 기기는 설치 도구를 실행할 필요가 없습니다.
-    * 설치가 필요한 경우 주의사항: 상위 기기는 인터넷에 연결되어야 정상적으로 설치할 수 있습니다.
-    * 이미 설치한 경우에는 설치할 필요가 없습니다.
+    * FLY 상위기기에서는 프로그래밍 도구 설치가 필요하지 않습니다.
+    * 설치가 필요한 경우 주의하세요: 상위기기는 인터넷에 연결되어 있어야 정상적으로 설치할 수 있습니다.
+    * 이미 설치된 경우 다시 설치할 필요가 없습니다.
 
     ```bash
     sudo apt update
     sudo apt install dfu-util -y
     ```
 
-    2. 아래 명령어를 실행하여 연결이 성공했는지 확인하세요.
+    2. 다음 명령을 실행하여 연결이 성공했는지 확인하세요.
 
     ```bash
     lsusb
     ```
 
-    * DFU 장치가 없으면 **烧录模式**로 다시 진입해 보세요.
-    * 시스템 버전 문제로 다른 이름이 표시될 수 있습니다. `0483:df11`가 있으면 烧录模式로 진입한 것입니다.
-
+    * DFU 장치가 없으면 다시 **프로그래밍 모드**로 진입해보세요.
+    * 시스템 버전 문제로 다른 이름이 표시될 수 있습니다. `0483:df11`이 표시되면 프로그래밍 모드에 진입한 것입니다.
 
         <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.webp').default} size="80%" align="left" />    
 
 
-    3. 펌웨어烧录
+    3. 펌웨어 프로그래밍
 
-    * 아래 코드를 실행하여 烧录를 시작하세요.
+    * 아래 코드를 실행하여 프로그래밍을 시작하세요.
     
     ```bash
     sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/klipper/out/klipper.bin
     ```
 
-    4. 아래 이미지의 화살표 부분에 ``File downloaded successfully``가 표시되면 烧录 성공입니다.
+    4. 아래 그림 화살표 부분에 표시된 내용 ``File downloaded successfully``이 나타나면 프로그래밍이 성공한 것입니다.
 
     <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="80%" align="left" />    
 
     :::tip
 
-    烧录 완료 후에는 메인보드의 전원을 완전히 차단해야 합니다.
+    프로그래밍이 완료되면, 메인보드에 완전히 전원을 차단해야 합니다.
 
     :::

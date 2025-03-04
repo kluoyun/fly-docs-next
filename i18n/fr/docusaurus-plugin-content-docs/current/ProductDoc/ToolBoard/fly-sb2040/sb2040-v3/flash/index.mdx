@@ -1,9 +1,7 @@
 ---
 sidebar_position: 1
-sidebar_label: Explications sur la gravure du firmware
+sidebar_label: Instructions de gravage du firmware
 ---
-
-
 
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
@@ -11,39 +9,38 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * Le SB2040 V3 est préchargé avec le firmware Katapult pour la connexion CAN, avec une vitesse de 1M
-    * Le firmware Katapult pour la connexion CAN du SB2040 V3 est disponible en 500K et 1M, vous pouvez le graver vous-même si nécessaire
-    * <Button variant="contained" disableElevation href="./bl">Gravure du firmware Katapult</Button>
-
+    * La version V3 de SB2040 préinstalle le firmware Katapult connecté via CAN avec un taux de transmission de 1M
+    * Le firmware Katapult connecté via CAN sur la version V3 de SB2040 peut avoir un taux de transmission de 500K ou 1M, il est possible de graver manuellement si nécessaire
+    * <Button variant="contained" disableElevation href="./bl">Gravage du firmware Katapult</Button>
 
     :::
 
-# Explications sur la gravure du firmware
+# Instructions de gravage du firmware
 
-    * Le SB2040 V3 peut se connecter à l'ordinateur via RS232 ou CAN
-    * RS232 et CAN nécessitent l'utilisation de `XT30(2+2)-F` pour la connexion
-    * Voici le style du câble de données `XT30(2+2)-F`
+    * La version V3 de SB2040 peut être connectée à l'ordinateur hôte via les méthodes RS232 et CAN
+    * RS232 et CAN nécessitent l'utilisation d'un câble de données `XT30(2+2)-F`
+    * Voici le style du câble de données `XT30(2+2)-F` ci-dessous
         <ImageView image={require('@site/docs/General/get-id/img/xt30.webp').default} size="80%" align="left" />
 
 :::danger À savoir
-* La gravure du firmware de la carte mère doit être effectuée via Katapult pour graver Klipper
-* Si vous êtes sûr que la carte mère a déjà le firmware Katapult, vous n'avez pas besoin de graver le firmware Katapult à la fin, c'est juste une précaution en cas d'échec de la gravure du firmware Katapult sur la carte mère
-* Vous pouvez appuyer deux fois rapidement sur le bouton de réinitialisation pour voir si un LED sur la carte mère clignote, si c'est le cas, cela signifie que la carte mère est entrée dans le mode firmware Katapult
+* Le gravage du firmware de la carte mère doit passer par Katapult pour graver Klipper
+* Si la carte mère a déjà été gravée avec Katapult, il n'est pas nécessaire de faire le dernier gravage de Katapult, c'est juste une précaution au cas où le firmware Katapult ne serait pas correctement gravé
+* Il est possible de vérifier rapidement en appuyant deux fois rapidement sur le bouton de réinitialisation si une LED clignote sur la carte mère, ce qui indiquerait que la carte mère est dans le firmware Katapult
 :::
 
-## Comment déterminer quel firmware vous avez besoin
+## Comment déterminer quel type de firmware vous avez besoin
 
-    * Le SB2040 V3 peut se connecter à l'ordinateur de la manière suivante
-    * <Button variant="contained" disableElevation href="./can">Gravure du firmware CAN</Button>
-        * Avantages : Si le firmware `Katapult` est gravé, vous pouvez mettre à jour le firmware sans toucher à la carte mère, et il supporte la connexion par bus
-        * Inconvénients : Peut causer des erreurs comme le dépassement du temps de retour à zéro lors de l'utilisation avec `KlipperScreen`.
-        * Astuce : Si vous avez besoin d'utiliser CAN, assurez-vous que l'ordinateur le supporte et que vous avez UTOC ou une carte mère avec firmware de pontage
-    * <Button variant="contained" disableElevation href="./rs232">Gravure du firmware RS232</Button>
-        * Avantages : Aucun logiciel spécial n'est requis, la communication est fiable et stable
-        * Inconvénients : Pour mettre à jour le firmware, il faut entrer en mode DFU manuellement ou double-cliquer sur RST pour entrer dans `Katapult` pour mettre à jour le firmware
-        * Astuce : Nécessite G2T ou UTOR pour être utilisé
+    * La version V3 de SB2040 peut être connectée à l'ordinateur hôte de la manière suivante
+    * <Button variant="contained" disableElevation href="./can">Gravage du firmware CAN</Button>
+        * Avantage : Si vous avez flashé le firmware `Katapult`, vous pouvez mettre à jour le firmware sans toucher la carte mère et il prend en charge la connexion en bus
+        * Inconvénient : L'utilisation conjointe de `KlipperScreen` peut entraîner des erreurs comme des dépassements de temps lors de l'homologation
+        * Remarque : Si vous souhaitez utiliser CAN, assurez-vous que l'ordinateur hôte supporte CAN et qu'il faut utiliser UTOC ou une carte mère avec un firmware de pont
+    * <Button variant="contained" disableElevation href="./rs232">Gravage du firmware RS232</Button>
+        * Avantage : Il n'est pas nécessaire d'utiliser un logiciel spécial, la communication est fiable et stable
+        * Inconvénient : Pour reprogrammer le firmware, il faut entrer en mode DFU manuel ou double-cliquer sur RST pour entrer dans `Katapult` afin de mettre à jour le firmware
+        * Remarque : Vous devez utiliser G2T ou UTOR pour pouvoir utiliser cela
 
-## Explications sur le firmware Katapult
+## Instructions sur le firmware Katapult
 
     
     <CANBOOT />

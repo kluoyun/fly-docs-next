@@ -1,45 +1,45 @@
 ---
 sidebar_position: 6
-sidebar_label: Firmware BL, ignorez s'il vous plaît
+sidebar_label: BL firmware, ignore this
 ---
 
 import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
-# Firmware BL
+# BL firmware
 
     :::tip
 
-    * Veuillez noter que l'usine a déjà pré-flashé le `bootloader`, pas besoin de le reflasher
+    * Veuillez noter que le bootloader est préinstallé en usine et n'a pas besoin d'être réinstallé.
 
     :::
 
-## Entrer en mode de programmation
+## Entrée en mode de programmation
 
-    * Il y a deux méthodes pour entrer en mode de programmation
-    * La première : avec la carte mère complètement déconnectée, court-circuitez BOOT et BOOT1 puis connectez un câble de données à la carte mère et à votre appareil
-    * La deuxième : après avoir connecté un câble de données à la carte mère et à votre appareil, court-circuitez BOOT et BOOT1, puis appuyez sur la touche RST, relâchez la touche RST et enfin débranchez le court-circuit BOOT
+    * Il existe deux méthodes pour entrer en mode de programmation
+    * Première méthode : Déconnectez complètement l'alimentation du circuit imprimé, court-circuitez BOOT et BOOT1, puis branchez un câble de données avec une extrémité connectée au circuit imprimé et l'autre extrémité connectée à votre appareil.
+    * Deuxième méthode : Après avoir branché un câble de données avec une extrémité connectée au circuit imprimé et l'autre extrémité connectée à votre appareil, court-circuitez BOOT et BOOT1, puis appuyez sur le bouton RST, relâchez ensuite le bouton RST et enfin débranchez le court-circuit de la broche BOOT.
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
 ## Programmation du firmware
     <Tabs>
         <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
 
-            * Firmware bootloader pour Gemini <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">Cliquez pour télécharger automatiquement le firmware</Button>
+            * Le firmware du bootloader de Gemini <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">cliquez ici pour télécharger automatiquement le firmware</Button>
 
-            * Déplacez les commutateurs DIP `3`, `4` vers la droite pour connecter l'appareil de commande avec l'appareil hôte via USB intégré
-            * Déplacez les commutateurs DIP `1`, `2` vers la gauche, sinon cela affectera la connexion entre l'appareil de commande et l'appareil hôte
+            * Les commutateurs de dip `3`, `4` vers la droite, connectez le sous-système à travers l'USB intégré
+            * Les commutateurs de dip `1`, `2` vers la gauche, sinon cela affectera la connexion entre le sous-système et le système supérieur.
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip3.webp').default} size="50%" align="center" />
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="Tutoriel de programmation depuis l'hôte">
+        <TabItem value="linux" label="Tutoriel de programmation sous Linux">
 
-            * Déplacez les commutateurs DIP `1`, `2` vers la droite pour connecter l'appareil de commande avec l'appareil hôte via USB intégré
-            * Déplacez les commutateurs DIP `3`, `4` vers la gauche, sinon cela affectera la connexion entre l'appareil de commande et l'appareil hôte
+            * Les commutateurs de dip `1`, `2` vers la droite, connectez le sous-système à travers l'USB intégré
+            * Les commutateurs de dip `3`, `4` vers la gauche, sinon cela affectera la connexion entre le sous-système et le système supérieur.
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip1.webp').default} size="50%" align="center" />
-            * Après avoir déplacé les commutateurs DIP comme indiqué ci-dessus, le port USB ci-dessous sera occupé par l'appareil de commande, ne connectez pas d'autres appareils
+            * Après avoir mis les commutateurs de dip comme indiqué ci-dessus, le port USB inférieur sera occupé par le sous-système, ne connectez pas d'autres appareils.
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
 
             <Katapult />
@@ -48,20 +48,20 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
             :::tip
 
-            Il suffit de programmer un seul firmware
+            Il suffit de programmer un seul firmware.
 
             :::
 
-            * Voici la commande pour flasher le firmware bootloader
+            * Voici la commande pour écrire le firmware du bootloader
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/Gemini/GeminiV3.bin
                 ```
 
-            5. Si le message suivant apparaît, la programmation a réussi : ``File downloaded successfully``
+            5. Si le contenu suivant apparaît à l'endroit indiqué par la flèche ``Fichier téléchargé avec succès``, la programmation a réussi.
 
             :::warning
 
-            Ignorez l'erreur **après** la ligne indiquée par la flèche rouge !!!
+            Ignorez les erreurs après cette ligne pointée en rouge !!!
 
             :::
 
@@ -69,7 +69,7 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
             :::tip
 
-            Une fois la programmation terminée, il est nécessaire de couper complètement l'alimentation de la carte mère une fois.
+            Après la programmation, déconnectez complètement l'alimentation du circuit imprimé.
 
             :::
 

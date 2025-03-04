@@ -2,12 +2,9 @@
 sidebar_position: 1
 ---
 
-
-
-
 # 제품 소개
 
-  FilGuard 필라멘트 감지기는 VZ-Hextrudort-Low 압출기와 호환되며, 재료 부족 감지, 재료 막힘 감지 기능을 지원하고, 사용자 정의 편집 가능한 버튼을 제공합니다.
+  FilGuard 필라멘트 검출기, VZ-Hextrudort-Low 엑스트루더와 호환되며, 필라멘트 끊어짐 감지, 블록 감지 기능을 지원하며, 사용자 정의 편집 버튼이 있습니다.
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament_1.webp').default} size="60%" align="left" />
  
@@ -15,23 +12,23 @@ sidebar_position: 1
 
 ## 배선 튜토리얼
 
-* PH2.0 5P 단자 연결이 더 편리합니다
+* 보드에 내장된 PH2.0 5P 단자를 이용한 배선이 더 편리합니다.
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/connection.webp').default} size="80%" align="left" />
 
-## 펌웨어 램프 상태 설명
+## 펌웨어 LED 상태 설명
 
-* 재료 부족: 붉은색 점등
-* 재료 투입: 파란색 깜박임 (재료 투입 속도가 빠를수록 깜박임 빈도가 높아짐)
-* 재료 배출: 녹색 깜박임 (상동)
-* 재료 있지만 투입/배출 없음: 주황색 호흡등
+* 필라멘트 부족: 빨간색 깜빡임
+* 필라멘트 공급: 파란색 깜빡임 (공급 속도가 빠를수록 깜빡임 주기가 빨라짐)
+* 필라멘트 후방 이동: 초록색 깜빡임 (위와 동일)
+* 필라멘트가 있지만 공급 및 후방 이동 없음: 주황색 숨쉬는 불빛
 
-## klipper, 재료 부족 및 막힘 참조 설정
+## klipper, 필라멘트 끊어짐 및 블록 감지 참고 설정
 
 :::warning
-재료 막힘 감지 설정에서 `detection_length: 2.0`
+블록 감지 설정에서 `detection_length: 2.0`
 
-2.0mm는 이 스마트 소모품 감지 모듈이 정상적으로 작동하기 위해 필요한 최소 감지 길이입니다. 오작동 문제가 발생하면 감지 길이를 1mm씩 증가시켜 문제를 해결해 보세요.
+2.0mm는 이 스마트 필라멘트 검출 모듈이 정상적으로 작동하기 위해 필요한 최소 감지 길이입니다. 문제가 발생하면 감지 길이를 1mm씩 늘려서 문제를 해결할 수 있습니다.
 :::
 
         ```cfg
@@ -41,17 +38,17 @@ sidebar_position: 1
         [force_move]
         enable_force_move: True
 
-        [filament_switch_sensor 재료 부족 감지]
+        [filament_switch_sensor 필라멘트 끊어짐 감지]
         pause_on_runout: False
         switch_pin: ^!PG12
         runout_gcode:
                 {% if (printer.print_stats.state == "printing") %}
                         PAUSE
                 {% endif %}
-                M118 재료 부족
+                M118 부족
                 # filament_unload
         insert_gcode:
-                M118 재료 투입
+                M118 상단
                 FORCE_MOVE STEPPER=extruder DISTANCE=8 VELOCITY=5 ACCEL=60
                 {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
                         M118 가열 대기!
@@ -63,7 +60,7 @@ sidebar_position: 1
                 G0 E50 F500
                 G0 E10 F200
 
-        [filament_motion_sensor 재료 막힘 감지]
+        [filament_motion_sensor 블록 감지]
         extruder: extruder
         detection_length: 2.0
         switch_pin: ^!PG10
@@ -72,19 +69,19 @@ sidebar_position: 1
                 {% if (printer.print_stats.state == "printing") %}
                         PAUSE
                 {% endif %}
-                M118 재료 막힘
+                M118 블록
         insert_gcode:
-                M118 재료 막힘 복구
+                M118 블록 복구
         #event_delay:
         #pause_delay:
 
         ```
 
 :::info
-재료 투입과 배출은 둘 중 하나만 사용할 수 있습니다.
+공급 및 후방 이동 중 하나만 사용할 수 있습니다.
 :::
 
-## Klipper 재료 배출 버튼 참조 설정
+## Kliiper 후방 이동 버튼 참고 설정
         ```cfg
         [gcode_button filament_unload]
         pin: ^!PG11
@@ -107,12 +104,12 @@ sidebar_position: 1
                         G0 E-20 F200
                         G0 E-50 F500
                 {% else %}
-                        M118 인쇄 중에는 재료 배출 동작을 하지 않습니다!
+                        M118 출력 중, 후방 이동 작업은 실행되지 않습니다!
                 {% endif %}
         ```
 
 
-## Klipper 재료 투입 버튼 참조 설정
+## Kliiper 공급 버튼 참고 설정
 
         ```cfg
         [gcode_button filament_unload]
@@ -134,7 +131,7 @@ sidebar_position: 1
                         {% endif %}
                         G0 E20 F300
                 {% else %}
-                        M118 인쇄 중에는 재료 배출 동작을 하지 않습니다!
+                        M118 출력 중, 공급 작업은 실행되지 않습니다!
                 {% endif %}
         ```
 

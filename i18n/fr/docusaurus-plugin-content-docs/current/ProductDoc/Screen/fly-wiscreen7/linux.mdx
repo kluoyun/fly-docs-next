@@ -1,132 +1,130 @@
 ---
 sidebar_position: 5
-sidebar_label: Tutoriel sur l'utilisation du câble Ethernet avec Raspberry Pi et autres machines hôtes
+sidebar_label: Tutoriel sur l'utilisation d'un câble réseau avec une Raspberry Pi et autres ordinateurs supérieurs
 ---
 
-# Tutoriel sur l'utilisation du câble Ethernet
+# Tutoriel sur l'utilisation d'un câble réseau
 
-    :::tip
+:::tip
 
-    Le firmware de l'écran Ethernet doit être mis à jour manuellement
+Le firmware de l'écran nécessite une mise à jour manuelle.
 
-    :::
+:::
 
 ## Téléchargement du firmware de l'écran
 
-    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">Télécharger le firmware de l'écran</Button>
+* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">Cliquez pour télécharger le firmware de l'écran</Button>
 
-    * Vous aurez besoin d'une carte mémoire de moins de 32 Go, la vitesse de transfert de la carte TF doit être de classe 10 ou supérieure, il est recommandé d'utiliser une carte TF de marque comme SanDisk
+* Vous devez utiliser une carte mémoire dont la capacité est inférieure ou égale à 32 Go, la vitesse de transmission de la carte SD doit être de classe 10 ou supérieure. Il est recommandé d'utiliser des cartes SD de marque SanDisk.
 
+## Raccordement du câble réseau
 
-## Branchement du câble Ethernet
+<ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.webp').default} size="100%" align="left" />
 
-    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.webp').default} size="100%" align="left" />
-
-
-## Paquets système compatibles avec la machine hôte FLY
+## Package système pour les ordinateurs supérieurs compatibles avec FLY
 
 :::tip
-Compatibles avec les séries C8 PI_V2 PI GEMINI
+Compatible avec les séries C8 PI_V2 PI GEMINI
 :::
 
-    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">Télécharger le paquet système</Button>
+* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">Télécharger le package système</Button>
 
-
-## Installation du service
+## Installation des services
 
 :::tip
-Les autres machines hôtes doivent installer le service par elles-mêmes
+Les autres ordinateurs supérieurs doivent installer les services eux-mêmes.
 :::
 
-:::warning Attention
-L'installation nécessite une connexion Internet
+:::warning Remarque
+L'installation nécessite une connexion Internet.
 :::
-    ```bash
-    sudo apt install isc-dhcp-server
-    ```
+```bash
+sudo apt install isc-dhcp-server
+```
+
 ## Configuration du réseau
 
 :::tip
-* Ce tutoriel va occuper le port Ethernet de la machine hôte, vous ne pourrez utiliser que la connexion à l'écran
-* Si vous n'en avez pas besoin, supprimez simplement toutes les configurations modifiées et ajoutées ci-dessous
+* Ce tutoriel va occuper la prise réseau de l'ordinateur supérieur, il ne peut que se connecter à l'écran.
+* Si ce n'est pas nécessaire, il suffit de supprimer complètement les configurations modifiées et ajoutées ci-dessous.
 :::
-    Modifiez `/etc/network/interfaces.d/eth0`
+Modifier `/etc/network/interfaces.d/eth0`
 
-    ```bash
-    auto eth0
-    iface eth0 inet static
-    address 192.168.251.100
-    netmask 255.255.255.0
-    broadcast 192.168.251.255
-    network 192.168.251.0
-    gateway 192.168.251.1
-    ```
+```bash
+auto eth0
+iface eth0 inet static
+address 192.168.251.100
+netmask 255.255.255.0
+broadcast 192.168.251.255
+network 192.168.251.0
+gateway 192.168.251.1
+```
 
-    Modifiez `/etc/default/isc-dhcp-server`
+Modifier `/etc/default/isc-dhcp-server`
 
-    ```bash
-    # Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
+```bash
+# Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
 
-    # Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
-    #DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
-    #DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
+# Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+#DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
+#DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
 
-    # Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
-    #DHCPDv4_PID=/var/run/dhcpd.pid
-    #DHCPDv6_PID=/var/run/dhcpd6.pid
+# Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+#DHCPDv4_PID=/var/run/dhcpd.pid
+#DHCPDv6_PID=/var/run/dhcpd6.pid
 
-    # Additional options to start dhcpd with.
-    #       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
-    #OPTIONS=""
+# Additional options to start dhcpd with.
+#       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+#OPTIONS=""
 
-    # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
-    #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
-    INTERFACESv4="eth0"
-    #INTERFACESv4="eth0"
-    INTERFACESv6=""
-    #INTERFACES="eth0"
+# On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+#       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+INTERFACESv4="eth0"
+#INTERFACESv4="eth0"
+INTERFACESv6=""
+#INTERFACES="eth0"
 
-    INTERFACES="eth0"
-    ```
+INTERFACES="eth0"
+```
 
-    Modifiez `/etc/dhcp/dhcpd.conf`, ajoutez le contenu suivant à la fin
+Modifier `/etc/dhcp/dhcpd.conf`, ajoutez le contenu suivant à la fin
 
-    ```bash
-    # ddns-update-style none;
-    subnet 192.168.251.0 netmask 255.255.255.0 {
-        range 192.168.251.100 192.168.251.200;
-        option routers 192.168.251.1;
-        option domain-name-servers 8.8.8.8, 8.8.4.4; # DNS public de Google comme exemple
-        default-lease-time 600; # Temps de bail par défaut en secondes
-        max-lease-time 7200;    # Temps de bail maximum en secondes
-    }
-    ```
+```bash
+# ddns-update-style none;
+subnet 192.168.251.0 netmask 255.255.255.0 {
+    range 192.168.251.100 192.168.251.200;
+    option routers 192.168.251.1;
+    option domain-name-servers 8.8.8.8, 8.8.4.4; # Google Public DNS en exemple
+    default-lease-time 600; # Durée de location par défaut en secondes
+    max-lease-time 7200;    # Durée maximale de location en secondes
+}
+```
 
-    Redémarrez d'abord le système, puis exécutez les commandes de redémarrage des services suivantes
+Redémarrez le système, puis exécutez la commande suivante pour redémarrer le service
 
-    Ou redémarrez le service réseau
+Ou redémarrez le service réseau
 
-    ```bash
-    sudo systemctl restart NetworkManager
-    ```
+```bash
+sudo systemctl restart NetworkManager
+```
 
-    Cette opération déconnectera et reconnectera Internet
+Cette opération entraînera une déconnexion et une nouvelle connexion.
 
-    Redémarrez le service
+Redémarrez le service
 
-    ```bash
-    sudo systemctl restart isc-dhcp-server
-    ```
+```bash
+sudo systemctl restart isc-dhcp-server
+```
 
-    L'adresse IP de la machine locale devrait être `192.168.251.100`
+L'adresse IP de cette machine doit être `192.168.251.100`
 
 ## Augmenter la priorité du WIFI
 
 :::tip
-* Cette commande augmente la priorité du réseau, si vous ne l'ajoutez pas, vous ne pourrez pas télécharger normalement des fichiers, etc. !!!
+* Cette commande augmente la priorité du réseau. Sans son ajout, il sera impossible de se connecter à Internet et de télécharger des choses normalement !!!
 :::
-    * Veuillez ajouter la commande suivante dans le fichier `/etc/rc.local` de votre machine hôte
+* Ajoutez la commande suivante dans `/etc/rc.local` de l'ordinateur supérieur
 
-    ```bash
-    sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0
-    ```
+```bash
+sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0
+```

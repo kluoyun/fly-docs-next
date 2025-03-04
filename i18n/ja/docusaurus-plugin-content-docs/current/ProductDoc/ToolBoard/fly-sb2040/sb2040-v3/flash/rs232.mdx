@@ -10,7 +10,7 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 
-# RS232 ファームウェアのコンパイル
+# RS232ファームウェアのコンパイル
 
 ## コンパイルの開始
 
@@ -20,46 +20,47 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * マイクロコントローラの起動時に設定するGPIOピンを選択し、入力：!gpio5 注意！は大文字です
+    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio5**
+    :::warning
+        `!gpio5`を入力する際は英語入力モードで入力してください。
+    :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * `Q`キーを押し、**Save configuration**が表示されたら、`Y`キーを押します
+    * `Q`キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 設定が保存され、コマンドラインインターフェースに戻ったはずです
-    * `make -j4`を入力してコンパイルを開始します。時間がかかるので注意してください
+    * 現在、設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかる場合があります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されれば、コンパイル成功です
+    * コンパイルが成功すると次の出力が表示されます
 
         ```bash
         Linking out/klipper.elf
         Creating uf2 file out/klipper.uf2
         ```
 
-
-## 書き込みモードの開始
+## フラッシュモードに入る
 
     :::tip
 
-    左が`RESETボタン`、右が`BOOTボタン`です
+    左側が`RESETボタン`、右側が`BOOTボタン`です
 
     :::
 
-    * DFUモードに入る方法は2つあります
-    * 第一の方法：完全に電源を切った状態で、BOOTボタンを押しながら、データ転送用のケーブルを主板とホストに接続します
-    * 第二の方法：データ転送用のケーブルを主板とホストに接続した状態で、BOOTボタンを押しながらRSTボタンを押して、RSTボタンを離し、最後にBOOTボタンを離します
+    * DFUモードには2つの方法があります
+    * 方法1：マザーボードを完全に電源オフにした状態で、BOOTボタンを押し続けながら、データ転送用ケーブルの一方をマザーボードに、もう一方をホスト機器に接続します
+    * 方法2：データ転送用ケーブルの一方をマザーボードに、もう一方をホスト機器に接続した後、BOOTボタンを押し続けながらRSTボタンを押します。その後、RSTボタンを離し、最後にBOOTボタンを離します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
-## 書き込みモードの確認
+## フラッシュモードに入ったかどうかの確認
 
     <LS />
 
 
-## ファームウェアの書き込み 
-    
+## ファームウェアのフラッシュ 
+
     <USBFLASH />
-    
 
 
-## ファームウェアの起動確認
+## ファームウェアが起動したかどうかの確認
 
     * ファームウェアが正常に起動するとLEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.webp').default} size="100%" align="center" />

@@ -1,18 +1,15 @@
 ---
 sidebar_position: 6
-sidebar_label: External Drive Usage Tutorial
+sidebar_label: External Drive Usage Guide
 ---
 
-
-
-
-# External Drive Usage Tutorial
+# External Drive Usage Guide
 
 ## Precautions
 
 :::danger Notice
 
-* This tutorial is based on Klipper for control
+* This tutorial is based on Klipper control
 * The module uses common anode wiring
 
 :::
@@ -21,7 +18,7 @@ sidebar_label: External Drive Usage Tutorial
 ## Drive Wiring
     :::info
 
-    * Only one of the following two methods needs to be selected
+    * Only one of the following two methods is needed
 
     :::
     * First wiring method
@@ -31,24 +28,27 @@ sidebar_label: External Drive Usage Tutorial
 
 ## Drive Microstepping Jumper
 
-    * No drive jumpering is required!!!
+    * No drive jumpers are needed!!!
 
-## Built-in DIP Switch on the Drive
-    * It is recommended to use `3200` for the built-in DIP switch on the drive
+## Built-in Drive DIP Switch
+    * It is recommended to use `3200` for the built-in drive DIP switch
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/3200.webp').default} size="80%" align="center" />
 
 ## Klipper Reference Configuration
 
-    * Disable the corresponding driver configuration, such as `[tmc5160 stepper_x]` or `[tmc2209 stepper_x]`
+    * The corresponding drive configuration needs to be disabled, such as `[tmc5160 stepper_x]` or `[tmc2209 stepper_x]`
     * Set `microsteps:` to `16`
     * Add `step_pulse_duration: 0.000004`
+    * Motor enable: Remove the `!` in `enable_pin:!`
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/cfg.webp').default} size="50%" align="center" />
 
-## Pulse Explanation for the Driver
+## Drive Pulse Explanation
 
     :::info
 
-    * If the configuration is correct but the model prints with offset, modify `step_pulse_duration: 0.000004`
-    * Increase this value `0.000004`, for example, to `0.000005` or `0.000006`, etc.
+    * Model misalignment may occur during printing
+    * Motor vibration, unusual noises, various strange issues
+    * You can modify `step_pulse_duration: 0.000004`
+    * Increase this value to `0.000009`, for example, `0.00001` or `0.00002`, etc.
 
     :::

@@ -1,158 +1,110 @@
 ---
-sidebar_position: 7
-sidebar_label: Utilisation d'Eddy
+position latérale: 7
+étiquette de la barre latérale: Utilisation d'Eddy
 ---
-
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Utilisation d'Eddy
 
     :::info
-
-    * Veuillez noter qu'il est recommandé d'utiliser une limite Z séparée pour le balayage du lit, et il n'est pas recommandé d'utiliser le balayage du lit comme limite Z.
-    * Lors de l'installation d'Eddy, la position du fond par rapport à la buse doit être d'au moins 1 - 2 mm au-dessus de la buse.
-    * Lors du calibrage de la fréquence d'Eddy, la carte PCB de la bobine doit être à au moins 5 mm de la plaque chauffante.
-    * Veuillez ne pas tester toute la plaque chauffante à température ambiante et ne pas allumer la plaque chauffante lors du test.
-
+  * Si vous avez configuré précédemment l'édition d'Eddy, veuillez supprimer
+  * Lors de l'installation d'Eddy, la position du plateau inférieur par rapport à l'embout doit être au moins 1-2 mm au-dessus de l'embout
+  * Ne pas allumer le lit chauffant lors des tests
+  * Supprimez la configuration `probe` dans les paramètres avant utilisation
     :::
+
+    :::warning Remarques
+    * Les machines à plusieurs axes Z nécessitent un niveau manuel une fois réglé correctement
+    :::
+
 
 ## Schéma de câblage
 
-    * Le logo est orienté vers le bas
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.webp').default} size="100%" align="left" />
+    * Le logo vers le lit chauffant lors de l'installation
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="40%" align="left" />
 
 
-## Configuration de référence et instructions d'utilisation
+## Explications d'utilisation
+   * Connectez-vous à l'interface SSH via l'IP pour accéder au terminal et exécutez le script
+    Téléchargez l'outil SSH nécessaire <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Outil MobaXTerm</Button>
 
-##### Ajoutez la configuration suivante dans le fichier de configuration `printer.cfg` pour effectuer le débogage d'Eddy
 
-    ### Configuration du balayage du lit
-
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 2.0
-        i2c_address: 43
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### Configuration de la compensation de température
-
-        ```cfg
-        [temperature_probe fly_eddy_probe]
-        sensor_type:Generic 3950
-        sensor_pin:SB2040:gpio28
-        ```
-
-    ## Instructions de la grille de réseau
-
-        * Ajoutez la macro suivante dans la configuration `printer.cfg`
-            ```bash
-            [gcode_macro BED_MESH_CALIBRATE]
-             rename_existing: _BED_MESH_CALIBRATE
-             gcode: 
-                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
-            ```
-        * Pour les instructions de la grille de réseau locale, assurez-vous que Klipper peut utiliser la fonction d'exclusion d'objet. Il est recommandé de l'ajouter à la macro de début.
-            ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
-            ```
-
-### Configuration de bed_mesh
-
-    * Pour le paramètre `horizontal_move_z` dans `[bed_mesh]`, il est recommandé de le définir sur 2 afin que lors du balayage de la plateforme, Eddy soit le plus proche possible de la plateforme.
-
-    ```cfg
-    [bed_mesh]
-    horizontal_move_z: 2
+<Tabs>
+  <TabItem value="eddy1" label="Utilisation internationale">
+    # Veuillez utiliser la commande ci-dessous pour l'utilisation internationale
+    ### Installation automatique d'Eddy commençant maintenant
+    * Ouvrez l'outil SSH téléchargé, entrez la commande suivante et appuyez sur Entrée, puis cliquez sur Copier
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
     ```
-## Macro anti-collision
-
-    ### Optimisation du balayage du lit pour `[quad_gantry_level]`
-        * Si `[quad_gantry_level]` est configuré, vous pouvez ajouter la macro suivante à la configuration. Sinon, il n'est pas nécessaire de l'ajouter.
-        * Cette macro réduira la hauteur de détection en fonction de l'écart de hauteur de la portique.
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
-
-    ### Optimisation du balayage du lit pour `[z_tilt]`
-
-        * Si `[z_tilt]` est configuré, vous pouvez ajouter la macro suivante à la configuration. Sinon, il n'est pas nécessaire de l'ajouter.
-        * Cette macro réduira la hauteur de détection en fonction de l'écart de hauteur de la portique.
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
-
-    ### Macro d'optimisation du balayage du lit en cas d'interférence probable de la plaque chauffante d'Eddy
-
-        * Si vous utilisez une plaque chauffante à courant alternatif de haute puissance (plus de 500 W)
-        * Cette macro éteint la plaque chauffante lors du balayage du lit et la rallume après le balayage.
-            ```cfg
-            [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode:
-                {% set TARGET_TEMP = printer.heater_bed.target %}
-                M140 S0
-                _BED_MESH_CALIBRATE {rawparams}
-                M140 S{TARGET_TEMP}
-            ```
-
-   # Étapes de débogage: 
-   ## Première étape : Modifier la fréquence
-
-    ### Modification de la fréquence par défaut de ldc16121612
-    Cette méthode est uniquement utilisée pour sht36-v3 / SB2040-v3 ou SB2040-Pro-v3
-    Vous pouvez utiliser l'outil Mobaxterm pour exécuter les commandes.
-
-    Téléchargez l' <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">outil Mobaxterm</Button> nécessaire.
-
-    [Veuillez consulter](/docs/ProductDoc/SBC/fly-pi-v2/ssh) pour une utilisation détaillée.
-
-
-    Exécutez le premier command et appuyez sur Entrée.
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+   * Ajoutez la configuration suivante dans le fichier de configuration `moonraker.conf` de la page web de `fluidd` pour faciliter les mises à jour ultérieures
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
     ```
+   * Si vous mettez à jour, exécutez la commande suivante
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+</TabItem>
 
-    Exécutez le deuxième command et appuyez sur Entrée.
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    Si le remplacement est réussi, une ligne avec `LDC1612_FREQ = 40000000` sera renvoyée, alors le remplacement a réussi. Si rien n'est renvoyé, cela signifie que le remplacement n'a pas réussi.
-    Ou utilisez ce command pour vérifier si c'est réussi.
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+  <TabItem value="eddy2" label="Utilisation nationale">
+# Veuillez utiliser la commande ci-dessous pour l'utilisation nationale
+### Installation automatique d'Eddy commençant maintenant
+    * Ouvrez l'outil SSH téléchargé, entrez la commande suivante et appuyez sur Entrée, puis cliquez sur Copier
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+   * Ajoutez la configuration suivante dans le fichier de configuration `moonraker.conf` de la page web de `fluidd` pour faciliter les mises à jour ultérieures
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
+    ```
+    * Si vous mettez à jour, exécutez la commande suivante
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+  </TabItem>
+</Tabs>
+
+
+* Exécutez la commande et entrez votre mot de passe de l'ordinateur principal tel qu'affiché dans l'image suivante
+
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/EDDY1.webp').default} size="100%" align="left" />
+
+* Si vous voyez l'image suivante, entrez le numéro correspondant à votre imprimante et appuyez sur Entrée
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" />
+
+* Si vous utilisez `sb2040-v3-PROV3`, entrez y et appuyez sur Entrée
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/eddy7.webp').default} size="100%" align="left" />
+
+* Si vous voyez l'image suivante, c'est réussi
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy3.webp').default} size="70%" align="left" />
+
+* Si vous voyez l'image suivante, vous devez entrer Y et appuyer sur Entrée
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
 
     <LDC1612 />
-
- 

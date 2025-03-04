@@ -1,37 +1,34 @@
 ---
 sidebar_position: 11
-sidebar_label: Ventilateur principal
+sidebar_label: Contrôleur de ventilateur
 ---
 
+# Connecteur de ventilateur 5V sur la carte mère
 
-
-
-# Port de ventilateur 5V embarqué
-
-## La carte C8 est équipée d'une interface contrôlable en 5V pour le refroidissement du contrôleur principal. Le branchement est illustré ci-dessous
+## La carte C8 intègre une interface contrôlable de 5V pour le refroidissement du contrôleur principal, avec les méthodes de câblage comme indiqué ci-dessous
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/corefan.webp').default} size="80%" align="center" />
 
 ## Configuration de référence
 
     ```cfg
-    [mcu host]                      # FlyOS a déjà généré pour vous un MCU Linux, définissez-le simplement pour l'utiliser           
+    [mcu host]                      # FlyOS a généré automatiquement le MCU Linux pour vous, définissez-le pour l'utiliser          
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Température de l'hôte
+    [temperature_sensor FLY-π]      # Température de la station supérieure
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # Ventilateur de refroidissement de l'hôte
-    pin: host:gpiochip1/gpio103     # Broche du ventilateur de l'hôte
+    [temperature_fan core_fan]      # Ventilateur de refroidissement de la station supérieure
+    pin: host:gpiochip1/gpio103     # Broche du ventilateur de la station supérieure
     max_power: 1.0
-    sensor_type: temperature_host   # Défini comme température du contrôleur principal de l'hôte
+    sensor_type: temperature_host   # Défini comme température de la station supérieure
     control:watermark               # Mode de contrôle
-    target_temp: 48                 # Température de déclenchement du ventilateur de refroidissement de l'hôte
+    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement de la station supérieure
     min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
-    max_temp: 90                    # Température maximale, au-delà de laquelle une erreur sera signalée
+    max_temp: 90                    # Température maximale, au-dessus de laquelle une erreur sera signalée
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Vitesse maximale, 80% de la puissance maximale
-    min_speed: 0.3                  # Vitesse minimale, 30% de la puissance maximale
+    max_speed: 0.8                  # Vitesse maximale, correspondant à 80% de la puissance maximale
+    min_speed: 0.3                  # Vitesse minimale, correspondant à 30% de la puissance maximale
     ```

@@ -1,34 +1,34 @@
-----
+---
 
-# Résoudre les problèmes en fonction des erreurs signalées
+# Selon l'erreur, déterminez le problème
 
-    * Voici les erreurs courantes
-        * OSError: [Errno 19] Aucun périphérique de ce type
-        * can.CanError: Échec de la transmission : [Errno 100] Le réseau est en panne
-        * can.CanError: Échec de la transmission : [Errno 105] Pas d'espace disponible dans le tampon
-    * La première erreur indique que l'hôte ne trouve pas l'appareil `1d50:606f`
-    * La deuxième erreur signifie que l'hôte n'a pas configuré ou a mal configuré CAN0
-    * La troisième erreur est due à une insuffisance de mémoire tampon ou à des problèmes système entraînant un crash du tampon
-    * Pour les deuxième et troisième points, consultez ci-dessous la configuration de CAN0 pour diagnostiquer le problème
-    * Si vous ne trouvez pas l'ID, veuillez consulter la section en bas
+    * Ci-dessous sont les erreurs courantes
+        * OSError: [Errno 19] Pas de tel appareil
+        * can.CanError: Échec de la transmission : [Errno 100] Le réseau est hors service
+        * can.CanError: Échec de la transmission : [Errno 105] Aucun espace tampon disponible
+    * La première est que l'hôte ne trouve pas l'appareil `1d50:606f`
+    * La deuxième est que l'hôte n'a pas effectué ou a configuré incorrectement CAN0
+    * La troisième est que l'hôte a un manque de cache ou des problèmes systèmes qui provoquent un effondrement du cache
+    * Le deuxième et le troisième point peuvent être vérifiés en dessous pour configurer CAN0 et résoudre le problème
+    * Si vous ne trouvez pas d'ID, veuillez consulter le bas de la page
 
-## Vérifier si l'hôte supporte le CAN
+## Vérifier si l'hôte supporte CAN
 
-    * Si vous utilisez un hôte FLY, cette opération n'est pas nécessaire
-    * Si votre système est `Ubuntu`, il est recommandé de changer de système, car la configuration du CAN est compliquée sur ce système
-    * Entrez la commande suivante pour vérifier si le système supporte le CAN
+    * Si votre hôte est FLY, vous n'avez pas besoin d'exécuter cette opération
+    * Si votre système est `Ubuntu`, il est recommandé de changer de système, la configuration de CAN sur ce système est compliquée, il est recommandé de changer de système
+    * Entrez la commande ci-dessous pour déterminer si le système supporte CAN
 
     ```bash
-    sudo modprobe can && echo "Votre noyau supporte le CAN" || echo "Votre noyau ne supporte pas le CAN"
+    sudo modprobe can && echo "Votre noyau supporte CAN" || echo "Votre noyau ne supporte pas CAN"
     ```
 
-    * Après avoir entré la commande ci-dessus, si votre noyau supporte le CAN, il retournera : `Votre noyau supporte le CAN` ; sinon, il retournera : `Votre noyau ne supporte pas le CAN`.
+    * Après avoir entré la commande ci-dessus, si votre noyau supporte CAN, il renverra : `Votre noyau supporte CAN` ; sinon, il renverra : `Votre noyau ne supporte pas CAN`.
 
-## Configuration de CAN0
+## Configurer CAN0
 
-    * Cette commande remplace la configuration actuelle de CAN0 dans le système. Une fois exécutée, une réinitialisation du système est nécessaire.
-
-    * Pour une vitesse de 1M, entrez la commande suivante
+    * Cette commande remplace la configuration d'origine de CAN0, une fois exécutée, vous devez redémarrer le système
+    
+    * Pour une vitesse de 1M, entrez la commande ci-dessous
 ----
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
@@ -41,7 +41,7 @@
     EOF
     ```
 ----
-    * Pour une vitesse de 500K, entrez la commande suivante
+    * Pour une vitesse de 500K, entrez la commande ci-dessous
 
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
@@ -61,50 +61,50 @@
     ```
 
 
-## Points à vérifier si l'ID n'est pas trouvé
+## Après avoir recherché sans succès l'ID, veuillez noter les points suivants
 
-    * Si Klipper est configuré avec l'ID correspondant, vous devez d'abord désactiver l'ID dans la configuration du système, éteindre l'appareil, débrancher l'alimentation, puis rallumer ou appuyer sur le bouton de réinitialisation de la carte mère.
-    * Assurez-vous que la vitesse CAN de l'hôte est cohérente avec celle de la carte mère, des outils, etc.
-    * Vous pouvez utiliser le code suivant pour déterminer la vitesse CAN de l'hôte
-    * Vérifiez s'il y a une déconnexion
+    * Si Klipper est configuré avec un ID correspondant, il faut d'abord désactiver l'ID dans la configuration du système, puis éteindre l'ordinateur, débrancher l'alimentation, rallumer ou appuyer sur le bouton de réinitialisation de la carte mère
+    * Vérifiez si la vitesse CAN de l'hôte est identique à celle de la carte mère, de la carte outil, etc.
+    * Vous pouvez utiliser le code ci-dessous pour déterminer la vitesse CAN de l'hôte
+    * Assurez-vous qu'il n'y a pas de câblage défectueux
     ```bash
     ip -details link show can0
     ```
-    * L'illustration ci-dessous montre la vitesse CAN de l'hôte et la mémoire tampon
-    * Le `1024` ci-dessus représente la mémoire tampon actuelle de CAN0
-    * Le `1000000` ci-dessous représente la vitesse actuelle de CAN0
+    * L'endroit entouré ci-dessous indique la vitesse CAN de l'hôte et le cache
+    * Au-dessus `1024` est le cache actuel de CAN0
+    * En dessous `1000000` est la vitesse actuelle de CAN0
 
     <ImageView image={require('@site/docs/DebugDoc/faq/img/details.webp').default} size="80%" align="center" />
 
-    * Si vous ne trouvez toujours pas l'UUID, vérifiez attentivement les points suivants :
+    * Si vous n'avez toujours pas trouvé l'UUID recherché, veuillez vérifier attentivement les points suivants
 
-        * Vérifiez si la carte mère ou la carte CAN est correctement connectée
-        * Assurez-vous que l'alimentation est correcte, il est recommandé de connecter VCC à la carte mère
+        * Vérifiez si vous avez correctement connecté la carte mère ou la carte outil CAN
+        * Vérifiez si l'alimentation est correcte, il est recommandé de brancher la source d'alimentation VCC sur la carte mère
         * Vérifiez si l'hôte supporte le réseau CAN
-        * Assurez-vous que la compilation du firmware est correcte
+        * Vérifiez si la compilation du firmware est correcte
+
 ## Recherche d'ID
 
-    * Entrez la commande suivante pour rechercher un ID
+    * Entrez la commande ci-dessous pour rechercher l'ID
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * Si un ID apparaît et que `Application:` indique Klipper à la fin, cela signifie que cet ID peut être utilisé directement
-    * Si un ID apparaît et que `Application:` indique `CANBOOT` ou `Katapult`, cela signifie que vous devez flasher le firmware pour l'utiliser
+    * Si un ID est trouvé et que l'application finale affiche Klipper, cela signifie que cet ID peut être utilisé directement
+    * Si un ID est trouvé et que l'application finale affiche `CANBOOT` ou `Katapult`, cela signifie qu'il faut mettre à jour le firmware pour pouvoir l'utiliser
     <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
 
 ## Méthode de configuration de l'ID CAN
 
-    * Ouvrez l'interface web de l'imprimante, dans la barre latérale gauche, trouvez l'option de configuration : pour fluidd, c'est : `{…}` ; pour mainsail, c'est : `machine`, cliquez pour accéder à `printer.cfg`
-
+    * Ouvrez l'interface Web de l'imprimante, trouvez `printer.cfg` dans les options de configuration du côté gauche du menu latéral, pour fluidd : `{…}` ; pour mainsail : `machine`
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copiez l'UUID trouvé et collez-le dans le fichier de configuration `printer.cfg` sous le nœud `[mcu]` dans `canbus_uuid: `. Sauvegardez et redémarrez pour connecter la carte mère. Si Klipper indique que le firmware doit être mis à jour, qu'il y a une erreur ADC, etc., cela signifie que Klipper est déjà connecté à la carte mère.
+    * Copiez l'UUID recherché et collez-le dans la configuration de `[mcu]` dans le fichier `printer.cfg`. Sauvegardez et redémarrez pour vous connecter à la carte mère. Si Klipper signale une mise à jour de firmware nécessaire, une erreur ADC, etc., cela signifie que Klipper est déjà connecté à la carte mère
 
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        Attention : Tous les ID mentionnés dans le document sont des exemples. Chaque carte mère a un ID unique, veuillez modifier et remplir selon l'ID réellement obtenu.
+        Attention : Tous les ID mentionnés dans le document sont des exemples, chaque carte mère a un ID différent, veuillez modifier en fonction de l'ID réel obtenu.
 
         :::

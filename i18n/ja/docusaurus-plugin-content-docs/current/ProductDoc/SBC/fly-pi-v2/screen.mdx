@@ -12,27 +12,76 @@ import HDMI from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/f
 
 :::info
 
-* FLY-TOOLSは上位機にネットワーク接続して、上位機の`IP+:9999`にアクセスする必要があります
-* 例えば`192.168.6.110:9999`
+* FLY-TOOLSにアクセスするには、マシンをネットワークに接続し、`IP+:9999`でアクセスしてください。
+* 例：`192.168.6.110:9999`
 
 :::
 
     <Tabs>
-        <TabItem value="tft" label="TFTの配線" default>
-            * FLY TOOLSで以下のようにスクリーンを設定し、KSをオンにする必要があります
+        <TabItem value="tft" label="TFT配線" default>
+            * FLY TOOLSで画面の設定を行い、KSを開く必要があります。
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tft.webp').default} size="80%" align="center" />
             * FLY-Pi V2 TFTスクリーンの配線
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="80%" align="center" />
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-v2-tft-c.webp').default} size="80%" align="left" />
         </TabItem>
 
-        <TabItem value="hdmi" label="HDMIの配線">
-            * FLY TOOLSで以下のようにスクリーンを設定し、KSをオンにする必要があります
+        <TabItem value="hdmi" label="HDMI配線">
+            * FLY TOOLSで画面の設定を行い、KSを開く必要があります。
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/hdmi.webp').default} size="80%" align="center" />               
-            * FPCからHDMIへの変換モジュールを使用します
-            * データ転送機能付きのType-Cをモジュールに接続する必要がありますので、注意してください
+            * FPCからHDMIモジュールへの変換を使用します。
+            * データ転送機能のあるType-Cケーブルが必要です。
                 <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
             * FLY-Pi v2 HDMIスクリーンの配線
                 <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-hdmi.webp').default} size="80%" align="center" />
         </TabItem>
     </Tabs>
+
+# TFTスクリーン設定
+
+<Tabs>
+    <TabItem value="tft" label="TFTスクリーン" default>
+        * FLY TOOLSでKSを開く必要があります。
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFTタッチスクリーン設定" default>
+## 方法一    
+         * タッチスクリーンの設定には、以下のコマンドを使用して`fly-tft-v2-c`に設定する必要があります。
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * 画面の裏側のダイアルが`Cap`に設定されていることを確認してください。
+    * 設定が正常に行われたかどうかを確認するには、以下のコマンドを使用します。
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * タッチスクリーンを抵抗膜スクリーンに変更するには、以下のコマンドを使用します。
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="TFT抵抗膜スクリーン設定">
+## 方法一        
+           * 抵抗膜スクリーンの設定には、以下のコマンドを使用して`fly-tft-v2-r`に設定する必要があります。
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * 画面の裏側のダイアルが`Resi`に設定されていることを確認してください。
+        * 設定が正常に行われたかどうかを確認するには、以下のコマンドを使用します。
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * 抵抗膜スクリーンをタッチスクリーンに変更するには、以下のコマンドを使用します。
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>
+
     ----

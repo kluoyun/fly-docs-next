@@ -11,16 +11,16 @@ sidebar_position: 4
 #      Items to be changed/checked
 #####################################################################
 ##***Items to be changed/checked:***
-## MCU path                                [mcu] 
-## Printer active range                    xyz's position   
-## Thermistor type                         [extruder] and [heater_bed]
-## Z-axis limit switch stop position       [safe_z_home] 
-## Z-axis limit switch offset position     [stepper_z] 
-## PID calibration                         [extruder] and [heater_bed] 
-## Adjust extruder motor step value        [extruder] 
+## MCU path                                 [mcu] 
+## Printer active range                     xyz position   
+## Thermistor type                          [extruder] and [heater_bed]
+## Z-axis limit switch stop position        [safe_z_home] 
+## Z-axis limit switch offset position      [stepper_z] 
+## PID calibration                          [extruder] and [heater_bed] 
+## Fine-tune extruder motor step value      [extruder] 
 
 #####################################################################
-#      File invocation
+#      file invocation
 #####################################################################
 ### When using fuidd or mainsail as the frontend, remove the '#' before #[include XXX.cfg].
 ### 当您使用fuidd或者mainsail作为前端时，请删除#[include XXX.cfg]前面的#。
@@ -41,14 +41,10 @@ on_error_gcode: CANCEL_PRINT
 serial: /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00
 ### Find the USB firmware ID with: ls /dev/serial/by-id/* and replace
 ### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00 with the ID you discover.
-### 使用is/dev/Serial/by-id/*查找USB固件ID，并将
-### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00替换为您发现的ID。
 
 #canbus_uuid: 114514114514
 ### Query the CAN firmware ID with: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
 ### Replace 'serial:' in the CAN ID with 'canbus_uuid:', then append the ID.
-### can的id需要把serial: 替换成canbus_uuid: 后面添加id 
-### 查询can固件id是：~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
 
 #####################################################################
 #      Temperature monitoring
@@ -111,8 +107,8 @@ spi_software_miso_pin:
 spi_software_sclk_pin:
 run_current: 1.0
 interpolate: False
-### 驱动采样电阻需要按着驱动来修改
 ### The driver sampling resistor needs to be modified according to the driver
+### 驱动采样电阻需要按着驱动来修改
 sense_resistor: 0.075
 stealthchop_threshold: 0
 diag0_pin: ^!
@@ -155,8 +151,8 @@ spi_software_miso_pin:
 spi_software_sclk_pin:
 run_current: 1.0
 interpolate: False
-### 驱动采样电阻需要按着驱动来修改
 ### The driver sampling resistor needs to be modified according to the driver
+### 驱动采样电阻需要按着驱动来修改
 sense_resistor: 0.075
 stealthchop_threshold: 0
 diag0_pin: ^!
@@ -259,7 +255,7 @@ sensor_pin:
 # pullup_resistor: 1100
 # sensor_pin: 
 #####################################################################
-#      Extruder
+#      extruder
 #####################################################################
 ## https://www.klipper3d.org/Config_Reference.html#extruder
 [extruder]
@@ -268,9 +264,9 @@ dir_pin:
 enable_pin: !
 rotation_distance: 21.84
 ## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
-## 校准步进值: 22.44=旧值22*实际值102/目标值100
+## Calibration step value: 22.44=old value22*actual value102/target value100
 gear_ratio:50:10
-## Reduction ratio (Galileo gear ratio 7.5:1 and comment out this line; BMG is 50:17, output shaft in front, input shaft in back)
+## Reduction ratio (Galileo gear ratio 7.5:1 and this line commented out; BMG is 50:17, output shaft in front, input shaft in back)
 microsteps:16
 full_steps_per_rotation: 200    
 nozzle_diameter:0.400
@@ -285,9 +281,9 @@ pressure_advance: 0.05
 ##压力提前
 ##https://www.klipper3d.org/zh/Pressure_Advance.html
 pressure_advance_smooth_time: 0.040
-#max_extrude_only_distance: 200.0   # Extrusion flow error can be commented out, but it is recommended to re-slice
+#max_extrude_only_distance: 200.0   # Uncomment this if you get extrusion flow error, but it is recommended to re-slice
+# Nozzle temperature PID calibration command: PID_CALIBRATE HEATER=extruder TARGET=245
 # 校准喷嘴温度PID命令： PID_CALIBRATE HEATER=extruder TARGET=245
-# Calibrate the nozzle temperature PID command ： PID_CALIBRATE HEATER=extruder TARGET=245
 control: pid
 pid_kp: 26.213
 pid_ki:1.304
@@ -315,7 +311,7 @@ sensor_pin:
 max_power: 1.0 
 min_temp: -50
 max_temp: 120
-# Heated bed temperature PID calibration command： PID_CALIBRATE HEATER=heater_bed TARGET=100
+# Heated bed temperature PID calibration command: PID_CALIBRATE HEATER=heater_bed TARGET=100
 # 校准热床温度PID命令： PID_CALIBRATE HEATER=heater_bed TARGET=100
 control: pid
 pid_kp: 68.453
@@ -394,14 +390,14 @@ samples_tolerance_retries: 3
 #   G0 Z15 F600
 #   G28 X Y
 #    ## Z limit switch XY position
-#    ## Update X0 and Y0 to your values after probing (e.g., X157, Y305)
-#    ## Z axis limit switch position definition
+#    ## Update your values to X0 and Y0 after (e.g., X157, Y305)
+#    ## Z axis limit position definition
 #   G0 X185 Y250 F3600    #250mm   
 #   G28 Z
 #   G0 Z10 F1800
 
 #####################################################################
-#      Quad Gantry Level
+#      quad_gantry_level
 #####################################################################
 [quad_gantry_level]
 #gantry_corners:
@@ -439,7 +435,7 @@ max_adjust: 10
 
 
 #####################################################################
-#      Macros
+# Macros
 #####################################################################
 [idle_timeout]
 ### If idle for more than 30 minutes, heated bed will be turned off.
@@ -493,7 +489,7 @@ gcode:
     {% endif %}
  
     M400                              # Wait for buffer to clear
-    G92 E0                            # Zero extruder
+    G92 E0                            # Zero the extruder
     G1 E-10.0 F3600                   # Retract filament
     G91                               # Relative positioning
     G0 Z{z_safe} F3600                # Lift gantry

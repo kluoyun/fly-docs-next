@@ -1,11 +1,7 @@
 ---
 sidebar_position: 2
-sidebar_label: システムの書き込み
+sidebar_label: システム焼成
 ---
-
-
-
-
 
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
 import M2WE from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
@@ -13,77 +9,76 @@ import M2SD from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/f
 import TF_EMMC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
 import CONFIG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
 
+# システム焼成
 
-# システムの書き込み
+## 上位機初心者操作ガイド
 
-## 上位機の初心者操作ガイド
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">上位機初心者操作ガイド</Button>
 
-    <Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">上位機の初心者操作ガイド</Button>
+## システム焼成の準備
 
-## システム書き込みの準備
+* SDカードリーダー
+* 容量が16GB以上または128GB以下のTFカード、転送速度はClass10以上のもの
+* 対応する <Button variant="contained" disableElevation href="/docs/ResDownload/system-img/fly-c8">システムイメージ</Button> をダウンロード
+* 必要な <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">焼成ツール</Button> をダウンロード
 
-    * カードリーダー
-    * TFカード1枚、容量は16GB以上、128GB以下で、転送速度がclass10以上である必要があります
-    * 対応する<Button variant="contained" disableElevation href="/docs/ResDownload/system-img/fly-c8">システムイメージ</Button>をダウンロード
-    * 必要な<Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">書き込みツール</Button>をダウンロード
-
-## システムの書き込み
+## システム焼成
 
 :::info
-TFカードへの書き込みとTFカードを介してM2WEへの書き込みはどちらか一つを選択してください
+TFカード焼成とTFカードからM2WEへの焼成はどちらか一方を使用すれば十分です
 :::
 
 :::info
-* マシンにM2WEとメモリカードがインストールされている場合、システムはデフォルトでメモリカードから起動します
-* M2WEにはTFカードを使用してシステムをフラッシュすることをお勧めします。USBを介してM2Wに書き込むと、ドライバーの互換性などの理由で書き込みが失敗することがあります。直接[メモリカードからM2WEに書き込み](https://mellow-next.klipper.cn/docs/ProductDoc/SBC/fly-pi-v2/fly-os)を使用することをお勧めします
-* ダウンロードしたシステムイメージが対応しているかどうかを確認してください。対応していない場合は起動できません
+* マシンにM2WEとメモリーカードがインストールされている場合、システムはデフォルトでメモリーカードから起動します
+* M2WEへの焼成はTFカードを使用することをお勧めします。USBからの焼成はドライバーの互換性などの理由で失敗することがありますので、直接 [メモリーカードからM2WEへの焼成](https://mellow-next.klipper.cn/docs/ProductDoc/SBC/fly-pi-v2/fly-os) を使用することをおすすめします
+* 間違ったシステムイメージをダウンロードしないように注意してください。そうでなければ起動できません
 :::
 
-    <Tabs>
-        <TabItem value="TF" label="TFカードへの書き込み" default>
-            
-            <TF />
-            
-        </TabItem>
-        <TabItem value="TF_M2WE" label="TFカードを介してM2WEへの書き込み">
-            
-            <TF_EMMC />
+<Tabs>
+    <TabItem value="TF" label="TFカードへの焼成" default>
 
-        </TabItem>
-        <TabItem value="M2WE" label="USBを介してM2WEへの書き込み">
-            
-            <M2WE />
+        <TF />
 
-        </TabItem>
-        <TabItem value="M2SD" label="M2SD Burnerを使用してM2WEまたはTFカードへの書き込み">
-            
-            <M2SD />
+    </TabItem>
+    <TabItem value="TF_M2WE" label="TFカードからM2WEへの焼成">
 
-        </TabItem>
-    </Tabs>
+        <TF_EMMC />
 
-## システム設定
+    </TabItem>
+    <TabItem value="M2WE" label="USBからM2WEへの焼成">
 
-    <CONFIG />
+        <M2WE />
 
-    :::danger 重要
+    </TabItem>
+    <TabItem value="M2SD" label="M2SDバーナーからM2WEまたはTFカードへの焼成">
 
-    * Gemini V3はFLY TOOLSの設定画面でメインボードのモデルを設定する必要があります。そうしないとファームウェアが正常に起動しません
+        <M2SD />
 
-    :::
+    </TabItem>
+</Tabs>
 
-## TFカードまたはM2WEをC8にインストール
+## システム構成
 
-    <Tabs>
-        <TabItem value="TF" label="TFカードをC8にインストール" default>
-            * TFカードにシステムを書き込んだ後、TFカードをC8に接続する必要があります。そうしないとシステムは起動しません
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/tf.webp').default} size="80%" align="left" />  
+<CONFIG />
 
-        </TabItem>
-        <TabItem value="M2WE" label="M2WEカードをC8にインストール">
-            * TFカードがある場合、システムはデフォルトでTFカードから起動します
-            * 固定ネジは1.27六角ネジを使用して固定してください
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/m2we.webp').default} size="80%" align="left" />  
+:::danger 注意
 
-        </TabItem>
-    </Tabs>
+* Gemini V3はFLY TOOLSの設定画面に入り、マザーボードのモデルを設定する必要があります。それがないとファームウェアを正常に起動できません
+
+:::
+
+## TFカードまたはM2WEをC8に取り付ける
+
+<Tabs>
+    <TabItem value="TF" label="TFカードをC8に取り付ける" default>
+        * システムをTFカードに焼成した後、TFカードをここにC8に接続する必要があります。そうしないとシステムは起動しません
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/tf.webp').default} size="80%" align="left" />  
+
+    </TabItem>
+    <TabItem value="M2WE" label="M2WEカードをC8に取り付ける">
+        * TFカードがある場合は、システムはデフォルトでTFカードから起動します
+        * 固定ネジは1.27mmの六角レンチを使用して固定してください
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/m2we.webp').default} size="80%" align="left" />  
+
+    </TabItem>
+</Tabs>

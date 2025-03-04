@@ -3,33 +3,28 @@ sidebar_position: 11
 sidebar_label: I2Cの使用
 ---
 
-
-
-
-
-
 # I2Cの使用
 
-    * 上位機40PINのI2Cインターフェースを使用する
-    * 本チュートリアルでは、FLY-PI V2LM75のI2CセンサーとI2C2を例に説明します！！！
-    * I2C1が他のデバイスによって既に使用されている場合、使用できません！！！
-    * 配線を確実にし、安定させるようにしてください！！！
+    * 上位機の40PINのI2Cインターフェースを使用する
+    * 今回のチュートリアルでは、FLY-PI V2LM75のI2CセンサーとI2C2を使用する
+    * 注意：I2C1は他のデバイスによってすでに使用されているため、使用することはできません
+    * ケーブルをしっかりと接続してください
 
 ## FLY ToolsでI2Cを開く
 
-    * Overlaysを見つけ、その後にi2c2とi2c0を選択してください
-    * I2C1が他のデバイスによって既に使用されている場合、使用できません!!!
-    * 保存して再起動してください
+    * Overlaysを見つけて、その後にi2c2とi2c0を選択する
+    * 注意：I2C1は他のデバイスによってすでに使用されているため、使用することはできません
+    * 保存して再起動する
 
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c.webp').default} size="80%" align="center" />
 
 
-## 配線して検索する
+## ケーブル接続と検索
 
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c2.webp').default} size="80%" align="center" />
 
-    * SSHでFLY上位機に接続した後、以下のコマンドを入力すると以下の内容が出力されます
-    * `I2C0`を使用する場合は、以下のコマンドの`2`を`0`に置き換えてください
+    * SSHでFLY上位機に接続し、以下のコマンドを入力すると、以下のような出力が表示されます
+    * `I2C0`を使用する場合は、以下のコマンドの`2`を`0`に置き換える
 
     ```cfg
     sudo i2cdetect -y -r 2
@@ -37,11 +32,11 @@ sidebar_label: I2Cの使用
 
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c1.webp').default} size="80%" align="center" />
 
-    * 正常な場合、エンターキーを押すとすぐに上記の内容が表示され、住所が付加されます
-    * 住所はランダムです
-    * 線が正しく接続されていない、線が逆に接続されている、設定が開かれていない、モジュールが壊れているなどの場合、出力は異常です
-    * 住所は自分で16進数から10進数に変換し、設定の`i2c_address:`の後に記入する必要があります
-    * オンラインの進数変換ツールを使用して変換することができます
+    * 注意：正常な状態であれば、エンターキーを押すとすぐに、上記の内容とアドレスが表示されます
+    * 注意：アドレスはランダムです
+    * 注意：ケーブルが正しく接続されていない場合、逆接続されている場合、設定が開かれていない場合、またはモジュールが壊れている場合、出力は異常になります
+    * アドレスは16進数から10進数に変換し、`i2c_address:`の後に設定します
+    * ブラウザでオンラインの基数変換ツールを使用して変換することができます
 
 ## 設定
 
@@ -52,8 +47,9 @@ sidebar_label: I2Cの使用
     [temperature_sensor my_sensor]
     sensor_type: LM75
     i2c_address:72
-    # #   デフォルトは72 (0x48) です。通常範囲は72-79 (0x48-0x4F) であり、アドレスの下位3ビットはチップ上のピンで設定されます
-    # #   (通常はジャンパーやハードワイヤリングで設定されます)。
+    # #   Default is 72 (0x48). Normal range is 72-79 (0x48-0x4F) and the 3
+    # #   low bits of the address are configured via pins on the chip
+    # #   (usually with jumpers or hard wired).
     i2c_mcu:host
     i2c_bus:i2c.2
     # i2c_software_scl

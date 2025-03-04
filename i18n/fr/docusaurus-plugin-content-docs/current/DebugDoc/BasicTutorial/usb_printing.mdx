@@ -2,43 +2,43 @@
 sidebar_position: 3
 ---
 
-# Impression USB
+# Impression via Clé USB
 
-Ce tutoriel est uniquement applicable à la machine hôte FLY
+Ce tutoriel est uniquement applicable à l'interface supérieure FLY.
 
     :::danger À savoir
 
-    * Nécessite une installation manuelle
+    * Vous devez installer vous-même
     * Ce tutoriel remplacera le fichier `klipper/klippy/extras/virtual_sdcard.py` de Klipper.
-    * Permet de copier automatiquement les fichiers de l'USB sélectionné vers le répertoire `/tmp` du système après la sélection du fichier à imprimer.
-    * Après la copie, un message `File selected` sera affiché dans la ligne de commande de la page web.
-    * Ce fichier détectera le dossier `sdaX` ; s'il n'existe pas, il ne sera pas exécuté (où X dans sda représente A-Z et 0-9).
-    * Actuellement, seul le test a été effectué sur la machine hôte de FLY, les autres machines hôtes n'ont pas été testées.
+    * Il est possible d'imprimer un fichier sélectionné dans la clé USB après avoir automatiquement copié les fichiers de la clé USB vers le répertoire système `/tmp`.
+    * Après la copie, un message `File selected` s'affichera dans la ligne de commande web.
+    * Ce fichier détectera le dossier `sdaX`, et s'il n'existe pas, il ne sera pas exécuté (où sdaX représente A-Z et 0-9).
+    * Actuellement, ce tutoriel a été testé uniquement sur l'interface supérieure FLY, d'autres interfaces supérieures n'ont pas été testées.
 
     :::
 
 ## Méthode d'utilisation
 
-* Connectez-vous à la machine hôte via un logiciel SSH puis exécutez les instructions ci-dessous
-* Veuillez noter que cette commande redémarrera la machine hôte !!
-* Cette étape active la fonction d'impression USB
+* Utilisez un logiciel SSH pour vous connecter à l'interface supérieure et exécutez la commande ci-dessous
+* Veuillez noter que cette commande redémarrera l'interface supérieure !
+* Cette étape active la fonction d'impression via clé USB
     ```bash
-    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://upyun.pan.zxkxz.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
+    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://cdn.mellow.klipper.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
     ```
 
-## Méthode d'impression USB
+## Méthode d'impression via clé USB
 
-### Sauvegarde et téléchargement du fichier
+### Sauvegarde et téléchargement de fichier
 
 * Veuillez noter que cette commande arrêtera Klipper
-* Cette étape active la fonction de copie automatique des fichiers de l'USB sélectionné dans le répertoire `/tmp` du système
+* Cette étape active la fonction d'auto-copie des fichiers de la clé USB vers le répertoire système `/tmp` lorsque vous sélectionnez un fichier u-disque
     ```bash
     sudo systemctl stop klipper && mv ~/klipper/klippy/extras/virtual_sdcard.py ~/virtual_sdcard.py && curl -kfsSL https://cdn.mellow.klipper.cn/firmware/virtual_sdcard.py -o ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
     ```
 
 ### Cette étape restaure le fichier original
 
-* Veuillez noter que cette commande restaure Klipper original
+* Veuillez noter que cette commande restaure Klipper à son état d'origine
     ```bash
     sudo systemctl stop klipper && mv ~/virtual_sdcard.py ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
     ```

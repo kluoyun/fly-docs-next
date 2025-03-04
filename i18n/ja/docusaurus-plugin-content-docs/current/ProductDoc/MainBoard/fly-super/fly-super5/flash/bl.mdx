@@ -3,10 +3,6 @@ sidebar_position: 6
 sidebar_label: BLファームウェア、無視してください
 ---
 
-
-
-
-
 import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
@@ -15,40 +11,40 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * 出荷時に`bootloader`が既にインストールされているので、再度インストールする必要はありません。
+    * ファクトリ出荷時に`bootloader`がプリインストールされているため、再インストールする必要はありません
 
     :::
 
-## 書き込みモードに入る
+## ブートモードに入る
 
     :::tip
 
-    右側が`BOOTジャンパー`、左側が`RESETボタン`
+    `BOOTジャンプ線`が右、`リセットボタン`が左です
 
     :::
 
-    * 書き込みモードに入る方法は2種類あります
-    * 第一種：メインボードが完全に電源を切った状態で、BOOTボタンを押しながらデータ通信用のケーブルをメインボードとあなたのデバイスに接続します
-    * 第二種：データ通信用のケーブルをメインボードとあなたのデバイスに接続した後、BOOTボタンを押しながらRSTボタンを押し、RSTボタンを離してからBOOTボタンを離します
+    * ブートモードに入るには2つの方法があります
+    * 方法1：マザーボードが完全に電源オフの状態で、BOOTボタンを押しながらデータ転送用のケーブルの一方をマザーボードに、もう一方をデバイスに接続します
+    * 方法2：データ転送用のケーブルの一方をマザーボードに、もう一方をデバイスに接続した後、BOOTボタンを押しながらRSTボタンを押し、その後RSTボタンを離し最後にBOOTボタンを離します
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/flash/img/boot.webp').default} size="100%" align="center" />
 
-## ファームウェアの書き込み
+## ファームウェアを焼く
     <Tabs>
-        <TabItem value="win" label="Windows書き込みガイド" default>
+        <TabItem value="win" label="Windows焼込チュートリアル" default>
 
-            * SUPER5 PROのbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">自動ダウンロード</Button>
+            * SUPER5 PROのbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">ファームウェアを自動ダウンロードするにはこちらをクリック</Button>
             <WIN />
             
         </TabItem>
-        <TabItem value="linux" label="ホストマシン書き込みガイド">
+        <TabItem value="linux" label="アップライマシン焼込チュートリアル">
             
             <Katapult />
 
-            4. ファームウェアの書き込み
+            4. ファームウェアを焼く
 
             :::tip
 
-            どちらか一方のファームウェアを書き込むだけでOK
+            どちらか一方のファームウェアだけ焼けば大丈夫です
 
             :::
 
@@ -58,16 +54,15 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER5PRO.bin
                 ```
 
-            5. 以下の画像のアローマークの部分に「File downloaded successfully」と表示されたら書き込み成功
+            5. 下図矢印部分に示す内容「File downloaded successfully」が表示されたら焼込成功です
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
             :::tip
 
-            書き込みが完了した後、メインボードを一度完全に電源を切る必要があります。
+            焼き込みが完了したら、マザーボードを完全に電源オフにしてください。
 
             :::
 
         </TabItem>
     </Tabs>
-

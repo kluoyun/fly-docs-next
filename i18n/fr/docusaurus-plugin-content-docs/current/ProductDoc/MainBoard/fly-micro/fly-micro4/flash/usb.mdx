@@ -8,18 +8,18 @@ import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
 # Compilation du firmware USB
 
     :::tip
 
-    * Le Micro4 est livré avec le firmware Katapult pour la connexion USB déjà préinstallé, donc il n'est pas nécessaire de le reflasher.
+    * Le Micro4 est pré-étalonné avec le firmware Katapult connecté via USB, pas besoin de le réétalonner.
 
     :::
 
-## Commencer la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -27,14 +27,14 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Choisissez les broches GPIO à définir au démarrage du micro-contrôleur, entrez : gpio8
+    * Sélectionnez les GPIO pins à configurer au démarrage du micro-controleur, entrez : gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/usb.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, lorsque **Save configuration** apparaît, appuyez sur `Y`
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Maintenant, la configuration devrait être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un peu de temps
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si le message suivant apparaît, la compilation a réussi
+    * Si la sortie finale ressemble au contenu ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
@@ -42,9 +42,22 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
         ```
 
 ## Vérifier si le mode de flashage est activé
+    * Assurez-vous que l'hôte peut se connecter correctement à Internet et que le câble de connexion entre l'hôte et le périphérique inférieur possède une fonction de transmission de données.
+    * Connectez-vous via SSH à l'hôte et tapez `lsusb` puis appuyez sur Entrée, si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
+        * Si aucun message n'est retourné, c'est un problème du système de l'hôte, nous ne pouvons rien faire de plus, vous devez changer de système ou d'hôte confirmé comme étant normal.
+        * Si le message indique qu'il n'y a pas de commande `lsusb`, exécutez cette commande pour l'installer
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * `2e8a:6177` correspond au périphérique que vous allez utiliser cette fois-ci. `OpenMoko, Inc. rp2040` peut servir de référence, mais n'est pas un critère de jugement.
+        * Certains hôtes peuvent afficher des informations incomplètes ou aucune information en raison de problèmes de système.
+        * Si vous pouvez voir le périphérique en entrant la commande `lsusb`, mais sans `2e8a:6177`, essayez de changer le câble et de connecter la carte mère à un autre port USB de l'hôte.
 
-    <LS />
+    :::warning Remarques importantes
+        Vous ne pouvez pas passer à l'étape suivante tant que vous n'avez pas `2e8a:6177`.
+    :::
 
-## Flasher le firmware
-
+## Flashage du firmware
+    
     <CANBOOT />

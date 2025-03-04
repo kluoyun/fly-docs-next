@@ -2,7 +2,6 @@
 sidebar_position: 8
 ---
 
-
 import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TP 2209
@@ -12,30 +11,30 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
 
 ## 기본 매개변수
 
-    * 입력 전압: 12V-24V
-    * 적용 대상: Marlin/Klipper/RRF 펌웨어
-    * 모터가 스텝을 놓치기 어려움
-    * 무음 모드 지원
-    * 대면적 팬 열 패드, 드라이브 작업 온도 낮춤
-    * 드라이브 모드 지원: TMC: UART
-    * 모터 정지 감지 지원
+    * 입력 전압 ：12V-24V
+    * 호환성 ： Marlin/Klipper/RRF 펌웨어
+    * 모터가 쉽게 실속되지 않음
+    * 정숙 모드 지원
+    * 큰 면적의 팬 열패드로 드라이버 작동 온도 감소
+    * 드라이버 모드 지원：TMC：UART
+    * 모터 블록 감지 지원
 
 
-## FLY 메인보드 점퍼
+## FLY 메인보드 점퍼 설정
 
     :::tip
 
     * TP2209는 UART 모드 사용
-    * TP2209는 드라이브 점퍼 캡 필요 없음, 단순히 설정만 하면 됨
+    * TP2209는 드라이버 점퍼캡이 필요하지 않습니다. 단순한 구성만 필요합니다.
     
     :::
 
 
-## TP2209 참조 설정
+## TP2209 참고 구성
 
     :::danger
 
-    드라이브 샘플링 저항은 0.110이므로 잘못 설정하지 마세요.
+    드라이버 샘플링 저항은 0.110입니다. 잘못 설정하지 마십시오.
 
     :::
 
@@ -43,33 +42,32 @@ import DIAG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2209 stepper_x]
     uart_pin: 
     interpolate: False
-    run_current: 0.8                    # 모터 작동 전류 값(단위: mA)
-    sense_resistor: 0.110               # 드라이브 샘플링 저항 변경하지 마세요
+    run_current: 0.8                    # 모터 동작 전류 값 (단위：mA)
+    sense_resistor: 0.110               # 드라이버 샘플링 저항 변경 금지
     stealthchop_threshold: 0
     ```
 
 
 
-## 무한정 사용 설명
+## 무한위치 사용 설명
 
     <DIAG />
 
-    :::tip 무한정 사용 팁
+    :::tip 무한위치 사용 팁
 
-    * 원래 `endstop_pin:`은 비활성화하거나 삭제해야 하며, `endstop_pin: tmc2209_stepper_x:virtual_endstop` 추가
-    * `diag_pin:` 설정 후 리미트 상태를 새로 고침하면 트리거되지 않음
-    * `driver_SGTHRS:`에 적합한 값을 직접 테스트해야 함
+    * 원래의 `endstop_pin:`을 막거나 삭제하고, `endstop_pin: tmc2209_stepper_x:virtual_endstop`를 추가하십시오.
+    * `diag_pin:` 구성 후 리미트 상태는 트리거되지 않습니다.
+    * `driver_SGTHRS:` 구성에는 적합한 값을 자체적으로 테스트해야 합니다.
 
     :::
 
-
-    * 참조 설정
+    * 참고 구성
 
     ```cfg
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc2209_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # 0으로 설정하지 않으면 홈 위치 실패 가능성
+    homing_retract_dist: 0        # 후퇴 거리 0으로 설정하면 위치 결정 실패할 수 있습니다.
 
     [tmc2209 stepper_x]
     diag_pin: ^

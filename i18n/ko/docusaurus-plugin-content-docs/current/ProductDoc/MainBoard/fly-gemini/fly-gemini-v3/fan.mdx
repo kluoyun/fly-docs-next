@@ -1,37 +1,34 @@
 ---
 sidebar_position: 11
-sidebar_label: 메인 컨트롤 팬
+sidebar_label: 주요 제어 팬
 ---
 
+# 보드에 내장된 5V 팬 단자
 
-
-
-# 온보드 5V 팬 포트
-
-## Gemini에는 메인 컨트롤러 냉각을 위한 5V 제어 가능 인터페이스가 탑재되어 있으며, 연결 방법은 다음 그림과 같습니다
+## 제미나이 보드에는 주요 제어를 위한 5V의 제어 가능한 인터페이스가 내장되어 있습니다. 다음 그림을 참조하여 배선 방법을 확인할 수 있습니다.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.webp').default} size="80%" align="center" />
 
-## 참조 설정
+## 참고 구성
 
     ```cfg
-    [mcu host]                      # FlyOS는 이미 linux MCU를 생성하여 정의만 하면 사용할 수 있습니다           
+    [mcu host]                      # FlyOS는 이미 Linux MCU를 기본으로 생성했습니다. 정의만 하면 사용 가능합니다.
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # 상위 기기 온도
+    [temperature_sensor FLY-π]      # 상위기기 온도
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # 상위 기기 냉각 팬
-    pin: host:gpiochip1/gpio103     # 상위 기기 팬 핀
+    [temperature_fan core_fan]      # 상위기기 냉각 팬
+    pin: host:gpiochip1/gpio103     # 상위기기 팬 핀
     max_power: 1.0
-    sensor_type: temperature_host   # 상위 기기 주 컨트롤러 온도로 설정
+    sensor_type: temperature_host   # 설정을 상위기기 주요 제어 온도로 설정
     control:watermark               # 제어 방식
-    target_temp: 48                 # 상위 기기 냉각 팬 시작 온도
-    min_temp: 0                     # 최저 온도, 이 온도 이하로 내려가면 오류 발생
-    max_temp: 90                    # 최고 온도, 이 온도 이상으로 올라가면 오류 발생
+    target_temp: 48                 # 상위기기 냉각 팬 시작 온도
+    min_temp: 0                     # 최저 온도, 이보다 낮으면 오류 발생
+    max_temp: 90                    # 최고 온도, 이보다 높으면 오류 발생
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # 최대 속도, 전체 출력의 80%
-    min_speed: 0.3                  # 최소 속도, 전체 출력의 30%
+    max_speed: 0.8                  # 최대 속도, 전력의 80%로 회전
+    min_speed: 0.3                  # 최소 속도, 전력의 30%로 회전
     ```

@@ -2,7 +2,6 @@
 sidebar_position: 9
 ---
 
-
 import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TP 5160
@@ -11,31 +10,29 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
 
 ## TMC-5160
 
-    * 入力電圧：12V-48V
-    * 最大電流：4.4A
-    * 適用： Marlin/Klipper/RRF ファームウェア
-    * ドライブモードサポート：TMC：SPI
-    * マイクロステップ補間のステップ/方向インターフェース
-    * 最大分解能は256分割
-    * stealthChop2静音動作とスムーズな動作をサポート
+    * 入力電圧 ：12V-48V
+    * 最大電流 ：4.4A
+    * 対応するファームウェア ：Marlin/Klipper/RRF
+    * ドライバーモードサポート：TMC：SPI
+    * ステッピング/ディレクションインターフェースを備えたマイクロポライザのステップインターポレーション付き
+    * 最高分解能は256分割
+    * stealthChop2静かで滑らかな動作をサポート
     * 中周波数共振の共振抑制をサポート
-    * spreadCycle高動態モータ制御チョッパをサポート
-    * dcStep負荷関連速度制御をサポート
-    * stallGuard2高精度無センサーモータ負荷検出をサポート
-    * coolStep電流制御をサポート、最大75％の省エネが可能
+    * spreadCycle高ダイナミックモーターコントロールチャープをサポート
+    * dcStep負荷関連の速度制御をサポート
+    * stallGuard2高精度無センサーモーターロード検出をサポート
+    * coolStep電流制御をサポートし、最大で75％の省エネが可能
 
-
-
-## TP5160の参考設定
+## TP5160リファレンス設定
 
     :::danger
 
-    * ドライバのサンプル抵抗は`sense_resistor: 0.075`です、誤って設定しないでください
+    * ドライバーサンプリング抵抗は`sense_resistor: 0.075`に設定してください。間違った設定は避けてください
     * spi_busとspi_softwareはどちらか一方を選択してください
     
     :::
 
-### SPIモードの参考設定
+### SPIモードリファレンス設定
 
     ```cfg
     [tmc5160 stepper_x]
@@ -44,42 +41,42 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
     # spi_software_mosi_pin:
     # spi_software_miso_pin:
     # spi_software_sclk_pin: 
-    run_current: 1.0                    # モーターの運転電流値
-    interpolate: False                  # 256マイクロステップ補間を有効にするか（有効はTrue、無効はFalse）
+    run_current: 1.0                    # モーター運転電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするかどうか（有効はTrue、無効はFalse）
     sense_resistor: 0.075
     stealthchop_threshold: 0
     driver_DISS2G: 1
     driver_DISS2VS: 1
     ```
 
-## 無限位使用説明
+## 限位なし使用説明
 
     <DIAG />
 
-    :::tip 無限位使用のヒント
+    :::tip 限位なし使用ヒント
     
-    * TP5160の無限位を使用するには、メインボードのDIAGジャンパーを接続する必要があります
-    * 元の`endstop_pin:`は無効にするか削除し、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加します
-    * `diag1_pin:`を設定した後にリミット状態を更新すると未トリガー状態になります
-    * `driver_SGT: :`は適切な値を自分でテストする必要があります
+    * TP5160を使用して限位なしを使用するには、マザーボードのDIAGジャンパーを接続する必要があります
+    * 以前の`endstop_pin:`は遮蔽または削除する必要があります。その後、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加します
+    * `diag1_pin:`を設定した後、リミットスイッチ状態は未トリガーになります
+    * `driver_SGT:`の設定は適切な値をテストする必要があります
 
     :::
 
-    * 参考設定
+    * 参照設定
 
     ```cfg
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc5160_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # 0に設定しないとホームポジションに戻ることができない可能性があります
+    homing_retract_dist: 0        # 0にするとリホームに失敗する可能性があります
 
     [tmc5160 stepper_x]
     diag1_pin: ^!
     driver_SGT: 1
 
-    #   設定後、リミット状態が未トリガーであることを確認してください
+    #   設定後にリミットスイッチ状態が未トリガーであることを確認してください
     #   このピンは通常、内部プルアップを有効にするために"^"プレフィックスを使用します
-    #   感度はベルトの張り具合に依存し、自分で調整する必要があります
-    #  （適切な感度にdriver_SGTHRSを設定する必要があります）
+    #   センシティビティはベルトの緩みに関連しているため、調整が必要です
+    #  （適切なセンシティビティのdriver_SGTHRSも同時に設定することを確認してください）
 
     ```

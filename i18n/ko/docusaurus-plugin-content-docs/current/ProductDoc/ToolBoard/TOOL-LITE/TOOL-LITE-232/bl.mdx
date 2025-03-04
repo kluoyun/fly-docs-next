@@ -1,0 +1,115 @@
+---
+sidebar_position: 6
+sidebar_label: BL 펌웨어 컴파일 가이드
+---
+
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+    :::팁
+
+    * 호스트 컴퓨터가 정상적으로 인터넷에 연결되어 있는지 확인하세요.
+    * 펌웨어를 컴파일하기 전에 SSH를 통해 네트워크를 통해 호스트 컴퓨터에 로그인해야 합니다.
+    * 호스트 컴퓨터에 시리얼 포트 도구를 사용하지 마세요.
+
+    :::
+
+# Katapult 펌웨어 컴파일
+### 컴파일 시작
+  <SSH />
+  ### Katapult 펌웨어 컴파일 및 구성 페이지 작업 설명
+
+    :::팁
+
+    키보드 입력 모드가 반각 상태인지 확인하세요, 즉 영문 상태인지 확인하세요
+
+    :::
+
+    1. 키보드의 위쪽 키 `↑`, 아래쪽 키 `↓`는 메뉴 항목을 선택하기 위해 커서를 위아래로 이동시킵니다.
+    2. 확인 키 `Enter` 또는 공백 키 `Space`는 메뉴를 체크하거나 하위 메뉴로 들어가기 위해 사용됩니다.
+    3. 종료 키 `ESC`는 상위 메뉴로 돌아가기 위해 사용됩니다.
+    4. `Q` 키는 Katapult 펌웨어 구성 페이지를 종료합니다.
+    5. Katapult 펌웨어 구성 페이지를 종료할 때, 만약 팁이 있다면 `Y` 키를 눌러 구성 파일을 저장합니다.
+
+    다음은 펌웨어를 컴파일하는 방법입니다:
+    * SSH에 접속한 후 아래 명령어를 입력하고 엔터를 누르세요:
+
+        ```bash
+        cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+        ```
+
+    * 여기서 `rm -rf ~/Katapult/.config && rm -rf ~/Katapult/out`는 이전 컴파일 데이터와 펌웨어를 삭제하며, `make menuconfig`는 펌웨어를 컴파일합니다. 실행 후 아래 화면이 나타나야 합니다.
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * `Micro-controller Architecture (LPC176x (Smoothieboard))`를 선택하고 엔터를 누릅니다.
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * 메뉴로 들어가서 **Raspberry Pi RP2040**를 선택하고 엔터를 누릅니다.
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+    * `Build Katapult deployment application (Do not build)`를 선택하고, **Do not build**을 선택합니다.
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+    * **Communication interface**를 선택하고, **Serial (on UART0 GPIO1/GPIO0)**을 선택합니다.
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/UART0.webp').default} size="100%" align="Center" />
+
+    * **Enable Status LED**를 선택하고 엔터를 누릅니다, `Status LED GPIO Pin (NEW)`를 입력하고 **!gpio18**을 입력합니다.
+    :::경고
+        영문 입력 상태에서 `!gpio18`을 입력하세요.
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led1.webp').default} size="100%" align="center" />
+    * **이미지와 대조하여 동일한 설정이 되었는지 확인하고, 일치하면 다음 단계로 진행하세요**
+    * `Q` 키를 누르면 **Save configuration**이 나타납니다. 이때 다시 `Y` 키를 누릅니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아왔습니다.
+    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 꽤 걸립니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 마지막으로 아래 내용이 출력되면 컴파일이 성공했습니다.
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+``` 
+
+## 플래싱 모드 진입
+
+    :::팁
+
+    화살표가 가리키는 것이 `BOOT 버튼`입니다.
+
+    :::
+
+    * 메인 보드가 완전히 전원이 꺼진 상태에서, BOOT 버튼을 누른 채로 데이터 전송용 케이블을 메인 보드 한쪽과 장치 한쪽에 연결합니다.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* 그런 다음 `lsusb`를 입력합니다.
+```bash
+lsusb
+```
+* 아래 이미지에서 나타나는 것처럼 boot 모드로 들어갔다면 다음과 같은 결과가 나옵니다.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* 다음 명령어를 입력하여 펌웨어를 플래시한 후 엔터를 누릅니다.
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::팁
+`mellow`를 입력하면 표시되지 않습니다.
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* 아래 이미지와 같은 상황이 나타난다면 `mellow`를 입력하고 완료되면 엔터를 누릅니다.
+
+* 아래 이미지와 같은 메시지가 나타난다면 `축하합니다` 펌웨어 플래시가 성공했습니다.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## 펌웨어가 정상적으로 시작되었는지 확인
+
+* 펌웨어가 정상적으로 시작되면 LED가 깜빡입니다.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

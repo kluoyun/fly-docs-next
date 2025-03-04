@@ -1,35 +1,30 @@
 ---
 sidebar_position: 11
-sidebar_label: Utilisation de l'I2C
+sidebar_label: Utilisation de I2C
 ---
 
+# Utilisation de I2C
 
-
-
-
-
-# Utilisation de l'I2C
-
-    * Utiliser l'interface I2C du port 40PIN de la machine hôte
-    * Ce tutoriel utilise le capteur I2C FLY-PI V2LM75 et I2C2 comme exemple !!!
-    * Veuillez noter que si l'I2C1 est déjà occupé par d'autres appareils, il ne peut pas être utilisé !!!
+    * Utiliser l'interface I2C de 40 broches de la station de travail supérieure
+    * Ce tutoriel utilise le capteur I2C FLY-PI V2LM75 et I2C2 en exemple !!!
+    * Veuillez noter que I2C1 est déjà occupé par d'autres appareils et ne peut pas être utilisé !!!
     * Assurez-vous que les connexions sont solides et stables !!!
 
-## Ouvrir l'I2C via FLY Tools
+## Ouvrir I2C avec FLY Tools
 
     * Trouvez Overlays et sélectionnez i2c2 et i2c0 à la fin
-    * Veuillez noter que si l'I2C1 est déjà occupé par d'autres appareils, il ne peut pas être utilisé !!!
-    * Sauvegardez et redémarrez
+    * Veuillez noter que I2C1 est déjà occupé par d'autres appareils et ne peut pas être utilisé !!!
+    * Enregistrez et redémarrez
 
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c.webp').default} size="80%" align="center" />
 
 
-## Connexion et recherche
+## Branchement et recherche
 
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c2.webp').default} size="80%" align="center" />
 
-    * Connectez-vous à la machine hôte via SSH et entrez la commande ci-dessous pour afficher le contenu suivant
-    * Si vous utilisez `I2C0`, remplacez le `2` par `0` dans la commande ci-dessous
+    * Utilisez SSH pour vous connecter à la station de travail supérieure FLY, puis entrez la commande ci-dessous qui produira le contenu suivant
+    * Si vous utilisez `I2C0`, remplacez la commande ci-dessous par `0` au lieu de `2`
 
     ```cfg
     sudo i2cdetect -y -r 2
@@ -37,11 +32,11 @@ sidebar_label: Utilisation de l'I2C
 
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/i2c1.webp').default} size="80%" align="center" />
 
-    * Veuillez noter que si tout se passe bien, le contenu ci-dessus apparaît immédiatement avec une adresse après avoir appuyé sur Entrée
+    * Veuillez noter que dans des conditions normales, après avoir appuyé sur Entrée, le contenu ci-dessus apparaîtra immédiatement avec une adresse
     * Veuillez noter que l'adresse est aléatoire
-    * Veuillez noter que si le câblage est incorrect, inversé, si la configuration n'est pas activée ou si le module est endommagé, le résultat ne sera pas normal
-    * Vous devez convertir l'adresse de l'hexadécimal au décimal et la remplir après `i2c_address:` dans la configuration
-    * Vous pouvez utiliser un convertisseur de base en ligne via un navigateur pour convertir
+    * Veuillez noter que si les connexions sont incorrectes, inversées, non configurées ou que le module est endommagé, le résultat sera anormal
+    * L'adresse doit être convertie de hexadécimal en décimal avant d'être remplacée dans la configuration après `i2c_address:`
+    * Vous pouvez utiliser un convertisseur de base en ligne pour effectuer cette conversion
 
 ## Configuration
 
@@ -52,8 +47,9 @@ sidebar_label: Utilisation de l'I2C
     [temperature_sensor my_sensor]
     sensor_type: LM75
     i2c_address:72
-    # #   La valeur par défaut est 72 (0x48). La plage normale est de 72 à 79 (0x48-0x4F) et les 3 bits les plus bas de l'adresse sont configurés via des broches sur la puce
-    # #   (généralement avec des cavaliers ou des fils rigides).
+    # #   Default is 72 (0x48). Normal range is 72-79 (0x48-0x4F) and the 3
+    # #   low bits of the address are configured via pins on the chip
+    # #   (usually with jumpers or hard wired).
     i2c_mcu:host
     i2c_bus:i2c.2
     # i2c_software_scl

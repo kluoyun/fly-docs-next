@@ -1,7 +1,6 @@
 ---
 sidebar_position: 4
-sidebar_label: Firmware RS232
-
+sidebar_label: RS232 firmware burning
 ---
 
 import USBFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
@@ -13,7 +12,7 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
 # Compilation du firmware RS232
 
-## Début de la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -21,14 +20,17 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Sélectionnez les broches GPIO à définir au démarrage du microcontrôleur, entrez : !gpio5 Veuillez noter que ! est en majuscule
+    * Sélectionnez **GPIO pins to set at micro-controller startup**, entrez : **!gpio5**
+    :::warning
+        Veuillez entrer `!gpio5` en mode d'entrée anglaise.
+    :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, lorsque **Save configuration** apparaît, appuyez sur la touche `Y`
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, appuyez alors sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si vous voyez le message suivant, la compilation a réussi
+    * Si la sortie finale ressemble au texte ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
@@ -36,31 +38,30 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Entrez en mode flashage
+## Entrer en mode de programmation
 
     :::tip
 
-    À gauche se trouve le bouton `RESET`, à droite le bouton `BOOT`
+    À gauche se trouve le bouton `RESET`, à droite se trouve le bouton `BOOT`
 
     :::
 
-    * Il y a deux méthodes pour entrer en mode DFU
-    * Première méthode : Avec la carte complètement déconnectée, maintenez le bouton BOOT enfoncé, puis connectez le câble de données à la carte et à l'ordinateur hôte
-    * Deuxième méthode : Avec le câble de données déjà connecté à la carte et à l'ordinateur hôte, maintenez le bouton BOOT enfoncé, appuyez sur le bouton RST, relâchez RST puis relâchez BOOT
+    * Il y a deux méthodes pour entrer en DFU
+    * Première méthode : Dans le cas où la carte mère est complètement débranchée, maintenez enfoncé le bouton BOOT puis branchez le câble de transfert de données d'un côté sur la carte mère et de l'autre côté sur l'ordinateur
+    * Deuxième méthode : Avec le câble de transfert de données branché d'un côté sur la carte mère et de l'autre côté sur l'ordinateur, maintenez enfoncé le bouton BOOT, puis appuyez sur le bouton RST, relâchez ensuite le bouton RST et enfin relâchez le bouton BOOT
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Confirmer l'entrée en mode flashage
+## Vérifier si le mode de programmation a été activé
 
     <LS />
 
 
-## Flashage du firmware 
+## Brûler le firmware
     
     <USBFLASH />
-    
 
 
-## Vérification du démarrage du firmware
+## Vérifier si le firmware a démarré
 
     * Si le firmware démarre correctement, la LED s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.webp').default} size="100%" align="center" />

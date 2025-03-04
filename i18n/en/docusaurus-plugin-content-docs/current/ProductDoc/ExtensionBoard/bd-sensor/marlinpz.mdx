@@ -6,24 +6,23 @@ sidebar_label: Marlin Automatic Z-OFFSET
 # Marlin's Collision Sensing
 
 :::info
-This feature requires the BD sensor firmware version (you can obtain this version by sending M102 S - 1, not the hardware version on the sensor)
-to be V1.1b, greater than V1.2b, or purchased after March 2024. Otherwise, you need to use an external hardware tool (such as STlink) to flash the firmware into the BD sensor.
+This feature requires the BD sensor firmware version (which you can obtain by sending M102 S-1, not the hardware version on the sensor) to be V1.1b, greater than V1.2b, or purchased after March 2024. Otherwise, you need to use an external hardware tool (such as STlink) to flash the firmware into the BD sensor.
 :::
 
 # How It Works
 
-* Automatically performs z-axis offset calibration when executing G28: It can be triggered after homing (when the nozzle touches the platform) - then slowly moves upward until the nozzle just leaves the platform - and sets this position as the 0 point of the z-axis.
+* Automatically calibrates the z-axis offset when executing G28: It can be triggered after homing (when the nozzle touches the platform) — then slowly moves upward until the nozzle just leaves the platform — setting this position as the z-axis zero point.
 
 # Benefits
 
 * Automatic z-axis offset calibration.
-* At the same time, you can still manually adjust the z-axis offset for different filaments.
-* Overcomes temperature drift.
-* Temperature drift will change the z-axis offset, but it will not change the range of the bed mesh height map with the BD sensor. This means that even if the temperature is different, the bed mesh is the same.
+* You can still manually adjust the z-axis offset for different filaments.
+* Overcome temperature drift.
+* Temperature drift changes the z-axis offset but does not change the range of the bed mesh height map with the BD sensor. This means that even if the temperature is different, the bed mesh remains the same.
 
 :::info Tip
-The code for this feature is in the pull request list of the official Marlin GitHub: https://github.com/MarlinFirmware/Marlin/pull/27243
-So please use the following Marlin code: https://github.com/markniu/MarlinPULL/tree/bugfix - 2.1.x
+The code for this feature is in the official Marlin GitHub pull request list: https://github.com/MarlinFirmware/Marlin/pull/27243
+So please use the following Marlin code: https://github.com/markniu/MarlinPULL/tree/bugfix-2.1.x
 :::
 
 # How to Use
@@ -34,24 +33,24 @@ It should look like this:
 ``` bash
 #define BD_SENSOR
 #if ENABLED(BD_SENSOR)
-  #define BD_SENSOR_PROBE_NO_STOP // Probe bed without stopping at each probe point`
-  #define BD_SENSOR_CONTACT_PROBE // it uses nozzle collision sensing to probe while homing`
+  #define BD_SENSOR_PROBE_NO_STOP // Probe bed without stopping at each probe point
+  #define BD_SENSOR_CONTACT_PROBE // it uses nozzle collision sensing to probe while homing
 #endif
 ```
-* Increase the speed of the probe in configuration.h.
+* Increase the probe speed in configuration.h.
 
-* The sensitivity depends on the speed, so you need to adjust the speed of the Z-axis.
-* The homing_speed (homing speed) and second_homing_speed (secondary homing speed) should be in the range of 3 to 10, here is the Z-axis probe feed rate.
+* Sensitivity depends on speed, so you need to adjust the Z-axis speed.
+* homing_speed (homing speed) and second_homing_speed (secondary homing speed) should be in the range of 3 to 10, which is the Z-axis probe feed speed.
 * For example:
 ``` bash
  #define Z_PROBE_FEEDRATE_FAST  (5*60)
  #define Z_PROBE_FEEDRATE_SLOW  (5*60)
 ```
-* Increase the Z-axis homing lift in Configuration_adv.h to more than 4 mm.
+* Increase the homing lift of the Z-axis to more than 4 millimeters in Configuration_adv.h.
 ``` bash
 #define HOMING_BUMP_MM      { 5, 5, 5 } 
 ```
 # Test Homing
-* Please send the `G28 Z` command about 10 times, or use the `M48` command to see if it is stable.
+* Please send about 10 `G28 Z` commands, or use the `M48` command, to see if it is stable.
 
-<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=DzmGyJNS9bY">Demo Video</Button> 
+<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=DzmGyJNS9bY">Demonstration Video</Button>

@@ -3,33 +3,30 @@ sidebar_position: 11
 sidebar_label: Main Control Fan
 ---
 
-
-
-
 # Onboard 5V Fan Port
 
-## The Gemini board has an onboard 5V controllable interface for main control cooling, and the wiring method is as follows
+## Gemini has an onboard 5V controllable interface for main control cooling, and the wiring method is shown in the following figure
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.webp').default} size="80%" align="center" />
 
 ## Reference Configuration
 
     ```cfg
-    [mcu host]                      # FlyOS has already generated a Linux MCU for you by default, just define it to use           
+    [mcu host]                      # FlyOS has generated a linux MCU for you by default, just define and use           
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Host machine temperature
+    [temperature_sensor FLY-π]      # Host computer temperature
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # Host machine cooling fan
-    pin: host:gpiochip1/gpio103     # Host machine fan pin
+    [temperature_fan core_fan]      # Host computer cooling fan
+    pin: host:gpiochip1/gpio103     # Host computer fan pin
     max_power: 1.0
-    sensor_type: temperature_host   # Set to host machine main control temperature
+    sensor_type: temperature_host   # Set to host computer main control temperature
     control:watermark               # Control method
-    target_temp: 48                 # Temperature at which the host machine cooling fan starts
-    min_temp: 0                     # Minimum temperature, below which it will report an error
-    max_temp: 90                    # Maximum temperature, above which it will report an error
+    target_temp: 48                 # Host computer cooling fan start temperature
+    min_temp: 0                     # Minimum temperature, an error will be reported below this temperature
+    max_temp: 90                    # Maximum temperature, an error will be reported above this temperature
     off_below: 0.10
     kick_start_time: 0.50
     max_speed: 0.8                  # Maximum speed, 80% of full power operation
