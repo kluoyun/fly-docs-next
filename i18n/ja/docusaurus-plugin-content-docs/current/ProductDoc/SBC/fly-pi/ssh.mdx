@@ -1,23 +1,24 @@
 ---
 sidebar_position: 3
-sidebar_label: SSH接続上位機
+sidebar_label: SSH接続上のマシンに接続
 ---
 
-# 上位機にSSH接続
+# 上位機SSHへの接続
 
-* シリアルポートまたはWIFIを使用してデバイスに接続できます
-* **MobaXterm_Personal**または他の**SSH端末ツール**を用意してください
-* SDカードまたはM2WEに**対応する上位機のシステムを焼き込む**ようにしてください
-* **上位機が正常に起動しない場合は、ドライバー、リミットスイッチ、ファンなどの周辺機器を取り外してください！！！**
-* **最後にネットワーク経由でSSHに接続してファームウェアのビルドを簡単に行えるようにしてください！！**
-* **ファームウェアのビルドが必要な場合は、WIFIまたはイーサネット接続の上位機のチュートリアルを参照してください**
+
+* シリアルポートまたはWi-Fiを使用してデバイスに接続することができます
+* 事前に**MobaXterm_Personal**または他の**SSHターミナルツール**を準備してください
+* SDカードまたはM2WEに**対応する上位機のシステム**が焼入れられていることを確認してください
+* **もし上位機が正常に起動しない場合はドライバー、リミッター、ファンなどの外部機器を取り外してください！！！**
+* **最後にネットワーク経由でSSHに接続してファームウェアのコンパイルが便利です！！**
+* **ファームウェアのコンパイルが必要な場合はWi-Fiまたはイーサネットケーブルで上位機に接続するチュートリアルを参照してください**
 
 <Tabs>
     <TabItem value="serial" label="シリアル接続" default>
-        ## シリアルポートを使用して上位機にSSH接続
+        ## 上位機SSHにシリアル接続を使用して接続
 
-        * USB Type-cケーブルを使用してFLYの上位機とPCを接続します
-        * その他の上位機は接続方法を各自で確認してください！！
+        * USB Type-cケーブルを使用してFLYの上位機とコンピュータを接続します
+        * その他の上位機は接続方法を各自で調査してください！！
 
         <Tabs>
             <TabItem value="piv1" label="FLY-Pi(π)" default>
@@ -26,44 +27,44 @@ sidebar_label: SSH接続上位機
             </TabItem>
         </Tabs>
 
-        * メインボードとPCが正常に接続されていれば、デバイスマネージャを開くとCH340のポートが見えます
+        * マザーボードとコンピュータが正常に接続されている場合、デバイスマネージャーを開くことでCH340のポートを見つけることができます
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="40%" align="center" />
 
-        * `MobaXterm`を開き、以下の設定を行います。ポートはデバイスマネージャで見たポートを選択します
+        * `MobaXterm`を開き、以下の設定を行い、ポートはデバイスマネージャーで見たポートを選択してください
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="40%" align="center" />
 
-        * すべて正常であれば起動画面が表示されます
+        * 問題なければ起動画面を見ることができます
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.webp').default} size="40%" align="center" />
 
-        * 少し待つと、この画面が表示されれば起動しています
+        * 数分待つと、この画面が表示されれば起動しています
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.webp').default} size="40%" align="center" />
 
-        **数分待っても下図のように画面に何も表示されない場合は、リターンキーを数回押してください**
+        **数分待っても何も表示されない場合は、エンターキーを数回押してください**
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.webp').default} size="40%" align="center" />
 
-        **リターンキーを押した後、下図のように表示されます**
+        **エンターキーを押すと、以下の内容が表示されます**
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.webp').default} size="40%" align="center" />
 
-        * IPアドレスを確認する場合は、ssh内で`ip a | grep inet`と入力し、リターンキーを押します。戻り内容からルータと同じセグメントのIPを探してアクセスしてください
+        * IPアドレスを確認したい場合は、sshで `ip a | grep inet` を入力し、エンターキーを押します。戻り値の中でルーターと同じセグメントのIPを見つけます
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.webp').default} size="40%" align="center" />
 
     </TabItem>
     <TabItem value="net" label="ネットワーク接続" default>
-        ## ネットワークIPを使用して上位機にSSH接続
+        ## 上位機SSHにネットワークIPを使用して接続
 
-        * 上位機が接続されている**ルーターの管理画面にログインしてください**
+        * 上位機が接続された**ルーターのバックエンド**にログインしてください
         * システムが**正常に起動している**ことを確認してください
-        * 上位機の**ユーザー名とパスワードを知っている**ことを確認してください。FLYシステムのデフォルトユーザー名は**fly**、デフォルトパスワードは**mellow**です
-        * メインボードが起動してネットワークに接続されている場合、IPを使用してSSHに接続できます
-        * MobaXtermを開き、以下の設定を行います。IPは先ほど確認したものを入力するか、ルーターの管理画面で確認してください
+        * 自分で上位機のユーザー名とパスワードを知っていることを確認してください。FLYシステムのデフォルトのユーザー名は**fly**で、デフォルトのパスワードは**mellow**です
+        * マザーボードが起動しており、ネットワークに接続されている場合、IPを使用してSSHに接続できます
+        * MobaXtermを開き、以下の設定を行い、IPは確認したものを入力してください。また、ルーターのバックエンドでも確認できます
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
 
@@ -71,21 +72,21 @@ sidebar_label: SSH接続上位機
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.webp').default} size="40%" align="center" />
 
-        * 初回接続ではこのウィンドウがポップアップします。`Accept`をクリックしてください
+        * 最初の接続時にこのウィンドウがポップアップします。`Accept`をクリックしてください
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="40%" align="center" />
 
-        * パスワードの入力が求められます。上位機のパスワードを入力してリターンキーを押します
+        * パスワードを入力するように求められます。上位機のパスワードを入力し、エンターキーを押してください
 
-        **注意：ここで入力されたパスワードは表示されません。入力が完了したら直接リターンキーを押してください**
+        **注意：ここで入力するパスワードは見えません。入力後直接エンターキーを押してください**
 
-        FLYシステムのデフォルトでは、ユーザー名は：`fly` 、パスワードは：`mellow`です
+        FLYシステムのデフォルトは、ユーザー名が`fly`で、パスワードが`mellow`です
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.webp').default} size="40%" align="center" />
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.webp').default} size="40%" align="center" />
 
-        * ログイン成功
+        * 接続が成功しました
 
     </TabItem>
 </Tabs>

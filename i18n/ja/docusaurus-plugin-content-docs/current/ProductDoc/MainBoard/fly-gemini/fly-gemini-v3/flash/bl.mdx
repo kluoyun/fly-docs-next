@@ -3,10 +3,6 @@ sidebar_position: 6
 sidebar_label: BLファームウェア、無視してください
 ---
 
-
-
-
-
 import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
@@ -15,59 +11,58 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * 出荷時に`bootloader`が既にフラッシュされているので、再度フラッシュする必要はありません。
+    * 注意：出荷時に`bootloader`がプリインストールされていますので、再び書き込む必要はありません。
 
     :::
 
-## 書き込みモードへの進入
+## フラッシュモードに入る
 
 
-    * 書き込みモードに入る方法は二つあります
-    * 第一の方法：主板が完全に電源オフの状態で、BOOTとBOOT1を短絡し、データ転送ケーブルの一端を主板に接続し、もう一方をあなたのデバイスに接続します
-    * 第二の方法：データ転送ケーブルの一端を主板に接続し、もう一方をあなたのデバイスに接続した後、BOOTとBOOT1を短絡してからRSTボタンを押し、RSTボタンを離し、最後にBOOTジャンパを切り離します
+    * フラッシュモードに入るには2つの方法があります。
+    * 方法1：マザーボードを完全に電源オフにし、BOOTとBOOT1をショートし、データ転送用のケーブルをマザーボードとデバイスに接続します。
+    * 方法2：データ転送用のケーブルをマザーボードとデバイスに接続した後、BOOTとBOOT1をショートし、RSTボタンを押してから離します。最後にBOOTショートジャンパーを外します。
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
-## ファームウェアの書き込み
+## ファームウェアのフラッシュ
     <Tabs>
-        <TabItem value="win" label="Windows書き込みチュートリアル" default>
+        <TabItem value="win" label="Windowsのフラッシュチュートリアル" default>
 
-            * Geminiのbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">自動的にファームウェアをダウンロード</Button>
+            * Geminiのbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">ファームウェアを自動ダウンロードするにはここをクリック</Button>
 
-            * ディップスイッチ`3`,`4`を右にスライドし、下位機と上位機を内蔵USBで接続します
-            * ディップスイッチ`1`,`2`を左にスライドし、そうしないと下位機と上位機の接続に影響します
+            * ディップスイッチ`3`,`4`を右側に倒し、デバイスとホスト間を内蔵USBで接続します。
+            * ディップスイッチ`1`,`2`を左側に倒さないでください。それにより、デバイスとホスト間の接続に影響が出ます。
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip3.webp').default} size="50%" align="center" />
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="上位機書き込みチュートリアル">
+        <TabItem value="linux" label="ホストのフラッシュチュートリアル">
 
-            * ディップスイッチ`1`,`2`を右にスライドし、下位機と上位機を内蔵USBで接続します
-            * ディップスイッチ`3`,`4`を左にスライドし、そうしないと下位機と上位機の接続に影響します
+            * ディップスイッチ`1`,`2`を右側に倒し、デバイスとホスト間を内蔵USBで接続します。
+            * ディップスイッチ`3`,`4`を左側に倒さないでください。それにより、デバイスとホスト間の接続に影響が出ます。
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip1.webp').default} size="50%" align="center" />
-            * この方法でディップスイッチを操作した後、下部USBポートは下位機に占有されるため、他のデバイスを接続しないでください
+            * ディップスイッチをこの方法で動かした後、下部のUSBポートはデバイスによって占有されますので、他のデバイスを接続しないでください。
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
 
             <Katapult />
 
-            4. ファームウェアの書き込み
+            4. ファームウェアのフラッシュ
 
             :::tip
 
-            どちらか一つのファームウェアを書き込むだけで大丈夫です。
+            どちらか一方のファームウェアだけをフラッシュする必要があります。
 
             :::
 
-
-            * 以下はbootloaderファームウェアの書き込みコマンドです
+            * 以下のbootloaderファームウェアのフラッシュコマンドです。
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/Gemini/GeminiV3.bin
                 ```
 
-            5. 下記の図の矢印に示される内容「File downloaded successfully」が表示されれば、書き込み成功です
+            5. 画像の矢印部分に示されている内容「File downloaded successfully」が表示された場合、フラッシュが成功しました。
 
             :::warning
 
-            赤い矢印で指している行の**後ろのエラー**は無視してください！！！
+            赤い矢印で示される行の後のエラーは無視してください！！
 
             :::
 
@@ -75,7 +70,7 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
             :::tip
 
-            書き込み完了後、主板に一度完全に電源を切る必要があります。
+            フラッシュが完了したら、マザーボードを完全にシャットダウンする必要があります。
 
             :::
 

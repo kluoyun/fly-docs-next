@@ -1,64 +1,60 @@
 ---
-sidebar_position: 6
-sidebar_label: Firmware BL, veuillez ignorer
+position-sidebar: 6
+étiquette-sidebar: BL firmware, ignorez cela
 ---
-
-
-
-
 
 import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
-# Firmware BL
+# BL firmware
 
     :::tip
 
-    * Veuillez noter que le bootloader est déjà préinstallé en usine, pas besoin de le reflasher
+    * Veuillez noter que le bootloader est préinstallé en usine et n'a pas besoin d'être réinstallé.
 
     :::
 
-## Entrer en mode de programmation
+## Entrée en mode de programmation
 
 
-    * Il y a deux méthodes pour entrer en mode de programmation
-    * La première : lorsque la carte mère est complètement déconnectée, maintenez la touche BOOT enfoncée puis connectez le câble de données à la carte mère et à votre appareil, adapté pour Windows
-    * La deuxième : après avoir connecté le câble de données à la carte mère et à votre appareil, maintenez la touche BOOT enfoncée puis entrez la commande, adapté pour la machine hôte
+    * Il existe deux méthodes pour entrer en mode de programmation.
+    * Première méthode : Désactivez complètement l'alimentation du circuit mère, maintenez enfoncée la touche BOOT, puis branchez un câble de transmission de données entre la carte mère et votre appareil, adapté à WINDOWS.
+    * Deuxième méthode : Après avoir branché un câble de transmission de données entre la carte mère et votre appareil, maintenez enfoncée la touche BOOT, puis saisissez une commande, adapté à l'appareil supérieur.
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Programmer le firmware
+## Programmation du firmware
     <Tabs>
         <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
 
-            * Firmware du bootloader pour C8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">Cliquez pour télécharger automatiquement le firmware</Button>
+            * Le firmware du bootloader pour C8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">cliquez pour télécharger automatiquement le firmware</Button>
 
 
-            * Déplacez les interrupteurs DIP `3`, `4` vers la droite, connectez le dispositif inférieur à l'appareil hôte via l'USB intégré
-            * Déplacez les interrupteurs DIP `1`, `2` vers la gauche, sinon cela affectera la connexion entre le dispositif inférieur et l'appareil hôte
+            * Déplacez les commutateurs `3`, `4` vers la droite pour connecter le périphérique inférieur avec le périphérique supérieur via USB intégré.
+            * Déplacez les commutateurs `1`, `2` vers la gauche, sinon cela affectera la connexion entre le périphérique inférieur et le périphérique supérieur.
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.webp').default} size="100%" align="center" />
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="Tutoriel de programmation pour la machine hôte">
+        <TabItem value="linux" label="Tutoriel de programmation sous Linux">
 
-            * Déplacez les interrupteurs DIP `1`, `2` vers la droite, connectez le dispositif inférieur à l'appareil hôte via l'USB intégré
-            * Déplacez les interrupteurs DIP `3`, `4` vers la gauche, sinon cela affectera la connexion entre le dispositif inférieur et l'appareil hôte
+            * Déplacez les commutateurs `1`, `2` vers la droite pour connecter le périphérique inférieur avec le périphérique supérieur via USB intégré.
+            * Déplacez les commutateurs `3`, `4` vers la gauche, sinon cela affectera la connexion entre le périphérique inférieur et le périphérique supérieur.
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.webp').default} size="100%" align="center" />
-            * Après avoir positionné les interrupteurs DIP selon cette méthode, le port USB inférieur sera occupé par le dispositif inférieur, veuillez ne pas y connecter d'autres appareils
+            * Après avoir déplacé les commutateurs selon cette méthode, le port USB en bas sera occupé par le périphérique inférieur, veuillez ne pas y brancher d'autres appareils.
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
 
-            * Assurez-vous que la machine hôte peut se connecter à Internet
+            * Assurez-vous que le périphérique supérieur peut accéder à Internet
 
 
                 ```bash
                 sudo wget https://cdn.mellow.klipper.cn/BL/HIDBL.bin -O ~/HIDBL.bin && sudo fly-flash -d c8 -u -f ~/HIDBL.bin
                 ```
-            * Lorsque le message suivant apparaît, maintenez la touche BOOT du dispositif inférieur enfoncée puis appuyez sur Enter
+            * Lorsque vous voyez le message suivant, appuyez longtemps sur le bouton BOOT du périphérique inférieur puis appuyez sur Entrée.
 
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="80%" align="center" />
 
-            * Lorsque l'image suivante apparaît, cela signifie que la programmation a réussi et vous pouvez relâcher la touche BOOT
+            * Lorsque vous voyez l'image ci-dessous, cela signifie que la programmation a réussi et vous pouvez relâcher le bouton BOOT.
                 <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="80%" align="center" />
 
 

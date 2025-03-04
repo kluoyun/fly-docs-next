@@ -2,76 +2,70 @@
 sidebar_position: 7
 ---
 
-
-
-
-
-
-
 # TMC 5160 Plus
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus.webp').default} size="100%" align="center" />
 
-## 基本パラメータ
+## 基本参数
 
-    * 入力電圧：12-60V
-    * 最大電流：10A
-    * 対応ファームウェア：Marlin/Klipper/RRF
-    * 駆動モードサポート：TMC：SPI
-    * マイクロステップ補間機能付きステップ/方向インターフェース
-    * 最大256分割の解像度
-    * stealthChop2の静音動作と滑らかな動作をサポート
-    * 中周波共振の抑制をサポート
-    * spreadCycle高動的モータ制御チョッパーをサポート
-    * dcStep負荷関連速度制御をサポート
-    * stallGuard2高精度無センサーモータ負荷検出をサポート
-    * coolStep電流制御をサポート、最大75%の省エネ
+    * 入力電圧 ：12-60V
+    * 最大電流 ：10A
+    * 用途 ： Marlin/Klipper/RRF ファームウェア
+    * ドライバーモードサポート：TMC：SPI
+    * ステップ/ディレクションインターフェースにマイクロポライザー付き
+    * 最高分解能は256分割
+    * stealthChop2静かで滑らかな動作をサポート
+    * 中周波数の共振抑制をサポート
+    * spreadCycle高ダイナミックモーターコントロールチョッパーをサポート
+    * dcStep負荷関連の速度制御をサポート
+    * stallGuard2高精度無センサーモーターロード検出をサポート
+    * coolStep電流制御をサポート、最大で75％の省エネ
 
-## 主板ジャンパーとドライバ接続の説明
+## メインボードジャンパーやドライバー配線の説明
 
     :::tip
 
-    TMC 5160 PlusはSPIモードを使用します。FLY主板のジャンパーはSPIジャンパーに従ってジャンパーキャップを設置してください。他社の主板については、主板の販売者にご確認ください。
+    TMC 5160 PlusはSPIモードを使用します。FLYメインボードのジャンパーはSPIジャンパーを設置してください。他のメーカーのメインボードについては、メインボードの販売店にお問い合わせください。
 
     :::
 
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
 
-### 主板FPCの設置
+### メインボードFPCのインストール
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fpc.webp').default} size="100%" align="center" />
 
-### RGBスイッチの選択
+### RGBダイアルセレクト
 
     :::tip
 
-    主板のENピンを使用してRGBを制御すると、モータが強制的にロックされます。
+    メインボードのENピンを使用してRGBを制御すると、モーターが強制的にロックされます。
 
     :::
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb.webp').default} size="100%" align="center" />
     
-    * 複数のドライバのRGB接続
+    * 複数のドライバーリングRGB配線
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb-1.webp').default} size="80%" align="center" />
 
 
-### 12V FAN接続
+### 12V FAN配線
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fan.webp').default} size="100%" align="center" />
 
-## 主板の参照設定
+## メインボードリファレンス設定
 
     :::danger
 
-    ドライバのサンプリング抵抗は0.033に設定してください、誤って設定しないでください。
+    ドライバーのサンプリング抵抗は0.033です。間違えて設定しないでください。
 
     :::
 
 
     <Tabs>
-        <TabItem value="ドライバのENピンを使用してRGBを制御する場合" default>
+        <TabItem value="使用驱动EN脚控制RGB时" default>
         
-        * スイッチはFANポートに向けて切り替え
+        * ダイアルをFANポート側に向ける
 
         ```
         [stepper_x]
@@ -94,9 +88,9 @@ sidebar_position: 7
         </TabItem>
 
 
-        <TabItem value="主板のRGBピンを使用してRGBを制御する場合" default>
+        <TabItem value="使用主板RGB脚控制RGB时" default>
         
-        * スイッチはFANポートの反対方向に向けて切り替え
+        * ダイアルをFANポートの反対側に向ける
 
         ```
         [stepper_x]
@@ -119,16 +113,16 @@ sidebar_position: 7
 
         </TabItem>
 
-        <TabItem value="RGB参照設定" default>
+        <TabItem value="RGB参考配置" default>
 
-        * プラグインを通じてドライバLEDを制御する  <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">クリックでジャンプ</Button>
+        * プラグイン拡張を使用してドライバーレッドを制御 <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">クリックして移動</Button>
 
         ```
         [neopixel TP_led]
         pin: 
         chain_count: 6
-        # LEDの数
-        # 灯珠数量
+        # Number of LEDs
+        # LED数量
         color_order: GRB
         initial_RED: 0.4    
         initial_GREEN: 0.8
@@ -146,6 +140,6 @@ sidebar_position: 7
 
     :::danger
 
-    TMC5160 Plusは10Aをサポートしますが、過大な電流はモータを損傷する可能性があり、散熱を強化する必要があります。
+    TMC5160 Plusは10Aまでサポートしていますが、過度の電流はモーターを損傷する可能性があり、冷却が必要です。
 
     :::

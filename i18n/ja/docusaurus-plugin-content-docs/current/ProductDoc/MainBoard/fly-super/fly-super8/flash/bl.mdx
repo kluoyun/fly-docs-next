@@ -1,50 +1,51 @@
 ---
 sidebar_position: 6
-sidebar_label: BLファームウェア、無視してください
+sidebar_label: BL固件，请无视
 ---
 
 import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
-# BLファームウェア
+# BL固件
 
     :::tip
 
-    * 出荷時には既に`bootloader`がプリインストールされているので、再インストールする必要はありません。
+    * 出廠時にブートローダーが事前にフラッシュされていることに注意してください。再度フラッシュする必要はありません。
 
     :::
 
-## 書き込みモードに入る
+## フラッシュモードに入る
 
-    * 書き込みモードに入る方法は2種類あります。
-    * 第一の方法：メインボードが完全に電源を切った状態で、BOOTを短絡し、データ転送対応のケーブルをメインボードとデバイスに接続します。
-    * 第二の方法：データ転送対応のケーブルをメインボードとデバイスに接続した後、BOOTを短絡し、RSTキーを押し、RSTキーを離し、最後にBOOTのジャンパを外します。
+
+    * フラッシュモードに入るには2つの方法があります
+    * 方法1：マザーボードが完全に電源を切られている状態で、BOOTピンをショートし、データ転送用のケーブルをマザーボードとデバイスの間に接続します
+    * 方法2：データ転送用のケーブルをマザーボードとデバイスの間に接続した後、BOOTピンをショートし、RSTボタンを押してからRSTボタンを離し、最後にBOOTピンのショートを解除します
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/flash/img/boot.webp').default} size="100%" align="center" />
 
-## ファームウェアの書き込み
+## 固件のフラッシュ
 
     <Tabs>
-        <TabItem value="win" label="Windowsでの書き込みチュートリアル" default>
-            * SUPER8のbootloaderファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">自動ダウンロード</Button>
+        <TabItem value="win" label="Windowsのフラッシュチュートリアル" default>
+            * SUPER8のブートローダー固件 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">ファームウェアを自動ダウンロードするにはこちらをクリック</Button>
             <WIN />
             
         </TabItem>
-        <TabItem value="linux" label="ホストPCでの書き込みチュートリアル">
+        <TabItem value="linux" label="ホストPCのフラッシュチュートリアル">
             
             <Katapult />
-            4. ファームウェアの書き込み
+            4. 固件のフラッシュ
             :::tip
-            どれか一つのファームウェアを書き込むだけです。
+            1つのファームウェアのみをフラッシュする必要があります
             :::
-            * 以下はファームウェア書き込みコマンドです
+            * 下記はフラッシュコマンドです
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER8.bin
                 ```
-            5. 下図の矢印で示されているように``File downloaded successfully``と表示されれば、書き込み成功です。
+            5. 下図矢印部分に示す「File downloaded successfully」というメッセージが表示された場合、フラッシュが成功しました
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
             :::tip
-            書き込み完了後、メインボードの電源を一度完全に切る必要があります。
+            フラッシュが完了したら、マザーボードの電源を一度完全にオフにする必要があります。
             :::
         </TabItem>
     </Tabs>

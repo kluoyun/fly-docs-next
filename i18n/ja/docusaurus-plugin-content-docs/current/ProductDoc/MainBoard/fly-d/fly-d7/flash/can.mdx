@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USBブリッジCANファームウェアの書き込み
+sidebar_label: USBブリッジCANファームウェアの焼込
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,9 +11,9 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBブリッジCANファームウェアの書き込み
+# USBブリッジCANファームウェアの焼込
 
-## 開始コンパイル
+## コンパイル開始
 
     <SSH />
 
@@ -21,23 +21,33 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * `Q` キーを押して **Save configuration** が表示されたら、`Y` キーを押してください
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 設定が保存され、コマンドラインインターフェースに戻るはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかる場合があります
+    * `Q` キーを押すと、**Save configuration** が表示され、その後 `Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 現在は設定が保存され、コマンドラインインターフェースに戻ります
+    * `make -j4` を入力してコンパイルを開始します。時間がかかることがあります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されるとコンパイルが成功したことになります
+    * 最後に次の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 書き込みモードへの確認
+## ファームウェア焼込モードに入る
+
+    :::tip ヒント
+        2024年9月1日以降に製造されたD7には既にKatapultファームウェアが焼込まれています
+    :::
+    * USBケーブルでメインボードをホストマシンに接続し、**resetボタンをダブルクリック**すると、メインボードのLEDが点滅します。
+    :::warning 警告
+       * LEDが点滅しない場合、<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#進入dfu燒錄模式">Katapultファームウェアの焼込み</Button>を再度実行してください
+       * LEDが点滅しない場合、Katapultファームウェアの焼込み後、次の手順を実行してください
+    :::
+
+    <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
 
     <LS />
 
-## ファームウェアの書き込み
+## ファームウェアの焼込
 
     <CANBOOT />
-

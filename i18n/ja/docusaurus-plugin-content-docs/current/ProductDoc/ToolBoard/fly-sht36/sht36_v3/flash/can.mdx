@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: CANファームウェアのコンパイルと書き込み
+sidebar_label: CANファームウェアのコンパイルとフラッシュ
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
 # CAN ファームウェアのコンパイル
 
-## コンパイルの開始
+## コンパイル開始
 
     <SSH />
 
@@ -20,36 +20,105 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * GPIOピンをマイクロコントローラ起動時に設定する選択肢を選び、入力：!gpio5 注意：!は大文字
+    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio5**
+    :::warning
+        `!gpio5`を入力する際は英数入力モードにしてください
+    :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/can.webp').default} size="100%" align="center" />
-    * `Q` キーを押し、**Save configuration**が表示されたら、`Y` キーを押します
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインインターフェースに戻ります
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * **上図と照らし合わせて確認し、上図と一致していることを確認してから次の手順に進んでください**
+    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 現在、設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始してください。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されれば、コンパイル成功です
+    * 最後に以下の内容が表示されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
+---
+
+## オフボードの設定
+    :::warning
+        あなたのオフボードが **FLY** のオフボードである場合、このステップの **オフボードの設定** は実行する必要はありません
+    :::
+
+    :::warning
+       あなたのオフボードが **非FLY** のオフボードである場合、以下の手順を実行してください
+    :::
+
+    ### オフボードがCANをサポートしているか確認
+
+    * **FLYオフボード** の場合はこの操作は不要です
+    * あなたのシステムが`Ubuntu`の場合には`UbuntuのCAN0の設定`が必要ですが、このドキュメントはまだ更新されていません
+    * 下記のコマンドを入力して、システムがCANをサポートしているかどうかを確認します
+    ```bash
+    sudo modprobe can && echo "あなたのカーネルはCANをサポートしています" || echo "あなたのカーネルはCANをサポートしていません"
+    ```
+    * 上記のコマンドを入力した後、カーネルがCANをサポートしている場合は「あなたのカーネルはCANをサポートしています」と返されます。サポートしていない場合は「あなたのカーネルはCANをサポートしていません」と返されます。
+    :::tip
+        「あなたのカーネルはCANをサポートしています」が返された場合、次にCAN0の設定に進むことができます。「あなたのカーネルはCANをサポートしていません」と返された場合、オフボードシステムの変更またはオフボードの交換をお願いします。
+    :::
+   
+   ### CAN0の設定
+
+    * このコマンドは既存のシステムCAN0の設定を上書きします。実行後、システムを再起動する必要があります
+    * 実際の状況に応じて、次のいずれかを選択してください（**KlipperのデフォルトCANレートは1Mで、1Mレートを使用することをお勧めします**）
+
+    :::warning
+        1Mレートの場合、以下のコマンドを入力してください
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig \$IFACE txqueuelen 1024
+            pre-up ip link set can0 type can bitrate 1000000
+            pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    :::warning
+        500Kレートの場合、以下のコマンドを入力してください
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig \$IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 500000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    * システムを再起動します
+
+    ```bash
+    sudo reboot
+    ```
+
 ## デバイスの検索
 
     <LS />
 
 
-## ファームウェアの書き込み
-
-    * ファームウェアを書き込む前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードに接続してください。以下は参考接続図です
-    * ディップスイッチが正しい位置に設定されていることを確認してください
-        <ImageView image={require('@site/docs/General/get-id/img/utoc.webp').default} size="80%" align="left" />
-    * 電源が切れている状態でCAN HとCAN Lの間の抵抗値をマルチメータで測定し、約`60Ω`であることを確認してください。もし`120Ω`であれば、`120Ω`のジャンパーを接続する必要があります。`40Ω`程度であればジャンパーを取り外す必要があります
+## ファームウェアのフラッシュ
+         
+    * ファームウェアをフラッシュする前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードに接続してください。以下は参照接線図です
+    * ドイッチが対応する位置に切り替わっていることを確認してください
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/sht36v3_utoc.webp').default} size="80%" align="left" />
+    * CAN HとCAN Lが電源が切れている状態で、マルチメーターを使用して抵抗値が約`60Ω`であることを確認してください。`120Ω`の場合、`120Ω`ジャンパーを接続する必要があります。`40Ω`程度の場合、ジャンパーを外す必要があります
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
-## ファームウェアが起動したか確認
+## ファームウェアの起動確認
 
-    * ファームウェアが正常に起動すると、LEDが点灯します
+    * ファームウェアが正常に起動するとLEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />

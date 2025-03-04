@@ -1,65 +1,63 @@
-
-
 ## Search for RS232 ID
 
-### Precautions Before Searching for Devices
+### Precautions Before Searching for the Device
 
     * Before searching for the RS232 ID, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump")
-    * Please note that you need to ensure that you are logging in via SSH using the network, not via a serial port
-    * Please ensure that UTOR is properly connected and that the data cable connecting to the host computer has data transfer capabilities
-    * If using G2T, confirm whether the system supports UART connection
+    * Please note that you need to ensure that you are logging in to SSH via the network rather than through a serial port
+    * Please ensure that UTOR is connected and that the data cable connecting to the host computer has data transfer capability
+    * If using G2T, please determine whether the system supports UART connection
 
-### Searching for Devices
+### Search for the Device
 
-    * Now that you have successfully logged into the host machine, you can enter `lsusb` to search for devices. This will result in one of the following scenarios:
+    * Now that you have successfully logged into the host computer, you can enter `lsusb` to search for devices. It will result in one of the following scenarios:
         * If entering `lsusb` prompts that the `ls` command cannot be found, you can enter the following command to install the command:
             ```bash
             sudo apt-get install usbutils
             ```
-        * If entering `lsusb` results in no response, this indicates a system issue. You will need to change the system or use a confirmed working system.
-        * If you see the information shown in the image below, please note that this is just a reference. You only need to determine the characters after the ID.
+        * If entering `lsusb` results in no reaction, this is a system issue and beyond our control. You will need to change the system or use a confirmed normal system
+        * If the information shown below appears, please note that this is just a reference. You only need to confirm the characters after the ID.
         <ImageView image={require('@site/docs/General/get-id/img/7523.webp').default} size="100%" align="left" />
-    * `1a86:7523` belongs to the device you need to use. The subsequent prompts do not need to be concerned with because system issues may cause it to display incompletely or not at all.
-    * If none of these apply, please check if the data cable is properly connected and if the firmware has been correctly flashed.
+    * `1a86:7523` belongs to the device you need to use. The subsequent prompt does not need to be managed as the system issue may cause it to display incompletely or not at all.
+    * If not, please check if the data cable is properly connected and if the firmware has been correctly flashed.
 
-    :::warning Note
+    :::warning Precautions
 
-    You can only use the commands below to search for the RS232 ID when you have `1a86:7523`.
+    You can only use the following command to search for the RS232 ID when there is `1a86:7523`.
 
     :::
 
 
-### Searching for RS232 ID
+### Search for RS232 ID
 
     ```bash
     ls /dev/serial/by-path/*
     ```
 
     <ImageView image={require('@site/docs/General/get-id/img/rs232-id.webp').default} size="100%" align="left" />
-    * If entering `ls /dev/serial/by-path/*` does not produce any IDs, but `lsusb` shows devices, consider replacing the host machine or the host machine's system.
-    * Please note that using UTOR will output three IDs, and if you have used another UTOR system before, it may record them, leading to multiple IDs appearing during the search.
-    * Ensure that the ID ends with `-port0`, otherwise it cannot be used.
+    * If there is no ID output after entering `ls /dev/serial/by-path/*`, but `lsusb` shows a device, please replace the host computer or the host computer system
+    * Please note that UTOR will output three IDs, and if you have used another UTOR system, it will record it and cause multiple IDs to appear during the search
+    * Please ensure that the ID ends with `-port0` otherwise it cannot be used.
 
-    :::warning Note
+    :::warning Precautions
 
-    Please make sure that the tool board and UTOR are grounded!!! Otherwise, you will not be able to connect to the tool board!!!
+    Please make sure that the tool board and UTOR are grounded!!! Otherwise, you cannot connect to the tool board!!!
 
     :::
 
-### Enter the RS232 ID into the Configuration
+### Fill in the RS232 ID into the Configuration
 
-    * Open the printer web interface and find the `printer.cfg` configuration under the configuration option in the left sidebar. For fluidd, it is `{...}`; for mainsail, it is `machine`.
+    * Open the printer web interface, find `printer.cfg` under the configuration option on the left sidebar; for fluidd it is `{...}`, and for mainsail it is `machine`, click in to find `printer.cfg`
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="80%" align="left" />
 
-    * Copy the blue ID and paste it into the `[mcu]` section of the `printer.cfg` configuration file under `serial:`. After saving and restarting, you should be able to connect to the mainboard. If Klipper prompts ``ADC out of range``, this is normal. Connect the hotbed and thermistor properly, configure the thermistor pins and output pins for the nozzle and hotbed, then save and restart.
+    * Copy the blue ID and fill it into the `serial:` field in the `[mcu SHT36]` section of the `printer.cfg` configuration. After saving and restarting, you can connect to the mainboard. If Klipper prompts ``ADC out of range``, it is a normal phenomenon. Connect the hot bed and thermistor well, configure the thermistor pins and output pins for the nozzle and hot bed, then save and restart.
 
-        <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-rs232-id.webp').default} size="90%" align="left" />
 
-    :::warning Note
+    :::warning Precautions
 
-    * The RS232 ID needs to be configured with `baud:` and `restart_method:command`.
-    * Below is a reference configuration:
+    * The RS232 ID needs to configure `baud:` and `restart_method:command`
+    * Below is a reference configuration
 
     :::
 
@@ -72,18 +70,17 @@
 
     :::danger
 
-    Note: All IDs mentioned in the document are examples. Each motherboard’s ID is unique, so please modify and fill in according to the actual ID obtained.
+    Note: All IDs appearing in the document are examples. Each mainboard's ID is different, so please modify and fill in according to the actual obtained ID.
 
     :::
 
     :::danger
 
-    Please note that the IDs below cannot be used!!!
+    Please note that the following ID cannot be used!!!!
 
     :::
 
         ```cfg
         serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
-        ``` 
-
+        ```
 ----

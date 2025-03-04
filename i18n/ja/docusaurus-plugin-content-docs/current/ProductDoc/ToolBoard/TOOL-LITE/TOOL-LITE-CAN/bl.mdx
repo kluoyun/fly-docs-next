@@ -1,0 +1,144 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェアのコンパイルチュートリアル
+---
+
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+:::tip
+
+* オンボードが正常にネットワークに接続されていることを確認してください
+* ファームウェアをコンパイルする前に、ネットワーク経由でSSHを使ってオンボードにログインしてください
+* シリアルポートツールを使用せずにオンボードにログインしないでください
+
+:::
+
+# Katapultファームウェアのコンパイル
+### コンパイル開始
+  <SSH />
+  ### Katapultファームウェアのコンパイルと設定ページ操作説明
+
+:::tip
+
+キーボード入力モードは半角（英語）モードであることを確認してください
+
+:::
+
+1. キーボードの上キー`↑`、下キー`↓`はカーソルを上下移動させてメニュー項目を選択します
+2. 確認キー`Enter`またはスペースキー`Space`はメニュー項目にチェックを入れたりサブメニューに入ります
+3. 戻るキー`ESC`は一つ上のメニューに戻ります
+4. `Q`キーはKatapultファームウェア設定ページから退出します
+5. `Y`キーはKatapultファームウェア設定ページから退出するときに、プロンプトがある場合は`Y`キーを押して設定ファイルを保存します
+
+以下にファームウェアのコンパイル方法を説明します：
+* SSHに接続したら、次のコマンドを入力し、エンターを押します。
+
+    ```bash
+    cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+    ```
+
+* ここで`rm -rf ~/katapult/.config && rm -rf ~/katapult/out`は以前のコンパイルデータとファームウェアを削除し、`make menuconfig`はファームウェアをコンパイルします。実行後、以下のインターフェースが表示されます
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+* `Micro-controller Architecture (LPC176x (Smoothieboard))`を選択し、エンターを押します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+* メニューに入り、次に**Raspberry Pi RP2040**を選択し、エンターを押します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+* `Build Katapult deployment application (Do not build)`を選択し、`Do not build`を選択します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+* `Communication interface`を選択し、`CAN bus`を選択します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/CAN-BUS.webp').default} size="100%" align="Center" />
+
+* `(4) CAN RX gpio number`を選択し、`4`を削除して`1`を入力します
+* `(5) CAN TX gpio number`を選択し、`5`を削除して`0`を入力します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+* `CAN bus speed`のデフォルトは1000000です。必要に応じて500000に変更します
+* これは1Mの
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+* これは5kの
+   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/5K.webp').default} size="100%" align="Center" />
+
+* `Enable Status LED`を選択し、エンターを押します。次に`Status LED GPIO Pin (NEW)`に入力：**!gpio18**
+:::warning
+英語入力モードで`!gpio18`を入力してください
+:::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/led1.webp').default} size="100%" align="center" />
+* **上図と照らし合わせて、上図と一致していることを確認し、次に進んでください**
+* `Q`キーを押すと、`Save configuration`が出ます。このとき`Y`キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+* これで設定が保存され、コマンドラインインターフェースに戻ったはずです
+* `make -j4`を入力してコンパイルを開始します。時間がかかります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+* 最後に以下の内容が出力されたらコンパイル成功です
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+  Compiling out/src/deployer.o
+  Compiling out/src/generic/armcm_boot.o
+  Compiling out/src/generic/armcm_reset.o
+  Building out/deployer_ctr.o
+  Compiling out/katapult_payload.o
+  Preprocessing out/src/generic/armcm_deployer.ld
+  Linking out/deployer.elf
+  Creating hex file out/deployer.bin
+``` 
+
+## フラッシュモードに入る
+
+:::tip
+
+矢印で示されているのが`BOOTボタン`です
+
+:::
+
+* メインボードが完全に電源オフになっている状態で、BOOTボタンを押したまま、データ転送用のケーブルを一方をメインボードに、もう一方をあなたのデバイスに接続します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* `lsusb`を入力します
+```bash
+lsusb
+```
+* 以下の画像に示されるように、`lsusb`の出力が表示されたら、ブートモードに入ったことを確認できます
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* 以下のコマンドを入力してファームウェアのフラッシュを行います。その後エンターを押します
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+`mellow`を入力しても表示されません
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* 上記の画像のような状況になったら、`mellow`を入力して完了し、エンターを押します
+
+* 上記の画像のようなメッセージが出たら、`おめでとうございます`、フラッシュが成功しました
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## ファームウェアが起動したかの確認
+
+* ファームウェアが正常に起動するとLEDが点滅します
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+
+* `can id`を検索するコマンドを入力し、エンターを押します
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+```
+* 上記のコマンドが`can id`を見つけられなかった場合、以下のコマンドを試してみてください
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can1
+```
+入力後、以下の画像のような`can id`が出力されます。ここでの`can id`は参照値であり、使用できません
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/canid.webp').default} size="100%" align="center" />

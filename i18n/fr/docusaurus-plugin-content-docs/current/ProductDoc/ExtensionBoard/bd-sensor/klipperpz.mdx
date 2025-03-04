@@ -1,42 +1,41 @@
 ---
 sidebar_position: 4
-sidebar_label: Offset Z automatique de klipper
+sidebar_label: klipper auto-z-offset
 ---
 
-# Installation de l'impact de la buse de klipper
+# Installation de l'offset z automatique avec klipper
 
 :::info
-Cette fonctionnalité exige que la version du micrologiciel du capteur BD (vous pouvez obtenir cette version en envoyant M102 S - 1, et non la version matérielle sur le capteur) soit V1.1b, supérieure à V1.2b ou achetée après mars 2024. Sinon, vous devez utiliser un outil matériel externe (tel que STlink) pour flasher le micrologiciel dans le capteur BD.
+Cette fonctionnalité nécessite une version du firmware BD supérieure à V1.1b, V1.2b ou une version achetée après mars 2024, sinon vous devrez utiliser un outil externe comme STlink pour flasher le firmware sur le capteur BD.
 
-Lorsque vous effectuez l'opération de retour à la maison avec du PEI souple (comme Whambam), ne chauffez pas la buse excessivement, sinon la température élevée pourrait laisser des trous sur le PEI.
+Lorsque vous effectuez un homing avec un PEI mou (comme Whambam), n'échauffez pas la buse trop haut, car une température élevée pourrait laisser des trous dans le PEI.
 :::
 
-# Comment cela fonctionne
-* Si la buse ou le lit s'arrêtent en raison d'un impact, les données de distance mesurées par le capteur bd cesseront également de changer, puis le capteur bd émettra rapidement un signal d'arrêt.
-* Le processus d'étalonnage automatique de z_offset lors de l'exécution de G28 : il peut être déclenché lorsque la buse touche le lit lors du retour à la maison - puis elle monte lentement jusqu'à ce que la buse quitte juste le lit - et cette position est définie comme la position zéro de l'axe z.
+# Comment ça marche
+* Si la buse ou la plateforme s'arrête en raison d'une collision, les données de distance mesurées par le capteur BD cesseront également de changer, puis le capteur BD émettra rapidement un signal d'arrêt.
+* Le processus de calibration automatique de l'offset z pendant l'homing : cela peut être déclenché lorsque la buse touche la plateforme lors de l'homing – puis se déplace lentement vers le haut jusqu'à ce que la buse quitte légèrement la plateforme – et définit cette position comme étant la position z de 0.
 
 # Avantages
-* Étalonnage automatique de l'offset z.
-* En même temps, vous pouvez toujours ajuster manuellement l'offset z pour différents filaments.
-* Surmonter la dérive de température.
-* La dérive de température modifie l'offset z, mais ne modifie pas la plage de la carte de hauteur du lit avec le capteur BD. Cela signifie que même si la température est différente, la grille du lit est la même.
+* Calibration automatique de l'offset z.
+* Vous pouvez toujours ajuster manuellement l'offset z pour différents types de filament.
+* Surmontez le dérive de température.
+* Le dérive de température change l'offset z, mais ne change pas la plage de la carte de hauteur de la plateforme avec un capteur BD. Cela signifie que même si la température est différente, la carte de hauteur de la plateforme reste la même.
 
-# Comment l'utiliser
+# Utilisation
 
 * Ajoutez `collision_homing` et `collision_calibrate` à la section [BDsensor].
 ``` bash
 [BDsensor] 
-collision_homing:0 # Définissez-le à 1 pour activer le retour à la maison avec la détection d'impact de la buse. Désactivez-le en le définissant à 0.
+collision_homing:0 # Définissez-le à 1 pour activer l'homing avec la détection de collision de la buse. Désactivez-le en le définissant à 0. Définissez-le à 1 pour activer l'homing avec la détection de collision de la buse. Désactivez-le en le définissant à 0.
                    
-collision_calibrate:0 # Définissez-le à 1 pour activer l'étalonnage automatique du capteur BD avec la détection d'impact de la buse. Désactivez-le en le définissant à 0.
-# Cela signifie que nous n'avons pas besoin de déplacer manuellement la buse sur le lit et de faire le test du papier avant d'envoyer la commande d'étalonnage M102 S - 6.
+collision_calibrate:0 # Définissez-le à 1 pour activer la calibration automatique du capteur BD avec la détection de collision de la buse. Désactivez-le en le définissant à 0. Cela signifie que nous n'avons pas besoin de déplacer la buse manuellement sur la plateforme et de faire un test papier avant d'envoyer la commande de calibration M102 S-6.
 ```
 
-* La sensibilité dépend de la vitesse, plus la vitesse est lente, plus la sensibilité est élevée. Par conséquent, vous devez ajuster la vitesse de l'axe Z, et la vitesse de retour à la maison (homing_speed) et la vitesse de deuxième retour à la maison (second_homing_speed) doivent être dans la plage de 2 à 5.
+* La sensibilité dépend de la vitesse, plus la vitesse est faible, plus la sensibilité est élevée, donc vous devez ajuster la vitesse de l'axe Z, la vitesse d'homing (homing_speed) et la deuxième vitesse d'homing (second_homing_speed) doivent être comprises entre 2 et 5.
 
 :::info
 La buse doit être nettoyée ou chauffée pour ramollir les résidus de filament.
-Ne définissez pas la vitesse trop élevée ou trop basse. Si la vitesse est trop élevée, elle peut endommager votre extrémité chauffante ou le lit d'impression ; si la vitesse est trop basse, elle peut être déclenchée en l'air et en réalité, la buse n'a pas touché le lit d'impression.
+Ne définissez pas la vitesse trop haute ou trop basse. Si la vitesse est trop élevée, elle pourrait endommager votre extrudeur ou votre plateau de impression ; si la vitesse est trop basse, elle pourrait déclencher en l'air, en fait la buse ne touche pas réellement le plateau de impression.
 :::
 
 # Configuration de référence
@@ -52,7 +51,7 @@ homing_retract_speed:2
 ```
 
 :::tip
-`z_hop` (Hauteur de recul de l'axe Z) et `homing_retract_dist` (Distance de recul lors du retour à zéro) doivent être supérieurs ou égaux à 5.
+`z_hop` (hauteur de retrait de l'axe Z) et `homing_retract_dist` (distance de retrait de l'homing) doivent être supérieurs ou égaux à 5.
 :::
 # Configuration de référence
 
@@ -66,24 +65,24 @@ homing_retract_dist:5
 ```bash
 [BDsensor] 
 ...
-speed:3 # Cette vitesse fonctionne uniquement pour l'inclinaison de l'axe Z et la commande PROBE_ACCURACY. #
+speed:3 # Cette vitesse ne s'applique qu'à la commande de tilting Z et de précision de sonde.
 ...
 
 ```
 :::tip Conseil
-Configuration de référence `zero_reference_position`
+Référence de configuration `zero_reference_position`
 :::
 
 ``` bash
 [bed_mesh]
-horizontal_move_z:1 # 0.7 ~ 1.0 mm est recommandé 建议使用 0.7 ~ 1.0 毫米。
-zero_reference_position: 150, 160 # Définissez cette valeur pour qu'elle soit la même que la position home_xy dans la section  ## Définissez cette valeur pour qu'elle soit la même que la position home_xy dans la section safe_z_home.
+horizontal_move_z:1 # 0.7~1.0mm est recommandé
+zero_reference_position: 150, 160 # Définissez cette valeur pour qu'elle soit la même que celle de la position home_xy_position dans la section
 ....
 ```
 
-# Test de retour à la maison
-Envoyez environ 10 fois l'instruction `G28 Z`, puis vérifiez si les données de sortie sur la console sont stables après chaque envoi de l'instruction `G28 Z`.
+# Test de l'homing
+Veuillez envoyer environ 10 fois la commande `G28 Z`, puis vérifiez si les données de sortie dans la console sont stables après chaque envoi de la commande `G28 Z`.
 ``` bash
 G28 Z
 ```
-<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=RuPoXbrSPDc">Vidéo de démonstration</Button> 
+<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=RuPoXbrSPDc">Vidéo de démonstration</Button>

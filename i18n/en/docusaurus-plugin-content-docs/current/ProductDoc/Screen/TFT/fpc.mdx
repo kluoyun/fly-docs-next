@@ -1,23 +1,22 @@
 ---
 sidebar_position: 1
-sidebar_label: TFT FPC Line Diagram
+sidebar_label: TFT FPC Cable Schematic
 ---
-
 
 # Screen Parameter Modification Tutorial
 :::tip
-Open your IP:9999 in your browser to access FLY-Tools
+Open your browser to access FLY-Tools at IP:9999
 :::
 
 :::
-    * To use TFT, you need to enable the screen by turning on the option below
+    * To use TFT, the following options must be enabled to activate the screen
     * After entering FLY Tools
 * The first step is to enter fly_TOOLS to modify parameters
 
-* You need to configure the screen in FLY TOOLS and turn on KS
+* You need to configure the screen in FLY TOOLS as below and turn on KS
 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
 
-# Diagram
+# Schematic Diagram
 ## LITE2
 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2/img/tftv2.webp').default} size="80%" align="left" />
 
@@ -27,11 +26,48 @@ Open your IP:9999 in your browser to access FLY-Tools
 ## fly-PI
 <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="left" />
 
-## FLY-PI-V2
-<ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="80%" align="left" />
+<Tabs>
+    <TabItem value="tft" label="TFT Screen" default>
+        * You need to turn on KS in FLY TOOLS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFT Capacitive Screen Configuration" default>
+## Method One    
+         * Capacitive configuration needs to use the following command to set to `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Please confirm that the dip switch on the back of the screen is set to `Cap`
+    * Use the following command to check if the modification is successful
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * To modify capacitive screen to resistive screen configuration use the following command
 
-## FLY-C8
-<ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="left" />
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
 
-## Gemini v3
-<ImageView image={require('@site/docs/General/fly-os/img/screen/gemini-tft.webp').default} size="80%" align="left" />
+        <TabItem value="hdmi" label="TFT Resistive Screen Configuration">
+## Method One        
+           * Resistive screen configuration needs to use the following command to set to `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Please confirm that the dip switch on the back of the screen is set to `Resi`
+        * Use the following command to check if the modification is successful
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * To modify resistive screen to capacitive screen configuration use the following command
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>

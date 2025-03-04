@@ -1,0 +1,125 @@
+---
+sidebar_position: 3
+sidebar_label: CAN Firmware Compilation and Burning
+---
+
+import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CAN Firmware Compilation
+
+## Start Compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Select **GPIO pins to set at micro-controller startup**, enter: **!gpio18**
+    :::warning
+        Please enter `!gpio18` in English input mode
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/can.webp').default} size="95%" align="center" />
+    * **Please check against the above image to ensure consistency before proceeding to the next step**
+    * Press `Q` key, and when **Save configuration** appears, press `Y` key
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Now the configuration should be saved and you should have exited to the command line interface
+    * Input `make -j4` to start compilation, it takes some time
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * If the following content is output, the compilation is successful
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+---
+
+## Host Computer Configuration
+    :::warning
+        If your host computer is a **FLY** host, you do not need to perform the `Host Computer Configuration` step
+    :::
+
+    :::warning
+       If your host computer is a **non-FLY** host, please follow the steps below
+    :::
+
+    ### Check if the Host Computer Supports CAN
+
+    * If it is a **FLY host computer**, you do not need to perform this operation
+    * If your system is `Ubuntu` and needs `Ubuntu Configuration CAN0`, this document has not been updated
+    * Enter the following command to check if the system supports CAN
+    ```bash
+    sudo modprobe can && echo "Your kernel supports CAN" || echo "Your kernel does not support CAN"
+    ```
+    * After entering the above command, if your kernel supports CAN, it will return: `Your kernel supports CAN`; if not, it will return: `Your kernel does not support CAN`.
+    :::tip
+        If it returns `Your kernel supports CAN`, you can proceed to configure CAN0, if it returns `Your kernel does not support CAN`, please change the host computer system or change the host computer!
+    :::
+   
+   ### Configure CAN0
+
+    * This command overrides the original system CAN0 configuration and needs to restart the system after completion
+    * Please choose one according to your actual situation (**Klipper defaults CAN rate to 1M, it is recommended to use 1M rate**)
+
+    :::warning
+        For 1M rate, enter the following command
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig $IFACE txqueuelen 1024
+            pre-up ip link set can0 type can bitrate 1000000
+            pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    :::warning
+        For 500K rate, enter the following command
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 500000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    * Restart the device
+
+    ```bash
+    sudo reboot
+    ```
+
+## Search for Devices
+
+    <LS />
+
+## Burn Firmware
+    * Before burning the firmware, use an XT30 data cable to connect the tool board to the UTOC or the motherboard with the bridge firmware flashed, the following is a reference wiring diagram
+    * Please note whether the dip switch is set to the corresponding position
+    ## Schematic diagram of KF interface
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/KF.webp').default} size="80%" align="left" />
+    ## Schematic diagram of XT30 interface
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/xt30.webp').default} size="80%" align="left" />
+    * Please ensure that the resistance measured with a multimeter under power-off conditions for CAN H and CAN L is about `60Ω`, if it is `120Ω`, you need to connect a `120Ω` jumper, if it is about `40Ω`, you need to remove the jumper
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/120r.webp').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Confirm if the Firmware Starts
+
+    * If the firmware starts normally, the LED will light up
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+

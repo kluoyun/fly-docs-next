@@ -6,139 +6,145 @@ sidebar_position: 1
 
 
 
+
 # Product Introduction
 
-FLY-KPPM installation shutdown module is designed specifically for development boards such as Raspberry Pi to ensure data security. When a power outage occurs, it automatically switches to capacitor power to ensure stable operation of the development board for 15 seconds, safeguarding data integrity. Compact and easy to install.
+The FLY-KPPM installation shutdown module is a security module specially designed for development boards such as Raspberry Pi, aimed at preventing data loss caused by power outages. Utilizing advanced technology, it can automatically switch to capacitor power when a power outage occurs, ensuring the development board can still operate stably for 15 seconds under power failure conditions, guaranteeing effective data saving. It is compact, convenient, and easy to install.
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.webp').default} size="100%" align="left" />
 
+
 ## Product Precautions
 
-:::danger Note
-The input power only supports DC12-24V. Ensure correct polarity when wiring, and perform wiring in a power-off state. We are not liable for any damage caused by incorrect wiring.
+:::danger Notice
+The input power only supports DC12-24V. Pay attention to distinguish the positive and negative poles when wiring. The wiring process must be carried out under power-off condition. Confirm that the wiring is correct before powering on; the company will not be responsible for any losses caused by incorrect wiring.
 :::
 
-:::danger Note
-The +5V at the 5V OUT socket is emergency power output and should not be used for regular power supply. Use USB-OUT or SIG/IO for powering the main unit.
+:::danger Notice
+The +5V at the 5V OUT socket is an emergency power output and is not for regular power supply. Please use USB-OUT or SIG/IO to power the host computer.
 :::
 
-:::danger Note
-When using the safety shutdown module, a 12V-24V power supply must be used. To ensure normal operation of the module, the internal 5V output voltage of the safety shutdown module must not be lower than 4.9V, otherwise the safety shutdown module will draw additional power internally, causing the capacitors to remain charged and leading to continuous heating of the module.
+:::danger Notice
+When used with the safety shutdown module, a 12V-24V power supply is required. To ensure the module works normally, the 5V output voltage on the safety shutdown module board cannot be lower than 4.9V. Otherwise, the safety shutdown module will boost the voltage internally to draw power, and the capacitor will always be in a charging state, causing the module to heat up continuously.
 :::
 
-## Explanation of Display Content on the Product Screen
 
-| Screen Content Description | Left Side Explanation | Right Side Parameter | Right Side Explanation |
+## Product Screen Display Content Description
+
+
+| Screen Content Description | Left Description | Right Parameter | Right Description |
 | :------------- | :------------------: | :------------------: | :------------------: |
-| `IN:` | Input Voltage | `OUT:` | Output Voltage |
-| `CA:` | Total Capacitor Voltage | `OI:` | Output Load Current |
-| `C1:` | C1 Capacitor Voltage | `C2:` | C2 Capacitor Voltage |
-| `Temp:` | Temperature of the Safety Shutdown Module | `E:` | Status Prompt, see below |
+| `IN:` | Input voltage | `OUT:` | Output voltage |
+| `CA:` | Total capacitor voltage | `OI:` | Output load current |
+| `C1:` | C1 capacitor voltage | `C2:` | C2 capacitor voltage |
+| `Temp:` | Safety shutdown module temperature | `E:` | Status prompt, see below |
 
 | Display Content | Status Description |
 | :------------- | :-----------------: |
-| `Ready!` | Normal Startup |
-| `IN LOW!` | Low Input Voltage |
-| `IN OVR!` | Overcurrent Output |
-| `OV LOE!` | Low Output Voltage |
-| `OV OVR` | Overcurrent Output |
-| `TP OVR!` | High Temperature |
-| `NONE` | Unknown Error |
-| `R: XX Sec` | If power is interrupted within 10 seconds before re-powering, this prompt will show. After countdown ends, restart the main unit |
+| `Ready!` | Normal startup |
+| `IN LOW!` | Input voltage low |
+| `IN OVR!` | Input current too high |
+| `OV LOE!` | Output voltage too low |
+| `OV OVR` | Output current too high |
+| `TP OVR!` | Temperature too high |
+| `NONE` | Unknown error |
+| `R: XX Sec` | If power is cut off and then restored within 10 seconds, this prompt will appear. After the countdown ends, the host computer will restart |
 
-## Download Fixed Housing Model
+## Fixed Shell Model Download
 
 ```bash
 https://cdn.mellow.klipper.cn/STEP/KPPM.zip
 ```
 
-## Pinout Description
+## Pin Description
 
 * OUT-RST Reset
-* OUT-PDN Power Down
+* OUT-PDN Shutdown
 
-* IN-PIN
+* IN-PIN 
 
-  Pull-up by default. The module will automatically detect the last power failure time upon power-up. If the power failure duration is less than 10 seconds, it will wait until 10 seconds after power-down to switch the 5V output once (ensuring the main unit completes shutdown and can be restarted). Connecting to GND will disable the automatic detection of power failure duration.
+Default pulled high, the module will automatically detect the last power-off time when powered on. 
+If the power-off time is less than 10 seconds, it will wait until 10 seconds later to automatically switch the 5V output once (ensuring the host computer completes shutdown and can restart)
+If connected to GND, the automatic detection of power-off time function will be disabled
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.webp').default} size="100%" align="left" />
 
-## FLY Main Unit Usage Tutorial
+## FLY Host Computer Usage Tutorial
 
 :::info
-Applicable only to FLY-Pi, FLY-Pi-V2, FLY-C8
+Only applicable to FLY-Pi, FLY-Pi-V2, FLY-C8
 :::
 
-To use the FLY main unit, execute the following commands via SSH:
+The FLY host computer needs to use SSH to execute the following commands
 
 ```bash
 sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
 sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
 ```
 
-Reboot the system:
+Restart the system
 
 ```bash
 sudo reboot
 ```
 
-### FLY Main Unit Wiring Tutorial
+### FLY Host Computer Wiring Tutorial
 
 <Tabs>
-    <TabItem value="serial" label="FLY Main Unit Wiring Tutorial" default>
+    <TabItem value="serial" label="FLY Host Computer Wiring Tutorial" default>
 
         <Tabs>
             <TabItem value="1" label="FLY-C8 Using 5V Wiring" default>
-                * FLY-C8 Using 5V Wiring
-
-                <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_5v.webp').default} size="80%" align="center" />
+                * FLY-C8 using 5V wiring, check the diagram for correct wiring
+                <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/c81.webp').default} size="80%" align="center" />
             </TabItem>
             <TabItem value="2" label="FLY-C8 Using USB Wiring" default>
-                * FLY-C8 Using USB Wiring
+                * FLY-C8 using USB wiring
 
                 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.webp').default} size="80%" align="center" />
             </TabItem>
             <TabItem value="3" label="FLY-Pi(π) Using 5V Wiring" default>
-                * FLY-Pi Using 5V Wiring
+                * FLY-Pi using 5V wiring
 
                 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.webp').default} size="80%" align="center" />
             </TabItem>
             <TabItem value="4" label="FLY-Pi(π) Using USB Wiring" default>
-                * FLY-Pi Using USB Wiring
+                * FLY-Pi using USB wiring
 
                 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.webp').default} size="80%" align="center" />
             </TabItem>
             <TabItem value="5" label="FLY-Pi-V2 Using 5V Wiring" default>
-                * FLY-Pi-V2 Using 5V Wiring
+                * FLY-Pi-V2 using 5V wiring
 
                 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.webp').default} size="80%" align="center" />
             </TabItem>
             <TabItem value="6" label="FLY-Pi-V2 Using USB Wiring" default>
-                * FLY-Pi-V2 Using USB Wiring
+                * FLY-Pi-V2 using USB wiring
 
                 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.webp').default} size="80%" align="center" />
             </TabItem>
+        
         </Tabs>
     </TabItem>
 </Tabs>
 
-## Raspberry Pi Main Unit Usage Tutorial
+## Raspberry Pi Host Computer Usage Tutorial
 
-Similar to the above steps, for Raspberry Pi, insert the system image SD card into your computer, add the command `dtoverlay=gpio-shutdown,gpio_pin=21` to the config.txt file, then save and exit.
+The operation of Raspberry Pi is similar to the above. Raspberry Pi needs to insert the SD card with the system image into the computer, add the line `dtoverlay=gpio-shutdown,gpio_pin=21` in the config.txt file, and then save and exit.
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.webp').default} size="80%" align="left" />
 
 <Tabs>
-    <TabItem value="serial" label="Raspberry Pi Main Unit Wiring Tutorial" default>
+    <TabItem value="serial" label="Raspberry Pi Host Computer Wiring Tutorial" default>
 
         <Tabs>
             <TabItem value="1" label="Raspberry Pi Using 5V Wiring" default>
-                * Raspberry Pi Using 5V Wiring
+                * Raspberry Pi using 5V wiring
 
                 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.webp').default} size="80%" align="center" />
             </TabItem>
             <TabItem value="2" label="Raspberry Pi Using USB Wiring" default>
-                * Raspberry Pi Using USB Wiring
+                * Raspberry Pi using USB wiring
 
                 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.webp').default} size="80%" align="center" />
             </TabItem>

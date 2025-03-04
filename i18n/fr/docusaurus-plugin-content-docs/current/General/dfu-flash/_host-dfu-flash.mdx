@@ -1,41 +1,39 @@
-1. Installation de l'outil de flashage
+    1. Installation de l'outil de gravure
 
-   * FLY ne nécessite pas l'exécution de l'outil de flashage
-   * Si vous avez besoin de l'installer, veuillez noter que l'ordinateur doit être connecté à Internet pour une installation correcte
-   * Si vous l'avez déjà installé, il n'est pas nécessaire de le réinstaller
+    * Le logiciel supérieur FLY n'a pas besoin d'exécuter l'installation de l'outil de gravure
+    * Si vous devez installer, veuillez noter : le logiciel supérieur doit être connecté à Internet pour installer correctement
+    * Si vous avez déjà installé, vous n'avez pas besoin d'installer
 
     ```bash
     sudo apt update
     sudo apt install dfu-util -y
     ```
 
-    2. Exécution de la commande ci-dessous pour vérifier si la connexion est réussie.
+    2. Exécutez la commande suivante pour vérifier si la connexion est réussie.
 
     ```bash
     lsusb
     ```
 
-    * Si aucun appareil DFU n'est détecté, essayez de repasser en **mode de flashage**
-    * En raison de problèmes de version du système, d'autres noms peuvent apparaître, si `0483:df11` est présent, cela signifie que le mode de flashage est actif
+    * Si aucun périphérique DFU n'est détecté, essayez de réentrez en **mode de gravage**
+    * En raison des problèmes de version du système, il peut afficher un autre nom, si vous voyez `0483:df11`, cela signifie que vous êtes en mode de gravage
 
+    <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.webp').default} size="80%" align="left" />
 
-        <ImageView image={require('@site/docs/General/dfu-flash/img/lsusb.webp').default} size="80%" align="left" />    
+    3. Gravure du firmware
 
+    * Exécutez le code ci-dessous pour commencer la gravure
 
-    3. Flashage du firmware
-
-    * Exécutez le code ci-dessous pour commencer le flashage
-    
     ```bash
     sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/klipper/out/klipper.bin
     ```
 
-    4. Si le message suivant apparaît, comme indiqué par la flèche dans l'image ci-dessous, le flashage a réussi ``File downloaded successfully``
+    4. Si vous voyez le contenu indiqué à l'endroit de la flèche dans l'image ci-dessous ``File downloaded successfully``, alors la gravure a réussi
 
     <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="80%" align="left" />    
 
     :::tip
 
-    Après le flashage, il est nécessaire de couper complètement l'alimentation de la carte mère une fois.
+    Après la gravure, vous devez déconnecter complètement l'alimentation de la carte mère une fois.
 
     :::

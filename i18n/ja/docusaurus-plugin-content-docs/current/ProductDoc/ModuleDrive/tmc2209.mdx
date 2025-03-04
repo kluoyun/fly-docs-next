@@ -2,38 +2,36 @@
 sidebar_position: 1
 ---
 
-
-
 import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 2209
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209.webp').default} size="80%" align="center" />
 
-## 基本パラメータ
+## 基本参数
 
     * 入力電圧 ：12V-24V
-    * 適用範囲： Marlin/Klipper/RRF ファームウェア
-    * モーターがステップを失いにくい
-    * 静音モードをサポート
-    * 大面積のファンヒートパッド、ドライバーの作業温度を低下させる
-    * ドライブモードのサポート：TMC：UART
-    * モーターストール検出をサポート
+    * 用途 ： Marlin/Klipper/RRF ファームウェア
+    * モーターが簡単にステップを失わない
+    * サイレントモードに対応
+    * 大きなファンヒートパッドがあり、ドライバーの作動温度を下げます
+    * ドライバーモード対応：TMC：UART
+    * モーターストール検出に対応
 
-## メインボードのジャンパーの説明
+## メインボードジャンパ説明
 
-    * TMC2209はUARTジャンパーを使用
+    * TMC2209はUARTジャンパーを使用します
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
-    * FLYドライバーのUARTピンは左側から下へ数えて4番目のピン、PDNピンがUARTピンです。メインボードが対応するピン位置でなければUARTを使用できません
-    * 他のドライバーが5番目のピンを使用している場合は、我々のメインボードを使用するための方法を参照して解決してください  <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">UARTが使用できない解決方法</Button>
+    * FLYドライバーのUARTピンは左から4番目のピンで、PDNピンもUARTピンです。メインボードが対応するピン位置でない場合、UARTを使用することはできません
+    * 他のドライバーが5番ピンを使用する場合、私たちのメインボードはこの方法を参考に解決することができます  <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%80-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">UARTの使用方法がわからない場合の解決策</Button>
         
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/uart1.webp').default} size="80%" align="center" />
 
-## TMC2209の参照設定
+## TMC2209リファレンス設定
 
     :::danger
 
-    ドライバーのサンプリング抵抗は0.110にしてください、間違って設定しないでください
+    ドライバーサンプリング抵抗は0.110です。誤って設定しないでください
 
     :::
 
@@ -41,20 +39,20 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2209 stepper_x]
     uart_pin: 
     interpolate: False
-    run_current: 0.8                    # モーターの運転電流値（単位：mA）
-    sense_resistor: 0.110               # ドライバーのサンプリング抵抗を変更しないでください
+    run_current: 0.8                    # モーター運転電流値（単位：mA）
+    sense_resistor: 0.110               # ドライバーサンプリング抵抗を変更しないでください
     stealthchop_threshold: 0
     ```
 
-## 無限位置の使用説明
+## 限位なし使用説明
 
     <DIAG />
 
-    :::tip 無限位置の使用ヒント
+    :::tip 限位なし使用のヒント
 
-    * 元の`endstop_pin:`は無効化するか削除する必要があります、そして`endstop_pin: tmc2209_stepper_x:virtual_endstop`を追加します
-    * `diag_pin:`を設定した後、リミットの状態が未トリガーになります
-    * `driver_SGTHRS:`は適切な値を自分でテストする必要があります
+    * 元の`endstop_pin:`を遮蔽または削除し、`endstop_pin: tmc2209_stepper_x:virtual_endstop`を追加します
+    * `diag_pin:`を設定した後、リミット状態の更新はトリガーされません
+    * `driver_SGTHRS:`を設定するには、適切な値をテストする必要があります
 
     :::
 
@@ -64,8 +62,8 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
 
     :::tip
 
-    * FLY 2209の裏側にディップスイッチがあります、反対側に切り替える必要があります
-    * FLY 2209CはDIAGを直接接続するドライバーで、このステップは不要です
+    * FLY 2209背面にダイアルがあります。別の側面に移動する必要があります
+    * FLY 2209Cは直結駆動DIAGなので、この手順は必要ありません
 
     :::
 
@@ -73,7 +71,7 @@ import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDo
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc2209_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # 0にしないとリセットに失敗する可能性があります
+    homing_retract_dist: 0        # 復帰距離を0にすると、ホームが失敗する可能性があります
 
     [tmc2209 stepper_x]
     diag_pin: ^

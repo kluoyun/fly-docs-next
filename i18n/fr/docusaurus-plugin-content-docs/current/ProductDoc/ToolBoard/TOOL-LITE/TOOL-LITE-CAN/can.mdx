@@ -1,0 +1,126 @@
+---
+sidebar_position: 3
+sidebar_label: Compilation et écriture du firmware CAN
+---
+
+import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# Compilation du firmware CAN
+
+## Démarrer la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Sélectionnez **GPIO pins to set at micro-controller startup**, entrez : **!gpio18**
+    :::warning
+        Veuillez entrer `!gpio18` en mode d'entrée anglaise.
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/can.webp').default} size="95%" align="center" />
+    * **Vérifiez que cela correspond à l'image ci-dessus, assurez-vous qu'il est identique avant de passer à l'étape suivante.**
+    * Appuyez sur la touche `Q`, puis apparaîtra **Save configuration**, appuyez ensuite sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande.
+    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Si la sortie finale contient les lignes suivantes, la compilation a réussi.
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+---
+
+## Configuration de l'hôte
+    :::warning
+        Si votre hôte est un hôte **FLY**, vous n'avez pas besoin d'exécuter l'étape de **Configuration de l'hôte**.
+    :::
+
+    :::warning
+       Si votre hôte est un hôte **non FLY**, veuillez exécuter les étapes suivantes.
+    :::
+
+    ### Vérifier si l'hôte supporte CAN
+
+    * Si c'est un hôte **FLY**, vous n'avez pas besoin d'exécuter cette opération.
+    * Si votre système est `Ubuntu`, vous avez besoin de `Configuration CAN0 Ubuntu`, ce document n'a pas encore été mis à jour.
+    * Entrez la commande ci-dessous pour vérifier si le système supporte CAN.
+    ```bash
+    sudo modprobe can && echo "Votre noyau supporte CAN" || echo "Votre noyau ne supporte pas CAN"
+    ```
+    * Après avoir entré la commande ci-dessus, si votre noyau supporte CAN, il retournera : `Votre noyau supporte CAN` ; sinon, il retournera : `Votre noyau ne supporte pas CAN`.
+    :::tip
+        Si vous obtenez `Votre noyau supporte CAN`, vous pouvez passer à l'étape suivante pour configurer CAN0. Si vous obtenez `Votre noyau ne supporte pas CAN`, veuillez changer de système d'exploitation pour l'hôte ou changer l'hôte !
+    :::
+   
+   ### Configurer CAN0
+
+    * Cette commande remplace la configuration système CAN0 existante, une redémarrage est nécessaire après son exécution.
+    * Veuillez choisir l'une des options suivantes en fonction de vos besoins réels (La vitesse CAN par défaut de Klipper est de 1M, il est recommandé d'utiliser la vitesse de 1M).
+
+    :::warning
+        Pour une vitesse de 1M, entrez la commande suivante
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig $IFACE txqueuelen 1024
+            pre-up ip link set can0 type can bitrate 1000000
+            pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    :::warning
+        Pour une vitesse de 500K, entrez la commande suivante
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 500000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    * Redémarrez l'appareil
+
+    ```bash
+    sudo reboot
+    ```
+
+## Recherche d'appareils
+
+    <LS />
+
+
+## Écriture du firmware
+    * Avant d'écrire le firmware, connectez la carte d'outil au UTOC ou à la carte mère flashée avec le firmware bridge en utilisant un câble XT30. Voici un schéma de raccordement de référence.
+    * Veuillez vérifier si les commutateurs sont positionnés correctement.
+    ## Schéma de l'interface KF
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/KF.webp').default} size="80%" align="left" />
+    ## Schéma de l'interface XT30
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/xt30.webp').default} size="80%" align="left" />
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant l'alimentation, si elle est de `120Ω`, connectez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/120r.webp').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Vérification du démarrage du firmware
+
+    * Si le firmware démarre normalement, la LED s'allumera.
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

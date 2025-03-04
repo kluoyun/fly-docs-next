@@ -1,0 +1,164 @@
+---
+sidebar_position: 6
+sidebar_label: Ajout de boutons
+---
+
+# Ajout de boutons sans fil
+
+    :::info Important notice
+    * Les boutons sans fil nécessitent l'installation de la batterie, le modèle de batterie est `CR927`
+    :::
+
+    * Cliquez sur le `+` dans la boîte rouge après avoir retourné à la page d'accueil
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button.webp').default} size="80%" align="Center" />
+    * Après avoir affiché cette interface, appuyez normalement sur le bouton sans fil avec la batterie installée
+    * La boîte rouge générera automatiquement l'ID du bouton sans fil, cet ID est unique
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-1.webp').default} size="80%" align="Center" />
+    * Entrez le nom que vous souhaitez donner au bouton dans la boîte rouge
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-2.webp').default} size="80%" align="Center" />
+    * Cliquez sur la première boîte rouge, une deuxième boîte bleue apparaîtra
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-3.webp').default} size="80%" align="Center" />
+
+
+
+    :::danger À savoir
+
+    * Le GCODE personnalisé et les requêtes API sont contrôlés via une connexion sans fil
+    * L'activation des GPIO est effectuée via une connexion filaire
+
+    :::
+
+## Personnalisation GCODE
+    * Personnalisez le `GCODE`, vous pouvez entrer le code ou le nom de la macro dont vous avez besoin dans la boîte rouge, AirClick enverra automatiquement le code au imprimante pour exécution
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/gcode.webp').default} size="80%" align="Center" />
+
+## Requêtes API
+
+<Tabs>
+    <TabItem value="ka" label="Configuration de l'API Klipper" default>
+
+        1. Les API prédéfinies peuvent réaliser des macros personnalisées, un arrêt d'urgence, un redémarrage de Klipper, un redémarrage de la mise en mémoire, une fermeture du système, etc.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/api.webp').default} size="80%" align="Center" />
+
+        2. Explications des API personnalisées
+            - Toutes les API font référence à la documentation de référence Moonraker API [Moonraker API](https://moonraker.readthedocs.io/en/latest/web_api/)
+            - `method` doit être conforme au `method` de l'API Moonraker
+            - `params` doit être conforme au `params` de l'API Moonraker
+        3. Voici un exemple avec l'API de démarrage d'impression de fichier spécifique
+            - L'image suivante est un exemple de document officiel de Moonraker
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-1.webp').default} size="80%" align="Center" />
+            - Voici un exemple de remplissage de l'API AirClick
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-2.webp').default} size="80%" align="Center" />
+        4. Enregistrer ce bouton permettra de commencer l'impression d'un fichier spécifique
+    </TabItem>
+    <TabItem value="ra" label="Configuration de l'API RRF">
+        1. Explications des API personnalisées
+            - Toutes les API font référence à la documentation de référence RepRapFirmware HTTP API [RepRapFirmware HTTP API](https://github.com/Duet3D/RepRapFirmware/wiki/HTTP-requests)
+            - Seul les requêtes GET sont supportées
+            - `method` doit être conforme au `uri` de l'API HTTP RRF
+            - `params` doit être conforme au `url query` de l'API HTTP RRF
+        2. Voici un exemple avec l'API de suppression de fichiers ou dossiers spécifiques
+            - L'image suivante est un exemple de document officiel de RRF
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-1.webp').default} size="80%" align="Center" />
+            - Voici un exemple de remplissage de l'API AirClick
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-2.webp').default} size="80%" align="Center" />
+            - Ici, les params doivent être réécrits en format JSON, comme `/?aaaa=bbb&cccc=ddd`
+            - Après modification, cela devient
+                ```json
+                {
+                    "aaaa": "bbb",
+                    "cccc": "ddd"
+                }
+                ```
+        3. Enregistrer ce bouton permettra de supprimer des fichiers ou dossiers spécifiques
+    </TabItem>
+
+    <TabItem value="ba" label="Configuration de l'API BambuLab">
+        1. Les API prédéfinies peuvent réaliser une pause d'impression, une annulation d'impression, un contrôle des LEDs, etc.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-1.webp').default} size="80%" align="Center" />
+            - Le contrôle des LEDs est recommandé d'utiliser le mode de commutation automatique, dans ce mode, l'état des LEDs sera détecté automatiquement et basculé automatiquement. Pour activer ou désactiver automatiquement
+        2. Explications des API personnalisées
+            - Les API BambuLab doivent être recherchées dans le document Github Open BambuAPI
+        3. Voici un exemple avec l'API de réglage de la vitesse d'impression
+            - Voici les paramètres complets de l'envoi MQTT de BambuLab dans le réseau local
+                ```json
+                {
+                    "print": {
+                        "sequence_id": "0",
+                        "command": "print_speed",
+                        "param": "2" // Niveau de vitesse d'impression en tant que chaîne
+                                     // 1 = silencieux
+                                     // 2 = standard
+                                     // 3 = sport
+                                     // 4 = fou
+                    }
+                }
+                ```
+            - Voici un exemple de remplissage de l'API AirClick
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-2.webp').default} size="80%" align="Center" />
+        4. Enregistrer ce bouton permettra de régler la vitesse d'impression
+    </TabItem>
+
+</Tabs>
+    
+
+## Activation GPIO (uniquement pour Klipper)
+    * L'activation des GPIO nécessite une connexion entre STM32F072 et Klipper
+    * La mise en flash et la connexion nécessitent de consulter ce document <Button variant="contained" disableElevation href="/docs/ProductDoc/ExtensionBoard/fly-airclick/offline-operation-support">Mise en flash et connexion</Button>
+    * Les IO utilisables sont `PB0` à `PB9`, soit dix IO. Après avoir correctement flashé la mise en flash et connecté Klipper, il suffit de configurer correctement ci-dessous, voici une configuration de référence
+    
+        ```cfg
+        [mcu AirClick]
+        serial: /dev/serial/by-id/usb-Klipper_stm32f072xb_AirClick-if00
+        ### Il faut rechercher l'USBID et modifier ici
+
+        [gcode_button _test]
+        pin: ^!AirClick:PB0
+        press_gcode:
+            M118 PB0
+
+        [gcode_button _test1]
+        pin: ^!AirClick:PB1
+        press_gcode:
+            M118 PB1
+
+        [gcode_button _test2]
+        pin: ^!AirClick:PB2
+        press_gcode:
+            M118 PB2
+
+        [gcode_button _test3]
+        pin: ^!AirClick:PB3
+        press_gcode:
+            M118 PB3
+
+        [gcode_button _test4]
+        pin: ^!AirClick:PB4
+        press_gcode:
+            M118 PB4
+
+        [gcode_button _test5]
+        pin: ^!AirClick:PB5
+        press_gcode:
+            M118 PB5
+
+        [gcode_button _test6]
+        pin: ^!AirClick:PB6
+        press_gcode:
+            M118 PB6
+
+        [gcode_button _test7]
+        pin: ^!AirClick:PB7
+        press_gcode:
+            M118 PB7
+
+        [gcode_button _test8]
+        pin: ^!AirClick:PB8
+        press_gcode:
+            M118 PB8
+
+        [gcode_button _test9]
+        pin: ^!AirClick:PB9
+        press_gcode:
+            M118 PB9
+        ```

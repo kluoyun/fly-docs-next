@@ -1,76 +1,80 @@
-## CAN 구성 및 ID 검색
+## CAN 설정 및 ID 검색
 
-* CAN을 사용하려면 상위 컴퓨터가 CAN을 구성했는지 확인하세요.
+* CAN을 사용하려면 상위 컴퓨터에 CAN 설정이 되어 있는지 확인하세요.
 
 ----
 
-:::danger 알아두기
+:::danger 주의
 
-메인보드가 상위 컴퓨터에 연결된 후 아래 작업을 수행하세요.
+메인보드가 상위 컴퓨터와 정상적으로 연결되어 있는지 확인한 후 아래 작업을 진행하세요.
 
 :::
 
+
 :::warning
 
-상위 컴퓨터의 CAN 네트워크, 브리지 메인보드의 CAN 속도, CAN 도구 보드의 속도가 완전히 일치하는지 확인하세요.
+상위 컴퓨터의 CAN 네트워크, 다리 보드의 CAN 속도, CAN 도구 보드의 속도가 완전히 일치하는지 확인하세요.
 
 :::
 
 ### 장치 검색 전 주의사항
 
-    * CAN ID를 검색하기 전에 먼저 [SSH에 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하면 이동합니다")
-    * 네트워크를 통해 SSH에 로그인했는지 확인하세요. 직렬 포트를 통해 로그인하지 마세요.
-    * UTOC에 연결하거나 CAN 브리지 펌웨어를 플래시한 메인보드가 연결되어 있고, 데이터 전송 기능이 있는 데이터 케이블이 상위 컴퓨터에 연결되어 있는지 확인하세요.
+    * CAN ID를 검색하기 전에 [SSH에 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하여 이동")하세요.
+    * 네트워크를 통해 SSH에 로그인하고 있는지 확인하세요. 시리얼 포트를 통해 로그인하지 않았는지 확인하세요.
+    * UTOC를 연결하거나 CAN 브리지 펌웨어를 플래시한 메인보드가 연결되어 있고, 상위 컴퓨터로 데이터를 전송할 수 있는 데이터 케이블이 연결되어 있는지 확인하세요.
 
 ### 장치 검색
 
-    * 이제 상위 컴퓨터에 정상적으로 로그인되었으니 `lsusb` 명령을 입력하여 장치를 검색할 수 있습니다. 다음과 같은 상황이 발생할 수 있습니다.
-        * `ls` 명령을 찾을 수 없다고 나오면 아래 명령어를 입력하여 설치하세요
+    * 이제 정상적으로 상위 컴퓨터에 로그인했으므로 `lsusb` 명령어를 입력하여 장치를 검색할 수 있습니다. 다음과 같은 상황 중 하나가 나타날 것입니다.
+        * `lsusb` 명령어를 입력하면 `ls` 명령어가 없다는 메시지를 받게 된다면 아래의 명령어를 입력하여 명령어를 설치할 수 있습니다.
             ```bash
             sudo apt-get install usbutils
             ```
-        * `lsusb`를 입력해도 아무 반응이 없으면 이는 시스템 문제로 해결할 수 없습니다. 시스템을 교체하거나 정상적인 시스템을 사용하세요.
-        * 아래 이미지에 있는 정보가 나타나면 참고용입니다. `1d50:606f`가 나타나는지 확인하세요.
+        * `lsusb` 명령어를 입력하면 아무런 반응이 없을 경우, 시스템 문제로 인해 해결할 수 없습니다. 다른 시스템으로 교체하거나 정상적인 시스템을 사용하세요.
+        * 아래 이미지에서 제공된 정보가 나타납니다. 이는 참고용입니다. `1d50:606f`가 나타나는지만 확인하세요.
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f`는 이번에 사용할 장치입니다. 뒤의 메시지는 무시하세요. 시스템 문제로 인해 완전히 표시되지 않거나 아예 표시되지 않을 수 있습니다.
-    * 여러 개의 `1d50:606f`가 있으면 하나를 제외하는 것이 좋습니다. 그렇지 않으면 후속 펌웨어 업데이트와 연결에 영향을 미칠 수 있습니다. 예를 들어, `FLY MINI PAD`를 사용하는 경우, 장착된 UTOC를 사용하고 다른 CAN 브리지 장비는 사용하지 마세요.
-    * 없으면 데이터 케이블이 잘 연결되어 있는지, 펌웨어가 올바르게 플래시되었는지 확인하세요.
+    * `1d50:606f`는 이번에 사용할 장치입니다. 뒤의 메시지는 시스템 문제로 인해 일부만 표시되거나 전혀 표시되지 않을 수 있으므로 무시하세요.
+    * 여러 개의 `1d50:606f`가 있다면 하나를 제외하는 것이 좋습니다. 그렇지 않으면 나중에 프로그래밍 및 펌웨어 연결에 영향을 미칠 수 있습니다. 예를 들어 `FLY MINI PAD`는 보드 내장 UTOC를 사용하도록 권장하며, 다른 CAN 브리지 장비는 사용하지 마세요.
+    * 없다면 데이터 케이블이 제대로 연결되었는지, 펌웨어가 올바르게 플래시되었는지 확인하세요.
 
-:::warning 주의사항
-`1d50:606f`가 있을 때 CAN ID를 검색할 수 있습니다.
+:::warning 주의
+
+`1d50:606f`가 나타날 때까지 CAN ID를 검색하지 마세요.
+
 :::
 
 ### CAN ID 검색
 
-    * 아래 명령어를 입력하여 ID를 검색하세요
+    * ID 검색을 위해 아래 명령어를 입력하세요.
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * ID가 나타나고 마지막에 `Application:`이 `Klipper`로 표시되면 이 ID를 바로 사용할 수 있습니다.
-    * ID가 나타나고 마지막에 `Application:`이 `CANBOOT` 또는 `Katapult`로 표시되면 펌웨어를 플래시해야 사용할 수 있습니다.
+    * ID가 나타나고 마지막에 `Application:`이 `Klipper`라고 표시되면 이 ID는 바로 사용할 수 있습니다.
+    * ID가 나타나고 마지막에 `Application:`이 `CANBOOT` 또는 `Katapult`라고 표시되면 펌웨어를 업데이트해야 사용할 수 있습니다.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
 
 ### CAN 문제 모음
 
-    :::danger 알아두기
+    :::danger 주의
 
-    * CAN ID를 찾을 수 없으면 아래 문서를 참조하세요  
+    * CAN ID를 찾지 못했다면 아래 문서를 참조하세요.
     * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN 문제 모음</Button>
 
     :::
 
-### CAN의 ID를 구성에 입력하기
+### CAN ID를 구성 파일에 기입
 
-    * 프린터 웹 인터페이스를 열고, 왼쪽 사이드바의 설정 옵션에서 `fluidd`는 `{}`를, `mainsail`은 `기계`를 찾아 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+    * 프린터 웹 페이지 인터페이스를 열고, 좌측 메뉴의 구성 옵션에서 fluidd일 경우 `...`를, mainsail일 경우 `기계`를 클릭하여 `printer.cfg`를 찾으세요.
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * 검색된 UUID를 복사하여 `printer.cfg`의 `[mcu]` 노드의 `canbus_uuid: `에 입력하세요. 저장 후 재시작하면 메인보드에 연결됩니다. Klipper가 펌웨어 업데이트가 필요하다고 알리거나 ADC 오류가 발생하면 Klipper가 메인보드에 연결된 것입니다.
+    * 검색된 UUID를 복사하여 `printer.cfg` 구성 파일의 `[mcu]` 섹션에 `canbus_uuid: ` 다음에 작성하세요. 저장하고 재부팅하면 메인보드와 연결됩니다. Klipper가 펌웨어 업데이트 필요, ADC 오류 등과 같은 메시지를 표시한다면 Klipper가 메인보드와 연결되었다는 것을 의미합니다.
 
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        주의: 문서에 나타나는 모든 ID는 예시입니다. 실제 각 메인보드의 ID는 다릅니다. 실제로 획득한 ID에 따라 수정하여 입력하세요.
+        주의: 문서에 나온 모든 ID는 예시이며, 각 메인보드의 ID는 모두 다릅니다. 실제로 얻은 ID를 바탕으로 수정하여 작성하세요.
 
         :::

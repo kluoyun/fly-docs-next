@@ -2,7 +2,6 @@
 sidebar_position: 8
 ---
 
-
 import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TP 2209
@@ -13,29 +12,29 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
 ## Paramètres de base
 
     * Tension d'entrée : 12V-24V
-    * Adapté pour : Firmware Marlin/Klipper/RRF
-    * Le moteur ne perd pas facilement de pas
-    * Supporte le mode silencieux
-    * Coussin thermique à grande surface pour ventilateur, réduit la température de fonctionnement du driver
-    * Mode de pilotage supporté : TMC : UART
-    * Supporte la détection de blocage du moteur
+    * Convient pour : Firmwares Marlin/Klipper/RRF
+    * Les moteurs ne perdent pas facilement des pas
+    * Prise en charge du mode silencieux
+    * Grand pad de ventilation, réduit la température de fonctionnement du pilote
+    * Modes de pilotage pris en charge : TMC : UART
+    * Prise en charge de la détection de blocage du moteur
 
 
-## Jumper de la carte mère FLY
+## Sauter les configurations FLY
 
     :::tip
 
-    * Le TP2209 utilise le mode UART
-    * Le TP2209 n'a pas besoin de jumper de driver, il suffit de configurer simplement
+    * TP2209 utilise le mode UART
+    * TP2209 n'a pas besoin de capuchon de saut de pilote, il suffit de configurer simplement
     
     :::
 
 
-## Configuration de référence pour le TP2209
+## Références de configuration TP2209
 
     :::danger
 
-    La résistance de détection du driver est de 0,110, veuillez ne pas la configurer incorrectement
+    La résistance de mesure est de 0,110, veuillez ne pas la modifier incorrectement
 
     :::
 
@@ -43,25 +42,24 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2209 stepper_x]
     uart_pin: 
     interpolate: False
-    run_current: 0,8                    # Valeur du courant de fonctionnement du moteur (unité : mA)
-    sense_resistor: 0,110               # Ne modifiez pas la résistance de détection du driver
+    run_current: 0.8                    # Valeur de courant de marche du moteur (unité : mA)
+    sense_resistor: 0.110               # Résistance de mesure du pilote, ne la modifiez pas
     stealthchop_threshold: 0
     ```
 
 
 
-## Instructions pour l'utilisation sans fin de course
+## Explications d'utilisation sans fin de course
 
     <DIAG />
 
-    :::tip Conseils pour l'utilisation sans fin de course
+    :::tip Conseils d'utilisation sans fin de course
 
-    * Le `endstop_pin:` original doit être masqué ou supprimé, puis ajoutez `endstop_pin: tmc2209_stepper_x:virtual_endstop`
-    * Après avoir configuré `diag_pin:`, l'état de la limite est non déclenché
-    * La configuration de `driver_SGTHRS:` nécessite de tester une valeur appropriée
+    * L'ancienne `endstop_pin:` doit être masquée ou supprimée, puis ajoutez `endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * Après avoir configuré `diag_pin:`, l'état de fin de course est non déclenché
+    * Pour `driver_SGTHRS:`, vous devez tester une valeur appropriée vous-même
 
     :::
-
 
     * Configuration de référence
 
@@ -69,7 +67,7 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc2209_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # Le retour en arrière ne modifie pas 0, cela peut entraîner un échec du retour à l'origine
+    homing_retract_dist: 0        # Ne modifiez pas 0 car cela pourrait entraîner un échec du retour à zéro
 
     [tmc2209 stepper_x]
     diag_pin: ^

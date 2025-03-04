@@ -1,6 +1,6 @@
 ---
 sidebar_position: 7
-sidebar_label: 有線接続 Klipper 設定
+sidebar_label: ケーブル接続のKlipper構成
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -12,15 +12,15 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
 import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/get-id/_get-usb-id.mdx';
 
-# 有線接続 Klipper 設定
+# ケーブル接続のKlipper構成
 
-:::danger 注意事項
+:::danger 注意
 
-* STM32F072 にファームウェアを書き込んでから klipper に接続する必要があります。そうしないと有線接続操作はサポートされません。
+* STM32F072にファームウェアを焼く前に接続すると、ケーブル接続の操作はサポートされません
 
 :::
 
-## コンパイルを開始する
+## コンパイル開始
 
     <SSH />
 
@@ -28,33 +28,34 @@ import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Gener
 
     <USB />
 
-    * `Q` キーを押し、**Save configuration** が表示されたら、`Y` キーを押します
+    * `Q` キーを押すと、**Save configuration** が表示されます。その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * これで設定が保存され、コマンドラインに戻ります
     * `make -j4` を入力してコンパイルを開始します。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
+    * 最後に以下の内容が表示されればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 書き込みモードに入る
+## フラッシュモードに入る
 
-    * AirClick の電源を切り、STM32 の BOOT ボタンを押しながら、STM32 の書き込みポートを Typec で上位機と接続します
+    * AirClickが電源オフ状態でSTM32のBOOTを押しながら、STM32のフラッシュポートをType-Cでホストマシンに接続します
         <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/boot.webp').default} size="100%" align="center" />
 
-## 書き込みモードに入ったか確認する
+## フラッシュモードに入ったか確認
 
     <LS />
 
-## ファームウェアを書き込む
+## ファームウェアをフラッシュする
 
     <CANBOOT />
 
-## USBID を検索する
-    * AirClick の書き込みポートと上位機の USB ポートを接続します。BOOT ボタンを押していると ID を検索できません
+## USB IDを検索
+
+    * AirClickのフラッシュポートをホストマシンのUSBポートに接続してください。BOOTボタンを押しているとIDを検索できません
         <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper.webp').default} size="80%" align="center" />
 
-    <GetUsbID /> 
+    <GetUsbID />

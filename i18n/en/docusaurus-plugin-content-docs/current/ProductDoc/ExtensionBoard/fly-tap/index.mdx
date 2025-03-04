@@ -9,9 +9,9 @@ sidebar_label: Introduction
 
 ## TAP Wiring Diagram!
 
-    :::warning Note
+    :::warning Notice
 
-    * Please note that the tap should not be connected to the servo port and must be connected to the limit port!!
+    * Please be careful not to connect the tap to the servo port, it needs to be connected to the limit port!!!
 
     :::
 
@@ -23,13 +23,13 @@ sidebar_label: Introduction
 
     :::tip
 
-    * Because the tap uses the nozzle directly as a limit trigger, there is no XY offset.
+    * Since the tap uses the nozzle as the limit trigger, there is no XY offset
 
     :::
 
     :::tip
 
-    * The only modifications for TAP are Z limit and probe.
+    * The only modifications for TAP are the Z limit and probe
 
     :::
     ```cfg
@@ -41,16 +41,16 @@ sidebar_label: Introduction
 
     [probe]
     pin: ^sht36:PA1              # Signal interface
-    x_offset: 0                  # X-axis - sensor offset relative to nozzle
-    y_offset: 0                  # Y-axis - sensor offset relative to nozzle
-    #z_offset: 0                 # Z-axis - sensor offset relative to nozzle
+    x_offset: 0                  # X-axis - Sensor relative to nozzle offset
+    y_offset: 0                  # Y-axis - Sensor relative to nozzle offset
+    #z_offset: 0                 # Z-axis - Sensor relative to nozzle offset
     speed: 3.0                   # Leveling speed
-    lift_speed: 5                # Probe lift speed
+    lift_speed: 5                # Lift probe speed
     samples: 3                   # Number of samples
-    samples_result: median       # Sample result method (default median - median value)
-    sample_retract_dist: 3.0     # Retract distance during leveling
-    samples_tolerance: 0.075     # Sample tolerance (note that very small values may increase the number of samples)
-    samples_tolerance_retries: 3 # Retry count for exceeding tolerance
+    samples_result: median       # Value selection method (default median - median)
+    sample_retract_dist: 3.0     # Leveling retraction distance
+    samples_tolerance: 0.075     # Sampling tolerance (note that too small a value may cause an increase in the number of samples)
+    samples_tolerance_retries: 3 # Tolerance retry count
     activate_gcode:
         {% set PROBE_TEMP = 150 %}
         {% set MAX_TEMP = PROBE_TEMP + 5 %}
@@ -63,7 +63,7 @@ sidebar_label: Introduction
             M109 S{ PROBE_TEMP }
             M106 S26
         {% else %}
-            # Temperature target is already low enough, but nozzle may still be too hot.
+            # Temperature target is already low enough, but the nozzle may still be too hot.
             {% if ACTUAL_TEMP > MAX_TEMP %}
                 { action_respond_info('Extruder temperature %.1fC is still too high, waiting until below %.1fC' % (ACTUAL_TEMP, MAX_TEMP)) }
                 TEMPERATURE_WAIT SENSOR=extruder MAXIMUM={ MAX_TEMP }
@@ -72,11 +72,11 @@ sidebar_label: Introduction
 
     ```
 
-## Initialization Macro Modification
+## Startup Macro Modification
     * Effect
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/klipper.webp').default} size="80%" align="left" />
 
-### PrusaSlicer Initialization Macro Modification 
+### PrusaSlicer Startup Macro Modification 
 
     ```bash
     M109 S150
@@ -84,7 +84,7 @@ sidebar_label: Introduction
     M109 S[first_layer_temperature]
     ```
 
-### CURA Initialization Macro Modification
+### CURA Startup Macro Modification
 
     ```bash
     M109 S150
@@ -92,7 +92,7 @@ sidebar_label: Introduction
     M109 S{material_print_temperature_layer_0} ;Start heating extruder
     ```
 
-### Orca-Slicer Initialization Macro Modification
+### Orca-Slicer Startup Macro Modification
 
     ```bash
     M190 S[bed_temperature_initial_layer_single]

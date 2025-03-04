@@ -3,9 +3,6 @@ sidebar_position: 6
 sidebar_label: BLファームウェア、無視してください
 ---
 
-
-
-
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
 import APM from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
@@ -21,31 +18,31 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * SHT36/42はCANに対応
-    * ここではCANファームウェアを500Kと1Mの速度で提供
+    * SHT36/42はCANをサポートしています
+    * こちらではCANファームウェアのみを提供し、500Kと1Mの速度があります
     :::
 
-## 書き込みモードに入る
+## ブートモードに入る
 
     :::tip
 
-    丸で囲まれているのは`BOOTボタン`
+    図内の丸で囲まれたのが`BOOTボタン`です
 
     :::
 
-    * 主板完全に電源を切った状態で、BOOTボタンを短絡してから、データ伝送可能なデータケーブルの一方を主板に、もう一方をあなたのデバイスに接続します。
+    * マザーボードが完全に電源オフの場合、BOOTボタンを押したままデータ転送用のケーブルをマザーボードとデバイスに接続します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot.webp').default} size="50%" align="center" />
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot1.webp').default} size="50%" align="center" />
 
 ## ファームウェアの書き込み
     <Tabs>
-        <TabItem value="win" label="STM32F072を使用してWindowsで書き込みガイド" default>
+        <TabItem value="win" label="STM32F072を使用してWindowsで書き込みチュートリアル" default>
 
-            * SHT36のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36.zip">自動ダウンロードファームウェア</Button>
+            * SHT36のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36.zip">ファームウェアを自動ダウンロードするにはここをクリック</Button>
             <WIN />
             
         </TabItem>
-        <TabItem value="linux" label="STM32F072を使用して上位機で書き込みガイド">
+        <TabItem value="linux" label="STM32F072を使用して上位機器で書き込みチュートリアル">
             
             <Katapult />
 
@@ -53,28 +50,28 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
             :::tip
 
-            どれか一つのファームウェアを書き込むだけで良い
+            どちらか一方のファームウェアだけ書き込む必要があります
 
             :::
 
-            * 下記は500K CAN速度のファームウェア書き込みコマンド
+            * 以下の500K CANレートのファームウェア書き込みコマンド
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_500K.BIN
                 ```
                        
-            * 下記は1M CAN速度のファームウェア書き込みコマンド
+            * 以下の1M CANレートのファームウェア書き込みコマンド
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_1M.BIN
                 ```
 
 
-            5. 以下の画像の矢印で示された内容``File downloaded successfully``が表示されれば書き込み成功
+            5. 画像の矢印部分に示される内容「File downloaded successfully」が表示されたら、書き込みが成功しました
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
             :::tip
 
-            書き込みが完了したら、主板の電源を完全に一度切る必要があります。
+            書き込み後、マザーボードを完全に電源オフにする必要があります。
 
             :::
 

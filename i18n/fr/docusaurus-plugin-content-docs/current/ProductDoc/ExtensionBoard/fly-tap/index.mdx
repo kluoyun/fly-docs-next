@@ -1,35 +1,33 @@
 ---
-sidebar_position: 1
-sidebar_label: Introduction
+position_side_bar: 1
+label_side_bar: Introduction
 ---
-
-
 
 # TAP
 
-## Schéma de connexion TAP !
+## Schéma de câblage TAP !
 
     :::warning Attention
 
-    * Veuillez noter qu'il ne faut pas connecter le TAP à la sortie du servo, mais à la sortie de la butée !!!
+    * Veuillez vous assurer de ne pas connecter le tap à la broche du servomoteur, mais à celle de la limite !!
 
     :::
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/tap.webp').default} size="90%" align="left" />
 
 
-## Tutoriel de configuration du TAP
+## Tutoriel de configuration TAP
 
 
     :::tip
 
-    * Parce que le TAP utilise directement la buse comme déclencheur de butée, il n'y a aucun décalage XY
+    * Comme le tap utilise directement le buse comme déclencheur de limite, il n'y a aucun décalage XY
 
     :::
 
     :::tip
 
-    * Les modifications pour le TAP concernent uniquement la butée Z et la sonde
+    * Les seules modifications apportées au TAP concernent la limite Z et le sondeur
 
     :::
     ```cfg
@@ -41,16 +39,16 @@ sidebar_label: Introduction
 
     [probe]
     pin: ^sht36:PA1              # Interface de signal
-    x_offset: 0                  # Décalage X - capteur par rapport à la buse
-    y_offset: 0                  # Décalage Y - capteur par rapport à la buse
-    #z_offset: 0                 # Décalage Z - capteur par rapport à la buse
-    speed: 3.0                   # Vitesse de nivellement
-    lift_speed: 5                # Vitesse de levée de la sonde
+    x_offset: 0                  # Décalage X - décalage relatif de la sonde par rapport à la buse
+    y_offset: 0                  # Décalage Y - décalage relatif de la sonde par rapport à la buse
+    #z_offset: 0                 # Décalage Z - décalage relatif de la sonde par rapport à la buse
+    speed: 3.0                   # Vitesse d'ajustement
+    lift_speed: 5                # Vitesse de levée du sondeur
     samples: 3                   # Nombre d'échantillons
-    samples_result: median       # Méthode de calcul (par défaut median - médiane)
-    sample_retract_dist: 3.0     # Distance de rétraction lors du nivellement
-    samples_tolerance: 0.075     # Tolérance d'échantillonnage (notez que des valeurs trop faibles peuvent augmenter le nombre d'échantillons)
-    samples_tolerance_retries: 3 # Nombre de tentatives de réessai si tolérance dépassée
+    samples_result: median       # Méthode de sélection des valeurs (par défaut : médiane)
+    sample_retract_dist: 3.0     # Distance de retrait pour l'ajustement
+    samples_tolerance: 0.075     # Tolérance d'échantillonnage (attention aux petites valeurs qui peuvent augmenter le nombre d'échantillons)
+    samples_tolerance_retries: 3 # Nombre de tentatives de réessai en cas de dépassement de tolérance
     activate_gcode:
         {% set PROBE_TEMP = 150 %}
         {% set MAX_TEMP = PROBE_TEMP + 5 %}
@@ -58,14 +56,14 @@ sidebar_label: Introduction
         {% set TARGET_TEMP = printer.extruder.target %}
 
         {% if TARGET_TEMP > PROBE_TEMP %}
-            { action_respond_info('La température cible de l'extrudeur de %.1fC est trop élevée, la réduisant à %.1fC' % (TARGET_TEMP, PROBE_TEMP)) }
+            { action_respond_info('Température cible de l\'extrudeur de %.1fC est trop élevée, réduction à %.1fC' % (TARGET_TEMP, PROBE_TEMP)) }
             M106 S255
             M109 S{ PROBE_TEMP }
             M106 S26
         {% else %}
-            # La température cible est déjà suffisamment basse, mais la buse peut encore être trop chaude.
+            # La température cible est déjà suffisamment basse, mais la buse pourrait être encore trop chaude.
             {% if ACTUAL_TEMP > MAX_TEMP %}
-                { action_respond_info('La température de l'extrudeur %.1fC est encore trop élevée, en attente jusqu'à ce qu'elle soit en dessous de %.1fC' % (ACTUAL_TEMP, MAX_TEMP)) }
+                { action_respond_info('Température de l\'extrudeur de %.1fC est encore trop élevée, attente jusqu\'à ce qu\'elle soit en dessous de %.1fC' % (ACTUAL_TEMP, MAX_TEMP)) }
                 TEMPERATURE_WAIT SENSOR=extruder MAXIMUM={ MAX_TEMP }
             {% endif %}
         {% endif %}
@@ -76,7 +74,7 @@ sidebar_label: Introduction
     * Effet
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/klipper.webp').default} size="80%" align="left" />
 
-### Modification des macros de démarrage pour PrusaSlicer 
+### Modification de la macro de démarrage PrusaSlicer 
 
     ```bash
     M109 S150
@@ -84,15 +82,15 @@ sidebar_label: Introduction
     M109 S[first_layer_temperature]
     ```
 
-### Modification des macros de démarrage pour CURA
+### Modification de la macro de démarrage CURA 
 
     ```bash
     M109 S150
     print_start
-    M109 S{material_print_temperature_layer_0} ;Début de chauffage de l'extrudeur
+    M109 S{material_print_temperature_layer_0} ;Chauffe de l'extrudeur
     ```
 
-### Modification des macros de démarrage pour Orca-Slicer
+### Modification de la macro de démarrage Orca-Slicer 
 
     ```bash
     M190 S[bed_temperature_initial_layer_single]

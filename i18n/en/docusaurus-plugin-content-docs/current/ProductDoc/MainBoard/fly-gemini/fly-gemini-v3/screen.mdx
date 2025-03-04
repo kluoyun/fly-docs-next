@@ -13,27 +13,74 @@ import TFT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fl
 
 :::info
 
-* FLY-TOOLS needs to be connected to the network and then input the `IP+:9999` of the upper computer to access
-* For example, `192.168.6.110:9999`
+* FLY-TOOLS requires the host computer to be connected to the internet and then access it by entering the host's `IP+:9999`
+* For example `192.168.6.110:9999`
 
 :::
 
 
     <Tabs>
         <TabItem value="tft" label="TFT Wiring" default>
-            * You need to configure the screen in FLY TOOLS and turn on KS
+            * You need to configure the screen in FLY TOOLS as shown below and open KS
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
             * FLY-Pi TFT screen wiring
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/gemini-tft.webp').default} size="80%" align="center" />
-
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/gemini-tft.webp').default} size="80%" align="left" />
         </TabItem>
         <TabItem value="hdmi" label="HDMI Wiring">
-            * You need to configure the screen in FLY TOOLS and turn on KS
+            * You need to configure the screen in FLY TOOLS as shown below and open KS
                 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/hdmi.webp').default} size="80%" align="center" />               
-            * You need to use an FPC to HDMI small board
+            * You need to use an FPC to HDMI converter board
             * Please note that you need to connect a Type-C with data transfer function to the module
                 <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
         </TabItem>
     </Tabs>
 
-    ----
+# TFT Screen Configuration
+
+<Tabs>
+    <TabItem value="tft" label="TFT Screen" default>
+        * You need to open KS in FLY TOOLS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFT Capacitive Screen Configuration" default>
+## Method One    
+         * Capacitive configuration requires the following command to set to `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Please confirm that the dip switch on the back of the screen is set to `Cap`
+    * Use the following command to check if the modification was successful
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * To change capacitive screen to resistive screen configuration use the following command
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="TFT Resistive Screen Configuration">
+## Method One        
+           * Resistive screen configuration requires the following command to set to `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Please confirm that the dip switch on the back of the screen is set to `Resi`
+        * Use the following command to check if the modification was successful
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * To change resistive screen to capacitive screen configuration use the following command
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>
+
+

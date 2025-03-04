@@ -2,14 +2,9 @@
 sidebar_position: 1
 ---
 
+# Présentation du produit
 
-
-
-
-
-# Introduction au produit
-
-  Le module d'installation et d'arrêt FLY-KPPM est conçu spécifiquement pour les cartes de développement telles que Raspberry Pi, en tant que module de sécurité pour éviter la perte de données due à une coupure de courant. Utilisant une technologie avancée, il commute automatiquement vers une alimentation par condensateur en cas de coupure de courant, garantissant que la carte de développement fonctionne toujours de manière stable pendant 15 secondes, assurant ainsi la sauvegarde effective des données. Compact et facile à installer.
+  Le module de mise hors tension et d'installation FLY-KPPM est conçu spécialement pour les cartes de développement telles que Raspberry Pi afin de prévenir la perte de données en cas de coupure de courant. Utilisant des technologies avancées, lorsque la coupure de courant se produit, il bascule automatiquement vers une source d'alimentation par condensateur, garantissant que la carte de développement fonctionne de manière stable pendant 15 secondes même en cas de panne de courant, assurant ainsi une sauvegarde efficace des données. Compact et facile à installer.
 
   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.webp').default} size="100%" align="left" />
 
@@ -17,39 +12,38 @@ sidebar_position: 1
 ## Remarques sur le produit
 
   :::danger À savoir
-  L'alimentation d'entrée ne supporte que DC12-24V, veuillez faire attention à la polarité lors du raccordement des fils, le branchement doit être effectué en état d'arrêt, et l'alimentation ne doit être connectée qu'une fois la connexion vérifiée comme correcte ; notre entreprise ne sera pas responsable des pertes causées par un branchement incorrect.
+  L'alimentation n'est supportée que pour DC12-24V. Assurez-vous de bien distinguer les bornes positives et négatives lors de la connexion. La connexion doit être effectuée en état déconnecté et ne peut être mise sous tension qu'une fois la connexion vérifiée. Nous ne sommes pas responsables des dommages causés par une mauvaise connexion.
   :::
 
   :::danger À savoir
-  Le port 5V OUT est une sortie d'alimentation de secours, il ne doit pas être utilisé comme alimentation principale, veuillez utiliser USB-OUT ou SIG/IO pour alimenter l'appareil hôte.
+  La prise 5V OUT est destinée à être une source d'alimentation d'urgence et ne doit pas être utilisée comme source d'alimentation courante. Veuillez utiliser USB-OUT ou SIG/IO pour alimenter l'ordinateur principal.
   :::
 
   :::danger À savoir
-  Lors de l'utilisation avec le module d'arrêt sécurisé, une alimentation de 12V-24V est nécessaire. Pour garantir le bon fonctionnement du module, la tension de sortie 5V du module d'arrêt sécurisé ne doit pas être inférieure à 4,9V, sinon le module d'arrêt sécurisé tirera de l'énergie en interne, ce qui maintiendra les condensateurs en charge constante, entraînant une surchauffe du module.
+  Lorsque vous utilisez le module de mise hors tension en toute sécurité, un alimentation de 12V-24V est nécessaire. Pour garantir un fonctionnement normal du module, la tension de sortie 5V du module de mise hors tension ne doit pas être inférieure à 4,9V, sinon le module de mise hors tension passera en mode de montée de tension interne, ce qui entraînera une charge continue du condensateur et provoquera une surchauffe du module.
   :::
 
 
-## Explication du contenu affiché sur l'écran du produit
+## Explication du contenu de l'écran
 
-
-    | Explication du contenu de l'écran    |       Explication gauche        |     Paramètres à droite          |        Explication à droite      |
+    | Explication du contenu de l'écran    |       Explication de gauche        |     Paramètre de droite          |        Explication de droite      |
     | :------------- | :------------------: | :------------------: | :------------------: |
     | `IN:`            |  Tension d'entrée             |  `OUT:`              |  Tension de sortie             |
     | `CA:`            |  Tension totale du condensateur           |  `OI:`               |  Courant de charge de sortie         |
     | `C1:`            |  Tension du condensateur C1           |  ` C2:`                |  Tension du condensateur C2           | 
-    | `Temp:`          |  Température du module d'arrêt sécurisé      | ` E:`                 |  Indication d'état, voir ci-dessous    | 
+    | `Temp:`          |  Température du module de mise hors tension      | ` E:`                 |  Message d'état, veuillez consulter ci-dessous    | 
 
 
-    | Contenu affiché        |       Explication de l'état       |
+    | Contenu de l'affichage        |       Explication de l'état       |
     | :------------- | :-----------------: | 
-    | ` Ready!`          |  Démarrage normal            |
+    | ` Ready!`          |  Mise sous tension normale            |
     | ` IN LOW!`         |  Tension d'entrée faible          |
-    | ` IN OVR!`         |  Courant de sortie trop élevé        |
-    | ` OV LOE!`         |  Tension de sortie trop basse        |
-    | ` OV OVR`          |  Courant de sortie trop élevé        |
-    | ` TP OVR!`         |  Température trop élevée            |
+    | ` IN OVR!`         |  Courant de sortie élevé        |
+    | ` OV LOE!`         |  Tension de sortie faible        |
+    | ` OV OVR`          |  Courant de sortie élevé        |
+    | ` TP OVR!`         |  Température élevée            |
     | ` NONE `           |  Erreur inconnue            |
-    | ` R: XX Sec `      |  Si l'alimentation est coupée puis reconnectée dans les 10 secondes, cette indication apparaîtra, après le compte à rebours, l'appareil hôte redémarrera            |
+    | ` R: XX Sec `      |  Si une coupure de courant se produit dans les 10 secondes avant la mise sous tension, un message s'affichera, avec un compte à rebours qui se terminera par un redémarrage de l'ordinateur principal            |
 
 ## Téléchargement du modèle de boîtier fixe
 
@@ -59,24 +53,24 @@ sidebar_position: 1
 
 ## Explication des broches
 
-  * OUT-RST Réinitialiser
-  * OUT-PDN Arrêter
+  * OUT-RST Réinitialisation
+  * OUT-PDN Arrêt
 
   * IN-PIN 
 
-    Par défaut, il est en haute impédance, le module détecte automatiquement le temps de coupure de courant précédent lors de l'alimentation,
-  Si le temps de coupure est inférieur à 10 secondes, il attendra 10 secondes avant de commuter une fois la sortie 5V (pour s'assurer que l'appareil hôte peut s'arrêter et redémarrer correctement)
-  Si connecté à GND, la fonction de détection automatique du temps de coupure sera désactivée
+    Défaut à l'état haut, le module détecte automatiquement le temps écoulé depuis la dernière coupure de courant au moment de la mise sous tension. 
+  Si le temps écoulé est inférieur à 10 secondes, il attendra 10 secondes avant de réactiver automatiquement la sortie 5V (pour s'assurer que l'ordinateur principal a terminé son arrêt et peut être redémarré). 
+  Si il est connecté à GND, la fonction de détection automatique du temps écoulé sera désactivée.
 
   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.webp').default} size="100%" align="left" />
 
-## Tutoriel d'utilisation du logiciel hôte FLY
+## Tutoriel d'utilisation de l'ordinateur principal FLY
 
   :::info
-  Seulement applicable à FLY-Pi FLY-Pi-V2 FLY-C8
+  Seul applicable à FLY-Pi FLY-Pi-V2 FLY-C8
   :::
 
-  Le logiciel hôte FLY nécessite l'exécution des commandes suivantes via SSH
+  L'ordinateur principal FLY nécessite l'exécution de la commande SSH ci-dessous
 
   ```bash
   sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
@@ -89,39 +83,38 @@ sidebar_position: 1
   sudo reboot
   ```
   
-### Tutoriel de connexion du logiciel hôte FLY
+### Tutoriel de câblage de l'ordinateur principal FLY
 
   <Tabs>
-      <TabItem value="serial" label="Tutoriel de connexion du logiciel hôte FLY" default>
+      <TabItem value="serial" label="Tutoriel de câblage de l'ordinateur principal FLY" default>
 
           <Tabs>
-              <TabItem value="1" label="FLY-C8 Utilisation de la connexion 5V" default>
-                  * FLY-C8 Utilisation de la connexion 5V
-
-                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_5v.webp').default} size="80%" align="center" />
+              <TabItem value="1" label="Utilisation de FLY-C8 avec une connexion 5V" default>
+                  * Connexion FLY-C8 avec une connexion 5V Vérifier si elle correspond à la figure
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/c81.webp').default} size="80%" align="center" />
               </TabItem>
-              <TabItem value="2" label="FLY-C8 Utilisation de la connexion USB" default>
-                  * FLY-C8 Utilisation de la connexion USB
+              <TabItem value="2" label="Utilisation de FLY-C8 avec une connexion USB" default>
+                  * Connexion FLY-C8 avec une connexion USB
 
                   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.webp').default} size="80%" align="center" />
               </TabItem>
-              <TabItem value="3" label="FLY-Pi(π) Utilisation de la connexion 5V" default>
-                  * FLY-Pi Utilisation de la connexion 5V
+              <TabItem value="3" label="Utilisation de FLY-Pi(π) avec une connexion 5V" default>
+                  * Connexion FLY-Pi avec une connexion 5V
 
                   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.webp').default} size="80%" align="center" />
               </TabItem>
-              <TabItem value="4" label="FLY-Pi(π) Utilisation de la connexion USB" default>
-                  * FLY-Pi Utilisation de la connexion USB
+              <TabItem value="4" label="Utilisation de FLY-Pi(π) avec une connexion USB" default>
+                  * Connexion FLY-Pi avec une connexion USB
 
                   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.webp').default} size="80%" align="center" />
               </TabItem>
-              <TabItem value="5" label="FLY-Pi-V2 Utilisation de la connexion 5V" default>
-                  * FLY-Pi-V2 Utilisation de la connexion 5V
+              <TabItem value="5" label="Utilisation de FLY-Pi-V2 avec une connexion 5V" default>
+                  * Connexion FLY-Pi-V2 avec une connexion 5V
 
                   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.webp').default} size="80%" align="center" />
               </TabItem>
-              <TabItem value="6" label="FLY-Pi-V2 Utilisation de la connexion USB" default>
-                  * FLY-Pi-V2 Utilisation de la connexion USB
+              <TabItem value="6" label="Utilisation de FLY-Pi-V2 avec une connexion USB" default>
+                  * Connexion FLY-Pi-V2 avec une connexion USB
 
                   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.webp').default} size="80%" align="center" />
               </TabItem>
@@ -130,25 +123,25 @@ sidebar_position: 1
       </TabItem>
   </Tabs>
 
-## Tutoriel d'utilisation du logiciel hôte Raspberry Pi
+## Tutoriel d'utilisation de l'ordinateur principal Raspberry Pi
 
-  Le Raspberry Pi fonctionne de manière similaire aux opérations ci-dessus, il est nécessaire d'insérer la carte SD avec l'image du système dans un ordinateur, puis d'ajouter la ligne `dtoverlay=gpio-shutdown,gpio_pin=21` dans le fichier config.txt, ensuite de sauvegarder et de sortir.
+  Comme pour l'opération ci-dessus, insérez la carte SD contenant l'image du système dans l'ordinateur et ajoutez la ligne de commande `dtoverlay=gpio-shutdown,gpio_pin=21` dans le fichier config.txt. Ensuite, enregistrez et quittez.
 
   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.webp').default} size="80%" align="left" />
 
   
 
   <Tabs>
-      <TabItem value="serial" label="Tutoriel de connexion du logiciel hôte Raspberry Pi" default>
+      <TabItem value="serial" label="Tutoriel de câblage de l'ordinateur principal Raspberry Pi" default>
 
           <Tabs>
-              <TabItem value="1" label="Raspberry Pi Utilisation de la connexion 5V" default>
-                  * Raspberry Pi Utilisation de la connexion 5V
+              <TabItem value="1" label="Utilisation de Raspberry Pi avec une connexion 5V" default>
+                  * Connexion Raspberry Pi avec une connexion 5V
 
                   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.webp').default} size="80%" align="center" />
               </TabItem>
-              <TabItem value="2" label="Raspberry Pi Utilisation de la connexion USB" default>
-                  * Raspberry Pi Utilisation de la connexion USB
+              <TabItem value="2" label="Utilisation de Raspberry Pi avec une connexion USB" default>
+                  * Connexion Raspberry Pi avec une connexion USB
 
                   <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.webp').default} size="80%" align="center" />
               </TabItem>

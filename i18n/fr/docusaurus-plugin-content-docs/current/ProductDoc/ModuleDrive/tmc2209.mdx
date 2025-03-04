@@ -2,8 +2,6 @@
 sidebar_position: 1
 ---
 
-
-
 import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 2209
@@ -13,19 +11,19 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
 ## Paramètres de base
 
     * Tension d'entrée : 12V-24V
-    * Adapté pour : Firmware Marlin/Klipper/RRF
+    * Convient pour : Firmware Marlin/Klipper/RRF
     * Le moteur ne perd pas facilement des pas
-    * Supporte le mode silencieux
-    * Patins thermiques de grande surface pour le ventilateur, réduisant la température de travail du driver
-    * Modes de pilotage supportés : TMC : UART
-    * Détection de blocage du moteur supportée
+    * Prise en charge du mode silencieux
+    * Grand plateau de ventilation, réduit la température de travail du driver
+    * Modes de pilotage pris en charge : TMC : UART
+    * Prise en charge de la détection de blocage du moteur
 
-## Explication des cavaliers de la carte mère
+## Explications sur les sauts de broches de la carte mère
 
-    * TMC2209 utilise le cavalier UART
+    * TMC2209 utilise des sauts de broche UART
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
-    * La broche UART du driver FLY est la quatrième en partant du haut à gauche, la broche PDN est la broche UART. Si la carte mère n'a pas les broches correspondantes, elle ne peut pas utiliser l'UART
-    * Si d'autres drivers utilisent la cinquième broche, vous pouvez utiliser notre méthode de référence pour résoudre le problème  <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">Méthode pour résoudre l'impossibilité d'utiliser l'UART</Button>
+    * Les broches UART de la carte mère FLY sont la quatrième broche en partant du bas à gauche, PDN est la même broche que UART. Si la carte mère n'a pas les broches correspondantes, l'utilisation de UART n'est pas possible
+    * Pour d'autres drivers, si la cinquième broche est utilisée sur notre carte mère, on peut utiliser cette méthode comme référence pour résoudre le problème <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">Méthode de résolution pour non-utilisation d'UART</Button>
         
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/uart1.webp').default} size="80%" align="center" />
 
@@ -33,7 +31,7 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
 
     :::danger
 
-    La résistance d'échantillonnage du driver est de 0,110, ne la modifiez pas
+    La résistance de mesure du driver est de 0,110, veuillez ne pas la configurer incorrectement
 
     :::
 
@@ -41,20 +39,20 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2209 stepper_x]
     uart_pin: 
     interpolate: False
-    run_current: 0,8                    # Valeur du courant de fonctionnement du moteur (en mA)
-    sense_resistor: 0,110               # Ne modifiez pas la résistance d'échantillonnage du driver
+    run_current: 0.8                    # Valeur de courant de fonctionnement du moteur (unité : mA)
+    sense_resistor: 0.110               # Résistance de mesure du driver, ne pas modifier
     stealthchop_threshold: 0
     ```
 
-## Instructions pour l'utilisation sans fin de course
+## Explications d'utilisation sans limite
 
     <DIAG />
 
-    :::tip Conseils pour l'utilisation sans fin de course
+    :::tip Conseils d'utilisation sans limite
 
-    * Le `endstop_pin:` original doit être masqué ou supprimé, puis ajoutez `endstop_pin: tmc2209_stepper_x:virtual_endstop`
-    * Après avoir configuré `diag_pin:`, l'état du fin de course est non déclenché lors du rafraîchissement
-    * La configuration de `driver_SGTHRS:` nécessite de tester une valeur appropriée
+    * L'ancienne configuration `endstop_pin:` doit être désactivée ou supprimée, et remplacée par `endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * Après avoir configuré `diag_pin:`, le statut de la limite est non déclenché
+    * Après avoir configuré `driver_SGTHRS:`, un ajustement approprié doit être testé
 
     :::
 
@@ -64,8 +62,8 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
 
     :::tip
 
-    * Le dos de FLY 2209 a un sélecteur qui doit être basculé de l'autre côté
-    * FLY 2209C est un driver connecté directement au DIAG, cette étape n'est pas nécessaire
+    * Sur le dos de FLY 2209, il y a un commutateur, il doit être mis de l'autre côté
+    * FLY 2209C est une connexion directe au driver DIAG, ce pas n'est pas nécessaire
 
     :::
 
@@ -73,7 +71,7 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc2209_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # Ne modifiez pas la distance de retrait à 0, cela pourrait entraîner un échec de retour
+    homing_retract_dist: 0        # Retrait en arrière ne doit pas être modifié, sinon cela pourrait entraîner un échec de la mise en position
 
     [tmc2209 stepper_x]
     diag_pin: ^

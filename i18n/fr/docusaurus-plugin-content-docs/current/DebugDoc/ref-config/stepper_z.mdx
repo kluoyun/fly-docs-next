@@ -2,11 +2,11 @@
 sidebar_position: 9
 ---
 
-# Configuration de référence pour plusieurs Z
+# Configuration de référence multi-Z
 
 ## Double Z avec une seule limite
 
-* Pour la deuxième configuration Z, il n'est pas nécessaire d'ajouter `endstop_pin:`
+* Dans la deuxième configuration Z, `endstop_pin:` ne doit pas être ajouté
 
     ```cfg
     [stepper_z]
@@ -35,7 +35,7 @@ sidebar_position: 9
 ## Double Z avec deux limites
 
 
-* Pour la deuxième configuration Z, il faut ajouter `endstop_pin:`
+* Dans la deuxième configuration Z, `endstop_pin:` doit être ajouté
 
     ```cfg
     [stepper_z]
@@ -63,37 +63,37 @@ sidebar_position: 9
     endstop_pin: ^!PA10
     ```
 
-## Double Z avec Probe ou BL Touch
+## Double Z utilisant Probe ou BL Touch
 
 
-    * Dans la première configuration Z, modifiez la pin après `endstop_pin:` par `probe:z_virtual_endstop  `
-    * Il est nécessaire de configurer Probe ou BL Touch
+* Après `endstop_pin:` dans la première configuration Z, le pin doit être modifié en `probe:z_virtual_endstop`
+* Il faut configurer Probe ou BL Touch
 
-        ```cfg
-        [stepper_z]
-        step_pin: PA5
-        dir_pin: PA4
-        enable_pin: !PA6
-        rotation_distance: 4
-        full_steps_per_rotation: 200
-        microsteps: 16
-        endstop_pin: probe:z_virtual_endstop  
-        # position_endstop: 0
-        position_max: 300
-        homing_speed: 50
-        homing_retract_dist: 5
-        step_pulse_duration: 0.000004
+    ```cfg
+    [stepper_z]
+    step_pin: PA5
+    dir_pin: PA4
+    enable_pin: !PA6
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    endstop_pin: probe:z_virtual_endstop  
+    # position_endstop: 0
+    position_max: 300
+    homing_speed: 50
+    homing_retract_dist: 5
+    step_pulse_duration: 0.000004
 
-        [probe]
-        pin: ^PB4                    # Interface de signal
-        x_offset: 0                  # Décalage relatif de la sonde par rapport à la buse sur l'axe X
-        y_offset: 0                  # Décalage relatif de la sonde par rapport à la buse sur l'axe Y
-        #z_offset: 0                 # Décalage relatif de la sonde par rapport à la buse sur l'axe Z
-        speed: 3.0                   # Vitesse de nivellement
-        lift_speed: 5                # Vitesse de levage de la sonde
-        samples: 3                   # Nombre d'échantillons
-        samples_result: median       # Méthode de sélection des valeurs (par défaut median - médiane)
-        sample_retract_dist: 3.0     # Distance de rétraction du nivellement
-        samples_tolerance: 0.075     # Tolérance d'échantillonnage (attention aux valeurs trop petites qui peuvent augmenter le nombre d'échantillons)
-        samples_tolerance_retries: 3 # Nombre de tentatives de rééchantillonnage en cas de dépassement de tolérance
-        ```
+    [probe]
+    pin: ^PB4                    # Interface de signal
+    x_offset: 0                  # Décalage X - capteur par rapport à l'embout
+    y_offset: 0                  # Décalage Y - capteur par rapport à l'embout
+    #z_offset: 0                 # Décalage Z - capteur par rapport à l'embout
+    speed: 3.0                   # Vitesse de niveau
+    lift_speed: 5                # Vitesse de levée du capteur
+    samples: 3                   # Nombre d'échantillons
+    samples_result: median       # Méthode de sélection (par défaut median - médiane)
+    sample_retract_dist: 3.0     # Distance de retrait lors du nivellement
+    samples_tolerance: 0.075     # Tolérance d'échantillonnage (remarque : des valeurs trop petites peuvent augmenter le nombre d'échantillons)
+    samples_tolerance_retries: 3 # Nombre de tentatives au-delà de la tolérance
+    ```

@@ -1,0 +1,124 @@
+---
+sidebar_position: 3
+sidebar_label: CANファームウェアのコンパイルとフラッシュ
+---
+
+import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# CANファームウェアのコンパイル
+
+## コンパイル開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * **GPIOピンをマイクロコントローラーの起動時に設定する**を選択し、入力：**!gpio18**
+    :::warning
+        `!gpio18`を入力する際は英数入力状態にしてください
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/can.webp').default} size="95%" align="center" />
+    * **上図と照らし合わせ、一致していることを確認してから次の手順に進んでください**
+    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 現在は設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最後に以下の内容が表示されたらコンパイル成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## オフボードコンピュータの設定
+    :::warning
+        オフボードコンピュータが **FLY** の場合は、**オフボードコンピュータの設定** をスキップしてください
+    :::
+
+    :::warning
+       オフボードコンピュータが **非FLY** の場合は、以下の手順を実行してください
+    :::
+
+    ### オフボードコンピュータがCANをサポートしているかどうかの確認
+
+    * **FLYオフボードコンピュータ** の場合はこの操作は必要ありません
+    * システムが`Ubuntu`の場合には`UbuntuのCAN0の設定`が必要ですが、このドキュメントはまだ更新されていません
+    * 下記のコマンドを入力し、システムがCANをサポートしているかどうかを確認します
+    ```bash
+    sudo modprobe can && echo "カーネルはCANをサポートしています" || echo "カーネルはCANをサポートしていません"
+    ```
+    * 上記のコマンドを入力すると、カーネルがCANをサポートしている場合、「カーネルはCANをサポートしています」と返されます。サポートしていない場合は「カーネルはCANをサポートしていません」と返されます。
+    :::tip
+        「カーネルはCANをサポートしています」の場合、次のステップに進めます。サポートしていない場合、「カーネルはCANをサポートしていません」と返された場合は、オフボードコンピュータのシステムを変更するか、オフボードコンピュータ自体を変更してください。
+    :::
+   
+   ### CAN0の設定
+
+    * このコマンドは既存のCAN0の設定を上書きします。実行後、システムを再起動する必要があります
+    * 実際の状況に応じて、次のいずれかを選択してください（**KlipperのデフォルトCANレートは1Mで、1Mレートを使用することをお勧めします**）
+
+    :::warning
+        1Mレートの場合、下記のコマンドを入力します
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+        allow-hotplug can0
+        iface can0 can static
+            bitrate 1000000
+            up ifconfig $IFACE txqueuelen 1024
+            pre-up ip link set can0 type can bitrate 1000000
+            pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    :::warning
+        500Kレートの場合、下記のコマンドを入力します
+    :::
+
+    ```bash
+    sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
+    allow-hotplug can0
+    iface can0 can static
+        bitrate 500000
+        up ifconfig $IFACE txqueuelen 1024
+        pre-up ip link set can0 type can bitrate 500000
+        pre-up ip link set can0 txqueuelen 1024
+    EOF
+    ```
+
+    * システムを再起動します
+
+    ```bash
+    sudo reboot
+    ```
+
+## デバイスの検索
+
+    <LS />
+
+
+## ファームウェアのフラッシュ
+    * ファームウェアをフラッシュする前に、XT30データ線を使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたマザーボードに接続します。参照配線図は以下にあります
+    * ダイアルスイッチが対応する位置に設定されていることを確認してください
+    ## KFインターフェースの図
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/KF.webp').default} size="80%" align="left" />
+    ## XT30インターフェースの図
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/xt30.webp').default} size="80%" align="left" />
+    * CAN HとCAN Lが電源が切れた状態でマルチメーターで抵抗値を測定し、約`60Ω`であることを確認してください。`120Ω`であれば`120Ω`のジャンパーを接続し、`40Ω`程度であればジャンパーを外してください
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/120r.webp').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## ファームウェアの起動確認
+
+    * ファームウェアが正常に起動するとLEDが点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

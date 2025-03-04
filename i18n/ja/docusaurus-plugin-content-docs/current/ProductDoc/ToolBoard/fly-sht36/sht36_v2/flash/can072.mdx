@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: 072バージョンCANファームウェアのコンパイルと書き込み
+sidebar_label: 072バージョンCANファームウェアのコンパイルとフラッシュ
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
 # 072バージョンCANファームウェアのコンパイル
 
-## コンパイルの開始
+## コンパイル開始
 
     <SSH />
 
@@ -20,14 +20,14 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * **GPIOピンのマイクロコントローラ起動時の設定**を選択し、入力：!PC13（大文字に注意）
+    * **micro-controller起動時に設定するGPIOピンを選択**、入力：!PC13（大文字であることに注意）
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/072.webp').default} size="100%" align="center" />
-    * `Q`キーを押して**Save configuration**が表示されたら、`Y`キーを押します
+    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインに戻ります
-    * `make -j4`を入力してコンパイルを開始します。少し時間がかかります
+    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
+    * 最後に次の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
@@ -39,18 +39,17 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
     <LS />
 
 
-## ファームウェアの書き込み
+## ファームウェアのフラッシュ
 
-    * ファームウェアを書き込む前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアを書き込んだメインボードに接続してください。以下は接続例です
-    * ダイポールが正しい位置にあるかどうかを確認してください
+    * ファームウェアをフラッシュする前に、XT30データラインを使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたマザーボードに接続します。以下が参照接続図です
+    * ダイアルスイッチが対応する位置にセットされていることを確認してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * 電源を切った状態でCAN HとCAN Lの間の抵抗をテスターで測定してください。約`60Ω`の場合、`120Ω`のジャンパーを接続してください。約`40Ω`の場合、ジャンパーを取り外してください
+    * CAN HとCAN Lが電源オフ状態でマルチメーターで測定した抵抗値が約`60Ω`であることを確認してください。もし`120Ω`であれば`120Ω`ジャンパーを接続し、約`40Ω`であればジャンパーを外してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## ファームウェアが起動しているか確認
+## ファームウェアの起動確認
 
-    * ファームウェアが正常に起動すればLEDが点灯します
+    * ファームウェアが正常に起動するとLEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.webp').default} size="70%" align="center" />
-

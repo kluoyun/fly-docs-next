@@ -2,8 +2,6 @@
 sidebar_position: 2
 ---
 
-
-
 import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 2240
@@ -14,26 +12,26 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
 
     * Tension d'entrée : 12V-36V
     * Convient pour : Firmware Klipper/RRF
-    * Modes de pilotage supportés : TMC : SPI/UART
+    * Modes de pilotage pris en charge : TMC : SPI/UART
     * Détection de température intégrée
-    * Entrée analogique universelle avec protection complète et diagnostic
-    * Détection de courant intégrée sans perte (ICS)
-    * Interface pas-à-pas/direction avec interpolation microPlyer
-    * Protection contre les courts-circuits, verrouillage par sous-tension, protection contre la surchauffe du chip (arrêt thermique)
-    * Support pour la détection de charge du moteur sans capteur de haute précision StallGuard2
-    * Détection de charge du moteur sans capteur intégrée StallGuard2 et StallGuard4
-    * Combinaison sans tremblement de StealthChop et SpreadCycle, résolvant le problème de rebond du moteur au point de commutation de la fréquence de découpage.
-    * Plus de puissance, moins de chaleur (supporte une tension plus élevée, 3.0AMAX, adapté à des domaines plus élevés de l'impression 3D, et fonctionne plus longtemps sans surchauffe ni dommages).
+    * Protection et diagnostic des entrées analogiques universelles
+    * Sondage de courant sans perte intégré (ICS)
+    * Interface pas/position avec interpolation de micro-pas par microPlyer
+    * Protection contre les courts-circuits, verrouillage sous tension, protection contre le surchauffe de la puce (arrêt thermique)
+    * Prise en charge de stallGuard2 pour un détection de charge moteur non sensibilisée haute précision
+    * StallGuard2 et StallGuard4 intégrés pour la détection de charge moteur non sensibilisée
+    * Combinaison sans saccades de StealthChop et SpreadCycle pour résoudre le problème de sauts du moteur au point de commutation de tranchage.
+    * Puissance plus grande, moindre production de chaleur. (Prise en charge de tensions plus élevées, 3,0 AMAX, convient aux travaux d'impression 3D de domaines plus élevés, et fonctionne pendant une période plus longue sans surchauffe ni dommage.)
 
-## Explication des cavaliers de la carte mère
+## Explications sur les sauts de carte mère
 
-    * Par défaut, TMC2240 utilise le cavalier SPI
+    * Le TMC2240 utilise par défaut le saut SPI
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
-    * Méthode d'utilisation du cavalier UART pour TMC2240
+    * Méthode de saut UART pour le TMC2240
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240uart.webp').default} size="100%" align="center" />
 
 
-## Configuration de référence pour TMC2240
+## Configuration de référence TMC2240
 
     :::danger
 
@@ -47,10 +45,10 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     [tmc2240 stepper_x]
     cs_pin: 
     spi_bus: 
-    run_current: 0.65                   # Valeur du courant de fonctionnement du moteur
-    interpolate: False                  # Activer ou non l'interpolation en 256 micro-pas (non recommandé)
+    run_current: 0,65                   # Valeur du courant de fonctionnement du moteur
+    interpolate: False                  # Activer la subdivision de 256 micro-pas (non recommandé)
     rref: 12300
-    stealthchop_threshold: 0           # Seuil de silence (si le silence n'est pas nécessaire, changez la valeur en 0)
+    stealthchop_threshold: 0           # Seuil de silence (si vous n'avez pas besoin de silence, changez la valeur en 0)
     ```
 
 ### Configuration de référence en mode UART
@@ -58,31 +56,31 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
     ```cfg
     [tmc2240 stepper_x]
     uart_pin:
-    run_current: 0.65                   # Valeur du courant de fonctionnement du moteur
-    interpolate: False                  # Activer ou non l'interpolation en 256 micro-pas (non recommandé)
+    run_current: 0,65                   # Valeur du courant de fonctionnement du moteur
+    interpolate: False                  # Activer la subdivision de 256 micro-pas (non recommandé)
     rref: 12300                         # Résistance d'échantillonnage du pilote
-    stealthchop_threshold: 0            # Seuil de silence (si le silence n'est pas nécessaire, changez la valeur en 0)
+    stealthchop_threshold: 0            # Seuil de silence (si vous n'avez pas besoin de silence, changez la valeur en 0)
     ```
 
-    * Si l'erreur suivante apparaît
-        
+    * Si vous rencontrez l'erreur ci-dessous
+    
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2240error.webp').default} size="80%" align="center" />
 
-    * Vous devez vous connecter en tant qu'utilisateur klipper via SSH et exécuter ce code
+    * Vous devez vous connecter via SSH à l'utilisateur installé sur klipper, puis exécuter ce code
 
         ```bash
-        sed -i 's/"uart_pin"/\'"'"'uart_pin'\''/g' ~/klipper/klippy/extras/tmc2240.py
+        sed -i 's/"uart_pin"/'"'"'uart_pin'"'"'/g' ~/klipper/klippy/extras/tmc2240.py
         ```
 
-## Explication de l'utilisation sans fin de course
+## Explications d'utilisation sans fin de course
 
     <DIAG />
 
-    :::tip Conseils pour l'utilisation sans fin de course
+    :::tip Conseils d'utilisation sans fin de course
 
-    * Le `endstop_pin:` d'origine doit être masqué ou supprimé, puis ajouter `endstop_pin: tmc2240_stepper_x:virtual_endstop`
-    * Après avoir configuré `diag0_pin:`, l'état de fin de course est non déclenché lors du rafraîchissement
-    * La configuration de `driver_SGT:` nécessite de tester une valeur appropriée, normalement `1`
+    * L'ancienne `endstop_pin:` doit être masquée ou supprimée, puis ajoutez `endstop_pin: tmc2240_stepper_x:virtual_endstop`
+    * Après avoir configuré `diag0_pin:`, l'état de fin de course est non déclenché
+    * Pour configurer `driver_SGT:`, vous devez tester une valeur appropriée, normalement `1`
 
     :::
 
@@ -90,9 +88,9 @@ import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDo
 
     ```cfg
     [stepper_x]
-    # endstop_pin:PF3   # Le port de fin de course d'origine doit être masqué ou supprimé
+    # endstop_pin:PF3   # L'ancien port de fin de course doit être masqué ou supprimé
     endstop_pin: tmc2240_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # Un retrait différent de 0 peut entraîner un échec du retour à zéro
+    homing_retract_dist: 0        # Aucun retrait n'est nécessaire, sinon cela pourrait entraîner un échec de la mise en position initiale
 
     [tmc2240 stepper_x]
     diag0_pin: ^!PG12

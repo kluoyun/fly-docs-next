@@ -1,23 +1,22 @@
 ---
 sidebar_position: 1
-sidebar_label: tft FPC線示意図
+sidebar_label: tft FPC線図
 ---
 
-
-# 画面パラメータ変更チュートリアル
+# スクリーンパラメータ修正チュートリアル
 :::tip
-ブラウザであなたのIP:9999を開いてFLY-Toolsにアクセスしてください
+ブラウザでIP:9999を開いてFLY-Toolsにアクセスしてください。
 :::
 
 :::
-    * tftを使用するには下のオプションを有効にして画面を起動する必要があります
-    * FLY Toolsに入った後
-* 最初のステップとして、fly_TOOLSでパラメータを変更する必要があります
+    * tftを使用するには、以下のオプションをオンにする必要があります。
+    * FLY Toolsに入ったら
+* 最初のステップはfly_TOOLSでパラメータを修正することです。
 
-* FLY TOOLSで下記の設定を行い、KSを有効にする必要があります
+* FLY TOOLSで以下の設定を行い、KSを開く必要があります
 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
 
-# 示意図
+# 図
 ## LITE2
 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2/img/tftv2.webp').default} size="80%" align="left" />
 
@@ -27,11 +26,49 @@ sidebar_label: tft FPC線示意図
 ## fly-PI
 <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="left" />
 
-## FLY-PI-V2
-<ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="80%" align="left" />
 
-## FLY-C8
-<ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="left" />
+<Tabs>
+    <TabItem value="tft" label="TFTスクリーン" default>
+        * FLY TOOLSでKSを開く必要があります
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFTタッチスクリーン設定" default>
+## 方法一    
+         * タッチスクリーン設定には以下のコマンドを使用して`fly-tft-v2-c`に設定する必要があります
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * 画面の裏側のダイアルが`Cap`に設定されていることを確認してください。
+    * 以下を使用して設定が成功したかどうか確認できます
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * タッチスクリーンをレジスタスクリーンに変更するには以下のコマンドを使用します
 
-## Gemini v3
-<ImageView image={require('@site/docs/General/fly-os/img/screen/gemini-tft.webp').default} size="80%" align="left" />
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="TFTレジスタスクリーン設定">
+## 方法一        
+           * レジスタスクリーン設定には以下のコマンドを使用して`fly-tft-v2-r`に設定する必要があります
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * 画面の裏側のダイアルが`Resi`に設定されていることを確認してください。
+        * 以下を使用して設定が成功したかどうか確認できます
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * レジスタスクリーンをタッチスクリーンに変更するには以下のコマンドを使用します
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>

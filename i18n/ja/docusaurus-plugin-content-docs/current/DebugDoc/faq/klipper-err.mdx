@@ -2,12 +2,10 @@
 sidebar_position: 1
 ---
 
+# 一般的エラー表示
 
 
-# よくあるエラーメッセージ
-
-
-## mcu 'xxx': Unable to connect
+## mcu 'xxx': 接続できません
 
 1. **エラーメッセージ**
 
@@ -15,30 +13,30 @@ sidebar_position: 1
 
 2. **エラーの原因**
 
-   * 上位機がメインボードを見つけて接続できない
+   * 上位機器がメインボードを見つけることができず、接続できない
 
 3. **解決方法**
 
-   * Klippy.logを確認し、最下部までスクロールする
-   * `[Errno 2]`が表示された場合、検索IDが見つからず**printer.cfg**に追加されていないことを示す
+   * Klippy.logを確認し、一番下までスクロールします
+   * `[Errno 2]`が出た場合、IDが見つからず、printer.cfgに追加されていないことを示します
 
    <ImageView image={require('@site/docs/DebugDoc/faq/img/errno2.webp').default} size="80%" align="center" />
 
-   * **serialhdl.error: mcu 'xxx': Serial connection closed**が表示された場合、CAN IDが見つからないか、入力が間違っているため、検索IDを探して入力する必要がある
+   * `serialhdl.error: mcu 'xxx': Serial connection closed`が出た場合、CAN IDが見つからないか、間違っているためです。IDを検索して記入する必要があります
 
    <ImageView image={require('@site/docs/DebugDoc/faq/img/lnvalid_can_uuid.webp').default} size="80%" align="center" />
  
-   * **mcu 'mcu': Unable to open CAN port: [Errno 19] No such device**が表示された場合、**UOTCまたはCANブリッジを搭載したメインボードがない**ことを示す
+   * `mcu 'mcu': Unable to open CAN port: [Errno 19] No such device`が出た場合、UOTCまたはCANブリッジのメインボードがないことを示します
 
    <ImageView image={require('@site/docs/DebugDoc/faq/img/errno19.webp').default} size="80%" align="center" />
 
-   * **mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 100] Network is down**が表示された場合、**CANネットワークが設定されていないか、CAN0が起動していない**ことを示す
+   * `mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 100] Network is down`が出た場合、CANネットワークが構成されていないか、CAN0が起動していないことを示します
 
-   * **mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 105] Network is down**が表示された場合、**CANネットワークのバッファが小さすぎる**ため、バッファを大きくする必要がある
+   * `mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 105] Network is down`が出た場合、CANネットワークのバッファが小さすぎるためです。解決策はバッファを大きくすることです
 
-   * `[Errno 105] Network is down`と`[Errno 100] Network is down`については、こちらのドキュメントを参照してください：[CAN設定](/docs/DebugDoc/faq/klipper_can.mdx "クリックでジャンプ")
+   * `[Errno 105] Network is down`と`[Errno 100] Network is down`が同時に現れた場合は、このドキュメントを参照してください:[CAN設定](/docs/DebugDoc/faq/klipper_can.mdx "クリックしてジャンプ")
 
-## mcu 'mcu': Invalid CAN uuid
+## mcu 'mcu': 無効なCAN uuid
 
 1. **エラーメッセージ**
 
@@ -46,13 +44,13 @@ sidebar_position: 1
 
 2. **エラーの原因**
 
-   * CAN IDが入力されていないか、入力が間違っている
+   * CAN IDが入力されていないか、間違っています
 
 3. **解決方法**
 
-   * 検索IDを探して入力する必要がある
+   * IDを検索して記入する必要があります
 
-## Option 'serial' in section 'mcu' must be specified
+## セクション'mcu'のオプション'serial'を指定する必要があります
 
 1. **エラーメッセージ**
 
@@ -60,13 +58,13 @@ sidebar_position: 1
 
 2. **エラーの原因**
 
-   * USB IDが入力されていないか、入力が間違っている
+   * USB IDが入力されていないか、間違っています
 
 3. **解決方法**
 
-   * 検索IDを探して入力する必要がある
+   * IDを検索して記入する必要があります
 
-##  homing override method always homes X and Y before homing Z. The safe_z_home
+## homing override method always homes X and Y before homing Z. The safe_z_home
 
 1. **エラーメッセージ**
 
@@ -74,13 +72,13 @@ sidebar_position: 1
 
 2. **エラーの原因**
 
-   * `[safe_z_home]`と`[homing_override]`が重複して設定されている
+   * `[safe_z_home]`と`[homing_override]`が重複して構成されています
 
 3. **解決方法**
 
-   * どちらか一つを設定し、もう一方を削除する
+   * どちらか一方だけを構成し、もう一方を削除する必要があります
 
- ##  Error ‘XXX ‘mcu’ shutdown: ADC out of range….
+## エラー‘XXX ‘mcu’ shutdown: ADC out of range….
 
 1. **エラーメッセージ**
 
@@ -88,16 +86,16 @@ sidebar_position: 1
 
 2. **エラーの原因**
 
-   * Klipperが温度が最大または最小閾値を超えたことを検出し、システムがシャットダウンプロテクションモードに入る（サーミスタが開放または短絡している可能性がある）
+   * Klipperが温度が最大値や最小値を超えたと検出しました（熱センサーがオープン回路またはショート回路している可能性があります）。システムはシャットダウン保護モードに入ります。
 
 3. **解決方法**
 
-   * 設定内で`min_temp:`を検索し、最小温度を-235に変更
-   * 設定内で`max_temp:`を検索し、最大温度を99999999に変更
-   * サーミスタの型番が正しいか確認
-   * サーミスタのピンが正しいか確認
-   * サーミスタが短絡していないか確認
-   * 問題を特定し解決した後、元の温度設定に戻す
+   * `min_temp:`を検索し、最小温度を-235に変更します
+   * `max_temp:`を検索し、最大温度を99999999に変更します
+   * 熱センサーのモデルが正しいかどうかを確認します
+   * 熱センサーのピンが正しいかどうかを確認します
+   * 熱センサーにショートがあるかどうかを確認します
+   * 問題が解決したら、元の温度に戻す必要があります
 
 ## MCU ‘mcu’ shutdown: Timer too close
 
@@ -107,39 +105,39 @@ sidebar_position: 1
 
 2. **エラーの原因**
 
-   * 主に下位機のオーバーロードまたは上位機のタイムアウト
+   * 主な原因は下位機器の過負荷または上位機器のタイムアウトです
 
 3. **解決方法**
 
-   * ステップ数を減らす
-   * 印刷速度を下げる
-   * 上位機のシステムとファームウェアを再インストール
+   * 分割数を減らします
+   * 打印速度を減らします
+   * 上位機器システムを再フラッシュし、ファームウェアも再フラッシュします
 
-### Raspberry Piでこの方法を使用できます
+### ラズベリーパイではこの方法を使用できます
 
    ```bash
    sudo timedatectl status | grep "NTP service" 
    sudo timedatectl set-ntp false
    ```
 
-   * NTPサービスの状態を確認
-   * NTP同期を無効にする
+   * NTPサービスの状態を確認します
+   * NTP同期を停止します
 
 ## Communication timeout during homing probe 
 
 1. **エラーメッセージ**
 
-   画像なし
+   暫無画像
 
 2. **エラーの原因**
 
-   * CANとスクリーンサービスが同時にこのエラーを起こす可能性が高い
+   * CANと画面サービスが同時に動作すると、このエラーが出ることが多いです
 
 3. **解決方法**
 
-   * SSHを使用して上位機にネットワーク経由で接続後、下記のコードを実行
-   * Klipperを更新すると自動的に元に戻る
-   * 印刷中に実行しないでください
+   * SSHを使ってネットワーク経由で上位機器に接続し、以下のコードを実行します
+   * Klipperを更新した場合、自動的に復元されます
+   * 打印中には実行しないでください
    ```bash
    sed -i 's/TRSYNC_TIMEOUT = 0.025/TRSYNC_TIMEOUT = 0.05/g' ~/klipper/klippy/mcu.py && sudo systemctl restart klipper
    ```

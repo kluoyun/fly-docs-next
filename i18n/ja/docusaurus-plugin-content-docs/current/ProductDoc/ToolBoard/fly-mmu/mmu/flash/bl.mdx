@@ -3,10 +3,6 @@ sidebar_position: 7
 sidebar_label: BLファームウェア、無視してください
 ---
 
-
-
-
-
 import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
@@ -19,73 +15,72 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * MMUの3種類すべてに対応しています
-    * こちらではCANファームウェアとUSBファームウェアのみ提供しています
+    * MMUは全ての種類をサポートしています
+    * ここではCANファームウェアとUSBファームウェアのみを提供します
     :::
 
-## 書き込みモードに入る
+## フラッシュモードに入る
 
     :::tip
 
-    上側が`RESETボタン`、下側が`BOOTボタン`です
+    上が`RESETボタン`、下が`BOOTボタン`です
 
     :::
 
-    * 書き込みモードに入る方法は2種類あります
-    * 1つ目：基板に完全に電源が供給されていない状態で、BOOTボタンを押しながら、データ転送が可能なケーブルを基板とデバイスに接続します
-    * 2つ目：データ転送が可能なケーブルを基板とデバイスに接続した後、BOOTボタンを押しながらRSTボタンを押し、その後RSTボタンを離し、最後にBOOTボタンを離します
+    * フラッシュモードに入るには2つの方法があります
+    * 方法1：マザーボードが完全に電源を切った状態で、BOOTボタンを押しながらデータ転送用のケーブルの一方をマザーボードに接続し、もう一方をあなたのデバイスに接続します
+    * 方法2：データ転送用のケーブルの一方をマザーボードに接続し、もう一方をあなたのデバイスに接続した後、BOOTボタンを押しながらRSTボタンを押し、その後RSTボタンを離し、最後にBOOTボタンを離します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.webp').default} size="100%" align="center" />
 
-## ファームウェアの書き込み
+## ファームウェアをフラッシュする
     <Tabs>
-        <TabItem value="win" label="Windows書き込みガイド" default>
+        <TabItem value="win" label="Windowsでのフラッシュチュートリアル" default>
         
-            * MMUのKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">自動ダウンロード</Button>
+            * MMUのKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">ファームウェアを自動ダウンロードするにはこちらをクリック</Button>
             <WIN />
             
         </TabItem>
-        <TabItem value="linux" label="ホスト機書き込みガイド">
+        <TabItem value="linux" label="アップライドソフトウェアでのフラッシュチュートリアル">
             
             <Katapult />
 
-            4. ファームウェアの書き込み
+            4. ファームウェアをフラッシュする
 
             :::tip
 
-            どれか一つのファームウェアを書き込むだけで大丈夫です
+            一つだけのファームウェアをフラッシュする必要があります
 
             :::
 
-            * 以下は500K CAN速度のファームウェア書き込みコマンドです
+            * 下記は500K CANレートのファームウェアのフラッシュコマンドです
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
                 ```
                        
-            * 以下は1M CAN速度のファームウェア書き込みコマンドです
+            * 下記は1M CANレートのファームウェアのフラッシュコマンドです
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
                 ```
 
-            * 以下はUSBのファームウェア書き込みコマンドです
+            * 下記はUSBのファームウェアのフラッシュコマンドです
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_USB.bin
                 ```
 
-            5. 下図の矢印で示された内容「File downloaded successfully」が表示されたら、書き込みが成功したことを意味します
+            5. 下記の矢印部分に示される「File downloaded successfully」が出力されたら、フラッシュが成功しました
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
             :::tip
 
-            書き込みが完了した後、基板に完全に電源を切る必要があります。
+            フラッシュが完了したら、マザーボードを完全に電源オフにする必要があります。
 
             :::
 
         </TabItem>
     </Tabs>
 
-## ファームウェアが起動したかどうかを確認する
+## ファームウェアが正常に起動したかどうか確認する
 
-    * ファームウェアが正常に起動すると、LEDが点滅します
+    * ファームウェアが正常に起動するとLEDが点滅します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />
-

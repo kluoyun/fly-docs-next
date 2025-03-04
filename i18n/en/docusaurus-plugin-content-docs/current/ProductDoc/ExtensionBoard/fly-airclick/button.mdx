@@ -1,0 +1,162 @@
+---
+sidebar_position: 6
+sidebar_label: Add Button
+---
+
+# Add Wireless Button
+
+    :::info Important Note
+    * The wireless button requires a battery to be installed, the battery model is `CR927`
+    :::
+
+    * After returning to the homepage, click the `+` inside the red box in the picture
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button.webp').default} size="80%" align="Center" />
+    * After the following interface appears, press the wireless button with the installed battery normally
+    * The ID of the wireless button will be automatically generated in the red box, this ID is unique
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-1.webp').default} size="80%" align="Center" />
+    * Enter the name you want to call the button in the red box
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-2.webp').default} size="80%" align="Center" />
+    * Click the first red box, and the second blue box will appear
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-3.webp').default} size="80%" align="Center" />
+
+    :::danger Notice
+
+    * Custom GCODE and API requests are controlled through a wireless connection
+    * Triggering GPIO is controlled through a wired connection
+
+    :::
+
+## Custom GCODE
+    * Customize `GCODE`, you can enter the code or macro name you need to execute in the red box, AirClick will automatically send it to the printer for execution
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/gcode.webp').default} size="80%" align="Center" />
+
+## Request API
+
+<Tabs>
+    <TabItem value="ka" label="Klipper API Settings" default>
+
+        1. Predefined APIs can achieve custom macros, emergency stop, Klipper restart, firmware restart, system shutdown, etc.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/api.webp').default} size="80%" align="Center" />
+
+        2. Custom API Description
+            - All API reference documents [Moonraker API](https://moonraker.readthedocs.io/en/latest/web_api/)
+            - `method` is consistent with MoonrakerAPI's `method`
+            - `params` is consistent with MoonrakerAPI's `params`
+        3. The following takes the API for starting to print a specified file as an example
+            - The following is an example of the official Klipper documentation
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-1.webp').default} size="80%" align="Center" />
+            - The following is an example of AirClick's API filling
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-2.webp').default} size="80%" align="Center" />
+        4. Save this button, and you can start printing the specified file
+    </TabItem>
+    <TabItem value="ra" label="RRF API Settings">
+        1. Custom API Description
+            - All API reference documents [RepRapFirmware HTTP API](https://github.com/Duet3D/RepRapFirmware/wiki/HTTP-requests)
+            - Only supports GET request interface
+            - `method` is consistent with RRF HTTP API's `uri`
+            - `params` is consistent with RRF HTTP API's `url query`
+        2. The following takes the API for deleting a specified file or folder as an example
+            - The following is an example of the official RRF documentation
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-1.webp').default} size="80%" align="Center" />
+            - The following is an example of AirClick's API filling
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-2.webp').default} size="80%" align="Center" />
+            - The params here need to rewrite the URL parameters into JSON format, such as `/?aaaa=bbb&cccc=ddd`
+            - Modified to
+                ```json
+                {
+                    "aaaa": "bbb",
+                    "cccc": "ddd"
+                }
+                ```
+        3. Save this button, and you can delete the specified file or folder
+    </TabItem>
+
+    <TabItem value="ba" label="BambuLab API Settings">
+        1. Predefined APIs can achieve pause printing, cancel printing, LED control, etc.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-1.webp').default} size="80%" align="Center" />
+            - It is recommended to use the automatic switch mode for LED control. In this mode, the LED status will be automatically detected and the status will be automatically switched. Achieve one-key on or off
+        2. Custom API Description
+            - BambuLab API needs to find the relevant Github Open BambuAPI documentation by yourself
+        3. The following takes the API for setting the printing speed as an example
+            - The following is the complete parameter sent by BambuLab local area network MQTT
+                ```json
+                {
+                    "print": {
+                        "sequence_id": "0",
+                        "command": "print_speed",
+                        "param": "2" // Print speed level as a string
+                                     // 1 = silent
+                                     // 2 = standard
+                                     // 3 = sport
+                                     // 4 = ludicrous
+                    }
+                }
+                ```
+            - The following is an example of AirClick's API filling
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-2.webp').default} size="80%" align="Center" />
+        4. Save this button, and you can set the printing speed
+    </TabItem>
+
+</Tabs>
+    
+
+## Trigger GPIO (Only Klipper)
+    * Triggering GPIO requires STM32F072 to be connected to Klipper
+    * Firmware burning and connection need to refer to this document <Button variant="contained" disableElevation href="/docs/ProductDoc/ExtensionBoard/fly-airclick/offline-operation-support">Firmware Burning and Connection</Button>
+    * The IOs that can be used are `PB0` to `PB9`, a total of ten IOs. After the firmware is normally burned and connected to Klipper, it only needs to be normally configured. The following is the reference configuration
+    
+        ```cfg
+        [mcu AirClick]
+        serial: /dev/serial/by-id/usb-Klipper_stm32f072xb_AirClick-if00
+        ### Need to search USBID and modify here
+
+        [gcode_button _test]
+        pin: ^!AirClick:PB0
+        press_gcode:
+            M118 PB0
+
+        [gcode_button _test1]
+        pin: ^!AirClick:PB1
+        press_gcode:
+            M118 PB1
+
+        [gcode_button _test2]
+        pin: ^!AirClick:PB2
+        press_gcode:
+            M118 PB2
+
+        [gcode_button _test3]
+        pin: ^!AirClick:PB3
+        press_gcode:
+            M118 PB3
+
+        [gcode_button _test4]
+        pin: ^!AirClick:PB4
+        press_gcode:
+            M118 PB4
+
+        [gcode_button _test5]
+        pin: ^!AirClick:PB5
+        press_gcode:
+            M118 PB5
+
+        [gcode_button _test6]
+        pin: ^!AirClick:PB6
+        press_gcode:
+            M118 PB6
+
+        [gcode_button _test7]
+        pin: ^!AirClick:PB7
+        press_gcode:
+            M118 PB7
+
+        [gcode_button _test8]
+        pin: ^!AirClick:PB8
+        press_gcode:
+            M118 PB8
+
+        [gcode_button _test9]
+        pin: ^!AirClick:PB9
+        press_gcode:
+            M118 PB9
+        ```
