@@ -1,39 +1,41 @@
 ---
 sidebar_position: 7
-sidebar_label: Eddy 使用
+sidebar_label: Eddy の使用
+
 ---
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
-# Eddy 使用
+# Eddy の使用
 
     :::info
-  * 如之前有配置eddy的配置，请删除
-  * 在安装 Eddy 时，底部之于喷嘴的位置需至少在喷嘴上面 1-2 mm
-  * 测试时候不要打开热床
-  * 使用前删除配置里的`probe`配置
+  * 配置eddyの設定がある場合は削除してください
+  * Eddyをインストールするとき、コイルはノズルの上にあり、ノズルから0.6-0.8cm離れている必要があります
+  * テスト中は熱ベッドを開けないでください
+  * 使用前に「probe」設定を削除してください
     :::
 
-    :::warning 注意事项
-    * 多Z轴机器需要手动调平一次做好
+    :::warning 注意事項
+    * 多Z軸マシンは一度手動でレベルを合わせる必要があります
     :::
 
-## 接线示意图
 
-    * 商标朝热床安装
+## ケーブル接続図
+
+    * 商標は熱ベッドに向かって取り付けます
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
 
-## 使用说明
-   * 使用ssh工具通过ip登录终端，执行脚本
-    下载需要的ssh工具 <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm工具</Button>
+## 使用説明
+   * SSHツールを使用してIPを介してターミナルにログインし、スクリプトを実行します
+    必要なSSHツールをダウンロード <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxtermツール</Button>
 
 
 <Tabs>
   <TabItem value="eddy1" label="国際使用">
-    # 国際は以下のコマンドを使用してください
-    ### 下面开始安装eddy全自动脚本
-    * 打开下载的ssh工具，输入下面的命令回车，点击复制即可
+    # 国際の場合、以下のコマンドを使用してください
+    ### 以下からeddyの自動化スクリプトのインストールを開始します
+    * ダウンロードしたSSHツールを開き、次のコマンドを入力してエンターを押すとコピーできます
     
     ```bash
     rm -rf ./Eddy-Automated-Configuration-Script
@@ -41,7 +43,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
     ./Eddy-Automated-Configuration-Script/eddy1.sh
     ```
-   * 在`fluidd`网页里的`moonraker.conf`配置文件里添加下面的配置，方便以后更新
+   * `fluidd`ウェブページの`moonraker.conf`設定ファイルに以下の設定を追加し、今後の更新を容易にします
     ```bash
     [update_manager Eddy-Automated-Configuration-Script]
     type: git_repo
@@ -52,17 +54,17 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     install_script: eddy1.sh
     managed_services: klipper
     ```
-   * 如更新了请执行找这个命令
+   * 更新された場合、SSHツールを使用して次のコマンドを実行します
     ```bash
     sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
     ./Eddy-Automated-Configuration-Script/eddy1.sh
     ```
 </TabItem>
 
-  <TabItem value="eddy2" label="中国使用">
-# 国内请使用下面的命令
-### 下面开始安装eddy全自动脚本
-    * 打开下载的ssh工具，输入下面的命令回车，点击复制即可
+  <TabItem value="eddy2" label="国内使用">
+# 国内の場合、以下のコマンドを使用してください
+### 以下からeddyの自動化スクリプトのインストールを開始します
+    * ダウンロードしたSSHツールを開き、次のコマンドを入力してエンターを押すとコピーできます
     
     ```bash
     rm -rf ./Eddy-Automated-Configuration-Script
@@ -70,7 +72,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
     ./Eddy-Automated-Configuration-Script/eddy1.sh
     ```
-   * 在`fluidd`网页里的`moonraker.conf`配置文件里添加下面的配置，方便以后更新
+   * `fluidd`ウェブページの`moonraker.conf`設定ファイルに以下の設定を追加し、今後の更新を容易にします
     ```bash
     [update_manager Eddy-Automated-Configuration-Script]
     type: git_repo
@@ -81,7 +83,7 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
     install_script: eddy1.sh
     managed_services: klipper
     ```
-    * 如更新了请执行找这个命令
+    * 更新された場合、SSHツールを使用して次のコマンドを実行します
     ```bash
     sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
     ./Eddy-Automated-Configuration-Script/eddy1.sh
@@ -90,20 +92,21 @@ import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 </Tabs>
 
 
-* 执行了出现如图显示输入你的上位机密码
+* 実行すると、以下の図のように表示され、アッパーコンピュータのパスワードを入力します
 
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/EDDY1.webp').default} size="100%" align="left" />
 
-* 出现如图显示`选择输入`输入你打印机对应编号，有中文英文的选择，输入后回车
-<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" />
+* 以下の図が表示される場合、「選択入力」に入力してください。プリンターに対応する番号を入力し、エンターを押します
+* 「3z」を選択して「printer.cfg」に「z_tilt」が含まれていることを確認してください/「4z」を選択して「printer.cfg」に「quad_gantry_level」が含まれていることを確認してください。「独立双z」を選択する場合は、「3z」を選択してください
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" /> 
 
-* 如你是`sht36_v3` 输入N回车
+* 以下の図が表示される場合、必要に応じて「Y」を入力し、エンターを押します
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
+
+* 「sht36_v3」を使用している場合、「N」を入力し、エンターを押します
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/eddy7.webp').default} size="100%" align="left" />
 
-
-* 出现如图显示那么成功
+* 以下の図が表示される場合、成功しました
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy3.webp').default} size="70%" align="left" />
 
-* 如出现图片显示，那么你需要输入`Y`回车
-<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
 <LDC1612 />
