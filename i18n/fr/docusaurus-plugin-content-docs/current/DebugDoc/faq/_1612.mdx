@@ -2,64 +2,56 @@
 * Les imprimantes dotées de la fonction `z_tilt` ou `quad_gantry_level (QGL)` doivent effectuer un nivellement Z multiple.
 :::
 
-### Étape 1 : Calibrage EDDY
-* Cliquez sur la commande macro `CALIBRATE_EDDY` comme indiqué dans l'image et exécutez-la.
-<img src="@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy5.webp" alt="" width="50%" align="left"/>
+### Étape 1 : Calibration EDDY
+* Cliquez sur la commande de macro `CALIBRATE_EDDY` comme indiqué dans l'image et exécutez-la.
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy5.webp').default} size="50%" align="left" />
 * Un interface utilisateur apparaîtra ensuite.
-* Utilisez une feuille A4 pour ajuster le Z-offset. Avant d'ajuster la valeur `z-offset`, consultez le tutoriel de documentation Klipper sur le [test au papier](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
+* Utilisez une feuille A4 pour ajuster le Z-offset en modifiant la valeur de `z-offset`. Vérifiez d'abord les instructions du tutoriel du document Klipper sur le test de papier [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
 * Une fois la valeur appropriée trouvée, cliquez sur `ACCEPT`.
-<img src="@site/docs/DebugDoc/faq/img/UI.webp" alt="" width="50%" align="left"/>
-* Après calibration, enregistrez les paramètres avec `SAVE_CONFIG`.
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
+* Après la calibration, enregistrez les paramètres avec `SAVE_CONFIG`.
 
-### Étape 2 : Compensation de température
+### Deuxième étape : Compensation de température
 :::info
-* Avant de procéder à la compensation de température, assurez-vous que le lit chauffant et la buse ne sont pas chauffés.
+* Avant de faire la compensation de température, assurez-vous que le lit chauffant et l'extrudeuse ne sont pas chauffés.
 :::
 
-* Exécutez la commande macro `TEMP_COMPENSATION` comme indiqué dans l'image ci-dessous et cliquez sur exécuter.
-<img src="@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy6.webp" alt="" width="50%" align="left"/>
+* Exécutez la commande de macro `TEMP_COMPENSATION` comme indiqué dans l'image et cliquez sur exécuter.
+<ImageView image={require('@site/docs/DebugDoc/faq/img/temp.webp').default} size="50%" align="left" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy6.webp').default} size="50%" align="left" />
 
-1. Après avoir effectué cette opération, une boîte de dialogue de réglage de l'axe Z s'affichera. Utilisez la méthode manuelle de calibrage du décalage Z ([test au papier](https://www.klipper3d.org/Bed_Level.html#the-paper-test)) mentionnée précédemment, en insérant une feuille A4 entre la buse et le lit, puis confirmez la valeur.
-2. Après avoir accepté la valeur, augmentez la température du lit chauffant au maximum et celle de la buse à 220°C.
-3. Si vous êtes dans une pièce avec climatisation ou si la fenêtre est ouverte, fermez l'air conditionné ou la fenêtre pour éviter que le vent n'affecte l'augmentation de la température.
-4. À mesure que la température de l'EDDY augmente, le système vous demandera automatiquement de répéter le calibrage manuel du décalage Z toutes les 4°C. La température du lit chauffant est très élevée, soyez prudent pour éviter les brûlures !!!
-5. Répétez le calibrage manuel du décalage Z ([test au papier](https://www.klipper3d.org/Bed_Level.html#the-paper-test)) jusqu'à ce que la calibration soit terminée. Si vous constatez qu'EDDY ne se réchauffe plus, vous pouvez utiliser les commandes G-code suivantes pour terminer la calibration à l'avance.
+1. Après avoir effectué cette opération, l'interface utilisateur affichera une boîte de dialogue de réglage de l'axe Z. Utilisez la méthode manuelle de calibrage de l'offset Z (test de papier) mentionnée ci-dessus [(https://www.klipper3d.org/Bed_Level.html#the-paper-test)], placez une feuille de papier entre l'extrudeuse et la surface de la plaque, puis confirmez cette valeur.
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="30%" align="left" />
+2. Acceptez la valeur, l'extrudeuse réglera automatiquement la température du lit à 80°C et celle de l'extrudeuse à 250°C.
+3. Si vous êtes dans une pièce avec climatisation ou fenêtres ouvertes, fermez la climatisation ou les fenêtres pour éviter que le vent n'affecte l'élévation de la température.
+4. À mesure que la température d'EDDY monte, le système vous invitera à effectuer manuellement un calibrage de l'offset Z toutes les 3°C. La température du lit est très élevée, faites attention à ne pas vous brûler !!!
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="30%" align="left" />
+5. Répétez le calibrage manuel de l'offset Z (test de papier) jusqu'à ce que le calibrage soit terminé. Si vous constatez que la température d'EDDY ne monte plus, vous pouvez utiliser les commandes G-code suivantes pour terminer le calibrage plus tôt.
 
-* Pendant la calibration de dérive, les commandes G-code supplémentaires disponibles incluent : TEMPERATURE_PROBE_NEXT
-* `TEMPERATURE_PROBE_NEXT` est utilisé pour forcer EDDY à échantillonner de nouvelles données avant d'atteindre la température cible de EDDY `80°C`.
-* `TEMPERATURE_PROBE_COMPLETE` est utilisé pour terminer la calibration avant que EDDY n'atteigne la température cible de `80°C`.
+* Pendant la calibration, les commandes G-code supplémentaires disponibles incluent : TEMPERATURE_PROBE_NEXT
+* `TEMPERATURE_PROBE_NEXT` est utilisé pour forcer EDDY à échantillonner de nouvelles données avant d'atteindre la température cible de 80°C.
+* `TEMPERATURE_PROBE_COMPLETE` est utilisé pour terminer la calibration avant que EDDY n'atteigne la température cible de 80°C.
 * `ABORT` peut être utilisé pour interrompre la calibration et ignorer les résultats.
-* Une fois la calibration terminée, utilisez `SAVE_CONFIG` pour enregistrer les paramètres de décalage de température.
-* En résumé, par rapport à la plupart des autres programmes, le processus de calibration décrit ci-dessus est plus difficile et plus chronophage. Il peut nécessiter de la pratique et plusieurs essais pour fournir de bons résultats de première couche dans une large plage de températures !
-
-## Ajustement de z-offset/z-compensation
-* Utilisez les commandes suivantes pour ajuster le Z-offset avec une feuille A4. Avant d'ajuster la valeur `z-offset`, consultez le tutoriel de documentation Klipper sur le [test au papier](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
-```bash
-G28
-PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
-```
-* Une fois la valeur appropriée trouvée, cliquez sur `ACCEPT`.
-<img src="@site/docs/DebugDoc/faq/img/UI.webp" alt="" width="50%" align="left"/>
-* Après calibration, enregistrez les paramètres avec `SAVE_CONFIG`.
+* Lorsque la calibration est terminée, utilisez `SAVE_CONFIG` pour enregistrer les paramètres d'offset de température.
+* En résumé, par rapport à la plupart des autres programmes, ce processus de calibration est plus difficile et prend plus de temps. Il peut nécessiter de la pratique et plusieurs essais pour obtenir d'excellents résultats de premier couchage dans une large plage de températures !
 
 ## Comment ajuster finement z-offset
-* Étape 1 : Utilisez pursa/OrcaSlicer/cura/Bambu Studio pour imprimer une plaque carrée de 200x200 mm avec une hauteur de 0,2 mm pour ajuster finement z-offset.
-* Étape 2 : Par l'intermédiaire de l'adresse IP de l'imprimante, accédez à `fluidd` `mainsail` pour trouver le tableau de bord `contrôle de mouvement`. Ajustez le décalage de l'axe Z pour continuer à ajuster finement z_OFFSET, puis notez la valeur d'ajustement.
-<img src="@site/docs/DebugDoc/faq/img/Zoff.webp" alt="" width="80%" align="left"/>
-* Étape 3 : Redémarrez Klipper avec la commande suivante :
-```bash
-FIRMWARE_RESTART
-```
-* Étape 4 : Utilisez les commandes suivantes pour ajuster le Z-offset. La valeur d'ajustement correspond à la valeur utilisée pendant l'impression [test au papier](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
+* Étape 1 : Utilisez pursa/OrcaSlicer/cura/Bambu Studio pour imprimer un carré de 200x200 mm d'une hauteur de 0,2 mm pour ajuster finement z-offset.
+* Étape 2 : Accédez à `fluidd` ou `mainsail` via l'adresse IP de l'imprimante, trouvez le tableau de bord et ajustez l'offset Z en micro-contrôlant l'axe Z.
+<ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
+* Après la calibration, enregistrez les paramètres avec `SAVE_CONFIG`.
+
+## Commandes pour ajuster Z-offset si les valeurs ne changent pas
+* Utilisez les commandes suivantes pour ajuster l'offset Z en modifiant la valeur de `z-offset` qui s'affiche lors de l'impression [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
 ```bash
 G28
-PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+PROBE_CALIBRATE METHOD=AUTO  
 ```
-<img src="@site/docs/DebugDoc/faq/img/UI.webp" alt="" width="50%" align="left"/>
-* Après calibration, enregistrez les paramètres avec `SAVE_CONFIG`.
+<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
+* Après la calibration, enregistrez les paramètres avec `SAVE_CONFIG`.
 
 :::info
-* Si les opérations ci-dessus sont terminées mais que le balayage du lit échoue, veuillez modifier la limite z en limite virtuelle, en remplaçant l'ancienne pin endstop `endstop_pin: probe:z_virtual_endstop`.
+* Si les opérations ci-dessus sont terminées mais que le balayage de la plaque échoue, changez la limite de Z en limite virtuelle, remplacez l'ancienne pin d'arrêt `endstop_pin: probe:z_virtual_endstop`.
 :::
 
 ## Liens de téléchargement des modèles de bobines

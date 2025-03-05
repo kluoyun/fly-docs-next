@@ -1,5 +1,5 @@
     :::info
-        * 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，记得执行多z调平
+* 带有`z_tilt`或者`quad_gantry_level（QGL）`功能的打印机，记得执行多z调平
     :::
 
 ### 第一步校准EDDY
@@ -17,12 +17,15 @@
     :::
 
 * 执行下面图片出现的宏命令`TEMP_COMPENSATION`点击执行
+<ImageView image={require('@site/docs/DebugDoc/faq/img/temp.webp').default} size="50%" align="left" />
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy6.webp').default} size="50%" align="left" />
 
     1. 执行此操作后，UI 将显示 Z 轴调整框。请使用上述提到的手动 [Z轴偏移校准（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)，将纸张夹在喷嘴和床面之间，然后确认该值。
-    2. 接受值后，将热床温度调至最高，喷嘴温度调至 220℃。
+    <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="30%" align="left" />
+    2. 接受值后，自动将热床温度调至80℃，喷嘴温度调至 250℃。
     3. 如果您在有空调或开窗的房间中，为了确保 Eddy 的温度上升，建议关闭空调或窗户，因为风会影响温度的升高。
     4. 随着 Eddy 温度的上升，系统会自动提示您每隔 3℃执行一次手动 Z 偏移校准。热床温度很高，谨防烫伤!!!
+    <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="30%" align="left" />
     5. 重复手动 Z 偏移校准（Paper Test）直到校准完成。如果发现 Eddy 的温度不再上升，可以使用下面的相关命令提前结束校准。
         
     * 在漂移校准期间可用的额外 gcode 命令包括：TEMPERATURE_PROBE_NEXT
@@ -32,26 +35,14 @@
     * 当校准完成使用`SAVE_CONFIG`去保存温度偏移设置果！
     * 综上所述，与大多数其他程序相比，上述校准过程更具挑战性，也更耗时。它可能需要练习和多次尝试才能够在广泛的温度范围内提供出色的首层打印效果！
 
- ## 调整z—offset/z补偿
-* 通过下面命令去用A4纸调整Z—offset 弹出来的UI界面 调整`z—offset`数值调整前先看一下klipper文档的教程[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
-```bash
-G28
-PROBE_CALIBRATE METHOD=AUTO  
-```
-* 找到了合适的数值点`ACCEPT`
-<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
-* 校准完成后`SAVE_CONFIG`保存参数       
-
-
 ## 如何微调z—offset
 * 第一步：使用pursa/OrcaSlicer/cura/Bambu Studio 切一个200x200高度0.2的一个方片去打印微调z—offset
-* 第二步：通过打印机ip进入`fluidd` `mainsail`找到仪表板`移动控制`z轴偏移继续微调z_OFFset然后记住微调的数值
+* 第二步：通过打印机ip进入`fluidd` `mainsail`找到仪表板`移动控制`z轴偏移微调z_OFFset
 <ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
-* 第三步：通过下面命令重启klippper
-```bash
-FIRMWARE_RESTART
-```
-* 第四步：通过下面命令去调整Z—offset 弹出来的UI界面 调整`z—offset`调整的数值就是打印过程中调整的数值[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+* 校准完成后`SAVE_CONFIG`保存参数
+
+## 数值没有变化调整命令
+* 通过下面命令去调整Z—offset 弹出来的UI界面 调整`z—offset`调整的数值就是打印过程中调整的数值[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
 ```bash
 G28
 PROBE_CALIBRATE METHOD=AUTO  

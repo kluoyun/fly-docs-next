@@ -1,0 +1,112 @@
+---
+sidebar_position: 7
+sidebar_label: Использование Eddy
+
+---
+
+import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
+
+# Использование Eddy
+
+    :::info
+  * Если ранее была настроена конфигурация eddy, удалите её
+  * При установке Eddy катушка должна находиться над соплом и быть на расстоянии 0,6-0,8 см от него
+  * При тестировании не включайте нагревательный стол
+  * Перед использованием удалите конфигурацию `probe` из конфигурации
+    :::
+
+    :::warning Внимание
+    * Для машин с несколькими Z-осями требуется ручная выравнивание один раз
+    :::
+
+
+## Схема подключения
+
+    * Логотип должен быть обращен к нагревательному столу при установке
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="40%" align="left" />
+
+
+## Инструкция по использованию
+   * Войдите в терминал через ssh-инструмент по IP, выполните скрипт
+    Скачайте необходимый ssh-инструмент <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">MobaXTerm инструмент</Button>
+
+
+<Tabs>
+  <TabItem value="eddy1" label="Использование за рубежом">
+    # Используйте следующую команду для международного использования
+    ### Начинаем установку автоматического скрипта eddy
+    * Откройте скачанный ssh-инструмент, введите следующие команды и нажмите Enter, затем нажмите кнопку копирования
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+   * В файле конфигурации `moonraker.conf` в веб-интерфейсе `fluidd` добавьте следующую конфигурацию, чтобы облегчить последующее обновление
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
+    ```
+   * Если вы обновили, выполните следующую команду
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+</TabItem>
+
+  <TabItem value="eddy2" label="Использование внутри страны">
+# Используйте следующую команду для использования внутри страны
+### Начинаем установку автоматического скрипта eddy
+    * Откройте скачанный ssh-инструмент, введите следующие команды и нажмите Enter, затем нажмите кнопку копирования
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+   * В файле конфигурации `moonraker.conf` в веб-интерфейсе `fluidd` добавьте следующую конфигурацию, чтобы облегчить последующее обновление
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
+    ```
+    * Если вы обновили, выполните следующую команду
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+  </TabItem>
+</Tabs>
+
+
+* После выполнения появится сообщение, введите пароль вашего компьютера
+
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/EDDY1.webp').default} size="100%" align="left" />
+
+* Появится сообщение «Выберите ввод», введите номер принтера, соответствующий вашему принтеру, есть вариант выбора на китайском и английском языках, после ввода нажмите Enter
+* Выберите «3z», чтобы убедиться, что в конфигурации `printer.cfg` есть настройка `z_tilt` / Выберите «4z», чтобы убедиться, что в конфигурации `printer.cfg` есть настройка `quad_gantry_level`, для независимого двойного z выберите «3z»
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" />
+
+* Если появится изображение, как показано, вам нужно ввести «Y» и нажать Enter
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
+
+* Если вы используете «sb2040-v3-PROV3», введите «y» и нажмите Enter
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/eddy7.webp').default} size="100%" align="left" />
+
+* Если появится изображение, как показано, значит установка успешна
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy3.webp').default} size="70%" align="left" />
+
+<LDC1612 />
