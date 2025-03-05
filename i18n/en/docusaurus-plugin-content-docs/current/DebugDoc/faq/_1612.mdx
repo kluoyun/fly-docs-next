@@ -1,65 +1,66 @@
 :::info
-* Remember to perform multi-Z leveling if your printer has the `z_tilt` or `quad_gantry_level (QGL)` feature.
+        * Printers with the `z_tilt` or `quad_gantry_level (QGL)` feature should perform multi-Z leveling.
 :::
 
 ### Step 1: Calibrate EDDY
-* Click the macro command `CALIBRATE_EDDY` shown in the image and click execute.
+* Click the macro command `CALIBRATE_EDDY` as shown in the image and execute it.
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy5.webp').default} size="50%" align="left" />
-* Then the following UI interface will appear.
-* Adjust the `z_offset` value using an A4 paper. Before adjusting the `z_offset` value, please refer to the Klipper documentation tutorial [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
-* After finding the appropriate value, click `ACCEPT`.
+* Then a UI interface will appear.
+* Use A4 paper to adjust the Z-offset. Before adjusting the `z-offset` value, check the Klipper documentation tutorial on [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
+* Once you find the appropriate value, click `ACCEPT`.
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
 * After calibration is complete, save the parameters with `SAVE_CONFIG`.
 
 ### Step 2: Temperature Compensation
 :::info
-* Do not heat the heated bed or nozzle before performing temperature compensation.
+        * Do not heat the heated bed or nozzle before performing temperature compensation.
 :::
 
-* Execute the macro command `TEMP_COMPENSATION` shown in the image below and click execute.
+* Execute the macro command `TEMP_COMPENSATION` as shown in the images and click execute.
+<ImageView image={require('@site/docs/DebugDoc/faq/img/temp.webp').default} size="50%" align="left" />
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy6.webp').default} size="50%" align="left" />
 
-1. After executing this operation, the UI will display a Z-axis adjustment box. Use the manual [Z-axis offset calibration (Paper Test) method](https://www.klipper3d.org/Bed_Level.html#the-paper-test) mentioned above, place the paper between the nozzle and the bed, and confirm the value.
-2. After accepting the value, set the heated bed temperature to the highest and the nozzle temperature to 220℃.
-3. If you are in a room with air conditioning or open windows, it is recommended to turn off the air conditioning or close the windows to ensure that Eddy's temperature rises, as wind can affect the temperature increase.
-4. As Eddy's temperature rises, the system will automatically prompt you to manually calibrate the Z offset every 4℃. The heated bed temperature is very high, be careful of burns!!!
-5. Repeat the manual Z offset calibration (Paper Test) until calibration is complete. If you find that Eddy's temperature no longer rises, you can use the following related commands to end the calibration early.
+1. After executing this operation, the UI will display a Z-axis adjustment box. Please use the manual [Z-axis offset calibration (Paper Test) method](https://www.klipper3d.org/Bed_Level.html#the-paper-test) mentioned above. Insert a piece of paper between the nozzle and the bed, then confirm the value.
+2. After accepting the value, set the heated bed temperature to the highest setting and the nozzle temperature to 250℃.
+3. If you are in a room with an air conditioner or open windows, it is recommended to turn off the air conditioner or close the windows to ensure that the Eddy temperature rises, as wind can affect the temperature increase.
+4. As the Eddy temperature rises, the system will automatically prompt you to perform a manual Z-offset calibration every 3℃. The heated bed temperature is very high, be careful not to burn yourself!!!
+5. Repeat the manual Z-offset calibration (Paper Test) until calibration is complete. If you notice that the Eddy temperature no longer increases, you can use the following relevant commands to end the calibration early.
 
 * Additional G-code commands available during drift calibration include: TEMPERATURE_PROBE_NEXT
 * `TEMPERATURE_PROBE_NEXT` is used to force Eddy to sample new data before reaching the target temperature of 80℃ for EDDy.
 * `TEMPERATURE_PROBE_COMPLETE` is used to complete calibration before Eddy reaches the set temperature of 80℃.
 * `ABORT` can be used to terminate the calibration and ignore the results.
 * When calibration is complete, use `SAVE_CONFIG` to save the temperature offset settings!
-* In summary, compared to most other procedures, the above calibration process is more challenging and time-consuming. It may require practice and multiple attempts to provide excellent first-layer printing results over a wide range of temperatures!
+* In summary, compared to most other programs, the above calibration process is more challenging and time-consuming. It may require practice and multiple attempts to provide excellent first-layer print results across a wide range of temperatures!
 
 ## Adjust z-offset/z compensation
-* Use the following command to adjust the `z_offset` value using an A4 paper. Before adjusting the `z_offset` value, please refer to the Klipper documentation tutorial [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
+* Use the following commands to adjust the Z-offset with an A4 paper. Before adjusting the `z-offset` value, check the Klipper documentation tutorial on [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
 ```bash
 G28
-PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+PROBE_CALIBRATE METHOD=AUTO  
 ```
-* After finding the appropriate value, click `ACCEPT`.
+* Once you find the appropriate value, click `ACCEPT`.
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
-* After calibration is complete, save the parameters with `SAVE_CONFIG`.
+* After calibration is complete, save the parameters with `SAVE_CONFIG`.       
 
-## How to Fine-Tune z-offset
-* Step 1: Use pursa/OrcaSlicer/cura/Bambu Studio to slice a 200x200mm square with a height of 0.2mm to print for fine-tuning the z-offset.
-* Step 2: Enter the `fluidd` or `mainsail` dashboard via the printer's IP address, find the `movement control`, and continue fine-tuning the z_OFFSET through the Z axis offset. Remember the fine-tuned value.
+## How to fine-tune z-offset
+* Step 1: Use pursa/OrcaSlicer/cura/Bambu Studio to slice a 200x200 square with a height of 0.2mm to print and fine-tune the z-offset.
+* Step 2: Through the printer's IP, enter `fluidd` or `mainsail`, find the dashboard, and adjust the Z-axis offset using the movement control to continue fine-tuning the z_OFFSET. Remember the fine-tuned value.
 <ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
-* Step 3: Restart Klipper using the following command.
+* Step 3: Restart Klipper with the following command:
 ```bash
 FIRMWARE_RESTART
 ```
-* Step 4: Adjust the `z_offset` using the following command. The adjusted value is the value adjusted during the print process [Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
+* Step 4: Use the following command to adjust the Z-offset. The adjusted value is the value adjusted during printing using [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
 ```bash
 G28
-PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe
+PROBE_CALIBRATE METHOD=AUTO  
 ```
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
 * After calibration is complete, save the parameters with `SAVE_CONFIG`.
 
 :::info
-* If the bed scraping fails after completing the above operations, change the Z limit to virtual limit, overriding the original endstop_pin `endstop_pin: probe:z_virtual_endstop`.
+ * After completing the above operations, if the bed sweeping fails, change the Z limit to a virtual limit, overriding the original endstop_pin `endstop_pin: probe:z_virtual_endstop`.
 :::
 
 ## Coil Model Download Links
