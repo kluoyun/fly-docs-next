@@ -3,7 +3,7 @@ sidebar_position: 3
 sidebar_label: Двойная ось/idex справочная конфигурация
 ---
 
-## Начальный код slicer предоставлен Bilibili Uploader muimoon女生:
+## Начальный код slicer предоставлен билибили-пользователем muimoon女士:
 ```bash
 M190 S【bed_temperature_initial_layer_single】
 {if is_extruder_used【0】}
@@ -14,7 +14,7 @@ M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
 {endif}
 ```
 
-## Настройки второго принтера
+## Настройка второго принтера
 
 ```cfg
 [dual_carriage]
@@ -41,10 +41,10 @@ sense_resistor: 0.110
 stealthchop_threshold: 0
 ```
 
-Копирование или зеркальное отображение макросов требует ссылки на соответствующий код в срезке
+Копирование или зеркальное отображение макросов требует ссылки на соответствующий код в срезере
 
 * ACTIVATE_COPY_MODE Копировать режим
-* ACTIVATE_MIRROR_MODE Режим отражения
+* ACTIVATE_MIRROR_MODE Зеркальный режим
 
 ```cfg
 [gcode_macro PARK_extruder1]
@@ -98,21 +98,21 @@ gcode:
 [gcode_macro PAUSE]
 rename_existing: BASE_PAUSE
 gcode:
-    ##### задать параметры по умолчанию #####
+    ##### задать значения по умолчанию #####
     {% set x = params.X|default(100) %}      #редактировать до вашей позиции парковки
     {% set y = params.Y|default(100) %}      #редактировать до вашей позиции парковки
-    {% set lift_z = params.Z|default(50)| float | abs %} #редактировать до желаемого подъема по Z
-    {% set e = params.E|default(1) %}        #редактировать до длины вытягивания
+    {% set lift_z = params.Z|default(50)| float | abs %} #редактировать до вашего желаемого подъема Z
+    {% set e = params.E|default(1) %}        #редактировать до длины ретракции
     ##### рассчитать сохраненную позицию подъема #####
-    {% set max_z = (printer.toolhead.axis_maximum.z|float ) %} #оставить немного места для смещения по Z
+    {% set max_z = (printer.toolhead.axis_maximum.z|float ) %} #оставьте немного места для смещения Z G-кода
     {% set act_z = printer.toolhead.position.z|float %}
-    {% set new_z = act_z + lift_z %}
-    {% if new_z >  max_z %}
-        new_z = max_z
-    {% endif %}
+ 	{% set new_z = act_z + lift_z %}
+	{% if new_z >  max_z %}
+		new_z = max_z
+	{% endif %}
     SAVE_GCODE_STATE NAME=PAUSE_state
     BASE_PAUSE
-    M83 ; установить E в относительный режим
+    M83 ; установить E в режим относительных координат
     {% if printer.extruder.can_extrude|lower == 'true' %}
       G1 E-{e} F2100
     {% else %}
@@ -128,9 +128,9 @@ gcode:
 [gcode_macro RESUME]
 rename_existing: BASE_RESUME
 gcode:
-    ##### задать параметры по умолчанию #####
-#    {% set e = params.E|default(1) %} #редактировать до длины вытягивания
-#    M83 ; установить E в относительный режим
+    ##### задать значения по умолчанию #####
+#    {% set e = params.E|default(1) %} #редактировать до длины ретракции
+#    M83 ; установить E в режим относительных координат
 #    {% if printer.extruder.can_extrude|lower == 'true' %}
 #      G1 E-{e} F2100
 #    {% else %}
@@ -146,7 +146,7 @@ gcode:
 [gcode_macro PARK_extruder]
 gcode:
 	RESPOND MSG="Парковка левого экструдера"
-	#убедиться, что мы перемещаем первую каретку
+	#убедитесь, что мы перемещаем первую каретку
 	SET_DUAL_CARRIAGE CARRIAGE=0
 	{% if not "x" in printer.toolhead.homed_axes %}
 	    RESPOND MSG="Калибровка X"
@@ -162,7 +162,7 @@ gcode:
 [gcode_macro PARK_extruder1]
 gcode:
 	RESPOND MSG="Парковка правого экструдера"
-	#убедиться, что мы перемещаем вторую каретку. После всего, мы не знаем, какая каретка активна
+	#убедитесь, что мы перемещаем вторую каретку. После всего, мы не знаем, какая каретка активна
 	SET_DUAL_CARRIAGE CARRIAGE=1
 	{% if not "x" in printer.toolhead.homed_axes %}
 	    RESPOND MSG="Калибровка X"
@@ -177,11 +177,11 @@ gcode:
 
 
 [gcode_macro x_xoffset]
-# вспомогательный скрипт, необходимый, так как переменная xoffset будет изменена во время выполнения макроса
-# и расширение макроса происходит до того, как это произойдет
+# вспомогательный скрипт, необходимый, так как переменная xoffset будет изменяться во время выполнения макроса
+# и расширение макроса происходит до этого изменения
 gcode:
 	{% set offset = printer["gcode_macro set_stepper_x_range"].xoffset %}
-	RESPOND MSG="Xoffset будет установлен на: { offset }"
+	RESPOND MSG="Xoffset будет установлено на: { offset }"
     SET_GCODE_OFFSET Y=0 X={ offset } #Z=0
 	
 
@@ -196,20 +196,20 @@ gcode:
 	{% if   printer.extruder1.target|int > 0 %}
  		RESPOND MSG="Активен правый экструдер"
 	    #{% set offset= 17 %}
-	    {% set offset= 0 %} #Я не знаю, почему это было установлено в 17, но иногда это портило мои печати!
+	    {% set offset= 0 %} #Я не знаю, почему это было установлено на 17, но иногда это портило мои печати!
 	{% else %}
 	    {% set offset=0 %}
 	{% endif %}
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE={offset}
-	RESPOND MSG="X-начало для левой головы будет установлено на {offset} мм от левого края кровати"
-	#сделать известным, что диапазон был установлен для этого печатного процесса и не должен быть переоценен снова
+	RESPOND MSG="X-начало для левой головы будет установлено на {offset} мм от левого края рабочей поверхности"
+	#сделайте известным, что диапазон был установлен для этой печати, и его не следует пересматривать снова
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=1
 
 [gcode_macro clear_stepper_x_range]
 gcode:
-    RESPOND MSG="Очистка диапазона печати по оси X левого экструдера"
+    RESPOND MSG="Очистка диапазона печати левого экструдера по оси X"
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE=0
-	#сделать известным, что диапазон не был установлен для этого печатного процесса и должен быть переоценен снова
+	#сделайте известным, что диапазон не был установлен для этой печати, и его следует пересмотреть снова
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=0
 	
 
@@ -223,7 +223,7 @@ gcode:
 	{% endif %}
     ACTIVATE_EXTRUDER EXTRUDER=extruder
     SET_DUAL_CARRIAGE CARRIAGE=0
-	# запуск настройки диапазона только один раз, чтобы не неправильно установить его после того, как целевая температура T1 установлена в ноль
+	# запустите настройку диапазона только один раз, чтобы не переустановить его после установки целевой температуры T1 на ноль
 	{% if  printer["gcode_macro set_stepper_x_range"].range_set  == 0  %}
 		RESPOND MSG="Диапазон движения левого экструдера по оси X еще не установлен, устанавливаем его сейчас"
 		set_stepper_x_range
@@ -241,10 +241,10 @@ gcode:
     ACTIVATE_EXTRUDER EXTRUDER=extruder1
     SET_DUAL_CARRIAGE CARRIAGE=1
 
-    #Смещения X/Y противоречат методу штатного ПО.
-    #Если E2 печатает слишком далеко влево, вы должны ДОБАВИТЬ к смещению по X.
-    #Если E2 печатает слишком далеко вниз, вы должны ДОБАВИТЬ к смещению по Y.
-    #Смещение по Z обычно не требуется. Просто отрегулируйте физическое смещение по Z на E2.
+    #Смещения X/Y обратны методу штатного ПО.
+    #Если E2 печатает слишком далеко влево, вы должны ДОБАВИТЬ к смещению X.
+    #Если E2 печатает слишком далеко вниз, вы должны ДОБАВИТЬ к смещению Y.
+    #Смещение Z обычно не требуется. Просто отрегулируйте физическое смещение Z на E2.
     SET_GCODE_OFFSET X=3.80 Y=0.50 #Z=0
 
 [gcode_macro home_if_not ]
@@ -256,16 +256,16 @@ gcode:
 [gcode_macro probeon]
 gcode:
  	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=1
- 	RESPOND MSG="Записано, что вы установили зонд на левую голову"
+ 	RESPOND MSG="Записано, что вы установили датчик на левую голову"
 
 [gcode_macro probeoff]
 gcode:
  	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=0
- 	RESPOND MSG="Записано, что вы сняли зонд с левой головы"
+ 	RESPOND MSG="Записано, что вы сняли датчик с левой головы"
 
 [gcode_macro PRIME_LINE]
 gcode: 
-    RESPOND MSG="Печать линии для первичной подготовки"
+    RESPOND MSG="Печать прямой линии "
 
     {% set x = params.X|default(2)|float %}
     {% set y = params.Y|default(70)|float %}
@@ -275,43 +275,44 @@ gcode:
 	{% set eMultiplier = 0.15 * z  %}
     SAVE_GCODE_STATE NAME=prime_line
  
-	M117 Priming Line
+	M117 Прямая линия
 
-    G90 ; XYZ в абсолютный режим
-	M83 ; установить E в относительный режим
-    # перемещение оси Z 
-    G1 Z0.3 F3000 ;Поднять ось Z
-    # переместиться в начальную позицию для первичной подготовки 
+    G90 ; переводим XYZ в абсолютный режим
+	M83 ; переводим E в относительный режим
+    # движение оси Z 
+    G1 Z0.3 F3000 ;Поднятие оси Z
+    # движение к позиции наката 
 	G0 Y{y} Z{z}
-    G0 X{x} ;Переместиться в начальную позицию. Сделать квадратное движение, чтобы избежать столкновения с углами основания
-	G1 Y{y + yline} E{eMultiplier * yline} ;Нарисовать первую линию
-    G1 X{x + xline} E{eMultiplier * xline} ;Переместиться немного в сторону
-    G1 Y{y + 20} E{eMultiplier * (yline - 20)} ;Нарисовать вторую линию, но не вернуться к исходной позиции, чтобы избежать снятия излишков
+    G0 X{x} ;Перемещение к начальной позиции. Делаем квадратное движение, чтобы избежать столкновения с углами подложки
+	G1 Y{y + yline} E{eMultiplier * yline} ;Рисование первой линии
+    G1 X{x + xline} E{eMultiplier * xline} ;Перемещение в сторону немного
+    G1 Y{y + 20} E{eMultiplier * (yline - 20)} ;Рисование второй линии, но не возвращаемся к исходной позиции, чтобы избежать подъема
 #	G1 E-0.5 F300
-    G1 Z0.5 F3000 ;Поднять ось Z
+    G1 Z0.5 F3000 ;Поднятие оси Z
+
 	RESTORE_GCODE_STATE NAME=prime_line
 
 [gcode_macro prepare_toolheads ]
 gcode:
-    RESPOND MSG="Подготовка голов"
+    RESPOND MSG="Подготовка головок экструдеров"
 	# BED_MESH_PROFILE LOAD=70c
-	# Использовать абсолютные координаты
+	# Использование абсолютных координат
     G90
-	#сбросить E
+	#обнуление E
 	G92 E0
-	#Установить экструдер в относительный режим
+	#Установка экструдера в режим относительных координат
 	M83
 	home_if_not
-	# явно установить диапазон в начале каждого нового печатного процесса
+	# явно задаем диапазон в начале каждой новой печати
 	set_stepper_x_range
 	{% if   printer.extruder.target|int > 0 %}
 	    RESPOND MSG="Подготовка T0"
 		T0
 		SAVE_GCODE_STATE NAME=prime_ext0 
-		#Всегда печатать линию первичной подготовки в самом левом краю кровати
+		#Всегда печатаем прямую линию в самом левом углу подложки
 		SET_GCODE_OFFSET X=0 Y=0 Z=0
 		G0 X-10 Y35 Z0.5  F9000
-		# первичная подготовка в воздухе
+		# накат в воздухе
 		G1 E5 F300
 		PRIME_LINE X=3 Y=35 Z=0.2 YLINE=100
 		RESTORE_GCODE_STATE NAME=prime_ext0
@@ -323,43 +324,43 @@ gcode:
 		G1	E5 F300
 		PRIME_LINE X=200 Y=35 Z=0.2 YLINE=100
 	{% endif %}
-	#установить голову в то состояние, в котором она была при вызове макроса. 
-	# По крайней мере, Ideamaker устанавливает T0/T1 перед вызовом пользовательского макроса, 
-	# поэтому нам нужно знать, какая голова была установлена, и переключиться на нее перед продолжением
-	# Расширение Jinja происходит до фактического выполнения макроса, поэтому printer.toolhead.extruder в условном 
-	# выражении не будет динамически изменяться, а будет иметь исходное значение при вызове.
+	#установите головку экструдера в то состояние, в котором она была при вызове макроса. 
+	# По крайней мере, Ideamaker устанавливает T0/T1 перед вызовом пользовательского макроса,
+	# поэтому нам нужно знать, какая головка экструдера была установлена, и переключиться на нее перед продолжением
+	# Расширение Jinja происходит до фактического выполнения макроса, поэтому значение printer.toolhead.extruder в условном
+	# выражении не будет динамически изменено, а вместо этого останется исходным значением при вызове.
 	
 	{% if printer.toolhead.extruder == "extruder1" %}
 		T1
 	{% else %}
 		T0
 	{% endif %}
-	#установить экструдер в абсолютный режим
+	#установите экструдер в абсолютный режим
 	M82
 #	{% if  ( (printer.extruder.target|int > 0) and (printer.extruder1.target|int > 0) ) %}
 #		#Два экструдера в использовании, ничего не делать
-#		RESPOND MSG="Два экструдера в использовании, Ideamaker не делает откат"
+#		RESPOND MSG="Две головы в использовании, Ideamaker не делает ретракцию"
 #	{% else %}
-#	 	#Ideamaker настаивает на откате в начале. Теперь мы просто сделаем вид, что он уже сделал это. Ужасный костыль, да.
-#		RESPOND MSG="Один из двух экструдеров в использовании, Ideamaker портит печать откатом, поэтому обходим это"
+#	 	#Ideamaker настаивает на ретракции в начале. Теперь мы просто делаем вид, что уже сделали это. Ужасный костыль, да.
+#		RESPOND MSG="Одна из двух голов в использовании, Ideamaker портит печать ретракцией, поэтому обходим это"
 #		G92 E-0.6
 #	{% endif %}
 
 [gcode_macro wait_for_temperatures]
 gcode:
     
-	# Ждать пока достигнуты температуры. Если цель равна нулю, то ожидание не произойдет, на самом деле. Так что нельзя экструдировать при очень низких температурах :)
+	# Ждать температур. Если цель температуры равна нулю, она не будет ждать, на самом деле. Так что вы не можете экструдировать при очень низкой температуре :)
     M190 S{printer.heater_bed.target}
     M109 T0 S{printer.extruder.target}
 	M109 T1 S{printer.extruder1.target}
     
 
 [gcode_macro START_PRINT]
-# Этот код предполагает, что температуры печатной головы и кровати были установлены срезчиком
+# Этот код предполагает, что цели температуры для подложки и головок принтера были установлены срезером
 gcode:
 	CLEAR_PAUSE
 	{% if printer["gcode_macro bedmesh"].probe_installed != 0 %}
-	   RESPOND TYPE=error MSG="У вас может быть зонд. Удалите зонд и выполните команду 'probeoff' и повторите печать"
+	   RESPOND TYPE=error MSG="У вас может быть датчик, который все еще установлен. Снимите датчик и выполните команду 'probeoff' и повторите печать"
 	   CANCEL_PRINT
 	{% else %}
 		T0
@@ -376,38 +377,38 @@ gcode:
 variable_probe_installed: 1
 gcode:
     {% if printer["gcode_macro bedmesh"].probe_installed == 0 %}
-	    RESPOND MSG="Установите зонд и выполните команду 'probeon'"
+	    RESPOND MSG="Установите датчик и выполните затем команду 'probeon'"
 	{% else %}
-		RESPOND MSG="Измерение сетки кровати с TO, с нулевым смещением по X "
+		RESPOND MSG="Измерение сетки подложки с TO, с нулевым смещением X "
 
 		home_if_not
         Z_TILT_ADJUST
 		T0
 		SAVE_GCODE_STATE NAME=bedmesh
-		#Всегда измерять с использованием левой головы
+		#Всегда измеряйте с сырой левой головой
 		G90
 		SET_GCODE_OFFSET X=0
 		#G0 Z10 F6000
 		BED_MESH_CALIBRATE
-		#G0 Y0 Z100 #brian: был на 100
+		#G0 Y0 Z100 #brian: estaba en 100
 		G28 X
 		RESTORE_GCODE_STATE NAME=bedmesh
 	{% endif %}
 
 
 [gcode_macro BED_MESH_LOAD]
-description: Загрузка существующей сетки кровати для правильной температуры
+description: Загрузка существующей сетки подложки для правильной температуры
 gcode:
-  ##### получить целевую температуру кровати #####
+  ##### получить цель для температуры #####
   {% set bed_temp = printer.heater_bed.target|int %}
   ##### объединить все в одну строку имени сетки #####
   {% set mesh_name = "MESH-" + bed_temp|string + "C" %}
   ##### конец определений #####
   {% if printer.configfile.config["bed_mesh " + mesh_name] is defined %}
     BED_MESH_PROFILE LOAD={mesh_name}
-    RESPOND TYPE=echo MSG="Загружена сетка кровати профиля {mesh_name} "
+    RESPOND TYPE=echo MSG="Загружена сетка подложки {mesh_name} "
   {% else %}
-    RESPOND TYPE=error MSG="Не найдена сетка профиля {mesh_name} "
+    RESPOND TYPE=error MSG="Не найдена сетка подложки {mesh_name} "
   {% endif %}
 
 [gcode_macro bedmesh_renew]
@@ -416,9 +417,9 @@ gcode:
 	{% set dwell = 60000 %}
 	{% for t in  [50,60,70] %}
         {% set mesh_name = "MESH-" + t|string + "C" %}
-		RESPOND MSG="Нагрев кровати до {t} °C"
+		RESPOND MSG="Нагрев подложки до {t} C"
 		M190 S{t}
-		RESPOND MSG="Установка таймаута на {dwell}мс"
+		RESPOND MSG="Установка на {dwell}мс"
 		G4 P{dwell}
 		bedmesh
 		BED_MESH_PROFILE SAVE={mesh_name}
@@ -427,23 +428,23 @@ gcode:
 [gcode_macro END_PRINT]
 gcode:
     
-    M117 Окончание печати.
-    G91 ; относительное позиционирование
-    G1 E-1 F300 ;откатить немного филамент перед поднятием сопла для выпуска давления
-    G1 Z+5 E-2 F1000 ;поднять Z немного и откатить немного больше
+    M117 Конец печати.
+    G91 ; относительные координаты
+    G1 E-1 F300 ; ретракция немного перед поднятием сопла, чтобы сбросить некоторое давление
+    G1 Z+5 E-2 F1000 ; перемещение Z вверх немного и дополнительная ретракция
 #   T1
 #	T0
-#    G90 ; абсолютное позиционирование
+#    G90 ; абсолютные координаты
 # 	G0 Y220 F6000 ; сделать напечатанный объект доступным
-    m104 S0 T0 ; отключить нагрев основного экструдера
-    m104 S0 T1 ; отключить нагрев вторичного экструдера
-    M140 S0 ; отключить нагрев кровати
+    m104 S0 T0 ; выключить нагрев основного сопла
+    m104 S0 T1 ; выключить нагрев вторичного сопла
+    M140 S0 ; выключить нагрев подложки
     G90
     T0
     PARK_extruder1
     PARK_extruder
     M106 S255 ; включить вентилятор для охлаждения
-    M84 ; выключить двигатели
+    M84 ; выключить двигатель
     clear_stepper_x_range
     M106 S0 ; выключить вентилятор
     SAVE_AT_END
@@ -518,7 +519,7 @@ gcode:
   {% set n = params.N|default(0.4)|float %}
 
   {% if printer.toolhead.homed_axes != "xyz" %}
-    {action_respond_info("Пожалуйста, откалибруйте XYZ сначала")}
+    {action_respond_info("Пожалуйста, калибруйте XYZ сначала")}
   {% elif printer.extruder.temperature < 170 %}
     {action_respond_info("Температура экструдера слишком низкая")}
   {% else %}
@@ -554,7 +555,7 @@ gcode:
 
   M117 Инициализация печати...
 
-  #Получить размеры рабочего объема принтера
+  #Получить размеры объема печатного устройства
   {% set X_MAX = printer.toolhead.axis_maximum.x|default(100)|float %}
   {% set Y_MAX = printer.toolhead.axis_maximum.y|default(100)|float %}
   {% set Z_MAX = printer.toolhead.axis_maximum.z|default(100)|float %}
@@ -563,11 +564,11 @@ gcode:
   {% set NOZZLE = printer.extruder.nozzle_diameter|default(0.4)|float %}
   {% set FILADIA = printer.extruder.filament_diameter|default(1.64)|float %}
 
-  #Установить начальные координаты для линии первичной подготовки
+  #Установить начальные координаты прямых линий наката
   {% set X_START = 10.0|default(10.0)|float %}
   {% set Y_START = 20.0|default(20.0)|float %}
 
-  #Рассчитать объем и длину экструдированной линии
+  #Рассчитать объем экструдирования прямой линии и длину филамента
   {% set PRIMER_WIDTH = 0.75 * NOZZLE %}                    
   {% set PRIMER_HEIGHT = 0.70 * NOZZLE %}           
   {% set PRIMER_SECT = PRIMER_WIDTH * PRIMER_HEIGHT %}    
@@ -576,7 +577,7 @@ gcode:
   {% set FILA_LENGTH = 1.55 * PRIMER_VOL / FILA_SECT %}
   {% set FILAMENT_TYPE = params.FILAMENT|default(PLA)|string %}
 
-  #Получить температуры кровати, экструдера и камеры из G-кода срезщика
+  #Получить температуры подложки, экструдера и камеры из G-кода срезера
   {% set BED_TEMP = params.BED|default(60)|float %}
   {% set EXTRUDER_TEMP = params.EXTRUDER|default(210)|float %}
   {% set CHAMBER_TEMP = params.CHAMBER|default(50)|float %}
@@ -588,7 +589,7 @@ gcode:
   # Получить количество необходимых смен инструментов
   {% set TOOL_CHANGES = params.TOOLS|default(0)|float %}
 
-  # Сохранить спецификации печати для дальнейшего использования
+  # Сохранить спецификации печати для последующего использования
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=x_max VALUE={X_MAX}
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=y_max VALUE={Y_MAX}
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=z_max VALUE={Z_MAX}
@@ -605,44 +606,44 @@ gcode:
 
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=tool_changes VALUE={TOOL_CHANGES}
 
-  # Включить подсветку!
-  # У меня пока нет никаких подсветок... звучит весело, правда!
+  # Включить свет!
+  # У меня пока нет никаких ламп... звучит весело, однако!
   #WLED_ON PRESET=1
 
-  # Убедиться, что T0 выбран для зондирования
+  # Убедитесь, что T0 выбран для Z-калибровки
   T0
   PROBEON
 
   # Начать нагрев и подготовку к печати
   G90 ; использовать абсолютные координаты
-  M83 ; экструдер в относительный режим
+  M83 ; экструдер в относительном режиме
 
-  M117 Предварительный нагрев кровати для калибровки...
+  M117 Предварительный нагрев подложки для калибровки...
 
   M104 S{EXTRUDER_TEMP}
-  G4 S10 ; позволить частичное разогревание сопла
-  M190 S{BED_TEMP} ; установить конечную температуру кровати
+  G4 S10 ; позволить частичное нагревание сопла
+  M190 S{BED_TEMP} ; установить окончательную температуру подложки
   #BED_MESH_PROFILE LOAD="default"
   BED_MESH_LOAD ; загрузить профиль для указанной температуры
-  # BEDMESH ; Создать новую сетку кровати вместо загрузки сохраненной
+  # BEDMESH ; Создание новой сетки подложки вместо загрузки сохраненной
   M117 Калибровка всех осей...
   G28 ; калибровка всех осей
-  M117 Калибровка наклона Z...
-  Z_TILT_ADJUST ; калибровка двойной Z-оси
+  M117 Корректировка наклона Z...
+  Z_TILT_ADJUST ; калибровка двойной оси Z
 
 
 #  G1 Z50 F240
 #  G1 X2 Y10 F3000
   M117 Ожидание стабилизации температур...
 
-  M104 S{EXTRUDER_TEMP} ; установить конечную температуру сопла
-  G28 X ; парковка экструдеров при прогреве для удаления излишков
-  M190 S{BED_TEMP} ; ожидание стабилизации температуры кровати
+  M104 S{EXTRUDER_TEMP} ; установить окончательную температуру сопла
+  G28 X ; парковка экструдеров при прогреве для наката
+  M190 S{BED_TEMP} ; ожидание стабилизации температуры подложки
   M109 S{EXTRUDER_TEMP} ; ожидание стабилизации температуры сопла
 
   WIPE_LINE
 
-  M117 Печать начата
+  M117 Начало печати
 
 [de_macro M1091]
 #rename_existing: M99109
