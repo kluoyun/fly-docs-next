@@ -3,7 +3,7 @@ sidebar_position: 3
 sidebar_label: 双x軸/idex参考配置
 ---
 
-## slicer 起始コード は bilibili のアップローダー muimoon女生が提供しました:
+## slicer 起始コード は bilibili アップローダーの muimoon 氏によって提供されています:
 ```bash
 M190 S【bed_temperature_initial_layer_single】
 {if is_extruder_used【0】}
@@ -14,7 +14,7 @@ M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
 {endif}
 ```
 
-## 第二のヘッド設定
+## 2つ目のプリントヘッド設定
 
 ```cfg
 [dual_carriage]
@@ -41,10 +41,10 @@ sense_resistor: 0.110
 stealthchop_threshold: 0
 ```
 
-コピーまたはミラーマクロを再利用するには、スライサー内で対応するコードを参照する必要があります
+コピーまたはミラー機能を再利用するには、スライサー内で対応するコードを参照する必要があります
 
-* ACTIVATE_COPY_MODE コピー モード
-* ACTIVATE_MIRROR_MODE ミラー モード
+* ACTIVATE_COPY_MODE コピー機能
+* ACTIVATE_MIRROR_MODE ミラーモード
 
 ```cfg
 [gcode_macro PARK_extruder1]
@@ -61,7 +61,7 @@ gcode:
     SET_DUAL_CARRIAGE CARRIAGE=1
     SET_GCODE_OFFSET Y=15
 
-# コピー モードをアクティブにするためのヘルパー スクリプト
+# コピー機能をアクティブにするヘルパー スクリプト
 [gcode_macro ACTIVATE_COPY_MODE]
 gcode:
     SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
@@ -72,7 +72,7 @@ gcode:
     SET_DUAL_CARRIAGE CARRIAGE=1 MODE=COPY
     SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
 
-# ミラー モードをアクティブにするためのヘルパー スクリプト
+# ミラーモードをアクティブにするヘルパー スクリプト
 [gcode_macro ACTIVATE_MIRROR_MODE]
 gcode:
     SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
@@ -142,14 +142,14 @@ gcode:
 ################################################################################
 ################################################################################
 
-# ヘルパー スクリプトでキャリッジを駐車する（T0 および T1 マクロから呼び出されます）
+# ヘルパー スクリプトでキャリッジを駐車させる（T0 および T1 マクロから呼び出されます）
 [gcode_macro PARK_extruder]
 gcode:
-	RESPOND MSG="Parking the leftmost extruder"
+	RESPOND MSG="左側のエクストルーダーを駐車します"
 	#make sure we move the first carriage
 	SET_DUAL_CARRIAGE CARRIAGE=0
 	{% if not "x" in printer.toolhead.homed_axes %}
-	    RESPOND MSG="Homing X"
+	    RESPOND MSG="X をホームします"
 	    G28 X
 	{% endif %}
 
@@ -161,11 +161,11 @@ gcode:
 
 [gcode_macro PARK_extruder1]
 gcode:
-	RESPOND MSG="Parking the rightmost extruder"
+	RESPOND MSG="右側のエクストルーダーを駐車します"
 	#make sure we move the second carriage. After all, we do not know which carriage is active
 	SET_DUAL_CARRIAGE CARRIAGE=1
 	{% if not "x" in printer.toolhead.homed_axes %}
-	    RESPOND MSG="Homing X"
+	    RESPOND MSG="X をホームします"
 	    G28 X
 	{% endif %}
 
@@ -177,11 +177,10 @@ gcode:
 
 
 [gcode_macro x_xoffset]
-# helper script, needed as the variable xoffset will be changed during macro execution
-# and macro expansion happens before that
+# ヘルパー スクリプト。変数 xoffset がマクロ実行中に変更されるため、マクロ展開がその前に発生します
 gcode:
 	{% set offset = printer["gcode_macro set_stepper_x_range"].xoffset %}
-	RESPOND MSG="Xoffset will be set to: { offset }"
+	RESPOND MSG="Xoffset は { offset } に設定されます"
     SET_GCODE_OFFSET Y=0 X={ offset } #Z=0
 	
 
@@ -190,42 +189,42 @@ gcode:
 variable_xoffset: 0
 variable_range_set: 0
 gcode:
-    RESPOND MSG="Setting leftmost extruder x-axis origin"
+    RESPOND MSG="左側のエクストルーダーの X 軸の原点を設定します"
 #	{ action_respond_info("Extruder1 temperature target: %s" % printer.extruder1.target ) }
 	RESPOND MSG="Extruder1 temperature target: { printer.extruder1.target }"
 	{% if   printer.extruder1.target|int > 0 %}
- 		RESPOND MSG="Right hand side extruder active"
+ 		RESPOND MSG="右側のエクストルーダーがアクティブです"
 	    #{% set offset= 17 %}
-	    {% set offset= 0 %} #I don't know why it was setting this to 17, but it was messing up my prints sometimes!
+	    {% set offset= 0 %} #なぜこれは 17 に設定されていたのかわかりませんが、それがときどき私の印刷を台無しにしていました！
 	{% else %}
 	    {% set offset=0 %}
 	{% endif %}
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE={offset}
-	RESPOND MSG="X origin for left head will be set to {offset} mm from left end of bed"
-	#make it known that the range has been set for this print, and should not be re-evaluated again
+	RESPOND MSG="左頭の X オリジンは {offset} mm 左端からの位置に設定されます"
+	#このプリントのために範囲が設定されたことを確認し、再度評価されないようにします
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=1
 
 [gcode_macro clear_stepper_x_range]
 gcode:
-    RESPOND MSG="Clearing the leftmost extruder x-axis printing range"
+    RESPOND MSG="左側のエクストルーダーの X 軸のプリント範囲をクリアします"
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE=0
-	#make it known that the range has not been set for this print, and should be re-evaluated again
+	#このプリントのために範囲が設定されていないことを確認し、再度評価されるようにします
 	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=0
 	
 
-# Activate the primary extruder
+# メインのエクストルーダーをアクティブにする
 [gcode_macro T0]
 gcode:
-	RESPOND MSG="Selecting tool T0"
+	RESPOND MSG="ツール T0 を選択します"
 	home_if_not
 	{% if printer.toolhead.extruder != "extruder" %}
 	    PARK_{printer.toolhead.extruder}
 	{% endif %}
     ACTIVATE_EXTRUDER EXTRUDER=extruder
     SET_DUAL_CARRIAGE CARRIAGE=0
-	# run the range setting only once, in order not to mis-set it after T1 target temp is set to zero
+	# レンジ設定は一度だけ実行します。T1 のターゲット温度がゼロに設定された後に誤って設定しないようにします
 	{% if  printer["gcode_macro set_stepper_x_range"].range_set  == 0  %}
-		RESPOND MSG="Lefttmost extruder X-direction movement range not yet set, setting it now"
+		RESPOND MSG="まだ左側のエクストルーダーの X 方向移動範囲が設定されていません。今設定します"
 		set_stepper_x_range
 	{% endif %}
 	x_xoffset
@@ -233,7 +232,7 @@ gcode:
 
 [gcode_macro T1]
 gcode:
-	RESPOND MSG="Selecting tool T1"
+	RESPOND MSG="ツール T1 を選択します"
 	home_if_not
 	{% if printer.toolhead.extruder != "extruder1" %}
 	    PARK_{printer.toolhead.extruder}
@@ -241,10 +240,10 @@ gcode:
     ACTIVATE_EXTRUDER EXTRUDER=extruder1
     SET_DUAL_CARRIAGE CARRIAGE=1
 
-    #The X/Y offsets are opposite from the stock firmware method.
-    #If the E2 prints too far to the left, you must ADD to the X offset.
-    #If the E2 prints too far downwards, you must ADD to the Y offset.
-    #The Z offset usually isn't needed. Just calibrate the physical Z adjustment on E2.
+    # X/Y オフセットは標準ファームウェアの方法とは逆です。
+    # E2 が左に印刷しすぎている場合、X オフセットを追加する必要があります。
+    # E2 が下に印刷しすぎている場合、Y オフセットを追加する必要があります。
+    # Z オフセットは通常必要ありません。E2 の物理的な Z 調整を校正してください。
     SET_GCODE_OFFSET X=3.80 Y=0.50 #Z=0
 
 [gcode_macro home_if_not ]
@@ -256,16 +255,16 @@ gcode:
 [gcode_macro probeon]
 gcode:
  	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=1
- 	RESPOND MSG="Recorded that you have installed the probe on the left head"
+ 	RESPOND MSG="左頭にプローブがインストールされたことを記録しました"
 
 [gcode_macro probeoff]
 gcode:
  	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=0
- 	RESPOND MSG="Recorded that you have uninstalled the probe from the left head"
+ 	RESPOND MSG="左頭からプローブが取り外されたことを記録しました"
 
 [gcode_macro PRIME_LINE]
 gcode: 
-    RESPOND MSG="Printing a priming line "
+    RESPOND MSG="プリミングラインを印刷しています"
 
     {% set x = params.X|default(2)|float %}
     {% set y = params.Y|default(70)|float %}
@@ -275,92 +274,91 @@ gcode:
 	{% set eMultiplier = 0.15 * z  %}
     SAVE_GCODE_STATE NAME=prime_line
  
-	M117 Prime Line
+	M117 プリミングライン
 
-    G90 ; XYZ to abs mode
-	M83 ; set E to rel mode
-    # move z axis 
-    G1 Z0.3 F3000 ;Move Z Axis up
-    # move to prime position 
+    G90 ; XYZ を絶対モードに
+	M83 ; E を相対モードに
+    # Z 軸を移動
+    G1 Z0.3 F3000 ; Z 軸を上げる
+    # プリミング位置に移動
 	G0 Y{y} Z{z}
-    G0 X{x} ;Move to start position. Do a square move to avoid hitting the bed's corner clips
-	G1 Y{y + yline} E{eMultiplier * yline} ;Draw the first line
-    G1 X{x + xline} E{eMultiplier * xline} ;Move to side a little
-    G1 Y{y + 20} E{eMultiplier * (yline - 20)} ;Draw the second line, but do not go back to origin to avoid picking the wipeouts
+    G0 X{x} ; 開始位置に移動。コーナークリップに当たらないように直角に動く
+	G1 Y{y + yline} E{eMultiplier * yline} ; 最初の線を引く
+    G1 X{x + xline} E{eMultiplier * xline} ; ちょっと横に移動
+    G1 Y{y + 20} E{eMultiplier * (yline - 20)} ; 2番目の線を引くが、元に戻らないようにしてワイプアウトを避ける
 #	G1 E-0.5 F300
-    G1 Z0.5 F3000 ;Move Z Axis up
-	
+    G1 Z0.5 F3000 ; Z 軸を上げる
+
 	RESTORE_GCODE_STATE NAME=prime_line
 
 [gcode_macro prepare_toolheads ]
 gcode:
-    RESPOND MSG="Preparing the toolheads"
+    RESPOND MSG="ツールヘッドを準備しています"
 	# BED_MESH_PROFILE LOAD=70c
-	# Use absolute coordinates
+	# 絶対座標を使用
     G90
-	#reset E
+	# E をリセット
 	G92 E0
-	#Set extruder to relative mode
+	# エクストルーダーを相対モードに
 	M83
 	home_if_not
-	# explicitly set the range at the start of each new print
+	# 各新しいプリントの開始時に範囲を明示的に設定する
 	set_stepper_x_range
 	{% if   printer.extruder.target|int > 0 %}
-	    RESPOND MSG="Preparing T0"
+	    RESPOND MSG="T0 を準備しています"
 		T0
 		SAVE_GCODE_STATE NAME=prime_ext0 
-		#Always print the prime line at the very left of the bed
+		# 常に最左端にプリミングラインを印刷
 		SET_GCODE_OFFSET X=0 Y=0 Z=0
 		G0 X-10 Y35 Z0.5  F9000
-		# prime in air
+		# 空気中でプリミング
 		G1 E5 F300
 		PRIME_LINE X=3 Y=35 Z=0.2 YLINE=100
 		RESTORE_GCODE_STATE NAME=prime_ext0
 	{% endif %}
 	{% if   printer.extruder1.target|int > 0 %}
-	    RESPOND MSG="Preparing T1"
+	    RESPOND MSG="T1 を準備しています"
 		T1
 		G0 X225 Y35 Z0.5 F9000
 		G1	E5 F300
 		PRIME_LINE X=200 Y=35 Z=0.2 YLINE=100
 	{% endif %}
-	#set the Tooolhead to what it was when the macro was called. 
-	# At least Ideamaker sets the T0/T1 before calling the user-defined macro, 
-	# so we need to be know which toolhead was set and switch to that before continuing
-	#Jinja expansion happens befor macro is actually executed, so printer.toolhead.extrude in the conditional
-	#statement will NOT have been dynamically changed, but is instead the original value at call time.
-	
+	# マクロが呼び出された時点でツールヘッドを設定した状態にする
+	#少なくともIdeamakerはユーザ定義マクロを呼び出す前にT0/T1を設定するため、
+	#どのツールヘッドが設定されているかを知り、継続する前にそれを切り替える必要があります
+	#Jinja展開は実際にマクロが実行される前に発生するため、条件文内のprinter.toolhead.extruderは動的に変更されず、呼び出し時の元の値になります。
+
 	{% if printer.toolhead.extruder == "extruder1" %}
 		T1
 	{% else %}
 		T0
 	{% endif %}
-	#set extruder to abs mode
+	# エクストルーダーを絶対モードに
 	M82
 #	{% if  ( (printer.extruder.target|int > 0) and (printer.extruder1.target|int > 0) ) %}
-#		#Two extruders in use, do nothing
-#		RESPOND MSG="Two heads in use, Ideamaker does not do retracting"
+#		#2つのエクストルーダーを使用しているので何もしない
+#		RESPOND MSG="2つのヘッドを使用しています、Ideamakerはリトラクトを行いません"
 #	{% else %}
-#	 	#Ideamaker insists on retracting at the start. Now we just make it think it already has. Ugly kluldge, yes.
-#		RESPOND MSG="One of two heads in use, Ideamaker spoils the print by retracting, so work around it"
+#	 	#Ideamakerは開始時にリトラクトします。これを回避するために醜いクルードですが
+#		RESPOND MSG="2つのヘッドのうちの1つを使用しています、Ideamakerはリトラクトにより印刷を損ないますので回避します"
 #		G92 E-0.6
 #	{% endif %}
 
 [gcode_macro wait_for_temperatures]
 gcode:
     
-	# Wait for temps. If a target is zero, it will not be waited, actually. So you cannot extrude with very low temperatures :)
+	# 温度を待機します。ターゲットがゼロの場合、実際には待機されません。非常に低い温度で押出することはできません:)
     M190 S{printer.heater_bed.target}
     M109 T0 S{printer.extruder.target}
 	M109 T1 S{printer.extruder1.target}
     
 
 [gcode_macro START_PRINT]
-# This code assumes that the printhead temperatures and bed temperature targets have been set by the slicer
+# このコードはプリンターヘッドの温度とベッド温度のターゲットがスライサーによって設定されていることを前提としています
 gcode:
 	CLEAR_PAUSE
 	{% if printer["gcode_macro bedmesh"].probe_installed != 0 %}
-	   RESPOND TYPE=error MSG="You could have a probe still on. Remove the probe and run the command 'probeoff' and re-print"
+	   RESPOND TYPE=error MSG="まだプローブが残っている可能性があります。プローブを取り外し、コマンド 'probeoff' を実行して再印刷してください"
 	   CANCEL_PRINT
 	{% else %}
 		T0
@@ -377,27 +375,27 @@ gcode:
 variable_probe_installed: 1
 gcode:
     {% if printer["gcode_macro bedmesh"].probe_installed == 0 %}
-	    RESPOND MSG="Install probe and run then command 'probeon'"
+	    RESPOND MSG="プローブをインストールし、その後コマンド 'probeon' を実行してください"
 	{% else %}
-		RESPOND MSG="Measuring bed mesh with TO, with zero x offset "
+		RESPOND MSG="TOを使用してベッドメッシュを測定しています、Xオフセットはゼロです"
 
 		home_if_not
         Z_TILT_ADJUST
 		T0
 		SAVE_GCODE_STATE NAME=bedmesh
-		#Always measure with raw left head
+		#常に左頭を使用して測定します
 		G90
 		SET_GCODE_OFFSET X=0
 		#G0 Z10 F6000
 		BED_MESH_CALIBRATE
-		#G0 Y0 Z100 #brian: estaba en 100
+		#G0 Y0 Z100 #brian: これは100でした
 		G28 X
 		RESTORE_GCODE_STATE NAME=bedmesh
 	{% endif %}
 
 
 [gcode_macro BED_MESH_LOAD]
-description: Load an existing bed calibration mesh for the correct temperature
+description: 正しい温度の既存のベッドキャリブレーションメッシュを読み込む
 gcode:
   ##### get target get temperature #####
   {% set bed_temp = printer.heater_bed.target|int %}
@@ -406,9 +404,9 @@ gcode:
   ##### end of definitions #####
   {% if printer.configfile.config["bed_mesh " + mesh_name] is defined %}
     BED_MESH_PROFILE LOAD={mesh_name}
-    RESPOND TYPE=echo MSG="Loaded bed mesh profile of {mesh_name} "
+    RESPOND TYPE=echo MSG="メッシュプロファイル {mesh_name} を読み込みました"
   {% else %}
-    RESPOND TYPE=error MSG="Did not find a mesh profile of {mesh_name} "
+    RESPOND TYPE=error MSG="メッシュプロファイル {mesh_name} が見つかりませんでした"
   {% endif %}
 
 [gcode_macro bedmesh_renew]
@@ -417,9 +415,9 @@ gcode:
 	{% set dwell = 60000 %}
 	{% for t in  [50,60,70] %}
         {% set mesh_name = "MESH-" + t|string + "C" %}
-		RESPOND MSG="Heating the bed to {t} C"
+		RESPOND MSG="ベッドを {t} C に加熱しています"
 		M190 S{t}
-		RESPOND MSG="Settling for {dwell}ms"
+		RESPOND MSG=" {dwell} ms 待機します"
 		G4 P{dwell}
 		bedmesh
 		BED_MESH_PROFILE SAVE={mesh_name}
@@ -428,25 +426,25 @@ gcode:
 [gcode_macro END_PRINT]
 gcode:
     
-    M117 End printing.
-    G91 ; relative positioning
-    G1 E-1 F300 ;retract the filament a bit before lifting the nozzle to release some of the pressure
-    G1 Z+5 E-2 F1000 ;move Z up a bit and extract a bit more
+    M117 プリント終了。
+    G91 ; 相対位置
+    G1 E-1 F300 ; フィラメントを少しリトラクトしてノズルをリリースする圧力を解放します
+    G1 Z+5 E-2 F1000 ; Z を少し上げてさらにリトラクトします
 #   T1
 #	T0
-#    G90 ; absolute positioning
-# 	G0 Y220 F6000 ; make the printed object accessible
-    m104 S0 T0 ; turn hotend heating off
-    m104 S0 T1 ; turn hotend heating off
-    M140 S0 ; turn hotbed heating off
+#    G90 ; 絶対位置
+# 	G0 Y220 F6000 ; 印刷された物体をアクセス可能にする
+    m104 S0 T0 ; 熱源をオフにする
+    m104 S0 T1 ; 熱源をオフにする
+    M140 S0 ; ベッドヒーターをオフにする
     G90
     T0
     PARK_extruder1
     PARK_extruder
-    M106 S255 ; turn fan on for cooling
-    M84 ; steppers off
+    M106 S255 ; 冷却のためにファンをオンにする
+    M84 ; ステッパーオフ
     clear_stepper_x_range
-    M106 S0 ; turn fan off
+    M106 S0 ; ファンをオフにする
     SAVE_AT_END
 
 [gcode_macro SEARCH_VARS]
@@ -519,9 +517,9 @@ gcode:
   {% set n = params.N|default(0.4)|float %}
 
   {% if printer.toolhead.homed_axes != "xyz" %}
-    {action_respond_info("Please home XYZ first")}
+    {action_respond_info("XYZ をホームしてください")}
   {% elif printer.extruder.temperature < 170 %}
-    {action_respond_info("Extruder temperature too low")}
+    {action_respond_info("エクストルーダーの温度が低すぎます")}
   {% else %}
     SAVE_GCODE_STATE NAME=WIPE_LINE_state
     M82
@@ -537,7 +535,7 @@ gcode:
   {% endif %}
   
 [gcode_macro PREP_PRINT]
-description: Loads and starts the print
+description: プリントを読み込んで開始する
 variable_x_max: 0
 variable_y_max: 0
 variable_z_max: 0
@@ -553,22 +551,22 @@ variable_num_layers: 0
 variable_layer_z: 0
 gcode:
 
-  M117 Print intializing...
+  M117 プリント初期化中...
 
-  #Get Printer built volume dimensions
+  #プリンターのビルドボリュームの寸法を取得
   {% set X_MAX = printer.toolhead.axis_maximum.x|default(100)|float %}
   {% set Y_MAX = printer.toolhead.axis_maximum.y|default(100)|float %}
   {% set Z_MAX = printer.toolhead.axis_maximum.z|default(100)|float %}
 
-  #Get Nozzle diameter and filament width for conditioning
+  #ノズル径とフィラメント径を取得して調整する
   {% set NOZZLE = printer.extruder.nozzle_diameter|default(0.4)|float %}
   {% set FILADIA = printer.extruder.filament_diameter|default(1.64)|float %}
 
-  #Set Start coordinates of priming lines
+  #プリミングラインの開始座標を設定
   {% set X_START = 10.0|default(10.0)|float %}
   {% set Y_START = 20.0|default(20.0)|float %}
 
-  #Calculate Primer line extrusion volume and filament length
+  #プリマー線の押し出し体積とフィラメント長さを計算
   {% set PRIMER_WIDTH = 0.75 * NOZZLE %}                    
   {% set PRIMER_HEIGHT = 0.70 * NOZZLE %}           
   {% set PRIMER_SECT = PRIMER_WIDTH * PRIMER_HEIGHT %}    
@@ -577,19 +575,19 @@ gcode:
   {% set FILA_LENGTH = 1.55 * PRIMER_VOL / FILA_SECT %}
   {% set FILAMENT_TYPE = params.FILAMENT|default(PLA)|string %}
 
-  #Get Bed, Extruder, and Chamber temperatures from Slicer GCode
+  #スライサーのGコードからベッド、エクストルーダー、およびチャンバーテンパチャを得る
   {% set BED_TEMP = params.BED|default(60)|float %}
   {% set EXTRUDER_TEMP = params.EXTRUDER|default(210)|float %}
   {% set CHAMBER_TEMP = params.CHAMBER|default(50)|float %}
 
-  # Get Number of Layers
+  # 層の数を得る
   {% set NUM_LAYERS = params.COUNT|default(0)|float %}
   {% set CUR_LAYER = params.NUM|default(0)|float + 1 %}
 
-  # Get Number of Tool Changes Required
+  # 必要なツールチェンジの数を得る
   {% set TOOL_CHANGES = params.TOOLS|default(0)|float %}
 
-  # Save print configuration specs for later use
+  # プリントの構成仕様を後で使用するために保存
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=x_max VALUE={X_MAX}
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=y_max VALUE={Y_MAX}
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=z_max VALUE={Z_MAX}
@@ -606,58 +604,40 @@ gcode:
 
   SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=tool_changes VALUE={TOOL_CHANGES}
 
-  # Turn on the lights!
-  # I don't have any lights yet... sounds fun though!
+  # 照明を点灯する！
+  # まだ照明はありませんが、楽しそうですね！
   #WLED_ON PRESET=1
 
-  # Make sure T0 is selected for Z probing
+  # ZプロービングのためにT0を選択する
   T0
   PROBEON
 
-  # Begin preheating and prepping for print
-  G90 ; use absolute coordinates
-  M83 ; extruder relative mode
+  # プリントの前準備と事前加熱を開始
+  G90 ; 絶対座標を使用
+  M83 ; エクストルーダーを相対モードにする
 
-  M117 Preheating bed for homing...
+  M117 ベッドをホーミングするための予熱中...
 
   M104 S{EXTRUDER_TEMP}
-  G4 S10 ; allow partial nozzle warmup
-  M190 S{BED_TEMP} ; set final bed temp
+  G4 S10 ; ノズルの部分的な温め上げを許可
+  M190 S{BED_TEMP} ; 最終的なベッド温度を設定
   #BED_MESH_PROFILE LOAD="default"
-  BED_MESH_LOAD ; load profile for the specified temp
-  # BEDMESH ; Make a new bed mesh instead of loading a saved one
-  M117 Homing all axis...
-  G28 ; home all axis
-  M117 Adjusting Z-Tilt...
-  Z_TILT_ADJUST ; calibrate dual-Z axis
-
+  BED_MESH_LOAD ; 指定された温度のプロファイルを読み込む
+  # BEDMESH ; 新しいベッドメッシュを作成する
+  M117 全軸をホーミングする...
+  G28 ; 全軸をホーミング
+  M117 Z-傾斜を調整中...
+  Z_TILT_ADJUST ; 双方向Z軸を校正
 
 #  G1 Z50 F240
 #  G1 X2 Y10 F3000
-  M117 Waiting for temperatures to stabilize...
+  M117 温度が安定するまで待機中...
 
-  M104 S{EXTRUDER_TEMP} ; set final nozzle temp
-  G28 X ; park extruders while warming up for wipe
-  M190 S{BED_TEMP} ; wait for bed temp to stabilize
-  M109 S{EXTRUDER_TEMP} ; wait for nozzle temp to stabilize
+  M104 S{EXTRUDER_TEMP} ; 最終的なノズル温度を設定
+  G28 X ; ワイプする間にエクストルーダーを駐車
+  M190 S{BED_TEMP} ; ベッド温度が安定するまで待機
+  M109 S{EXTRUDER_TEMP} ; ノズル温度が安定するまで待機
 
   WIPE_LINE
 
-  M117 Print Started
-
-[de_macro M1091]
-#rename_existing: M99109
-gcode:
-    #Parameters
-    {% set s = params.S|float %}
-    {% set set_tool = params.T|default(0)|int %}
-    
-    M104 {% for p in params %}{'%s%s' % (p, params【p】)}{% endfor %}  ; Set hotend temp
-    
-    {% if s != 0 %}
-            {% if (set_tool == 0 ) %}
-                  TEMPERATURE_WAIT SENSOR=extruder MINIMUM={s-3} MAXIMUM={s+3}   ; Wait for hotend temp (within 1 degree)
-            {% else %}
-                  TEMPERATURE_WAIT SENSOR=extruder1 MINIMUM={s-3} MAXIMUM={s+3}   ; Wait for hotend temp (within 1 degree)
-            {% endif %}
-    {% endif %}
+  M117 プリント開始
