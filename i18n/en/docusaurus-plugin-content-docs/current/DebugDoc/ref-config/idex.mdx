@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-sidebar_label: Dual X-Axis/Index Reference Configuration
+sidebar_label: Dual X-axis/Index Reference Configuration
 ---
 
-## slicer starting code provided by Bilibili UP主 muimoon girls:
+## slicer starter code provided by Bilibili UP主 muimoon女士:
 ```bash
 M190 S【bed_temperature_initial_layer_single】
 {if is_extruder_used【0】}
@@ -14,7 +14,7 @@ M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
 {endif}
 ```
 
-## Second extruder settings
+## Second print head settings
 
 ```cfg
 [dual_carriage]
@@ -41,10 +41,10 @@ sense_resistor: 0.110
 stealthchop_threshold: 0
 ```
 
-Copy or mirror macros need to be referenced in the slicing software
+Copy or mirror macros, need to reference the corresponding code in slicing
 
-* ACTIVATE_COPY_MODE Copy Mode
-* ACTIVATE_MIRROR_MODE Mirror Mode
+* ACTIVATE_COPY_MODE Copy mode
+* ACTIVATE_MIRROR_MODE Mirror mode
 
 ```cfg
 [gcode_macro PARK_extruder1]
@@ -106,10 +106,10 @@ gcode:
     ##### calculate save lift position #####
     {% set max_z = (printer.toolhead.axis_maximum.z|float ) %} #leave some room for gcode z offset
     {% set act_z = printer.toolhead.position.z|float %}
-    {% set new_z = act_z + lift_z %}
-    {% if new_z >  max_z %}
-        new_z = max_z
-    {% endif %}
+ 	{% set new_z = act_z + lift_z %}
+	{% if new_z >  max_z %}
+		new_z = max_z
+	{% endif %}
     SAVE_GCODE_STATE NAME=PAUSE_state
     BASE_PAUSE
     M83 ; set E to rel mode
