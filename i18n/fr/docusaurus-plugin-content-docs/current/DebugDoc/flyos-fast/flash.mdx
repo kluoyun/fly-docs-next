@@ -1,0 +1,56 @@
+---
+sidebar_position: 2
+---
+
+# Gravure du système d'exploitation
+
+## Préparation
+
+1. Terminer le téléchargement du système sur la page précédente : [Téléchargement du système](/docs/DebugDoc/flyos-fast/) .
+2. Télécharger l'outil de gravure. Le tutoriel utilisera `Rufus` en exemple. En réalité, vous pouvez utiliser d'autres outils, tels que `Etcher`, `Win32 Disk Imager`, etc.
+    - Lien de téléchargement de Rufus : [Cliquez pour télécharger en chinois](https://rufus.ie/zh/#download) ou bien [Click to Download in English](https://rufus.ie/en/#download) (seulement pour Windows).
+    - Lien de téléchargement d'Etcher : [Cliquez pour télécharger](https://etcher.balena.io/#download-etcher) (pour Windows, MacOS, Linux).
+    - Lien de téléchargement de Win32 Disk Imager : [Cliquez pour télécharger](https://sourceforge.net/projects/win32diskimager/) (seulement pour Windows).
+3. Télécharger le fichier de l'image du système, le tutoriel utilisera `FlyOS-Fast-H5.exe` en exemple.
+
+4. Décompresser le fichier de l'image du système pour obtenir le fichier `.img`.
+    - Double-cliquez sur ou ouvrez le fichier `FlyOS-Fast-H5.exe` par le menu contextuel, attendez quelques secondes et une fenêtre apparaîtra (si le système indique qu'il n'est pas sûr, choisissez "Plus d'informations" -> "Exécuter").
+    - Vous pouvez choisir le dossier de décompression, puis cliquez sur le bouton `Extraire`, attendez la fin du processus de décompression.
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - Une fois la décompression terminée, un fichier `FlyOS-Fast-H5-vx.x.x.img` sera généré dans le dossier de décompression. `x.x.x` est le numéro de version du système.
+5. Préparer la carte de gravage.
+    - La carte de gravage doit avoir une capacité supérieure à 4 Go, il est recommandé d'utiliser une carte TF SanDisk de 32 Go C10 et plus (les tests ont montré que beaucoup de cartes bon marché ne peuvent pas démarrer après la gravure).
+    - La carte de gravage doit être insérée dans un lecteur de carte SD et ensuite le lecteur de carte SD doit être inséré dans l'ordinateur.
+
+## Gravure du système
+
+1. Ouvrez Rufus, sélectionnez le périphérique, la capacité du périphérique sélectionnée doit correspondre à celle de la carte de gravage insérée dans l'ordinateur.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. Sélectionnez le type de démarrage, par défaut choisissez `Image du système`.
+3. Sélectionnez le fichier de l'image du système, cliquez sur le bouton `Sélectionner` à droite de `Type de démarrage`, choisissez le fichier `.img` décompressé.
+4. Une fois le fichier d'image sélectionné, le `Type de démarrage` changera pour afficher le nom du fichier de l'image.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+
+5. Cliquez sur le bouton `Démarrer`, si une fenêtre s'ouvre pour vous demander de supprimer les données du disque, cliquez sur `OK`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. Une fois la gravure terminée, l'ordinateur émettra un signal sonore et la barre de progression affichera `Prêt`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. Ne retirez pas immédiatement la carte de gravage une fois la gravure terminée.
+8. Ouvrez l'Explorateur de fichiers, vérifiez s'il existe un lecteur amovible ou une clé USB nommé `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. Ouvrez `FlyOS-Conf`, si les deux fichiers suivants sont présents, cela signifie que la gravure a réussi.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+
+10. Parmi eux, `config.txt` est le fichier de configuration du système, consultez la page suivante pour en savoir plus. Modifiez le fichier de configuration.

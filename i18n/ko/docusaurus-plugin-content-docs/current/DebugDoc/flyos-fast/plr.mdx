@@ -1,0 +1,81 @@
+---
+sidebar_position: 4
+---
+
+# Klipper 전력 손실 복구 기능
+
+## 개요
+
+- Klipper 전력 손실 복구 기능은 Klipper가 전원이 꺼진 후 다시 전원이 켜지면 Klipper의 프린팅 상태를 자동으로 복원하는 기능입니다.
+- 이 기능은 안전한 종료 모듈과 함께 사용해야 합니다.
+- 정전으로 인해 Z축이 이동하는 기종에서는 작동하지 않습니다.
+
+## 구성
+
+### plr.cfg 구성 파일
+
+- 프린터 구성 페이지에서 새 구성 파일을 생성하고 `plr.cfg` 파일을 만듭니다.
+- 구성 파일 내용은 다음과 같습니다:
+
+    ```cfg
+    [power_loss_resume]
+    # power_pin: PA0 # 안전한 종료 모듈의 종료 핀은 하위기기의 PA0 핀에 연결
+    power_pin: host:gpiochip1/gpio21 # 안전한 종료 모듈의 종료 핀은 상위기기의 PA21 핀에 연결
+    is_shutdown: True # 종료 동작 수행 여부, 기본적으로 활성화
+    start_gcode:
+        # 계속 프린팅하기 전에 실행할 gcode
+        # 정전 전에 저장된 모든 매개변수는 {PLR}를 통해 가져올 수 있습니다
+        # M118 {PLR}를 사용하여 모든 사용 가능한 매개변수 출력
+        M118 계속 프린팅: {PLR.print_stats.filename}
+        M118 중단 위치: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; 열판 온도 설정
+        M104 S{PLR.extruder.target-10}  ; 엑스트루더 온도 설정
+        M109 S{PLR.extruder.target-10}  ; 엑스트루더가 설정된 온도까지 대기
+        G91                             ; 상대 좌표
+        G1 Z2 F100                      ; Z축을 들어올려서 X, Y 축 재설정 준비
+        G90                             ; 절대 좌표
+        G28 X Y                         ; X, Y 축 재설정
+        M140 S{PLR.bed.target}          ; 열판 온도 설정
+        M104 S{PLR.extruder.target}     ; 엑스트루더 온도 설정
+        M190 S{PLR.bed.target}          ; 열판이 설정된 온도까지 대기
+        M109 S{PLR.extruder.target}     ; 엑스트루더가 설정된 온도까지 대기
+        M83                             ; 상대적 엑스트루드
+        # G1 E0.5 F400                  ; 약간의 플라스틱을 밀어내기
+    layer_count: 2 # 지정된 층 수만큼 계속 프린팅 후 layer_change_gcode 실행
+    layer_change_gcode:                
+        # 지정된 층 수만큼 계속 프린팅 후에 실행할 gcode
+        M118 프린트 속도 복원
+        M106 S{PLR.fan_speed}             ; 블로우 팬 작동 시작
+        M220 S{PLR.move_speed_percent}    ; 요청 속도 퍼센트 설정
+        M221 S{PLR.extrude_speed_percent} ; 요청 엑스트루드 속도 퍼센트 설정
+    shutdown_gcode:
+        # 종료 전에 실행할 gcode
+        M118 전력 저하, 전원 종료
+        # M112 ; 긴급 정지
+
+    ```
+
+    :::warning 주의
+
+    - 위 구성 파일의 `start_gcode` 매크로는 실제 기계 상황에 따라 수정될 수 있습니다.
+
+    :::
+
+- 위 구성 파일을 저장한 후
+- `printer.cfg` 파일을 열고 파일 최상단에 다음 내용을 추가합니다:
+
+    ```cfg
+
+    [include plr.cfg]
+
+    ```
+
+- 오른쪽 상단의 저장 버튼을 클릭하고 다시 시작하면 됩니다.
+- 이제 Klipper 전력 손실 복구 기능이 구성되었습니다.
+
+## 테스트
+
+- 아무 파일이나 프린팅하고 프린팅 도중에 `긴급 정지` 버튼을 클릭하여 정전을 시뮬레이션합니다.
+- 다시 `펌웨어 재시작`을 클릭하고 Klipper가 정상적으로 연결될 때까지 기다립니다.
+- 웹사이트나 KlipperScreen에서 팝업 메시지가 나타나면 전력 손실 복구 기능이 정상적으로 작동하는 것입니다.
+- 이후 실제 정전 상황에서도 테스트할 수 있습니다.
