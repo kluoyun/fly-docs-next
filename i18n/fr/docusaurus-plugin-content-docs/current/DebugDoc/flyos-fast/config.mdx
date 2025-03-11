@@ -1,0 +1,163 @@
+---
+sidebar_position: 3
+---
+
+# Configuration système de modification
+
+:::tip Lecture obligatoire
+
+- Les paramètres dans le fichier de configuration `section` ne seront actifs qu'au premier démarrage du système après la gravure.
+- Veuillez donc d'abord modifier le fichier de configuration config.txt sur la carte amovible `FlyOS-Conf` après la gravure.
+- Ensuite, insérez la carte dans la plaque pour démarrer le système.
+
+:::
+
+:::warning Attention
+
+- Essayez d'éviter d'utiliser le bloc-notes intégré à Windows pour éditer les fichiers de configuration. Vous pouvez utiliser VSCode ou d'autres éditeurs de texte professionnels.
+- Il est préférable de ne pas saisir de caractères chinois ou spéciaux dans le fichier de configuration.
+- Après avoir modifié le fichier de configuration, vous devez redémarrer le système pour que les modifications prennent effet.
+
+:::
+
+:::danger
+
+- Ne modifiez pas le contenu ci-dessous dans le fichier de configuration `######### SVP NE PAS MODIFIER LE SUivant #########`.
+
+:::
+
+## Comment modifier le fichier de configuration
+
+### Modifier le fichier de configuration après la gravure
+
+- Les paramètres qui ne sont actifs qu'au premier démarrage doivent être modifiés après la gravure en utilisant un éditeur de texte professionnel pour ouvrir le fichier de configuration `config.txt` sur la carte amovible `FlyOS-Conf`.
+
+### Modification en ligne de configuration du système lorsqu'il est démarré
+
+- Pour les paramètres de configuration normaux, il suffit de redémarrer le système après les modifications sur la page de configuration du web du système.
+    - Ouvrez l'adresse IP de l'appareil dans le navigateur, par exemple : `http://192.168.1.2/`
+    - Fluidd désélectionnez comme indiqué à gauche dans la capture d'écran `filtrer les fichiers et dossiers cachés`.
+    - Mainsail sélectionnez comme indiqué à droite dans la capture d'écran `afficher les fichiers cachés`.
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - Vous verrez alors le dossier `.flyos-config`, entrez dans ce dossier pour trouver le fichier `sys-config.conf`.
+    - Le fichier `sys-config.conf` est un lien symbolique vers le fichier de configuration `config.txt` sur la carte amovible `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - Ouvrez le fichier `sys-config.conf`, modifiez les paramètres nécessaires, puis `enregistrez` et `fermez` le fichier.
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config4.webp').default} size="60%" align="center" />
+
+    - Remarque : Le format des paramètres dans le fichier `sys-config.conf` est `clé=valeur`, ne le modifiez pas en `clé: valeur`.
+    - Après avoir enregistré les modifications, redémarrez le système pour que celles-ci prennent effet.
+
+## Paramètres de configuration
+
+### Configuration réseau sans fil
+
+- Les paramètres suivants prennent effet à chaque démarrage du système.
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :---: | :--- | :--- |
+| `WIFI_SSID` | `vide` | Toute SSID WiFi | Nom du WiFi, s'il est rempli, le système se connectera automatiquement en priorité à ce WiFi au démarrage |
+| `WIFI_PASS` | `vide` | Laissez vide si aucun mot de passe | Mot de passe WiFi, s'il est rempli, le système utilisera ce mot de passe pour se connecter au WiFi |
+
+----
+
+### Configuration par défaut de l'imprimante
+
+:::tip
+- Les paramètres suivants ne sont actifs qu'au premier démarrage.
+:::
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :---: | :--- | :--- |
+| `language` | `zh-CN` | <details><summary>Cliquez pour dérouler le contenu détaillé</summary>`zh-CN`, `zh-HK`, `en`, `de`, `cz`, `es`, `hu`, `ja`, `nl`, `pt`, `se`, `uk`, `da`, `fr`, `it`, `ko`, `pl`, `ru`, `tr`</details> | Définissez la langue par défaut de fluidd et mainsail au premier démarrage |
+| `printer_name` | `vide` | Toute chaîne de caractères | Définissez le nom par défaut de l'imprimante de fluidd et mainsail au premier démarrage |
+
+----
+
+### Configuration système
+
+- Les paramètres suivants prennent effet à chaque démarrage du système.
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :-------: | :--- | :--- |
+| `console` | `serial` | `serial`, `both` | Ce paramètre ne doit pas être modifié, seul `serial` est valide |
+| `board` | H5: `fly-pi-v2`<br/>H3: `fly-lite2.1` | <details><summary>Cliquez pour dérouler la série H5</summary>`fly-pi`, `fly-pi-v2`, `fly-gemini-v1`, `fly-gemini-v2`, `fly-gemini-v3`, `fly-c8`</details><br/><details><summary>Cliquez pour dérouler la série H3</summary>`fly-lite2`, `fly-lite2.1`, `fly-minipad`</details> | Modèle de carte mère, principalement utilisé pour l'auto-gravage des firmwares, etc. |
+| `shutdown_pin_state` | `1` | `0`, `1` | Définissez l'état de niveau logique du bouton d'arrêt<br/>1: bas niveau déclenché<br/>0: haut niveau déclenché |
+| `shutdown_pin` | `none` | `PA21`, `PA4`... | Définissez le broche de déclenchement du bouton d'arrêt, par défaut `none` non activé |
+| `spidev` | `spidev0.0 spidev1.0` | `spidev0.0`, `spidev0.1`, `spidev1.0`, `spidev1.1` | Définissez les ports SPI à activer<br/>Pour activer plusieurs, séparez-les par un espace |
+
+----
+
+### Configuration du type d'imprimante
+
+- Les paramètres suivants prennent effet à chaque démarrage du système.
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :-------: | :--- | :--- |
+| `printer` | `klipper` | `klipper`, `rrf` | Configurez le service à partir duquel le système démarre<br/>`klipper`: services klipper, moonraker, etc.<br/>`rrf`: services RRF DSF, DWC, etc. |
+
+### Configuration d'affichage
+
+- Les paramètres suivants prennent effet à chaque démarrage du système.
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :-------: | :--- | :--- |
+| `screen` | `hdmi` | <details><summary>Cliquez pour dérouler la série H5</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-tft-v2-r`, `fly-tft-v2-c`</details><br/><details><summary>Cliquez pour dérouler la série H3</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-minipad-r`, `fly-minipad-c`, `fly-tft-v2-r`, `fly-tft-v2-c`</details> | Définissez l'écran, `none` ferme tous les affichages |
+| `rotate` | `90` | `0`, `90`, `180`, `270` | Définissez l'angle de rotation de FLY-TFT, `hdmi` n'est pas pris en compte |
+
+----
+
+### Configuration liée à Klipper
+
+- Les paramètres suivants prennent effet à chaque démarrage du système.
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :-------: | :--- | :--- |
+| `klipper_screen` | `0` | `0`, `1` | Définissez si KlipperScreen est activé<br/>1: Activé<br/>0: Désactivé<br/>valide lorsque `printer=klipper` |
+| `moon2uart` | `0` | `0`, `1` | Définissez si moon2uart est activé<br/>1: Activé<br/>0: Désactivé<br/>valide lorsque `printer=klipper` |
+| `m2u_port` | `/dev/ttyS1` | Ports série valides | Port série de moon2uart, valide lorsque `moon2uart=1` |
+| `m2u_baud` | `115200` | Baudrates valides | Baudrate de moon2uart, valide lorsque `moon2uart=1` |
+| `klipper_webui` | `fluidd` | `fluidd`, `mainsail` | Définissez l'interface utilisateur frontale par défaut de Klipper<br/>Neffectue pas d'impact sur la fonction de basculement en un clic en ligne<br/>valide lorsque `printer=klipper` |
+
+----
+
+### Configuration liée à RRF
+
+- Les paramètres suivants prennent effet à chaque démarrage du système.
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :-------: | :--- | :--- |
+| `rrf2uart` | `0` | `0`, `1` | Temporairement non valide, mise à jour fournie dans les versions futures |
+
+----
+
+### Autres paramètres
+
+- Les paramètres suivants prennent effet à chaque démarrage du système.
+
+| Paramètre de configuration | Valeur par défaut | Valeurs possibles | Description |
+| :---: | :-------: | :--- | :--- |
+| `crowsnest` | `0` | `0`, `1` | Définissez si Crowsnest est activé<br/>1: Activé<br/>0: Désactivé<br/>valide pour le mode Klipper et RRF |
+| `firmware` | `vide` | Chemins de fichiers de firmware valides| Définissez le firmware à graver automatiquement au démarrage |
+
+----
+
+:::danger
+
+- Ne modifiez pas le contenu ci-dessous dans le fichier de configuration `######### SVP NE PAS MODIFIER LE SUivant #########`.
+
+:::

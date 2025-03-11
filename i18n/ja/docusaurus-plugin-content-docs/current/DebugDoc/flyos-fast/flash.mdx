@@ -1,0 +1,56 @@
+---
+sidebar_position: 2
+---
+
+# システムイメージの焼付け
+
+## 準備
+
+1. 上ページの[System download](/docs/DebugDoc/flyos-fast/)を完了する。
+2. バーニングツールをダウンロードします。このチュートリアルでは`Rufus`を使用します。実際には他のツール、例えば`Etcher`や`Win32 Disk Imager`を使用することもできます。
+    - Rufusのダウンロードリンク：[クリックしてダウンロード（中国語）](https://rufus.ie/zh/#download) または [Click Download English](https://rufus.ie/en/#download) （Windowsのみサポート）。
+    - Etcherのダウンロードリンク：[クリックしてダウンロード](https://etcher.balena.io/#download-etcher) （Windows、MacOS、Linuxをサポート）。
+    - Win32 Disk Imagerのダウンロードリンク：[クリックしてダウンロード](https://sourceforge.net/projects/win32diskimager/) （Windowsのみサポート）。
+3. システムイメージファイルをダウンロードします。このチュートリアルでは`FlyOS-Fast-H5.exe`を使用します。
+
+4. システムイメージファイルを展開し、`.img`ファイルを取得します。
+    - `FlyOS-Fast-H5.exe`をダブルクリックまたは右クリックして開き、数秒待つと次のウィンドウが表示されます（システムが安全でないと警告する場合、「詳細情報」→「実行」を選択してください）。
+    - 展開ディレクトリを選択し、`Extract`ボタンをクリックして展開を待ちます。
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - 展開が完了すると、展開ディレクトリに`FlyOS-Fast-H5-vx.x.x.img`ファイルが生成されます。`x.x.x`はシステムバージョン番号です。
+5. バーニングカードを準備します。
+    - バーニングカードは4GBより大きいものが必要です。サンディスクの32GB C10以上のmicroSDカードを使用することをお勧めします（テストにより、多くの安価なカードは焼付け後に起動できないことが判明しています）。
+    - バーニングカードはSDカードリーダーを使用して、バーニングカードをリーダーに挿入し、その後リーダーをコンピュータに挿入します。
+
+## システムの焼付け
+
+1. Rufusを開き、デバイスを選択します。選択したデバイスは、コンピュータに挿入されたバーニングカードの容量と同じであるはずです。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. `ブートタイプの選択`、これはデフォルトで`イメージファイル`を選択しておきます。
+3. イメージファイルの選択、`ブートタイプの選択`の右側にある`選択`ボタンをクリックし、展開後の`.img`ファイルを選択します。
+4. イメージファイルを選択すると、`ブートタイプの選択`はイメージファイルのファイル名になります。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+
+5. `開始`ボタンをクリックします。ポップアップウィンドウが表示され、ディスクデータをクリアする必要があると警告する場合は、`OK`をクリックします。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. 焼付けが完了すると、コンピュータは警告音を発し、進行状況バーは`準備完了`と表示されます。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. 焼付けが完了したら、すぐにバーニングカードを取り出さないでください。
+8. ファイルエクスプローラを開き、`FlyOS-Conf`という名前のUSBドライブまたは可搬型ドライブが存在するかどうかを確認します。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. `FlyOS-Conf`を開くと、以下の画像に示す2つのファイルが存在すれば、焼付けが成功したことを示します。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+
+10. そのうちの`config.txt`はシステム設定ファイルです。次のページの内容を参照してください。設定ファイルを変更します。
