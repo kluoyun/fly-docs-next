@@ -1,0 +1,81 @@
+---
+sidebar_position: 4
+---
+
+# Power Loss Resume Function for Klipper
+
+## Overview
+
+- The power loss resume function for Klipper refers to the ability of Klipper to automatically recover its printing status after being powered off and then powered on again.
+- This feature requires the use of a safety shutdown module.
+- It is not suitable for models where the Z-axis will move when there is a power failure.
+
+## Configuration
+
+### Configuration File plr.cfg
+
+- In the printer configuration page, click "New Configuration" and create a `plr.cfg` file.
+- The content of the configuration file is as follows:
+
+    ```cfg
+    [power_loss_resume]
+    # power_pin: PA0 # Shutdown pin of the safety shutdown module, connected to PA0 on the lower machine
+    power_pin: host:gpiochip1/gpio21 # Shutdown pin of the safety shutdown module, connected to PA21 on the upper machine
+    is_shutdown: True # Whether to execute a shutdown operation, defaults to enabled
+    start_gcode:
+        # G-code to be executed before resuming printing
+        # All parameters saved before the power failure can be accessed through {PLR}
+        # Use M118 {PLR} to output all available parameters
+        M118 Starting resume print: {PLR.print_stats.filename}
+        M118 Interruption position: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; Set bed temperature
+        M104 S{PLR.extruder.target-10}  ; Set extruder temperature
+        M109 S{PLR.extruder.target-10}  ; Wait for the extruder to heat up to the set temperature
+        G91                             ; Relative coordinates
+        G1 Z2 F100                      ; Raise Z, prepare for X,Y zeroing
+        G90                             ; Absolute coordinates
+        G28 X Y                         ; Zero XY
+        M140 S{PLR.bed.target}          ; Set bed temperature
+        M104 S{PLR.extruder.target}     ; Set extruder temperature
+        M190 S{PLR.bed.target}          ; Wait for the bed to heat up to the set temperature
+        M109 S{PLR.extruder.target}     ; Wait for the extruder to heat up to the set temperature
+        M83                             ; Relative extrusion
+        # G1 E0.5 F400                  ; Extrude a bit
+    layer_count: 2 # Resume printing after specified number of layers and execute layer_change_gcode
+    layer_change_gcode:                
+        # G-code to be executed after resuming {layer_count} layers
+        M118 Resuming print speed
+        M106 S{PLR.fan_speed}             ; Turn on the part cooling fan
+        M220 S{PLR.move_speed_percent}    ; Set requested speed percentage
+        M221 S{PLR.extrude_speed_percent} ; Set requested extrude speed percentage
+    shutdown_gcode:
+        # G-code to be executed before shutdown
+        M118 Low power supply voltage, shutting down
+        # M112 ; Emergency stop
+
+    ```
+
+    :::warning Note
+
+    - The macro in the `start_gcode` above may need to be modified according to the actual machine conditions.
+
+    :::
+
+- Save the above configuration file.
+- Open the `printer.cfg` file and add the following content at the beginning of the file:
+
+    ```cfg
+
+    [include plr.cfg]
+
+    ```
+
+- Click "Save" at the top right and restart. 
+- At this point, the power loss resume function for Klipper has been configured.
+
+## Testing
+
+- Print any file, and during the print process, click the "Emergency Stop" button to simulate a power failure.
+- Then click "Firmware Restart". Wait for Klipper to connect normally.
+- If a pop-up prompt appears on the webpage or KlipperScreen, it indicates that the power loss resume function is working properly.
+- You can continue to test with real power failures later.

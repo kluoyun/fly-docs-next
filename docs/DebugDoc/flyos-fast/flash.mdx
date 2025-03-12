@@ -1,0 +1,56 @@
+---
+sidebar_position: 2
+---
+
+# 系统镜像烧录
+
+## 准备工作
+
+1. 完成上一页的[系统下载](/docs/DebugDoc/flyos-fast/)。
+2. 下载烧录工具，教程将使用`Rufus`为例。实际可以使用其它工具，如`Etcher`，`Win32 Disk Imager`等。
+    - Rufus下载地址：[点击下载 中文](https://rufus.ie/zh/#download) 或者 [Click Download English](https://rufus.ie/en/#download) （仅支持Windows）。
+    - Etcher下载地址：[点击下载](https://etcher.balena.io/#download-etcher) （支持Windows，MacOS，Linux）。
+    - Win32 Disk Imager下载地址：[点击下载](https://sourceforge.net/projects/win32diskimager/) （仅支持Windows）。
+3. 下载系统镜像文件，教程将使用`FlyOS-Fast-H5.exe`为例.
+
+4. 解压系统镜像文件，得到`.img`文件。
+    - 双击或者右键打开`FlyOS-Fast-H5.exe`, 等待几秒会弹出下面的窗口（如果系统提示不安全，请选择“更多信息”->“运行”）
+    - 可选择解压目录，然后点击`Extract`按钮，等待解压完成。
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - 解压完成后，会在解压目录下生成`FlyOS-Fast-H5-vx.x.x.img`文件。`x.x.x`为系统版本号。
+5. 准备烧录卡。
+    - 烧录卡需要大于4G，建议使用闪迪32GB C10及以上的TF卡（测试发现很多便宜的卡烧录后会无法启动）。
+    - 烧录卡需要使用SD卡读卡器，将烧录卡插入读卡器，然后将读卡器插入电脑。
+
+## 烧录系统
+
+1. 打开Rufus，选择设备，选择的设备显示容量应当与插入电脑的烧录卡容量一致。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. `引导类型选择`，这个默认选择`镜像文件`即可。
+3. 镜像文件选择，点击`引导类型选择`右侧的`选择`按钮，选择解压后的`.img`文件。
+4. 选择好镜像文件后，`引导类型选择`会变成镜像文件的文件名。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+
+5. 点击`开始`按钮，如果弹出窗口，提示需要清除磁盘数据，点击`确定`即可。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. 烧录完成后，电脑会发出提示音，并且进度条显示为`准备就绪`。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. 烧录完成后先不着急拔出烧录卡。
+8. 打开文件资源管理器，查看是否存在一个名为`FlyOS-Conf`的U盘或可移动磁盘。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. 打开`FlyOS-Conf`，如果存在下图中的两个文件则说明烧录成功。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+
+10. 其中的`config.txt`为系统配置文件，请查看下一页的内容。修改配置文件。
