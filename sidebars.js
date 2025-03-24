@@ -11,7 +11,7 @@
 
 // @ts-check
 
-const leftad = '<iframe src="/html/carousel.html" width="100%" height="150%" scrolling="no" frameborder="0"></iframe>';
+const leftad = '</br><iframe src="/html/carousel.html" width="100%" height="220vh" scrolling="no" frameborder="0"></iframe>';
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
