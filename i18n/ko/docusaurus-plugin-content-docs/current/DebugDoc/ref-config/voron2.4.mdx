@@ -1,0 +1,513 @@
+---
+sidebar_position: 4
+---
+
+# VORON 2.4 참조 설정
+
+
+```cfg
+
+#####################################################################
+#      변경/확인할 항목들
+#####################################################################
+##***변경/확인할 사항들:***
+## MCU 경로                               [mcu] 
+## 프린터 작동 범위                        xyz의 position   
+## 히터 리저스터 유형                      [extruder] 와 [heater_bed]
+## Z 축 리미트 스위치 정지 위치             [safe_z_home] 
+## Z 축 리미트 스위치 오프셋 위치          [stepper_z] 
+## PID 캘리브레이션                       [extruder] 와 [heater_bed] 
+## 엑스트루더 모터 스텝 값 미세 조정       [extruder] 
+
+#####################################################################
+#      파일 호출
+#####################################################################
+### Fuidd 또는 Mainsail을 프론트엔드로 사용할 때, #[include XXX.cfg] 앞의 #를 제거하십시오.
+### When using fuidd or mainsail as the frontend, remove the '#' before #[include XXX.cfg].
+[include fluidd.cfg]
+#[include mainsail.cfg]
+
+### 아래 /home/fly의 fly는 상위 컴퓨터 사용자 이름으로 대체해야 합니다. 루트 사용자가 아님에 주의하십시오.
+### Replace 'fly' in /home/fly with your host computer username, ensuring it's not the ROOT user.
+[virtual_sdcard]
+path: /home/fly/printer_data/gcodes
+on_error_gcode: CANCEL_PRINT
+
+
+#####################################################################
+#      마스터 ID 구성
+#####################################################################
+[mcu]
+serial: /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00
+### USB 펌웨어 ID를 찾으려면: ls /dev/serial/by-id/*를 사용하고
+### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00를 발견한 ID로 교체하십시오.
+### Find the USB firmware ID with: ls /dev/serial/by-id/* and replace
+### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00 with the ID you discover.
+
+#canbus_uuid: 114514114514
+### CAN 펌웨어 ID를 조회하려면: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0를 사용하십시오.
+### CAN ID에서 'serial:'을 'canbus_uuid:'로 바꾸고 ID를 추가하십시오.
+### Query the CAN firmware ID with: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Replace 'serial:' in the CAN ID with 'canbus_uuid:', then append the ID.
+
+#####################################################################
+#      온도 모니터링
+#####################################################################
+[temperature_sensor motherboard]
+sensor_type: temperature_mcu
+
+[temperature_sensor Raspberry Pi]
+sensor_type: temperature_host
+
+#####################################################################
+#      Tmodel 및 가속도
+#####################################################################
+[printer]
+kinematics: corexy
+max_velocity: 300
+max_accel: 2000
+max_z_velocity: 15
+max_z_accel: 300
+square_corner_velocity: 6.0
+
+#####################################################################
+#      X/Y 스테퍼 설정
+#####################################################################
+
+[stepper_x]
+## 참고: https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:                                        # 모터 방향 확인 링크 위에서. 반전된 경우, gpio3 앞에 !를 추가하십시오.
+enable_pin:! 
+rotation_distance: 40
+microsteps: 32
+full_steps_per_rotation: 200                    # 0.9° 스테퍼 모터의 경우 400으로 설정, 1.8° 스테퍼 모터의 경우 200
+endstop_pin:
+# endstop_pin: tmc2209_stepper_x:virtual_endstop
+# endstop_pin: tmc5160_stepper_x:virtual_endstop
+position_min: 0
+position_endstop: 300                           # (250mm-300mm-350mm)
+position_max: 300                               # (250mm-300mm-350mm)
+homing_speed: 40                                # 센서리스 호밍의 경우 40mm/s 이상으로 설정하지 않는 것이 좋습니다
+homing_retract_dist: 0
+homing_positive_dir: true
+
+[tmc2209 stepper_x]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0                        # stealthchop를 켜려면 999999로 설정하고, 사용하려면 0으로 설정하십시오.
+diag_pin: ^
+driver_SGTHRS: 80
+
+[tmc5160 stepper_x]
+cs_pin:
+### spi_bus와 spi_software 중 하나만 사용할 수 있습니다.
+### spi_bus와 spi_software 중 하나만 사용할 수 있습니다.
+# spi_bus:
+spi_software_mosi_pin:
+spi_software_miso_pin:
+spi_software_sclk_pin:
+run_current: 1.0
+interpolate: False
+### 드라이버 샘플링 저항은 드라이버에 따라 수정해야 합니다.
+### The driver sampling resistor needs to be modified according to the driver
+sense_resistor: 0.075
+stealthchop_threshold: 0
+diag0_pin: ^!
+driver_SGT: 1
+
+[stepper_y]
+## 참고: https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:                                        # 모터 방향 확인 링크 위에서. 반전된 경우, gpio0 앞에 !를 추가하십시오.
+enable_pin:!
+rotation_distance: 40
+microsteps: 32
+full_steps_per_rotation: 200
+endstop_pin:
+# endstop_pin: tmc2209_stepper_y:virtual_endstop
+# endstop_pin: tmc5160_stepper_y:virtual_endstop
+position_min: 0
+position_endstop: 300
+position_max: 300
+homing_speed: 40 
+homing_retract_dist: 0
+homing_positive_dir: true
+
+[tmc2209 stepper_y]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+diag_pin: ^
+driver_SGTHRS: 80
+
+[tmc5160 stepper_y]
+cs_pin:
+### spi_bus와 spi_software 중 하나만 사용할 수 있습니다.
+### spi_bus와 spi_software 중 하나만 사용할 수 있습니다.
+# spi_bus:
+spi_software_mosi_pin:
+spi_software_miso_pin:
+spi_software_sclk_pin:
+run_current: 1.0
+interpolate: False
+### 드라이버 샘플링 저항은 드라이버에 따라 수정해야 합니다.
+### The driver sampling resistor needs to be modified according to the driver
+sense_resistor: 0.075
+stealthchop_threshold: 0
+diag0_pin: ^!
+driver_SGT: 1
+
+#####################################################################
+#      Z 스테퍼 설정
+#####################################################################
+
+[stepper_z]
+## 참고: https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:!                                         # 모터 방향 확인 링크 위에서. 반전된 경우, gpio25 앞에 !를 추가하십시오.
+enable_pin: !
+rotation_distance: 8
+microsteps: 32
+endstop_pin: ^
+# endstop_pin: probe:z_virtual_endstop  
+position_endstop:-0.5
+position_max: 270
+position_min: -15
+homing_speed: 20
+second_homing_speed: 3.0
+homing_retract_dist: 3.0
+
+[tmc2209 stepper_z]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+[stepper_z1]
+step_pin: 
+dir_pin:
+enable_pin: !
+rotation_distance: 40
+gear_ratio: 80:16
+full_steps_per_rotation: 200
+microsteps: 16
+
+
+[tmc2209 stepper_z1]
+uart_pin:
+interpolate: false
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+##    Z2 스테퍼 모터 - 오른쪽 뒤에 on Driver5
+[stepper_z2]
+step_pin:
+dir_pin:
+enable_pin:!
+rotation_distance: 40
+gear_ratio: 80:16
+full_steps_per_rotation: 200
+microsteps: 16
+
+
+[tmc2209 stepper_z2]
+uart_pin:
+interpolate: false
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+[stepper_z3]
+step_pin: 
+dir_pin: 
+enable_pin: !
+rotation_distance: 40
+gear_ratio: 80:16
+full_steps_per_rotation: 200
+microsteps: 16
+
+
+[tmc2209 stepper_z3]
+uart_pin: 
+interpolate: false
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+
+#####################################################################
+#      엑스트루더
+#####################################################################
+[extruder]
+## 센서 유형 # 일반적인 히터 리저스터는 (Generic 3950, ATC Semitec 104GT#2)
+## Sensor type # Common thermistors are (Generic 3950, ATC Semitec 104GT#2)
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: 
+#####################################################################
+## PT1000을 사용하는 경우, 열민감부분 옆의 점퍼를 연결하십시오.
+## If using PT1000, please connect the jumper next to the thermal sensitivity.
+# sensor_type:PT1000
+# pullup_resistor: 1100
+# sensor_pin: 
+#####################################################################
+#      엑스트루더
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html#extruder
+[extruder]
+step_pin:
+dir_pin:
+enable_pin: !
+rotation_distance: 21.84
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## Calibration step value: 22.44=old value22*actual value102/target value100
+gear_ratio:50:10
+## Reduction ratio (Galileo gear ratio 7.5:1 and this line commented out; BMG is 50：17, output shaft at front, input shaft at back)
+microsteps:16
+full_steps_per_rotation: 200    
+nozzle_diameter:0.400
+filament_diameter:1.75
+heater_pin:
+min_temp: -50
+max_temp: 300
+max_power: 1.0
+min_extrude_temp: 150
+pressure_advance: 0.05
+##Pressure in advance
+##압력 예비
+##https://www.klipper3d.org/zh/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040
+#max_extrude_only_distance: 200.0   # Extrusion flow error can comment this, but it is recommended to re-slice
+# Nozzle temperature PID calibration command: PID_CALIBRATE HEATER=extruder TARGET=245
+# Nozzle temperature PID calibration command: PID_CALIBRATE HEATER=extruder TARGET=245
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+step_pulse_duration: 0.000004
+
+[tmc2209 extruder]
+uart_pin:gpio9
+uart_address:3
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+#####################################################################
+#      베드 히터
+#####################################################################
+[heater_bed]
+heater_pin: 
+## 사용하는 히터 리저스터 유형을 확인하십시오. 자세한 내용은 https://www.klipper3d.org/Config_Reference.html#common#thermistors를 참조하십시오.
+## Keenovo 히터의 경우 "Generic 3950"을 사용하십시오.
+sensor_type:
+sensor_pin:
+max_power: 1.0 
+min_temp: -50
+max_temp: 120
+# Heated bed temperature PID calibration command: PID_CALIBRATE HEATER=heater_bed TARGET=100
+# Heated bed temperature PID calibration command: PID_CALIBRATE HEATER=heater_bed TARGET=100
+control: pid
+pid_kp: 68.453
+pid_ki: 2.749
+pid_kd: 426.122
+
+#####################################################################
+#      팬 제어
+#####################################################################
+[fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5                                                # 팬이 시작되지 않을 경우 이 값을 늘릴 수 있습니다.
+off_below: 0.13
+cycle_time: 0.010
+#####################################################################
+[heater_fan hotend_fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5
+heater: extruder
+heater_temp: 50.0
+
+#####################################################################
+#      필라멘트 런아웃 센서
+#####################################################################
+#[filament_switch_sensor Filament_Runout_Sensor]
+#pause_on_runout: True
+#runout_gcode: PAUSE
+#switch_pin: 
+
+#####################################################################
+#      프로브
+#####################################################################
+### TAP
+[probe]
+pin:
+x_offset: 0
+y_offset: 0
+# z_offset: 0
+speed: 10.0
+samples: 3
+samples_result: median
+sample_retract_dist: 4.0
+samples_tolerance: 0.006
+samples_tolerance_retries: 3
+
+### EDDY
+# [probe_eddy_current fly_eddy_probe]
+# sensor_type: ldc1612
+# z_offset: 0.8
+# i2c_address: 43
+# i2c_mcu:
+# i2c_bus:
+# x_offset: 0
+# y_offset: 0
+# speed:40
+# lift_speed: 5
+
+
+#####################################################################
+#      호밍 및 간티 조정 루틴
+#####################################################################
+### safe_z_home 또는 homing_override 중 하나만 사용할 수 있습니다.
+### You can only use either safe_z_home or homing_override
+#[safe_z_home]
+#home_xy_position: 206,300
+#speed: 100
+#z_hop: 5
+
+#[homing_override]
+#axes: z
+#set_position_z: 0
+#gcode:
+#   G90
+#   G0 Z15 F600
+#   G28 X Y
+#    ## Z limit switch XY position
+#    ## Update X0 and Y0 to your values (e.g., X157, Y305) after
+#    ## Z axis limit position definition
+#   G0 X185 Y250 F3600    #250mm   
+#   G28 Z
+#   G0 Z10 F1800
+
+#####################################################################
+#      quad_gantry_level
+#####################################################################
+[quad_gantry_level]
+#gantry_corners:
+#    -60,-10
+#    310,320
+#points:                      # 250mm
+#    50,25
+#    50,175
+#    200,175
+#    200,25
+
+gantry_corners:              # 300mm
+   -60,-10
+   360,370
+points:
+   50,25
+   50,225
+   250,225
+   250,25
+
+#gantry_corners:              # 350mm
+#    -60,-10
+#    410,420
+#points:
+#    50,25
+#    50,275
+#    300,275
+#    300,25
+
+speed: 100
+horizontal_move_z: 1
+retry_tolerance: 0.0075
+retries: 5
+max_adjust: 10
+
+
+#####################################################################
+#      매크로
+#####################################################################
+[idle_timeout]
+### 30분 이상 공閒하면 열판을 끕니다.
+### If idle for more than 30 minutes, heated bed will be turned off.
+timeout: 1800 
+
+#[gcode_arcs]
+#### 원형 보간 허용
+#### Allowing arc interpolation
+#resolution: 1.0 
+
+[gcode_macro PRINT_START]          
+### PRINT_START을 인쇄 시작 시 매크로로 설정하고, 인쇄 전 동작을 사용자 지정합니다.
+### Set PRINT_START as a macro for the start of printing, customize actions before printing.
+gcode:
+    G92 E0
+    BED_MESH_CLEAR
+    G28
+    quad_gantry_level
+    G28
+    G1 Z20 F3000
+    #BED_MESH_PROFILE LOAD=default  
+    BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
+
+[gcode_macro PRINT_END]            
+### PRINT_END를 인쇄 종료 시 매크로로 설정하고, 인쇄 후 동작을 사용자 지정합니다.
+### Set PRINT_END as a macro for the end of printing, customize actions after printing completion
+gcode:
+    #   Get Boundaries
+    {% set max_x = printer.configfile.config["stepper_x"]["position_max"]|float %}
+    {% set max_y = printer.configfile.config["stepper_y"]["position_max"]|float %}
+    {% set max_z = printer.configfile.config["stepper_z"]["position_max"]|float %}
+    
+    #   Check end position to determine safe directions to move
+    {% if printer.toolhead.position.x < (max_x - 20) %}
+        {% set x_safe = 20.0 %}
+    {% else %}
+        {% set x_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.y < (max_y - 20) %}
+        {% set y_safe = 20.0 %}
+    {% else %}
+        {% set y_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.z < (max_z - 2) %}
+        {% set z_safe = 2.0 %}
+    {% else %}
+        {% set z_safe = max_z - printer.toolhead.position.z %}
+    {% endif %}
+ 
+    M400                              # Wait for buffer clear
+    G92 E0                            # Extruder reset to zero
+    G1 E-10.0 F3600                   # Retract filament
+    G91                               # Relative positioning
+    G0 Z{z_safe} F3600                # Lift gantry
+    G0 X{x_safe} Y{y_safe} F20000     # Move nozzle to remove spaghetti
+    M104 S0                           # Turn off extruder
+    M140 S0                           # Turn off heated bed
+    M106 S0                           # Turn off model fan
+    G90                               # Set absolute coordinate system
+    G0 X{max_x / 2} Y{max_y} F3600    # Park nozzle at rear
+    BED_MESH_CLEAR                    # Unload bed mesh
+
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
+
+```

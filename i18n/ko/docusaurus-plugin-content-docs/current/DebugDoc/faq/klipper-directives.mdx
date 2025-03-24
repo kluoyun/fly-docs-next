@@ -2,33 +2,29 @@
 sidebar_position: 2
 ---
 
-
-
-
-
-# 일반적인 디버그 명령어
+# 자주 사용하는 디버그 명령어
 
     :::tip
 
-    * 본 튜토리얼은 Fuiidd 웹 페이지를 기반으로 합니다.
-    * 본 튜토리얼은 이미 프린터와 정상적으로 연결되어 디버깅용으로 사용됩니다.
-    * 본 튜토리얼은 일반적으로 사용되는 명령어를 제공하지만 다양한 문제로 인해 완전하지 않을 수 있습니다.
+    * 본 튜토리얼은 Fuiidd 웹페이지를 기준으로 합니다.
+    * 본 튜토리얼은 프린터가 정상적으로 연결되어 있으며 디버깅 용도로 작성되었습니다.
+    * 본 튜토리얼은 일반적인 명령어를 제공하지만, 여러 문제로 인해 완전히 수집되지 않을 수 있습니다.
 
     :::
 
 ## 드라이버 관련
 
-    :::danger 주의사항
+    :::danger 주의
 
-    * 설정되지 않았거나 문제가 있는 드라이버는 검사할 수 없습니다.
-    * 모든 드라이버에 전원을 공급하고, 메인보드에 전원을 공급하며, 드라이버 점퍼와 설정이 정상인지 확인하세요!!
+    * 주의하십시오, 구성이 잘못되거나 문제가 있는 드라이버는 확인할 수 없습니다.
+    * 모든 드라이버, 메인보드 전원, 드라이버 점선 및 구성이 정상적인지 확인해야 합니다!!
 
     :::
 
 
 ### 드라이버 상태 확인
 
-    * 이 명령은 TMC 드라이버의 SPI/UART 모드 상태를 확인합니다.
+    * 이 명령어는 TMC 드라이버가 SPI/UART 모드에서의 상태를 확인합니다.
         ```bash
         DUMP_TMC STEPPER=stepper_x
         DUMP_TMC STEPPER=stepper_x1
@@ -43,13 +39,13 @@ sidebar_position: 2
 
 ### 드라이버 강제 이동
 
-    * `printer.cfg` 파일에 아래 명령어를 추가하세요
+    * `printer.cfg`에 아래 명령어를 추가합니다.
         ```bash
         [force_move]
         enable_force_move: true
         ```
 
-    * 1mm씩 강제 왕복 운동 명령어
+    * 1mm씩 오고 가는 강제 이동 명령어
         ```bash
         STEPPER_BUZZ STEPPER=stepper_x
         STEPPER_BUZZ STEPPER=stepper_x1
@@ -62,41 +58,41 @@ sidebar_position: 2
         STEPPER_BUZZ STEPPER=extruder
         ```
 
-    * 이 옵션을 활성화하면 이동 제어를 통해 강제 이동할 수 있습니다.
-    * 한 번에 하나의 모터만 이동할 수 있습니다.
-    * 두 개 이상의 축, 예를 들어 두 개의 Z축이 있으면, 정렬 후에 제어할 수 있습니다.
+    * 이 옵션을 켜면 이동 제어를 통해 강제 이동이 가능합니다.
+    * 주의하십시오, 한 번에 하나의 모터만 이동할 수 있습니다.
+    * 여러 축, 예를 들어 두 개의 Z축은 복원된 후에 제어할 수 있습니다.
         <ImageView image={require('@site/docs/DebugDoc/faq/img/force.webp').default} size="80%" align="center" />
 
 ### 프린트 헤드 거리 강제 설정
 
-    * 콘솔에 아래 명령을 입력하면 프린트 헤드 위치를 강제로 설정할 수 있으며, 설정 후 직접 이동을 제어할 수 있습니다.
+    * 콘솔에서 아래 명령어를 입력하여 프린트 헤드 위치를 강제로 설정할 수 있습니다. 설정 후 이동을 직접 제어할 수 있습니다.
         ```bash
         SET_KINEMATIC_POSITION x=100 y=100 z=100
         ```
-### 스테퍼 모터 스텝 값 보정
-    * 먼저 압출기가 정상적으로 작동하는지 확인하고, `full_steps_per_rotation`과 `gear_ratio`가 올바른지 확인해야 압출기 스텝 값을 보정할 수 있습니다.
-    * 새로운 `rotation_distance`를 얻은 후 소수점 3자리까지 반올림해야 합니다.
-    * 스텝 값 보정: rotation_distance=이전 rotation_distance*실제 압출 길이/요청된 압출 길이
+### 스텝 모터 스텝 값 보정
+    * 먼저 스텝 모터가 정상적으로 작동하는지 확인한 후, `full_steps_per_rotation`과 `gear_ratio`가 올바른지 확인해야 합니다. 그렇지 않으면 스텝 모터의 스텝 값을 보정할 수 없습니다.
+    * 새로운 `rotation_distance`를 얻은 후 소수점 뒤 세 자리까지 반올림해야 합니다.
+    * 스텝 값 보정: rotation_distance=기존 rotation_distance * 실제 출력 길이 / 요청된 출력 길이
     
         ```bash
         full_steps_per_rotation: 200        # 단일 회전당 펄스 수 (200은 1.8도, 400은 0.9도)
-        gear_ratio: 50:10                   # 감속 비율 (갈릴레오 기어 비율 7.5:1 이고 이 줄은 주석 처리됨; BMG는 50:17, 출력 축이 앞, 입력 축이 뒤)
-        rotation_distance: 22.522           # 구동 풀리 원주 mm
+        gear_ratio: 50:10                   # 감속비 (갈릴레오 톱니비 7.5:1 이며 이 줄은 주석 처리; BMG는 50:17, 출력축이 앞, 입력축이 뒤)
+        rotation_distance: 22.522           # 주동 톱니바퀴 주위 길이 mm
         ```
 ## 가열 관련
 
 ### PID
     :::tip
-    * 명령어의 `TARGET=`은 설정 온도로, 평소 인쇄 온도를 설정하세요.
-    * 여러 개의 가열 장치가 있는 경우 이 명령어를 사용하여 PID를 수행할 수 있습니다.
+    * 명령어의 `TARGET=`은 설정 온도입니다. 평소에 사용하는 온도로 설정하십시오.
+    * 여러 열리는 장치가 있다면 이 명령어로 PID를 수행할 수 있습니다.
     :::
 
-    * 압출기
+    * 엑스트루더
         ```bash
         PID_CALIBRATE HEATER=extruder TARGET=245
         ```
 
-    * 열판
+    * 열병합
         ```bash
         PID_CALIBRATE HEATER=heater_bed TARGET=100
         ```
@@ -106,33 +102,34 @@ sidebar_position: 2
         PID_CALIBRATE HEATER=PTC TARGET=70
         ```
 
-### 온도 오차 관련
+### 온도 오류 관련
 
     :::tip
-    * 가열 대기 시간이 너무 길면 이 방법을 참고하세요 <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">클릭하여 이동</Button>
-    * 온도가 불안정하여 오류가 발생하면 이 방법을 사용하여 해결할 수 있습니다 <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">클릭하여 이동</Button>
+    * 열대기 시간이 너무 긴 경우 이 방법을 참조하십시오. <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/m109">클릭하여 이동</Button>
+    * 온도가 안정적이지 않은 경우 이 방법을 사용하여 온도 불안정으로 인한 오류를 해결할 수 있습니다. <Button variant="contained" disableElevation href="/docs/DebugDoc/ref-config/verify_heater">클릭하여 이동</Button>
     :::
 
-## 한계 관련
+## 리미트 스위치 관련
 
     :::tip
-    * 업데이트 중
+    * 업데이트 중입니다.
     :::
 
-### 일반 한계
-    * 한계 검사 명령어
-    * 한계는 두 선이어야 하며, 세 선인 경우 선 순서가 잘못되었는지 확인해야 합니다. 그렇지 않으면 메인보드가 손상될 수 있습니다!!
-    * 한계가 정상적으로 열려있는지 확인하고, 아래 명령어를 입력하여 확인하세요
+### 일반 리미트 스위치
+    * 리미트 스위치 확인 명령어
+    * 리미트 스위치가 두 선인지 확인하십시오. 세 선이라면 선 순서가 잘못되었는지 확인하십시오. 그렇지 않으면 메인보드 손상이 발생할 수 있습니다!!
+    * 리미트 스위치가 정상적으로 오픈 상태인지 확인하십시오.
+    * 콘솔에 아래 명령어를 입력하면 정상적인 경우 아래 정보가 반환됩니다.
         ```bash
         QUERY_ENDSTOPS
         ```
         <ImageView image={require('@site/docs/DebugDoc/faq/img/query.webp').default} size="80%" align="center" />
-    * 한계를 손으로 누르고 `QUERY_ENDSTOPS`를 다시 입력하면 상태가 변경됩니다.
+    * 리미트 스위치가 모두 오픈 상태인지 확인하고, 수동으로 리미트 스위치를 누른 후에 다시 `QUERY_ENDSTOPS`를 입력하십시오.
         <ImageView image={require('@site/docs/DebugDoc/faq/img/query1.webp').default} size="80%" align="center" />
-    * 한계 상태가 변경되면 연결이 올바르게 된 것입니다.
+    * 리미트 스위치 상태가 바뀌었다면 배선이 올바르게 되어 있음을 나타냅니다.
 
-### 무한정 한계
-    * 무한정 한계 상태는 항상 열려 있어야 하며, 그렇지 않으면 설정 또는 배선 문제가 있습니다.
+### 무한 리미트 스위치
+    * 무한 리미트 스위치 상태가 항상 오픈인지 확인하십시오. 그렇지 않다면 구성이나 배선에 문제가 있을 수 있습니다.
     * 콘솔에 아래 명령어를 입력하면 정상적인 경우 아래 정보가 반환됩니다.
         ```bash
         QUERY_ENDSTOPS
@@ -143,19 +140,19 @@ sidebar_position: 2
 
 ### BL-TOUCH
 
-    * pin_down: 프로브 팝업
-    * pin_up: 프로브 축소
-    * touch_mode: 센서 검증
+    * pin_down: 프로브가 나오는 명령어
+    * pin_up: 프로브가 들어가는 명령어
+    * touch_mode: 센서 검증 명령어
     ```bash
     BLTOUCH_DEBUG COMMAND=pin_down
     BLTOUCH_DEBUG COMMAND=pin_up
     BLTOUCH_DEBUG COMMAND=touch_mode
     ```
 
-### Probe & TAP
+### 프로브 & 탭
 
     * 정상적으로는 트리거되지 않습니다.
-    * 핀 설정 시 `^`를 추가하는 것이 좋습니다.
+    * 핀 구성 시 `^`를 추가하는 것을 권장합니다.
     ```bash
     QUERY_PROBE
     ```
@@ -173,19 +170,19 @@ sidebar_position: 2
 
 ## 특수 유형
 
-### 서보
+### 서보 모터
 
     :::tip
-    * 서보는 180도와 360도로 구분하세요.
+    * 서보 모터는 180도와 360도가 있으므로 구분에 주의하십시오.
     :::
 
-    * 참조 설정
+    * 참고 구성
         ```cfg
         [servo my_servo]
         pin:PE6
         ```
 
-    * 참조 명령어
+    * 참고 명령어
         ```bash
         SET_SERVO SERVO=my_servo ANGLE=360
         SET_SERVO SERVO=my_servo ANGLE=180

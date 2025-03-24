@@ -4,33 +4,34 @@ sidebar_position: 1
 
 
 
+
 # Product Introduction
 
-  FilGuard Filament Detector is compatible with VZ-Hextrudort-Low extruder, supporting filament runout detection, clog detection, and a customizable button.
+FilGuard Filament detector is compatible with VZ-Hextrudort-Low extruder, supports filament breakage detection, clogging detection, and comes with customizable buttons.
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament_1.webp').default} size="60%" align="left" />
- 
+
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament.webp').default} size="40%" align="left" />
 
 ## Wiring Tutorial
 
-* The built-in PH2.0 5P terminal makes wiring more convenient
+* On-board PH2.0 5P terminal makes wiring more convenient
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/connection.webp').default} size="80%" align="left" />
 
-## Firmware Light Status Explanation
+## Firmware Light Status Introduction
 
-* Filament Runout: Red flashing
-* Filament Infeed: Blue flashing (the faster the infeed speed, the higher the flashing frequency)
-* Filament Retract: Green flashing (same as above)
-* Filament Present but No Movement: Orange breathing light
+* Out of filament: Red flashing
+* Feeding: Blue flashing (the faster the feeding speed, the higher the flashing frequency)
+* Retracting: Green flashing (same as above)
+* Filament present but no feeding or retracting: Orange breathing light
 
-## Klipper, Filament Runout and Clog Reference Configuration
+## Klipper, filament breakage and clogging reference configuration
 
 :::warning
-For clog detection configuration, set `detection_length: 2.0`.
+In the clogging detection configuration, `detection_length: 2.0`
 
-2.0mm is the minimum detection length required for this smart filament detection module to function properly. If you encounter false triggering issues, try increasing the detection length by 1mm until the problem is resolved.
+2.0mm is the minimum detection length required for the normal operation of this smart consumable detection module. If you encounter false triggering issues, try increasing the detection length by 1 mm until the problem is resolved.
 :::
 
         ```cfg
@@ -40,20 +41,20 @@ For clog detection configuration, set `detection_length: 2.0`.
         [force_move]
         enable_force_move: True
 
-        [filament_switch_sensor Filament Runout Detection]
+        [filament_switch_sensor filament breakage detection]
         pause_on_runout: False
         switch_pin: ^!PG12
         runout_gcode:
                 {% if (printer.print_stats.state == "printing") %}
                         PAUSE
                 {% endif %}
-                M118 Filament Runout
+                M118 Out of filament
                 # filament_unload
         insert_gcode:
-                M118 Loading Filament
+                M118 Loading filament
                 FORCE_MOVE STEPPER=extruder DISTANCE=8 VELOCITY=5 ACCEL=60
                 {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
-                        M118 Waiting for Heating!
+                        M118 Waiting for heating!
                         SET_HEATER_TEMPERATURE HEATER=extruder TARGET=200
                         TEMPERATURE_WAIT SENSOR=extruder MINIMUM=190
                 {% endif %}
@@ -62,7 +63,7 @@ For clog detection configuration, set `detection_length: 2.0`.
                 G0 E50 F500
                 G0 E10 F200
 
-        [filament_motion_sensor Clog Detection]
+        [filament_motion_sensor clogging detection]
         extruder: extruder
         detection_length: 2.0
         switch_pin: ^!PG10
@@ -71,19 +72,19 @@ For clog detection configuration, set `detection_length: 2.0`.
                 {% if (printer.print_stats.state == "printing") %}
                         PAUSE
                 {% endif %}
-                M118 Clog Detected
+                M118 Clogging
         insert_gcode:
-                M118 Clog Resolved
+                M118 Clogging recovery
         #event_delay:
         #pause_delay:
 
         ```
 
 :::info
-Infeed and retract can only use one of them
+Only one of feeding and retracting can be used
 :::
 
-## Klipper Retract Button Reference Configuration
+## Klipper retracting button reference configuration
         ```cfg
         [gcode_button filament_unload]
         pin: ^!PG11
@@ -98,7 +99,7 @@ Infeed and retract can only use one of them
                         M83
                         G92 E0
                         {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
-                                M118 Waiting for Heating!
+                                M118 Waiting for heating!
                                 SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
                                 TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
                         {% endif %}
@@ -111,7 +112,7 @@ Infeed and retract can only use one of them
         ```
 
 
-## Klipper Infeed Button Reference Configuration
+## Klipper feeding button reference configuration
 
         ```cfg
         [gcode_button filament_unload]
@@ -127,7 +128,7 @@ Infeed and retract can only use one of them
                         M83
                         G92 E0
                         {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
-                                M118 Waiting for Heating!
+                                M118 Waiting for heating!
                                 SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
                                 TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
                         {% endif %}
@@ -138,8 +139,8 @@ Infeed and retract can only use one of them
         ```
 
 
-## 3D Model Download Link
+## 3D model download link
 
         ```
-        https://cdn.mellow.klipper.cn/STEP/Filament-Detector-Module.7z
+        https://cdn.mellow.klipper.cn/STEP/%E8%80%97%E6%9D%90%E6%96%AD%E6%96%99%E5%A0%B5%E6%96%99%E6%A3%80%E6%B5%8B%E6%A8%A1%E5%9D%97.7z
         ```

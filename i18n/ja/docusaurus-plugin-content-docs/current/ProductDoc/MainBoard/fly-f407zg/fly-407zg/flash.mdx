@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: ファームウェアのコンパイルと書き込み
+sidebar_label: 固件のコンパイルとフラッシュ
 ---
 
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
@@ -13,16 +13,18 @@ import UTOC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/d
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# ファームウェアのコンパイルと書き込み
+# 固件のコンパイルとフラッシュ
 
     :::tip
 
-    * 407ZGはデフォルトでTFカードを使用してファームウェアを書き込みます
+    * 407ZGはデフォルトでTFカードを使用してファームウェアをフラッシュします
     * 容量が`32G`以下のTFカードを準備してください
-    * 無名メーカーのメモリーカードは書き込みに失敗することがあります。下記の推奨カードを使用してファームウェアを更新してください
-    * TFカードの転送速度は`class10`レベル以上が望ましいです。サンディスクなどのブランドのTFカードを使用することをお勧めします
+    * ブランド以外のメモリーカードはフラッシュに失敗する可能性がありますので、できるだけ推奨されるメモリーカードを使用してファームウェアを更新してください
+    * TFカードの転送速度は`class10`レベル以上であることが望ましく、サンディスクなどのブランドのTFカードを使用することをお勧めします
 
     :::
+
+
 
 ## 準備作業
 
@@ -34,26 +36,26 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q` キーを押すと **Save configuration** が表示されるので、次に `Y` キーを押してください
+    * `Q`キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインインターフェースに戻るはずです
-    * `make -j4` と入力してコンパイルを開始します。少し時間がかかります
+    * 現在は設定が保存され、コマンドラインインターフェースに戻っています
+    * `make -j4` を入力してコンパイルを開始します。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されたら、コンパイル成功です
+    * 最後に次の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
         
-    * 以下はコンパイル成功の例です
+    * コンパイル成功の例は下記の通りです
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
 
-## ファームウェアの書き込み
+## ファームウェアのフラッシュ
 
-:::danger 注意事項
-* F404ZGにはTFカード書き込み用のBLファームウェアがプリインストールされています
+:::danger 注意
+* F404ZGは事前にTFカードフラッシュ用のBLファームウェアがプリインストールされています
 :::
 
     <TF />

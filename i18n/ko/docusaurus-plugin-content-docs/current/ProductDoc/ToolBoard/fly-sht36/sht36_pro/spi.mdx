@@ -1,33 +1,33 @@
 ---
 sidebar_position: 8
-sidebar_label: SPI 사용 불가 해결 방법
+sidebar_label: SPI 사용 이해하지 못함 해결 방법
 ---
 
-# 보드 내장 5160 드라이버 사용 불가
+# 보드 내장 5160 드라이버 사용 불가능
 
     ```bash
     Unable to write tmc spi 'extruder' register IHOLD_IRUN
     ```
 
-## 구체적인 원인
+## 구체적인 이유
 
-    * 5160을 사용하는 경우 아래와 같은 오류가 표시될 수 있으며, 이는 상위 기기 Arm 툴체인 버전 문제 `arm-none-eabi-gcc` 때문입니다.
+    * 만약 5160를 사용할 경우 아래와 같은 오류가 발생하는데, 이는 상위 기기 Arm 툴체인 버전 문제 때문입니다 `arm-none-eabi-gcc`
 
 ## 해결 방법
-    해결 방법은 다음과 같은 세 가지가 있습니다.
+    해결 방법은 다음과 같습니다.
 
     * 컴파일 툴체인 `arm-none-eabi-gcc`를 `gcc10`에서 `gcc8`로 변경
     * 상위 기기 시스템 변경
     * 정상적인 펌웨어로 업데이트
 
-    펌웨어 다운로드 및 플래시는 도구 보드가 정상적으로 CAN에 연결되어 있고 CANBOOT를 가지고 있어야 합니다.
+    펌웨어 다운로드 및 번역을 위해서는 도구 보드가 CAN에 정상적으로 연결되어 있어야 하며 CANBOOT가 필요합니다.
 
     * 다운로드
 
     ```bash
     cd ~/ && git clone https://github.com/FengHua741/FLY_Katapult.git
     ```
-    * 플래시
+    * 번역
 
     ```
     python3 ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/Klipper/SHT36PRO/SHT36PRO_KLIPPER_CAN-1M_v0.12.0-229-g589bd64c.bin -u <SHT36PRO_canid>

@@ -1,60 +1,57 @@
 ---
-sidebar_position: 6
-sidebar_label: Firmware BL, veuillez ignorer
+positionSidebar: 6
+labelSidebar: BL firmware, ignore this
+
 ---
-
-
-
-
 
 import WIN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
-# Firmware BL
+# BL firmware
 
     :::tip
 
-    * Veuillez noter que le `bootloader` est déjà pré-installé à l'usine, aucune réinstallation n'est nécessaire.
+    * Veuillez noter que le `bootloader` est préinstallé à la sortie d'usine et n'a pas besoin d'être réinstallé.
 
     :::
 
-## Entrer en mode de programmation
+## Entrée en mode de programmation
 
     :::tip
 
-    À droite se trouve le bouton `BOOT`, à gauche le bouton `RESET`.
+    À droite se trouve le bouton `BOOT`, à gauche se trouve le bouton `RESET`.
 
     :::
 
-    * Il y a deux méthodes pour entrer en mode de programmation :
-    * La première : avec le plateau complètement déconnecté, maintenez le bouton BOOT enfoncé puis connectez le câble de données d'un côté au plateau et de l'autre à votre appareil.
-    * La deuxième : après avoir connecté le câble de données d'un côté au plateau et de l'autre à votre appareil, maintenez le bouton BOOT enfoncé, appuyez sur le bouton RST, puis relâchez le bouton RST et enfin relâchez le bouton BOOT.
+    * Il existe deux méthodes pour entrer en mode de programmation.
+    * Première méthode : Éteignez complètement la carte mère, appuyez sur le bouton BOOT, puis branchez un câble de données entre la carte mère et votre appareil.
+    * Deuxième méthode : Branchez un câble de données entre la carte mère et votre appareil, appuyez sur le bouton BOOT, puis appuyez sur le bouton RST, relâchez le bouton RST, puis relâchez le bouton BOOT.
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Programmer le firmware
+## Programmation du firmware
     <Tabs>
         <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
-            * Firmware Katapult pour E3 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/E3_V2.bin">Cliquez pour télécharger automatiquement le firmware</Button>
+            * Le firmware Katapult pour l'E3 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/E3_V2.bin">Cliquez ici pour télécharger automatiquement le firmware</Button>
 
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="Tutoriel de programmation via logiciel hôte">
+        <TabItem value="linux" label="Tutoriel de programmation via l'interface graphique">
             
             <Katapult />
-            4. Programmer le firmware
+            4. Programmation du firmware
             :::tip
-            Il suffit de programmer un seul firmware
+            Il suffit de programmer un seul firmware.
             :::
-            * Voici la commande pour programmer le firmware :
+            * Ci-dessous sont les commandes de programmation du firmware :
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/E3/E3_V2.bin
                 ```
-            5. Si vous voyez le message `File downloaded successfully` comme indiqué par la flèche ci-dessous, alors la programmation a réussi
+            5. Si vous voyez le contenu indiqué par la flèche ci-dessous ``File downloaded successfully``, alors la programmation est réussie.
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
             :::tip
-            Après la programmation, il est nécessaire de débrancher complètement le plateau une fois.
+            Après la programmation, assurez-vous de couper l'alimentation de la carte mère une fois.
             :::
         </TabItem>
     </Tabs>

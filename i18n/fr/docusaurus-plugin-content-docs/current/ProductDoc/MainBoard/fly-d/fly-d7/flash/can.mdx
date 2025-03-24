@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Flashage du firmware CAN par pont USB
+sidebar_label: USB bridge CAN firmware flashing
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,9 +11,9 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Flashage du firmware CAN par pont USB
+# Flashage du firmware USB bridge CAN
 
-## Début de la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -21,21 +21,33 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Appuyez sur la touche `Q`, puis sur **Save configuration**, et enfin sur la touche `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prendra un certain temps
+    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * La configuration devrait maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la compilation se termine avec succès, vous verrez le message suivant :
+    * Si la sortie finale est comme ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Création du fichier hex out/klipper.bin
         ```
-## Vérification du mode de flashage
+
+## Entrer en mode de flashage
+
+    :::tip Astuce
+        Les D7 sortis après le 1er septembre 2024 sont déjà préchargés avec le firmware Katapult
+    :::
+    * Connectez la carte mère au PC avec un câble USB-C, puis **appuyez deux fois sur le bouton reset**, à ce moment, une LED sur la carte mère clignotera.
+    :::warning Avertissement
+       * Si aucune LED ne clignote, rechargez le firmware Katapult :<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#entrer-en-mode-de-flashe-dfu">Recharger le firmware Katapult</Button>
+       * Si aucune LED ne clignote, répétez l'étape précédente après avoir rechargé le firmware Katapult
+    :::
+
+    <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
 
     <LS />
 
-## Flashage du firmware
+## Flasher le firmware
 
     <CANBOOT />

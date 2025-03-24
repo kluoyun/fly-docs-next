@@ -1,27 +1,27 @@
 import WIN32 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
 
-# USBを使ってM2WEに書き込む準備
+# USBを介してM2WEに準備
 
 ### 準備作業
 
-    * まず`Win32DiskImager`ソフトウェアをインストールしてください
-    * `balenaetcher`を使用してシステムを書き込むことは推奨されません
-    * システムを解凍し、解凍後のファイル名の拡張子は`.img`となります
-    * [M2WE BOOTドライバー](/docs/ResDownload/auxiliary_software/ "クリックして移動") をダウンロード
+    * ソフトウェア`Win32DiskImager`をインストールしてください
+    * システムの焼込には`balenaetcher`は推奨されません
+    * システムを展開し、展開後のファイル名の拡張子は`.img`になります
+    * [M2WE BOOTドライバー](/docs/ResDownload/auxiliary_software/ "クリックしてジャンプ") をダウンロードしてください  
 
 ### ドライバーのインストール
 
-    * `Zadig`ソフトウェアを開く
-    * 最初の`Zadig`はインストール不要で直接実行可能、他の2つはインストールが必要です。インストール中はすべて「次へ」または「Next」をクリックしてください
-    * `Zadig`を開き、メニューバーの`Options`で`List All Devices`をチェック
+    * `Zadig`ソフトウェアを開きます
+    * 最初の`Zadig`はインストールせずに直接実行できますが、他の2つはインストールする必要があります。インストールプロセスでは全て`次へ`または`Next`を選択してください
+    * `Zadig`を開き、上部メニューの`Options`から`List All Devices`にチェックを入れます
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
 
 :::tip
-確実にキーを押した状態でデバイスをPCに接続してください
+デバイスをコンピュータに接続する前にボタンを押した状態にしてください
 :::
 
-    * M2WEをインストールし、BOOTキーを押しながらUSBの両端をPCに接続
+    * M2WEをインストールし、BOOTキーを押しながらダブルヘッドUSBをコンピュータに接続します
 
     <ImageView image={require('@site/docs/General/fly-os/img/usb-boot.webp').default} size="80%" align="center" />
             <Tabs>
@@ -48,37 +48,35 @@ import WIN32 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/
                 </TabItem>
             </Tabs>
 
-    * zadigを開く
+    * zadigを開きます
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="left" />
 
-    * すべてが正常であれば、zadigに`Unknow Device #x`または`USB Device(VID_1f3a_PID_efe8)`が追加されるので、それを選択
+    * 問題なければ、この時点でzadigに`Unknown Device #x`または`USB Device(VID_1f3a_PID_efe8)`が追加されます。それを選択します
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="left" />
 
-    * デバイスを選択したら、USB IDが上図と一致するか確認してください。一致しない場合は他のデバイスを再選択してください
-    * 上図の2番目の部分は`WinUSB(vxxxxxxx)`のみ選択可能、ビルド番号は関係ありません
-    * `Install Driver`をクリックしてドライバーをインストール
+    * デバイスを選択した後、USB IDが上の画像と一致していることを確認してください。一致しない場合は他のデバイスを選択してください
+    * 上の画像の2つ目の箇所は`WinUSB(vxxxxxxx)`を選択してください。バージョン番号は関係ありません
+    * `ドライバーのインストール`をクリックしてドライバーをインストールします
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="left" />
 
-    * USBドライバーのインストールが成功しました（ドライバーは一度だけインストールすれば良く、次回の書き込みでは不要です）
-    * インストールしたFLY-BOOTを開き、`デバイスの確認`をクリック
-    * 前の手順が正しければ、利用可能なデバイスが検出されます
-    * `BOOT`の起動をクリックし、正常であれば`BOOT`が成功したと表示されます
+    * USBドライバーのインストールに成功しました（ドライバーは一度だけインストールすればよく、再焼込の際はドライバーをインストールする必要はありません）
+    * インストールされたFLY-BOOTを開き、`デバイスの確認`をクリックします
+    * 前の手順が正しく行われた場合、利用可能なデバイスが見つかったと表示されます
+    * `BOOT`を起動し、正常であれば`BOOT`が成功したと表示されます
 
 ### M2WEのフォーマット
 
-    * `TFFormatter.exe`ソフトウェアを使用して`BOOT`ディスクをフォーマット
+    * `TFFormatter.exe`ソフトウェアを使用して`BOOT`ディスクをフォーマットします
 
     <ImageView image={require('@site/docs/General/fly-os/img/sdformatter.webp').default} size="80%" align="left" />
 
-    * または、WINのディスク管理を使用してパーティションを削除し、削除後に新しいパーティションを作成
-    * これでファイルエクスプローラーを開くと、14.5GBのUSBメモリが追加されます（16GB eMMCの表示サイズは14.5GB）
-    * これでWin32diskimagerを使用してシステムイメージを書き込むことができます。ディスクのドライブレターはこの14.5GBのUSBメモリのものを選んでください
+    * または、Windowsの標準機能であるディスク管理を使ってパーティションを削除し、削除後に新しいパーティションを作成します
+    * これでファイルエクスプローラーを開くことができます。14.5GBのUSBドライブ（16GB eMMCの表示サイズは14.5GB）が追加されます
+    * このようにすると、Win32diskimagerを使用してシステムイメージを焼込めるようになり、ドライブレターはこの14.5GB USBドライブのものに設定します
 
-
-
-### M2WEへの書き込み
+### M2WEへの焼込
 
 <WIN32 />

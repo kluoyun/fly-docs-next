@@ -1,0 +1,115 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェアのコンパイルチュートリアル
+---
+
+import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+    :::tip
+
+    * オンボードが正常にネットワークに接続できていることを確認してください
+    * ファームウェアをコンパイルする前に、ネットワークを通じてSSHでオンボードにログインする必要があります
+    * オンボードにシリアルツールを使用してログインしないでください
+
+    :::
+
+# Katapultファームウェアのコンパイル
+### コンパイル開始
+  <SSH />
+  ### Katapultファームウェアのコンパイルと設定ページの操作説明
+
+    :::tip
+
+    キーボードの入力モードは半角（英語）であることを確認してください
+
+    :::
+
+    1. キーボードの`↑`キー、`↓`キーは、カーソルを上下移動させてメニュー項目を選択します
+    2. 確認キー`Enter`またはスペースキー`Space`は、メニューにチェックを入れたり、サブメニューに進むために使用します
+    3. 閉じるキー`ESC`は、一つ上のメニューに戻るために使用します
+    4. `Q`キーは、Katapultファームウェア設定ページから退出するために使用します
+    5. `Y`キーは、Katapultファームウェア設定ページから退出するときに、プロンプトがある場合、`Y`キーを押して設定ファイルを保存します
+
+    以下、ファームウェアのコンパイル方法を説明します：
+    * SSHに接続した後、次のコマンドを入力し、エンターキーを押します：
+
+        ```bash
+        cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+        ```
+
+    * ここで`rm -rf ~/katapult/.config && rm -rf ~/katapult/out`は、以前のコンパイルデータとファームウェアを削除し、`make menuconfig`はファームウェアをコンパイルします。実行後、以下のインターフェースが表示されるはずです。
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * `Micro-controller Architecture (LPC176x (Smoothieboard))`を選択し、エンターキーを押します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * メニューに進み、**Raspberry Pi RP2040**を選択し、エンターキーを押します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+    * `Build Katapult deployment application (Do not build)`を選択し、**Do not build**を選択します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+    * **Communication interface**を選択し、**Serial (on UART0 GPIO1/GPIO0)**を選択します
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/UART0.webp').default} size="100%" align="Center" />
+
+    * **Enable Status LED**を選択し、エンターキーを押します。`Status LED GPIO Pin (NEW)`に入力：**!gpio18**
+    :::warning
+        英語入力モードで`!gpio18`を入力してください
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led1.webp').default} size="100%" align="center" />
+    * **上図と照らし合わせて、上図と一致することを確認し、次のステップに進んでください**
+    * `Q`キーを押し、**Save configuration**が表示されたら、その後`Y`キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * これで設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * `make -j4`を入力してコンパイルを開始します。時間がかかることがあります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最後に、以下の内容が出力されればコンパイル成功です
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+``` 
+
+## フラッシュモードに入る
+
+    :::tip
+
+    矢印で指されているのが`BOOTボタン`です
+
+    :::
+
+    * メインボードが完全に電源オフの状態で、BOOTボタンを押しながら、データ転送用のケーブルの一方の端をメインボードに接続し、もう一方の端をデバイスに接続します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* その後、`lsusb`を入力します
+```bash
+lsusb
+```
+* 以下の画像に示すように表示されれば、すでにブートモードになっています
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* ファームウェアを書き込むために、次のコマンドを入力し、エンターキーを押します
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+`mellow`を入力しても表示されません
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* 画像に示す状況が表示された場合、`mellow`を入力し、完了したらエンターキーを押します 
+
+* 画像に示すメッセージが表示された場合、`おめでとうございます`と表示されればフラッシュ成功です
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## ファームウェアが正常に起動したかどうかの確認
+
+* ファームウェアが正常に起動すると、LEDが点滅します
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

@@ -1,22 +1,20 @@
 ---
-sidebar_position: 5
-sidebar_label: Utilisation de l'accéléromètre
+position: 5
+label: Utilisation de l'accéléromètre
 ---
-
-
 
 ## Installation des paquets dépendants
 
 :::tip
-Il est recommandé d'utiliser des outils SSH comme `MobaXterm_Personal`
+Il est recommandé d'utiliser des outils SSH comme `MobaXterm_Personal`.
 :::
 
 :::tip
-Le logiciel FLY n'a pas besoin d'exécuter ces étapes, car il inclut déjà les paquets nécessaires pour l'accéléromètre
+Le logiciel supérieur FLY n'a pas besoin de l'exécuter, car il comprend déjà les paquets dépendants de l'accéléromètre.
 :::
 
-    * Veuillez exécuter les commandes ci-dessous pour installer les paquets dépendants
-    * Veuillez noter que selon les performances du CPU, cela peut prendre un certain temps, jusqu'à 10-20 minutes. Veuillez patienter jusqu'à ce que l'installation soit terminée. Dans certains cas, si la RAM de la carte mère est insuffisante, l'installation peut échouer.
+    * Veuillez exécuter les commandes ci-dessous pour installer les paquets dépendants.
+    * Notez que selon la performance du processeur, cela peut prendre beaucoup de temps, jusqu'à 10-20 minutes. Veuillez patienter jusqu'à ce que l'installation soit terminée. Dans certains cas, si le RAM de la carte mère est insuffisant, l'installation pourrait échouer.
 
         ```bash
         sudo apt install python3-numpy python3-matplotlib libatlas-base-dev
@@ -28,30 +26,30 @@ Le logiciel FLY n'a pas besoin d'exécuter ces étapes, car il inclut déjà les
 
 ## Test de l'accéléromètre
 
-    * Il faut d'abord homéostatiser avant d'exécuter
-    * Exécutez `ACCELEROMETER_QUERY` dans la console
-    * Pour plusieurs accéléromètres, vous pouvez spécifier le test d'un `ACCELEROMETER_QUERY CHIP=<ADXL>` où `<ADXL>` doit être remplacé par le nom de l'accéléromètre correspondant
-    * En cas d'erreur, vérifiez les connexions et la configuration
-    * Une sortie normale est illustrée ci-dessous
+    * Vous devez d'abord réinitialiser avant d'exécuter.
+    * Exécutez `ACCELEROMETER_QUERY` dans la console.
+    * Pour plusieurs accéléromètres, vous pouvez spécifier le test pour un certain `ACCELEROMETER_QUERY CHIP=<ADXL>` où `<ADXL>` doit être modifié en fonction du nom de l'accéléromètre correspondant.
+    * Si une erreur se produit, vérifiez les connexions et les configurations.
+    * La sortie normale est illustrée ci-dessous
         <ImageView image={require('@site/docs/DebugDoc/faq/img/adxl_1.webp').default} size="80%" align="center" />
-    * Vous pouvez maintenant procéder à la compensation des vibrations
+    * Ainsi, vous pouvez effectuer la mesure de compensation de résonance.
 
-## Étalonnage de l'accéléromètre
 
-    * Homéostatiser
-    * Saisissez `SHAPER_CALIBRATE` dans la console pour commencer l'étalonnage automatique de X et Y
-    * Une fois l'étalonnage terminé, exécutez `SAVE_CONFIG` pour enregistrer les données
-    * Vous pouvez également utiliser `SHAPER_CALIBRATE AXIS=X` pour étalonner automatiquement un seul axe
-    * Le processus d'étalonnage peut être assez long, veuillez patienter
+## Calibration de l'accéléromètre
+
+    * Réinitialisez.
+    * Entrez `SHAPER_CALIBRATE` dans la console, cela commencera automatiquement la calibration sur X,Y.
+    * Après la calibration, exécutez `SAVE_CONFIG` pour sauvegarder les données.
+    * Vous pouvez également utiliser `SHAPER_CALIBRATE AXIS=X` pour calibrer automatiquement un axe.
+    * Le processus de calibration peut prendre un certain temps, veuillez patienter.
 
 :::tip
-Attention ! Si la machine vibre excessivement pendant le test, arrêtez immédiatement en appuyant sur l'arrêt d'urgence ou en envoyant `M112`
+Attention ! Si le test est trop violent pendant l'impression, appuyez immédiatement sur l'arrêt d'urgence ou envoyez `M112` pour arrêter.
 :::
 
-
-    * Une valeur trop élevée de accel_per_hz peut provoquer des vibrations intenses, vous pouvez la réduire si nécessaire
+    * Un `accel_per_hz` trop élevé peut rendre les vibrations intenses, diminuez-le si nécessaire.
 
         ```cfg
         [resonance_tester]
-        accel_per_hz: 50  # La valeur par défaut est 75
+        accel_per_hz: 50  # Valeur par défaut de 75
         ```

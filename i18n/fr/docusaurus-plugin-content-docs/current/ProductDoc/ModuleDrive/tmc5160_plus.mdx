@@ -2,12 +2,6 @@
 sidebar_position: 7
 ---
 
-
-
-
-
-
-
 # TMC 5160 Plus
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus.webp').default} size="100%" align="center" />
@@ -15,23 +9,23 @@ sidebar_position: 7
 ## Paramètres de base
 
     * Tension d'entrée : 12-60V
-    * Courant maximal : 10A
-    * Compatible avec : Firmware Marlin/Klipper/RRF
-    * Modes de pilotage supportés : TMC : SPI
-    * Interface pas à pas/direction avec interpolation microPlyer
-    * Résolution maximale de 256 micro-pas
-    * Supporte le fonctionnement silencieux stealthChop2 et des mouvements fluides
-    * Supporte la suppression de la résonance à fréquence moyenne
-    * Supporte le chopper de contrôle moteur dynamique spreadCycle
-    * Supporte le contrôle de vitesse dépendant de la charge dcStep
-    * Supporte la détection de charge sans capteur stallGuard2 à haute précision
-    * Supporte le contrôle de courant coolStep, économisant jusqu'à 75% d'énergie
+    * Courant maximum : 10A
+    * Convient pour : Firmwares Marlin/Klipper/RRF
+    * Modes de pilotage pris en charge : TMC : SPI
+    * Interface pas/ sens avec interpolation microPlyer
+    * Résolution maximale de 256 subdivisons
+    * Prise en charge du fonctionnement silencieux et fluide avec stealthChop2
+    * Suppression de la résonance à mi-fréquence
+    * Prise en charge du coupe-circuit de haute dynamique spreadCycle
+    * Prise en charge du contrôle de vitesse lié à la charge dcStep
+    * Prise en charge de la détection de charge de moteur sans capteur stallGuard2 haute précision
+    * Prise en charge du contrôle de courant coolStep, pouvant économiser jusqu'à 75%
 
-## Explications des cavaliers de la carte mère et des connexions du pilote
+## Explications des branchements des sauts de piste de la carte mère et du câblage du pilote
 
     :::tip
 
-    Le TMC 5160 Plus utilise le mode SPI, veuillez installer les cavaliers SPI sur la carte mère FLY, pour les autres cartes mères, veuillez consulter le vendeur de la carte mère
+    Le TMC 5160 Plus utilise le mode SPI. Veuillez installer correctement les brides sur la carte mère FLY selon le schéma de connexion SPI. Pour les autres cartes mères, veuillez consulter le vendeur de la carte mère.
 
     :::
 
@@ -41,21 +35,21 @@ sidebar_position: 7
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fpc.webp').default} size="100%" align="center" />
 
-### Sélection de la couleur RGB par commutateur
+### Sélection des codes DIP
 
     :::tip
 
-    L'utilisation de la broche EN de la carte mère pour contrôler le RGB bloquera de force le moteur
+    Lorsque vous contrôlez la LED RGB avec le pied EN de la carte mère, le moteur sera verrouillé de manière forcée.
 
     :::
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb.webp').default} size="100%" align="center" />
     
-    * Connexion multiple des pilotes RGB
+    * Connexion de plusieurs pilotes RGB
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb-1.webp').default} size="80%" align="center" />
 
 
-### Connexion du ventilateur 12V
+### Branchement de l'alimentation 12V FAN
 
     <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fan.webp').default} size="100%" align="center" />
 
@@ -63,15 +57,15 @@ sidebar_position: 7
 
     :::danger
 
-    La résistance de détection du pilote est de 0.033, veuillez ne pas la configurer incorrectement
+    La résistance de détection du pilote est de 0,033. Veuillez ne pas la régler incorrectement.
 
     :::
 
 
     <Tabs>
-        <TabItem value="Contrôle RGB via la broche EN du pilote" default>
+        <TabItem value="Lorsque le pilotage de l'EN du pilote contrôle la LED RGB" default>
         
-        * Basculez le commutateur vers le port FAN
+        * Déplacez le code DIP vers la sortie du ventilateur
 
         ```
         [stepper_x]
@@ -94,9 +88,9 @@ sidebar_position: 7
         </TabItem>
 
 
-        <TabItem value="Contrôle RGB via la broche RGB de la carte mère" default>
+        <TabItem value="Lorsque la broche RGB de la carte mère contrôle la LED RGB" default>
         
-        * Basculez le commutateur dans l'autre direction du port FAN
+        * Déplacez le code DIP dans la direction opposée de la sortie du ventilateur
 
         ```
         [stepper_x]
@@ -121,14 +115,14 @@ sidebar_position: 7
 
         <TabItem value="Configuration de référence RGB" default>
 
-        * Contrôle de la LED du pilote via une extension de plugin  <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">Cliquez pour accéder</Button>
+        * Contrôle du pilote LED par extension de module <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">Cliquez ici pour accéder</Button>
 
         ```
         [neopixel TP_led]
         pin: 
         chain_count: 6
         # Nombre de LEDs
-        # Quantité de perles de lumière
+        # Quantité de LEDs
         color_order: GRB
         initial_RED: 0.4    
         initial_GREEN: 0.8
@@ -146,6 +140,6 @@ sidebar_position: 7
 
     :::danger
 
-    Le TMC5160 Plus supporte 10A, mais un courant trop élevé peut endommager le moteur et nécessite une amélioration de la dissipation thermique
+    Le TMC5160 Plus supporte 10A, mais un courant trop élevé peut endommager le moteur et nécessite un refroidissement accru.
 
     :::

@@ -1,155 +1,111 @@
 ---
 sidebar_position: 7
-sidebar_label: Использование Eddy
+sidebar_label: Eddy Использование
 ---
-
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
-# Использование Eddy
+# Eddy Использование
 
     :::info
-    * При установке Eddy положение дна относительно сопла должно быть как минимум на 1 - 2 мм выше сопла.
-    * При калибровке частоты Eddy PCB катушки должна быть удалена от нагревательного стола как минимум на 5 мм.
-    * Просим не тестировать весь нагревательный стол при комнатной температуре, и не включайте нагревательный стол во время тестирования.
+  * Если ранее была настроена конфигурация eddy, удалите её
+  * При установке Eddy катушка должна находиться над соплом и находиться на расстоянии 0,6-0,8 см от него
+  * Во время тестирования не включайте горячую платформу
+  * Перед использованием удалите конфигурацию `probe` из конфигурации
+    :::
 
+    :::warning Внимание
+    * Для машин с несколькими Z-осями необходимо ручной уровень
     :::
 
 
 ## Схема подключения
 
-    * Товарный знак обращен вниз
+    * Логотип должен быть обращен к горячей платформе при установке
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/161.webp').default} size="40%" align="left" />
 
 
-## Справочная конфигурация и инструкции по использованию
+## Инструкция по использованию
+   * Войдите в терминал через SSH-инструмент по IP, выполните скрипт
+    Скачайте необходимый SSH-инструмент <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">MobaXTerm инструмент</Button>
 
-##### Добавьте следующую конфигурацию в файл конфигурации `printer.cfg` для отладки eddy
 
-    ### Конфигурация сканирования стола
-
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 2.0
-        i2c_address: 43
-        i2c_mcu: SHT36
-        i2c_bus: i2c1e
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### Конфигурация температурной компенсации
-
-        ```cfg
-        [temperature_probe fly_eddy_probe]
-        sensor_type:Generic 3950
-        sensor_pin:SHT36:gpio28
-        ```
-
-    ## Команды сетчатого стола
-
-        * Добавьте следующую макрос в конфигурацию `printer.cfg`
-            ```bash
-            [gcode_macro BED_MESH_CALIBRATE]
-             rename_existing: _BED_MESH_CALIBRATE
-             gcode: 
-                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
-            ```
-        * Команда локальной сети стола, необходимо убедиться, что Klipper может использовать функцию исключения объектов, рекомендуется добавить в начальную макрос
-            ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
-            ```
-
-### Конфигурация bed_mesh
-
-    * Параметр `horizontal_move_z` в `[bed_mesh]`, рекомендуется установить на 2, чтобы Eddy был как можно ближе к платформе при сканировании платформы.
-
-    ```cfg
-    [bed_mesh]
-    horizontal_move_z: 2
+<Tabs>
+  <TabItem value="eddy1" label="Использование за рубежом">
+    # За рубежом используйте следующие команды
+    ### Начинаем установку全自动脚本 eddy
+    * Откройте скачанный SSH-инструмент, введите следующие команды, нажмите Enter, затем нажмите кнопку «Копировать»
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
     ```
-## Макрос предотвращения столкновений
-
-    ### Оптимизация сканирования стола `[quad_gantry_level]`
-        * Если настроена `[quad_gantry_level]`, можно добавить следующую макрос в конфигурацию, если нет, то добавлять не нужно.
-        * Этот макрос уменьшает высоту обнаружения в соответствии с разницей высот в龙门.
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
-
-    ### Оптимизация сканирования стола `[z_tilt]`
-
-        * Если настроена `[z_tilt]`, можно добавить следующую макрос в конфигурацию, если нет, то добавлять не нужно.
-        * Этот макрос уменьшает высоту обнаружения в соответствии с разницей высот в龙门.
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
-
-    ### Макрос оптимизации сканирования стола для большой вероятности помех от нагревательного стола Eddy
-
-        * Если используется мощный переменный токовый нагревательный стол (более 500 Вт)
-        * Этот макрос отключает нагревательный стол во время сканирования стола и снова нагревает после завершения сканирования.
-            ```cfg
-            [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode:
-                {% set TARGET_TEMP = printer.heater_bed.target %}
-                M140 S0
-                _BED_MESH_CALIBRATE {rawparams}
-                M140 S{TARGET_TEMP}
-            ```
-
-   # Шаги отладки: 
-   ## Первый шаг - изменение частоты
-
-    ### Изменение частоты по умолчанию ldc16121612
-    Этот метод используется только для sht36-v3/SB2040-v3 или SB2040-Pro-v3
-    Можно использовать инструмент Mobaxterm для выполнения команды
-
-    Загрузите необходимый <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">инструмент Mobaxterm</Button>
-
-    [Подробное использование смотрите](/docs/ProductDoc/SBC/fly-pi-v2/ssh)
-
-
-    Выполните первую команду и нажмите Enter
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+   * В файле конфигурации `moonraker.conf` в веб-интерфейсе `fluidd` добавьте следующие настройки для удобства обновления
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
     ```
+   * Если обновили, используйте SSH-инструмент для выполнения следующих команд
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+</TabItem>
 
-    Выполните вторую команду и нажмите Enter
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    Если замена была успешной, будет возвращена строка с `LDC1612_FREQ = 40000000`, значит замена прошла успешно. Если ничего не вернулось, значит замена не удалась.
-    Или используйте эту команду, чтобы проверить, была ли замена успешной
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+  <TabItem value="eddy2" label="Использование внутри страны">
+# Внутри страны используйте следующие команды
+### Начинаем установку全自动脚本 eddy
+    * Откройте скачанный SSH-инструмент, введите следующие команды, нажмите Enter, затем нажмите кнопку «Копировать»
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+   * В файле конфигурации `moonraker.conf` в веб-интерфейсе `fluidd` добавьте следующие настройки для удобства обновления
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
+    ```
+    * Если обновили, используйте SSH-инструмент для выполнения следующих команд
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+  </TabItem>
+</Tabs>
 
-    <LDC1612 /> 
+
+* Выполните команды, как показано на рисунке, введите пароль вашего компьютера
+
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/EDDY1.webp').default} size="100%" align="left" />
+
+* Как показано на рисунке, введите соответствующий номер принтера, если есть выбор между китайским и английским, введите его и нажмите Enter
+* Выберите `3z`, чтобы убедиться, что в конфигурации `printer.cfg` есть настройка `z_tilt`, или выберите `4z`, чтобы убедиться, что в конфигурации `printer.cfg` есть настройка `quad_gantry_level`, для «независимой двойной Z» выберите `3z` [Ссылка на справочник конфигурации](https://mellow.klipper.cn/docs/category/klipper-%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE)
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" /> 
+
+* Если появляется изображение, как показано, вам нужно ввести `Y` и нажать Enter
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
+
+* Если у вас `sht36_v3`, введите `N` и нажмите Enter
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/eddy7.webp').default} size="100%" align="left" />
+
+* Если появляется изображение, как показано, это означает успешное завершение
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy3.webp').default} size="70%" align="left" />
+
+<LDC1612 />

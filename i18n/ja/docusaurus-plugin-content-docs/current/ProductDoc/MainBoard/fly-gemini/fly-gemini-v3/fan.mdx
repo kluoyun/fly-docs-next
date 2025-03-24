@@ -1,37 +1,34 @@
 ---
 sidebar_position: 11
-sidebar_label: メインコントロールファン
+sidebar_label: 主控风扇
 ---
 
+# ボードに組み込まれた5Vファンポート
 
-
-
-# 搭載5Vファンコネクタ
-
-## Geminiには、メインコントロール冷却のための5V制御可能なインターフェースが搭載されており、接続方法は以下の通りです。
+## Geminiにはボードに組み込まれた5Vの制御可能なインターフェースがあり、メインコントローラーの放熱に使用されます。配線方法は以下の図をご覧ください。
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.webp').default} size="80%" align="center" />
 
-## 参照設定
+## 参照構成
 
     ```cfg
-    [mcu host]                      # FlyOSは既にLinux MCUを生成し、あなたのために定義されています
+    [mcu host]                      # FlyOSは既にLinux MCUを自動的に生成しています。これを使用するためには定義するだけです。           
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # ホストマシンの温度
+    [temperature_sensor FLY-π]      # 上位機器の温度
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # ホストマシン冷却ファン
-    pin: host:gpiochip1/gpio103     # ホストファンのピン
+    [temperature_fan core_fan]      # 上位機器の放熱ファン
+    pin: host:gpiochip1/gpio103     # 上位機器のファンピン
     max_power: 1.0
-    sensor_type: temperature_host   # ホストコントローラの温度に設定
+    sensor_type: temperature_host   # 上位機器のメインコントローラーの温度として設定
     control:watermark               # 制御方法
-    target_temp: 48                 # ホスト冷却ファンが起動する温度
-    min_temp: 0                     # 最低温度、この温度以下ではエラーが発生します
-    max_temp: 90                    # 最高温度、この温度以上ではエラーが発生します
+    target_temp: 48                 # 上位機器の放熱ファンが動作を開始する温度
+    min_temp: 0                     # この温度より低い場合、エラーが発生します
+    max_temp: 90                    # この温度より高い場合、エラーが発生します
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # 最大速度、フルパワー時の80%
-    min_speed: 0.3                  # 最小速度、フルパワー時の30%
+    max_speed: 0.8                  # 最大回転速度、これは最大出力の80％に相当します
+    min_speed: 0.3                  # 最小回転速度、これは最大出力の30％に相当します
     ```

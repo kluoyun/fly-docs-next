@@ -1,0 +1,172 @@
+---
+sidebar_position: 3
+---
+
+# システム設定の変更
+
+:::tip 必読
+
+- 設定ファイル内の`部分`設定は、ファームウェア書き込み後に最初にシステムを起動するときにのみ有効です。
+- したがって、ファームウェア書き込み後にまず移動可能なディスク`FlyOS-Conf`内の設定ファイルconfig.txtを編集してください。
+- その後、カードをボードに挿してシステムを起動してください。
+
+:::
+
+:::warning 注意
+
+- Windows標準のメモ帳を使用せずに、専用のテキストエディタ（例：VSCode）で設定ファイルを編集することをお勧めします。
+- 設定ファイルには中国語や特殊文字を入力しないでください。
+- 設定ファイルの変更後、システムを再起動する必要があります。
+
+:::
+
+:::danger
+
+- 設定ファイル内の`######### PLEASE DO NOT EDIT THE FOLLOWING #########`以下の内容は編集しないでください。
+
+:::
+
+## 設定ファイルの変更方法
+
+### ファームウェア書き込み後の設定ファイルの変更
+
+- 初回起動時にのみ有効な設定項目は、ファームウェア書き込み後に専用のテキストエディタで移動可能なディスク`FlyOS-Conf`内の設定ファイル`config.txt`を開いて変更してください。
+
+### システムが起動中のオンラインでの設定変更
+
+- 通常の設定項目は、システムのWeb設定ページで変更し、システムを再起動すると有効になります。
+    - ブラウザでデバイスのIPアドレスにアクセスします。例：`http://192.168.1.2/`
+    - Fluiddの場合、下図左のように「チェックを外す」->「隠しファイルとフォルダをフィルタリング」。
+    - Mainsailの場合、下図右のように「チェックを入れる」->「隠しファイルを表示」。
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - これにより`.flyos-config`フォルダが見えます。このフォルダ内には`sys-config.conf`ファイルがあります。
+    - `sys-config.conf`ファイルは移動可能なディスク`FlyOS-Conf`内の設定ファイル`config.txt`のシンボリックリンクです。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - `sys-config.conf`ファイルを開き、必要な設定項目を変更後、「保存」->「閉じる」してください。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config4.webp').default} size="60%" align="center" />
+
+    - 注意：`sys-config.conf`ファイル内の設定項目の形式は`key=value`です。`key: value`に変更しないでください。
+    - 変更保存後、システムを再起動すると有効になります。
+
+## 設定項目
+
+### 無線ネットワーク設定
+
+- 以下の設定項目はシステムの各起動時にも有効です。
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :---: | :--- | :--- |
+| `WIFI_SSID` | `空` | 任意のWIFI名 | WIFI名。記載された場合、起動時に優先的にこのWIFIに接続します |
+| `WIFI_PASS` | `空` | パスワードがない場合は空白 | WIFIパスワード。記載された場合、パスワードを使ってWIFIに接続します |
+
+----
+
+### プリンターのデフォルト設定
+
+:::tip
+- 以下の設定項目は初回起動時にのみ有効です。
+:::
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :---: | :--- | :--- |
+| `language` | `zh-CN` | <details><summary>詳細内容を展開</summary>`zh-CN`, `zh-HK`, `en`, `de`, `cz`, `es`, `hu`, `ja`, `nl`, `pt`, `se`, `uk`, `da`, `fr`, `it`, `ko`, `pl`, `ru`, `tr`</details> | 初回起動時にFluiddとMainsailのデフォルト言語を設定 |
+| `printer_name` | `空` | 任意の文字列 | 初回起動時にFluiddとMainsailのデフォルトプリンター名を設定 |
+
+----
+
+### システム設定
+
+- 以下の設定項目はシステムの各起動時にも有効です。
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :-------: | :--- | :--- |
+| `console` | `serial` | `serial`, `both` | この設定項目は変更しないでください。serialのみ有効 |
+| `board` | H5: `fly-pi-v2`<br/>H3: `fly-lite2.1` | <details><summary>H5シリーズを展開</summary>`fly-pi`, `fly-pi-v2`, `fly-gemini-v1`, `fly-gemini-v2`, `fly-gemini-v3`, `fly-c8`</details><br/><details><summary>H3シリーズを展開</summary>`fly-lite2`, `fly-lite2.1`, `fly-minipad`</details> | ボードモデル。主に自動ファームウェア書き込みなどに使用されます |
+| `shutdown_pin_state` | `1` | `0`, `1` | 電源ボタンの電位状態を設定<br/>1: ローレベルトリガー<br/>0: ハイレベルトリガー |
+| `shutdown_pin` | `none` | `PA21`, `PA4`... | 電源ボタンのトリガーピンを設定。デフォルトはnoneで無効 |
+| `spidev` | `spidev0.0 spidev1.0` | `spidev0.0`, `spidev0.1`, `spidev1.0`, `spidev1.1` | スパイドポートを有効にするポートを設定<br/>複数有効にする場合はスペースで区切ります |
+| `localtime` | `Asia/Shanghai` | [世界タイムゾーン対照表](/docs/DebugDoc/flyos-fast/timezone) | システムのデフォルトタイムゾーンを設定。ネットワーク接続後は自動で時刻を調整します |
+| `canbus_bitrate` | `1000000` | `1000000`, `500000`, `250000` | システム全体のCANデバイスのデフォルトレートを設定。デフォルトは1M |
+
+----
+
+### プリンター種別設定
+
+- 以下の設定項目はシステムの各起動時にも有効です。
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :-------: | :--- | :--- |
+| `printer` | `klipper` | `klipper`, `rrf` | システムをどのサービスで起動するかを設定<br/>`klipper`: Klipper、Moonrakerなどのサービス<br/>`rrf`: RRF DSF、DWCなどのサービス |
+
+### 表示設定
+
+- 以下の設定項目はシステムの各起動時にも有効です。
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :-------: | :--- | :--- |
+| `screen` | `hdmi` | <details><summary>H5シリーズを展開</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-tft-v2-r`, `fly-tft-v2-c`</details><br/><details><summary>H3シリーズを展開</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-minipad-r`, `fly-minipad-c`, `fly-tft-v2-r`, `fly-tft-v2-c`</details> | スクリーンを設定します。noneにするとすべての表示をオフにします |
+| `rotate` | `90` | `0`, `90`, `180`, `270` | FLY-TFTの回転角度を設定します。hdmiには影響しません |
+
+----
+
+### Klipper関連設定
+
+- 以下の設定項目はシステムの各起動時にも有効です。
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :-------: | :--- | :--- |
+| `klipper_screen` | `0` | `0`, `1` | KlipperScreenを有効にするかどうかを設定します<br/>1: 有効<br/>0: 無効<br/>`printer=klipper`のとき有効 |
+| `moon2uart` | `0` | `0`, `1` | Moon2Uartを有効にするかどうかを設定します<br/>1: 有効<br/>0: 無効<br/>`printer=klipper`のとき有効 |
+| `m2u_port` | `/dev/ttyS1` | 有効なシリアルポート | Moon2Uartのシリアルポート。`moon2uart=1`のとき有効 |
+| `m2u_baud` | `115200` | 有効なボーレート | Moon2Uartのボーレート。`moon2uart=1`のとき有効 |
+| `klipper_webui` | `fluidd` | `fluidd`, `mainsail` | KlipperのデフォルトフロントエンドUIを設定します<br/>オンラインでのワンクリック切り替え機能には影響しません<br/>`printer=klipper`のとき有効 |
+
+----
+
+### RRF関連設定
+
+- 以下の設定項目はシステムの各起動時にも有効です。
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :-------: | :--- | :--- |
+| `rrf2uart` | `0` | `0`, `1` | 一時的に無効。後続バージョンで更新予定 |
+
+----
+
+### その他の設定
+
+- 以下の設定項目はシステムの各起動時にも有効です。
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :-------: | :--- | :--- |
+| `crowsnest` | `0` | `0`, `1` | Crowsnestを有効にするかどうかを設定します<br/>1: 有効<br/>0: 無効<br/>KlipperおよびRRFモードで使用可能です |
+
+:::tip
+- 以下の設定項目は初回起動時にのみ有効です。
+:::
+
+| 設定項目 | デフォルト値 | 使用可能な値 | 説明 |
+| :---: | :-------: | :--- | :--- |
+| `firmware` | `空` | 有効なファームウェアファイルパス | システム起動時に自動でファームウェアを書き込む設定。現在はC8およびGemini-V3で有効 |
+
+----
+
+:::danger
+
+- 設定ファイル内の`######### PLEASE DO NOT EDIT THE FOLLOWING #########`以下の内容は編集しないでください。
+
+:::

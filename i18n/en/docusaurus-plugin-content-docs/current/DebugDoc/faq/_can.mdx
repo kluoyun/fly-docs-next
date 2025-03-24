@@ -1,36 +1,34 @@
+---
 
+# Determine the Issue Based on Error Messages
 
-----
-
-# Determine Issues Based on Error Messages
-
-    * Below are common errors
+    * Below are common error messages
         * OSError: [Errno 19] No such device
         * can.CanError: Failed to transmit: [Errno 100] Network is down
         * can.CanError: Failed to transmit: [Errno 105] No buffer space available
-    * The first one indicates that the upper-level machine cannot find the `1d50:606f` device.
-    * The second one indicates that the upper-level machine does not perform or misconfigure CAN0.
-    * The third one indicates that the upper-level machine has insufficient cache or system issues leading to cache failure.
-    * Points two and three can be checked by configuring CAN0 below for troubleshooting.
-    * If you cannot find an ID, please see the bottom.
+    * The first one indicates that the upper computer cannot find the `1d50:606f` device
+    * The second one indicates that the upper computer has not been configured or has misconfigured CAN0
+    * The third one indicates that the upper computer's cache is insufficient or there is a system issue leading to cache failure
+    * The second and third points can be checked by configuring CAN0 as shown below for troubleshooting
+    * If you cannot find the ID, please refer to the bottom
 
-## Check if the Upper-Level Machine Supports CAN
+## Check if the Upper Computer Supports CAN
 
-    * If it is a FLY upper-level machine, no action is required.
-    * If your system is `Ubuntu`, it is recommended to replace the system as configuring CAN in this system is very troublesome. It is suggested to switch systems.
-    * Enter the command below to determine if the system supports CAN.
+    * If you are using the FLY upper computer, this step is unnecessary
+    * If your system is `Ubuntu`, it is recommended to replace the system as configuring CAN in this system is troublesome; it is advised to switch systems
+    * Enter the command below to determine if the system supports CAN
 
     ```bash
     sudo modprobe can && echo "Your kernel supports CAN" || echo "Your kernel does not support CAN"
     ```
 
-    * After entering the above command, if your kernel supports CAN, it will return: `Your kernel supports CAN`. If not, it will return: `Your kernel does not support CAN`.
+    * After entering the above command, if your kernel supports CAN, it will return: `Your kernel supports CAN`; if not, it will return: `Your kernel does not support CAN`.
 
 ## Configure CAN0
 
-    * This command overrides the original CAN0 configuration of the system. After execution, the system needs to be restarted.
+    * This command overrides the original system CAN0 configuration, and after execution, the system needs to be restarted
     
-    * For 1M rate, enter the command below
+    * For 1M speed, enter the following command
 ----
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
@@ -43,7 +41,7 @@
     EOF
     ```
 ----
-    * For 500K rate, enter the command below
+    * For 500K speed, enter the following command
 
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
@@ -62,52 +60,53 @@
     sudo reboot
     ```
 
+## Pay Attention to the Following Areas if You Cannot Find the ID
 
-## What to Check When You Cannot Find an ID
-
-    * If Klipper has configured the corresponding ID, you need to disable the ID in the system configuration first, then power off and power on again or press the reset button on the motherboard.
-    * Check if the CAN rate of the upper-level machine matches the motherboard and toolboard.
-    * You can use the code below to determine the CAN rate of the upper-level machine.
-    * Confirm whether there is a broken line.
+    * If Klipper is configured with the corresponding ID, you need to disable the ID in the system configuration before shutting down, disconnecting power, then restarting or resetting the motherboard
+    * Check if the CAN speed of the upper computer matches the motherboard, tool board, etc.
+    * You can use the code below to confirm the CAN speed of the upper computer
+    * Confirm whether there is a disconnection
     ```bash
     ip -details link show can0
     ```
-    * The highlighted area in the figure below shows the CAN rate and cache of the upper-level machine.
-    * The above `1024` is the current CAN0 cache.
-    * The below `1000000` is the current CAN0 rate.
+    * The circled parts in the image below indicate the CAN speed and cache of the upper computer
+    * The above `1024` is the current CAN0 cache
+    * The below `1000000` is the current CAN0 speed
 
     <ImageView image={require('@site/docs/DebugDoc/faq/img/details.webp').default} size="80%" align="center" />
 
-    * If you still cannot find the UUID, carefully check the following points:
+    * If the UUID still cannot be queried, carefully check the following notes
 
-        * Confirm whether the motherboard or CAN toolboard is correctly connected.
-        * Ensure proper power supply; it is recommended to connect VCC power when using the motherboard.
-        * Check if the upper-level machine supports the CAN network.
-        * Confirm if the firmware compilation is correct.
-
+        * Check if the motherboard or CAN tool board is correctly connected
+        * Check if the power supply is correct; it is recommended to connect VCC power when using the motherboard
+        * Check if the upper computer supports CAN network
+        * Check if the firmware compilation is correct
 ## Search for ID
 
-    * Enter the command below to search for IDs.
+    * Enter the following command to search for the ID
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * If the ID appears and the last part `Application:` displays Klipper, it means the ID can be used directly.
-    * If the ID appears and the last part `Application:` displays `CANBOOT` or `Katapult`, it means the firmware needs to be flashed before it can be used.
+    * If an ID appears and the last part of the output shows `Application: Klipper`, it means this ID can be used directly
+    * If an ID appears and the last part of the output shows `Application: CANBOOT` or `Katapult`, it means you need to flash the firmware to use it
     <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
 
-## CAN ID Configuration Method
+## Method to Configure CAN ID
 
-    * Open the printer web interface and find the `printer.cfg` file under the configuration option in the left sidebar. For Fluidd, it's `{...}`, and for Mainsail, it's `Machine`.
+    * Open the printer's web interface, find `printer.cfg` under the configuration options in the left sidebar:
+        * fluidd: `{…}`
+        * mainsail: `Machine`
+        * Click to enter
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copy the queried UUID and paste it into the `[mcu]` section of the `canbus_uuid:` in `printer.cfg`. Save and restart to connect to the motherboard. If Klipper prompts that the firmware needs to be updated or reports an ADC error, it means Klipper has successfully connected to the motherboard.
+    * Copy the queried UUID and paste it into the `canbus_uuid:` field in the `[mcu]` section of the `printer.cfg` configuration. Save and restart to connect to the motherboard. If Klipper prompts that the firmware needs updating or ADC errors occur, it indicates that Klipper has connected to the motherboard
 
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        Note: All IDs mentioned in the document are examples. The actual IDs vary for each motherboard. Please modify and fill in according to the actual obtained ID.
+        Note: All IDs mentioned in the document are examples. The actual ID for each motherboard is different. Please modify and fill in according to the actual obtained ID.
 
         :::

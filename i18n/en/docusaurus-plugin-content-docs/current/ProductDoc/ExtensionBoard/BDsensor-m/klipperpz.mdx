@@ -1,25 +1,25 @@
 ---
 sidebar_position: 4
-sidebar_label: Klipper Automatic Z-OFFSET
+sidebar_label: klipper Automatic Z-OFFSET
 ---
 
-# Klipper Installation Nozzle Collision
+# klipper Installation Nozzle Collision
 
 :::info
-This feature requires the BD sensor firmware version (you can obtain this version by sending M102 S - 1, not the hardware version on the sensor) to be V1.1b, greater than V1.2b, or a version purchased after March 2024. Otherwise, you need to use an external hardware tool (such as STlink) to flash the firmware into the BD sensor.
+This feature requires the BD sensor firmware version (which you can obtain by sending M102 S-1, not the hardware version on the sensor) to be V1.1b, greater than V1.2b, or versions purchased after March 2024. Otherwise, you need to use external hardware tools (such as STlink) to flash the firmware into the BD sensor.
 
-When performing the homing operation with a soft PEI (such as Whambam), do not heat the nozzle too high, otherwise the high temperature may leave holes in the PEI.
+When using soft PEI (such as Whambam) for homing operations, do not heat the nozzle too high, otherwise the high temperature may leave holes in the PEI.
 :::
 
 # How It Works
-* If the nozzle or the bed stops due to a collision, the distance data measured by the bd sensor will also stop changing, and then the bd sensor will quickly output a stop signal.
-* The process of automatic z_offset calibration when performing G28: It can be triggered after the nozzle touches the bed during the homing process - then it slowly moves upward until the nozzle just leaves the bed surface - and this position is set as the 0 position of the z-axis.
+* If the nozzle or bed stops due to a collision, the distance data measured by the BD sensor will also stop changing, and then the BD sensor will quickly output a stop signal.
+* The process of automatic z_offset calibration during G28 execution: It can be triggered after the nozzle touches the bed during the homing process - then slowly move up until the nozzle just leaves the bed - set this position as the 0 position of the z-axis.
 
 # Benefits
 * Automatic z-axis offset calibration.
 * At the same time, you can still manually adjust the z-axis offset for different filaments.
 * Overcome temperature drift.
-* Temperature drift will change the z-axis offset, but it will not change the range of the bed mesh height map with the BD sensor. This means that even if the temperature is different, the bed mesh is the same.
+* Temperature drift will change the z-axis offset, but will not change the range of the bed mesh height map with the BD sensor. This means that even if the temperature is different, the bed mesh is the same.
 
 # How to Use
 
@@ -29,14 +29,14 @@ When performing the homing operation with a soft PEI (such as Whambam), do not h
 collision_homing:0 # Set it to 1 to enable homing with nozzle collision sensing. Disable it by setting 0.
                    
 collision_calibrate:0 # Set it to 1 to enable auto calibrate BDsensor with nozzle collision sensing. Disable it by setting 0.
-# That means we do not need to manually move the nozzle on the bed and do a paper test before sending the calibrate command M102 S - 6.
+# This means we do not need to manually move the nozzle on the bed and do paper test before sending calibrate command M102 S-6.
 ```
 
-* The sensitivity depends on the speed. The slower the speed, the higher the sensitivity. Therefore, you need to adjust the speed of the Z-axis. The homing_speed (homing speed) and second_homing_speed (secondary homing speed) should be in the range of 2 to 5.
+* Sensitivity depends on speed, the slower the speed, the higher the sensitivity, so you need to adjust the Z-axis speed, homing_speed (homing speed) and second_homing_speed (secondary homing speed) should be in the range of 2 to 5.
 
 :::info
 The nozzle should be cleaned or heated to soften the filament residue.
-Please do not set the speed too high or too low. If the speed is too high, it may damage your hot end or print bed; while if the speed is too low, it may trigger in the air, and in fact, the nozzle does not touch the print bed.
+Please do not set the speed too high or too low. If the speed is too high, it may damage your hot end or print bed; if the speed is too low, it will trigger in the air, and in fact, the nozzle does not touch the print bed.
 :::
 
 # Reference Configuration
@@ -52,7 +52,7 @@ homing_retract_speed:2
 ```
 
 :::tip
-`z_hop` (Z-axis retraction height) and `homing_retract_dist` (homing retraction distance) should be greater than or equal to 5.
+`z_hop` (Z-axis hop height) and `homing_retract_dist` (home retraction distance) should be greater than or equal to 5.
 :::
 # Reference Configuration
 
@@ -76,14 +76,14 @@ Reference configuration `zero_reference_position`
 
 ``` bash
 [bed_mesh]
-horizontal_move_z:1 # 0.7 ~ 1.0mm is recommended.
-zero_reference_position: 150, 160 # Set this value to be the same as the home_xy_position that is in the section.
+horizontal_move_z:1 # 0.7~1.0mm is recommended
+zero_reference_position: 150, 160 # Set this value to be the same as home_xy_position that is in the section
 ....
 ```
 
 # Test Homing
-Please send the `G28 Z` command about 10 times, and then check whether the output data on the console is stable after each `G28 Z` command is sent.
+Please send about 10 `G28 Z` commands, and then check whether the output data on the console is stable after each `G28 Z` command is sent.
 ``` bash
 G28 Z
 ```
-<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=RuPoXbrSPDc">Demo Video</Button> 
+<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=RuPoXbrSPDc">Demonstration Video</Button>

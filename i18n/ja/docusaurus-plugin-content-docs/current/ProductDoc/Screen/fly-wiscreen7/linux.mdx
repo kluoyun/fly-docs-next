@@ -1,56 +1,54 @@
 ---
-sidebar_position: '3'
-sidebar_label: Raspberry Pi およびその他のホストコンピューターのネットワークケーブルの使用に関するチュートリアル
+sidebar_position: 5
+sidebar_label: ラズベリーパイなどの上位機器を使用したネットワークケーブルのチュートリアル
 ---
 
- 
+# ネットワークケーブルの使用チュートリアル
 
+    :::tip
 
-# ネットワークケーブルの使用方法のチュートリアル
+    ネットワークケーブルの画面ファームウェアは手動で更新する必要があります。
 
-```
-:::ヒント
-
-有線接続の画面ファームウェアは手動で更新する必要があります
-
-:::
-```
+    :::
 
 ## 画面ファームウェアのダウンロード
 
-```
-* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">ファームウェアをダウンロードする</Button>
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">画面ファームウェアをクリックしてダウンロード</Button>
 
-* 32GB以下のメモリーカードを使用する必要があります。TFカードの転送速度はclass10またはclass10以上でなければならず、SanDiskなどのブランドのTFカードを使用することをお勧めします。
-```
+    * 32GB以下のメモリカードを使用してください。TFカードの転送速度はクラス10以上である必要があります。サンディスクなどのブランドのTFカードを推奨します。
 
-## 有線LANの配線
+## ネットワークケーブルの配線
 
-```
-<ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.webp').default} size="100%" align="left" />
-```
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.webp').default} size="100%" align="left" />
 
-## FLYホストコンピュータに適したシステムパッケージ
+## FLY上位機器用システムパックの適用
 
-:::ヒント FLY C8, FLY Pi V2, FLY Pi, FLY GEMINI シリーズに適用されます:::
+:::tip
+C8 PI_V2 PI ジェミニシリーズに適応しています。
+:::
 
-```
-* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">システムパッケージのダウンロード</Button>
-```
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">システムパックをダウンロード</Button>
 
-## 必要なパッケージの導入
+## サービスのインストール
 
-:::ヒント FLY以外の他のホストコンピュータは独自にサービスをインストールする必要があります:::
+:::tip
+他の上位機器はサービスのインストールが必要です。
+:::
 
-:::警告 インストールプロセスにはインターネット接続が必要であることに注意してください::: `bash sudo apt install isc-dhcp-server`
+:::warning 注意点
+インストールプロセスにはインターネットへの接続が必要です。
+:::
+    ```bash
+    sudo apt install isc-dhcp-server
+    ```
 
-## ネットワークの構成
+## ネットワークの設定
 
-:::ヒント
-
-- このチュートリアルはホストコンピューターのネットワーク ポートを占有し、接続画面のみを使用できます。
-
-- 必要ない場合は、以下で変更および追加した設定を完全に削除してください::: `/etc/network/interfaces.d/eth0`を変更します。
+:::tip
+* このチュートリアルでは、上位機器のネットワークポートが使用されます。画面への接続のみが可能です。
+* 必要ない場合は、下記の変更と追加された設定を完全に削除するだけです。
+:::
+    変更 `/etc/network/interfaces.d/eth0`
 
     ```bash
     auto eth0
@@ -62,7 +60,7 @@ sidebar_label: Raspberry Pi およびその他のホストコンピューター�
     gateway 192.168.251.1
     ```
 
-    `/etc/default/isc-dhcp-server`を変更します
+    変更 `/etc/default/isc-dhcp-server`
 
     ```bash
     # Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
@@ -89,7 +87,7 @@ sidebar_label: Raspberry Pi およびその他のホストコンピューター�
     INTERFACES="eth0"
     ```
 
-    `/etc/dhcp/dhcpd.conf`を変更し、最後に次の内容を追加します
+    変更 `/etc/dhcp/dhcpd.conf` の末尾に以下の内容を追加
 
     ```bash
     # ddns-update-style none;
@@ -102,31 +100,30 @@ sidebar_label: Raspberry Pi およびその他のホストコンピューター�
     }
     ```
 
-    まずシステムを再起動してから、次のネットワークサービス再起動サービスを実行します。
+    システムを再起動してから、以下のサービスの再起動を実行するか、
 
-    ネットワークサービスを再起動してください
+    ネットワークサービスの再起動
 
     ```bash
     sudo systemctl restart NetworkManager
     ```
 
-    この操作によりネットワークが切断され、再接続されます
+    この操作によりネットワーク接続が切断され、再接続されます。
 
-    サービスを再起動する
+    サービスの再起動
 
     ```bash
     sudo systemctl restart isc-dhcp-server
     ```
 
-    ローカル IP アドレスは`192.168.251.100`である必要があります。
+    本機のIPアドレスは `192.168.251.100` です。
 
-## Wi-Fiの優先度の変更
+## WIFIの優先度を上げる
 
-:::ヒント
-
-- このコマンドはネットワークの優先順位を上げるためのもので、追加しないとインターネットに接続できず、正常にダウンロードできません！！！ :::
-
-    - ホストコンピューターの`/etc/rc.local`に以下のコマンドを追加してください。
+:::tip
+* このコマンドはネットワークの優先度を上げます。これを追加しない場合、正常にネットワークに接続できず、ダウンロードなどを行うことができません！！！
+:::
+    * 上位機器の `/etc/rc.local` に以下のコマンドを追加してください
 
     ```bash
     sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0

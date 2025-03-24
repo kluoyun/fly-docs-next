@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USBファームウェアの焼き込み
+sidebar_label: USBファームウェアの焼付け
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -11,15 +11,15 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# USB ファームウェアのコンパイル
+# USBファームウェアのビルド
 
     :::tip
 
-    * Super8 は出荷時にTFカードのブートローダーがプリインストールされています。自分で再度インストールする必要はありません。
+    * Super8は工場出荷時にTFカードブートローダーがプリインストールされているため、自分で再び書き込む必要はありません
 
     :::
 
-## コンパイルの開始
+## ビルド開始
 
     <SSH />
 
@@ -27,60 +27,19 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q`キーを押して**Save configuration**が表示されたら、`Y`キーを押します
+    * `Q` キーを押すと、**Save configuration** が表示されます。その後 `Y` キーを押します。
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 設定が保存され、端末に戻ったはずです
-    * `make -j4`を入力してコンパイルを開始します。時間がかかります
+    * これで設定が保存され、コマンドラインインターフェースに戻ります。
+    * `make -j4` を入力してビルドを開始します。時間がかかります。
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されたらコンパイル成功です
+    * 最後に以下の内容が出力されたらビルド成功です。
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## ファームウェアの焼き込み
+
+## ファームウェアの焼付け
     
     <TF />
-
-## ファームウェアの焼き込み2
-    <Tabs>
-        <TabItem value="linux" label="dfu焼き込み">
-            * 以下の画像に従ってジャンパーピン`boot1`を挿し、`rst`ボタンを押して基板をリセットします
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
-            * 以下のコマンドを入力して基板がDFUモードに入ったか確認します
-            ```bash
-            lsusb
-            ```
-            * `Enter`キーを押すと、以下の画像のような内容が表示され、画像内の内容が表示されれば基板はDFUモードに入っています
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. ファームウェアの焼き込み
-
-            * 以下のDFU書き込みコマンドを入力します
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. 以下の図の矢印が指す「File downloaded successfully」という内容が表示されれば、焼き込みが成功したことになります
-
-            :::warning
-
-            赤い矢印が指す行の**後ろのエラーメッセージ**は無視してください！！！
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/flash/img/boot.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            焼き込みが完了したら、ジャンパーピンを抜き、基板の`rst`ボタンを押して基板をリセットしてください
-
-            :::
-
-        </TabItem>
-    </Tabs>

@@ -3,35 +3,32 @@ sidebar_position: 11
 sidebar_label: Ventilateur principal
 ---
 
+# Connecteur de ventilateur 5V sur la carte mère
 
-
-
-# Port de ventilateur embarqué 5V
-
-## La carte Gemini dispose d'une interface contrôlable de 5V pour la dissipation thermique du contrôleur principal, le câblage est illustré ci-dessous
+## La carte Gemini dispose d'un connecteur 5V contrôlable pour le refroidissement du contrôleur principal, avec la méthode de câblage comme indiqué ci-dessous
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.webp').default} size="80%" align="center" />
 
 ## Configuration de référence
 
     ```cfg
-    [mcu host]                      # FlyOS a déjà généré un MCU Linux pour vous, vous pouvez le définir et l'utiliser           
+    [mcu host]                      # FlyOS a généré automatiquement le MCU Linux pour vous, définissez-le pour l'utiliser            
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Température de la machine hôte
+    [temperature_sensor FLY-π]      # Température du contrôleur supérieur
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # Ventilateur de refroidissement de la machine hôte
-    pin: host:gpiochip1/gpio103     # Pin du ventilateur de la machine hôte
+    [temperature_fan core_fan]      # Ventilateur de refroidissement du contrôleur supérieur
+    pin: host:gpiochip1/gpio103     # Broche du ventilateur du contrôleur supérieur
     max_power: 1.0
-    sensor_type: temperature_host   # Défini comme la température du contrôleur principal de la machine hôte
-    control:watermark               # Méthode de contrôle
-    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement de la machine hôte
-    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
-    max_temp: 90                    # Température maximale, au-dessus de laquelle une erreur sera signalée
+    sensor_type: temperature_host   # Défini comme température du contrôleur principal
+    control:watermark               # Mode de contrôle
+    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement du contrôleur supérieur
+    min_temp: 0                     # Température minimale, une erreur se produira en dessous de cette valeur
+    max_temp: 90                    # Température maximale, une erreur se produira au-delà de cette valeur
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Vitesse maximale, à 80% de la puissance maximale
-    min_speed: 0.3                  # Vitesse minimale, à 30% de la puissance maximale
+    max_speed: 0.8                  # Vitesse maximale, 80% de la puissance maximale
+    min_speed: 0.3                  # Vitesse minimale, 30% de la puissance maximale
     ```

@@ -2,36 +2,33 @@
 sidebar_position: 1
 ---
 
+# Présentation du produit
 
-
-
-# Introduction au produit
-
-  Le détecteur de filament FilGuard est compatible avec l'extrudeur VZ-Hextrudort-Low, il prend en charge la détection de rupture de filament, la détection d'obstruction et dispose de boutons personnalisables.
+  Le détecteur de filament FilGuard est compatible avec l'extrudeuse VZ-Hextrudort-Low, prend en charge la détection de rupture de fil et de bouchage, et dispose d'un bouton personnalisable.
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament_1.webp').default} size="60%" align="left" />
  
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/filament.webp').default} size="40%" align="left" />
 
-## Guide de connexion
+## Tutoriel de câblage
 
-* La connexion au terminal PH2.0 5P embarqué est plus facile
+* Les connecteurs PH2.0 5P sur la carte permettent un câblage plus facile
 
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-filguard-filament-detector/img/connection.webp').default} size="80%" align="left" />
 
-## Introduction à l'état des LED du firmware
+## Description des états des feux du firmware
 
-* Rupture de filament : clignotement rouge
-* Chargement du filament : clignotement bleu (plus la vitesse est élevée, plus la fréquence de clignotement est rapide)
-* Retrait du filament : clignotement vert (idem)
-* Filament présent mais sans chargement ni retrait : lumière orange respiratoire
+* Manque de fil : clignotement rouge rapide
+* Entrée de fil : clignotements bleus (plus la vitesse d'entrée est élevée, plus la fréquence de clignotement est élevée)
+* Retrait de fil : clignotements verts (pareil que ci-dessus)
+* Fil présent mais sans entrée ou retrait : lumière respirante orange
 
-## Configuration de référence pour la détection de rupture et d'obstruction avec Klipper
+## Référence de configuration Klipper pour la détection de rupture de fil et de bouchage
 
 :::warning
-Dans la configuration de détection d'obstruction `detection_length: 2.0`
+Dans la configuration de détection de bouchage, `detection_length: 2.0`
 
-2.0mm est la longueur de détection minimale requise pour que ce module de détection de consommables fonctionne normalement. Si vous rencontrez des problèmes de déclenchement incorrect, essayez d'augmenter la longueur de détection de 1 mm jusqu'à ce que le problème soit résolu.
+2,0 mm est la longueur de détection minimale nécessaire pour que le module intelligent de détection de fil fonctionne correctement. Si vous rencontrez des problèmes de déclenchement incorrect, essayez d'augmenter la longueur de détection de 1 mm jusqu'à ce que le problème soit résolu.
 :::
 
         ```cfg
@@ -41,20 +38,20 @@ Dans la configuration de détection d'obstruction `detection_length: 2.0`
         [force_move]
         enable_force_move: True
 
-        [filament_switch_sensor 断料检测]
+        [filament_switch_sensor Détection de rupture de fil]
         pause_on_runout: False
         switch_pin: ^!PG12
         runout_gcode:
                 {% if (printer.print_stats.state == "printing") %}
                         PAUSE
                 {% endif %}
-                M118 缺料
+                M118 Périphérique de détection de fil : manque de fil
                 # filament_unload
         insert_gcode:
-                M118 上料
+                M118 Périphérique de détection de fil : fin de filament
                 FORCE_MOVE STEPPER=extruder DISTANCE=8 VELOCITY=5 ACCEL=60
                 {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
-                        M118 等待加热!
+                        M118 Périphérique de détection de fil : attendre que l'extrudeur chauffe !
                         SET_HEATER_TEMPERATURE HEATER=extruder TARGET=200
                         TEMPERATURE_WAIT SENSOR=extruder MINIMUM=190
                 {% endif %}
@@ -63,7 +60,7 @@ Dans la configuration de détection d'obstruction `detection_length: 2.0`
                 G0 E50 F500
                 G0 E10 F200
 
-        [filament_motion_sensor 堵料检测]
+        [filament_motion_sensor Détection de bouchage]
         extruder: extruder
         detection_length: 2.0
         switch_pin: ^!PG10
@@ -72,19 +69,20 @@ Dans la configuration de détection d'obstruction `detection_length: 2.0`
                 {% if (printer.print_stats.state == "printing") %}
                         PAUSE
                 {% endif %}
-                M118 堵料
+                M118 Périphérique de détection de fil : bouchage
         insert_gcode:
-                M118 堵料恢复
+                M118 Périphérique de détection de fil : bouchage résolu
         #event_delay:
         #pause_delay:
 
         ```
 
 :::info
-Le chargement et le retrait du filament ne peuvent utiliser qu'une seule méthode
+L'entrée et le retrait ne peuvent utiliser qu'un seul.
 :::
 
-## Configuration de référence pour le bouton de retrait de filament avec Klipper
+## Référence de configuration Klipper pour le bouton de retrait de fil
+
         ```cfg
         [gcode_button filament_unload]
         pin: ^!PG11
@@ -99,7 +97,7 @@ Le chargement et le retrait du filament ne peuvent utiliser qu'une seule méthod
                         M83
                         G92 E0
                         {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
-                                M118 等待加热!
+                                M118 Périphérique de détection de fil : attendre que l'extrudeur chauffe !
                                 SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
                                 TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
                         {% endif %}
@@ -107,12 +105,11 @@ Le chargement et le retrait du filament ne peuvent utiliser qu'une seule méthod
                         G0 E-20 F200
                         G0 E-50 F500
                 {% else %}
-                        M118 打印中，不会回抽操作!
+                        M118 Périphérique de détection de fil : impression en cours, opération de retrait impossible !
                 {% endif %}
         ```
 
-
-## Configuration de référence pour le bouton de chargement de filament avec Klipper
+## Référence de configuration Klipper pour le bouton d'entrée de fil
 
         ```cfg
         [gcode_button filament_unload]
@@ -128,13 +125,13 @@ Le chargement et le retrait du filament ne peuvent utiliser qu'une seule méthod
                         M83
                         G92 E0
                         {% if (printer.extruder.can_extrude|lower != 'true') or (printer.extruder.target == 0)%}
-                                M118 等待加热!
+                                M118 Périphérique de détection de fil : attendre que l'extrudeur chauffe !
                                 SET_HEATER_TEMPERATURE HEATER=extruder TARGET=190
                                 TEMPERATURE_WAIT SENSOR=extruder MINIMUM=185
                         {% endif %}
                         G0 E20 F300
                 {% else %}
-                        M118 打印中，不会回抽操作!
+                        M118 Périphérique de détection de fil : impression en cours, opération d'entrée impossible !
                 {% endif %}
         ```
 

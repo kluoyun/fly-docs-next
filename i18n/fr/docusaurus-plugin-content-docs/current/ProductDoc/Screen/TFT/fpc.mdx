@@ -1,20 +1,19 @@
 ---
 sidebar_position: 1
-sidebar_label: Schéma de câblage FPC pour l'écran tft
+sidebar_label: Schéma de la ligne FPC du tft
 ---
 
-
-# Tutoriel pour modifier les paramètres de l'écran
+# Tutoriel pour la modification des paramètres de l'écran
 :::tip
-Ouvrez votre navigateur sur votre IP:9999 pour accéder à FLY-Tools
+Ouvrez votre navigateur sur IP:9999 pour accéder à FLY-Tools
 :::
 
 :::
-    * Pour utiliser l'écran tft, vous devez activer l'option ci-dessous
+    * Pour utiliser tft, vous devez activer l'option ci-dessous pour activer l'écran
     * Après avoir accédé à FLY Tools
 * La première étape consiste à entrer dans fly_TOOLS pour modifier les paramètres
 
-* Vous devez configurer l'écran dans FLY TOOLS et activer KS
+* Vous devez configurer l'écran et activer KS dans FLY TOOLS selon la configuration ci-dessous
 <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
 
 # Schéma
@@ -27,11 +26,49 @@ Ouvrez votre navigateur sur votre IP:9999 pour accéder à FLY-Tools
 ## fly-PI
 <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="left" />
 
-## FLY-PI-V2
-<ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="80%" align="left" />
 
-## FLY-C8
-<ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="left" />
+<Tabs>
+    <TabItem value="tft" label="Écran TFT" default>
+        * Vous devez activer KS dans FLY TOOLS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="Configuration de l'écran tactile capacitif TFT" default>
+## Méthode un    
+         * La configuration tactile capacitif nécessite d'utiliser la commande suivante pour configurer en `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Vérifiez que le commutateur au dos de l'écran est positionné sur `Cap`
+    * Utilisez la commande suivante pour vérifier si la modification a été effectuée avec succès
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * Pour modifier une configuration tactile capacitif en configuration tactile résistif, utilisez la commande suivante
 
-## Gemini v3
-<ImageView image={require('@site/docs/General/fly-os/img/screen/gemini-tft.webp').default} size="80%" align="left" />
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="Configuration de l'écran tactile résistif TFT">
+## Méthode un        
+           * La configuration tactile résistif nécessite d'utiliser la commande suivante pour configurer en `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Vérifiez que le commutateur au dos de l'écran est positionné sur `Resi`
+        * Utilisez la commande suivante pour vérifier si la modification a été effectuée avec succès
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * Pour modifier une configuration tactile résistif en configuration tactile capacitif, utilisez la commande suivante
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>

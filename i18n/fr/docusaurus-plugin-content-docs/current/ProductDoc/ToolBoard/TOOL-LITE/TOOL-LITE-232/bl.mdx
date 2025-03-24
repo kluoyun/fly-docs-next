@@ -1,0 +1,115 @@
+---
+sidebar_position: 6
+sidebar_label: Tutoriel de compilation du firmware BL
+---
+
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+    :::tip
+
+    * Assurez-vous que l'hôte principal est connecté à Internet
+    * Avant de compiler le firmware, vous devez vous connecter à l'hôte principal via SSH par le réseau
+    * N'utilisez pas d'outils de terminal série pour vous connecter à l'hôte principal
+
+    :::
+
+# Compilation du firmware Katapult
+### Démarrage de la compilation
+  <SSH />
+  ### Instructions d'exploitation de la page de compilation et de configuration du firmware Katapult
+
+    :::tip
+
+    Assurez-vous que le mode de saisie du clavier est en mode demi-largeur, c'est-à-dire en mode anglais
+
+    :::
+
+    1. La touche flèche `↑`, la touche flèche `↓` sont utilisées pour déplacer le curseur vers le haut ou vers le bas afin de sélectionner les éléments de menu
+    2. La touche `Entrée` ou la touche `Espace` est utilisée pour cocher une case ou entrer dans un sous-menu
+    3. La touche `Échap` est utilisée pour revenir au menu précédent
+    4. La touche `Q` est utilisée pour quitter la page de configuration du firmware Katapult
+    5. La touche `Y`, lors de la sortie de la page de configuration du firmware Katapult avec des invites, appuyez sur `Y` pour enregistrer les fichiers de configuration
+
+    Voici comment compiler le firmware :
+    * Connectez-vous via SSH, puis tapez la commande suivante et appuyez sur Entrée :
+
+        ```bash
+        cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+        ```
+
+    * Où `rm -rf ~/Katapult/.config && rm -rf ~/Katapult/out` est utilisé pour supprimer les données de compilation précédentes et le firmware `make menuconfig` est utilisé pour compiler le firmware, ce qui doit afficher l'interface suivante
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * Sélectionnez `Micro-controller Architecture (LPC176x (Smoothieboard))` puis appuyez sur Entrée
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * Entrez dans le menu, puis sélectionnez **Raspberry Pi RP2040** et appuyez sur Entrée
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+    * Sélectionnez `Build Katapult deployment application (Do not build)`, choisissez : **Do not build**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+    * Sélectionnez **Communication interface**, choisissez : **Serial (on UART0 GPIO1/GPIO0)**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/UART0.webp').default} size="100%" align="Center" />
+
+    * Sélectionnez **Enable Status LED** puis appuyez sur Entrée, choisissez `Status LED GPIO Pin (NEW)` et entrez : **!gpio18**
+    :::warning
+        Veuillez entrer `!gpio18` en mode d'entrée anglais
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led1.webp').default} size="100%" align="center" />
+    * **Vérifiez l'image ci-dessus pour vous assurer qu'elle correspond, puis passez à l'étape suivante**
+    * Appuyez sur la touche `Q`, puis apparaît **Save configuration**, appuyez alors sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela prendra un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Si la sortie finale ressemble au contenu suivant, la compilation a réussi
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+``` 
+
+## Passage en mode de chargement
+
+    :::tip
+
+    La flèche indique le bouton `BOOT`
+
+    :::
+
+    * Déconnectez complètement l'alimentation du circuit imprimé, maintenez enfoncé le bouton `BOOT`, puis branchez le câble de transmission de données d'une extrémité au circuit imprimé et de l'autre à votre appareil
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* Ensuite, tapez `lsusb`
+```bash
+lsusb
+```
+* Si l'image suivante apparaît, cela signifie que vous êtes en mode boot
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* Tapez la commande suivante pour écrire le firmware, puis appuyez sur Entrée
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+La saisie de `mellow` ne sera pas affichée
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* Si l'image suivante apparaît, tapez `mellow` et appuyez directement sur Entrée 
+
+* Si l'image suivante apparaît, félicitations, vous avez réussi à écrire le firmware
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## Vérification du démarrage du firmware
+
+* Si le firmware démarre normalement, la LED clignotera
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

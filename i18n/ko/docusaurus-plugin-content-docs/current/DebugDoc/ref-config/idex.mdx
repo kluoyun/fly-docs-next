@@ -1,0 +1,645 @@
+---
+sidebar_position: 3
+sidebar_label: 듀얼 x축/인덱스 참조 설정
+---
+
+## slicer 시작 코드 由哔哩哔哩up主 muimoon女士提供:
+```bash
+M190 S【bed_temperature_initial_layer_single】
+{if is_extruder_used【0】}
+M104 S{first_layer_temperature【0】+standby_temperature_delta} T0
+{endif}
+{if is_extruder_used【1】}
+M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
+{endif}
+```
+
+## 두 번째 프린팅 헤드 설정
+
+```cfg
+[dual_carriage]
+axis: x
+step_pin: PA15
+dir_pin: PA14
+enable_pin: !PA13
+rotation_distance: 40
+microsteps: 16
+full_steps_per_rotation: 200
+endstop_pin: ^!PB4
+position_endstop: 359.35
+position_min: 0
+position_max: 360
+homing_speed: 50
+homing_retract_dist: 5
+step_pulse_duration: 0.000004
+#--------------------------------------------------------------------
+[tmc2209 dual_carriage]
+uart_pin: PC10
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+```
+
+복사하거나 미러링 매크로를 사용하려면 슬라이싱에 해당 코드를 참조해야 합니다.
+
+* ACTIVATE_COPY_MODE 복사 모드
+* ACTIVATE_MIRROR_MODE 미러링 모드
+
+```cfg
+[gcode_macro PARK_extruder1]
+gcode:
+    SAVE_GCODE_STATE NAME=park1
+    G90
+    G1 X200
+    RESTORE_GCODE_STATE NAME=park1
+
+[gcode_macro T1]
+gcode:
+    PARK_{printer.toolhead.extruder}
+    ACTIVATE_EXTRUDER EXTRUDER=extruder1
+    SET_DUAL_CARRIAGE CARRIAGE=1
+    SET_GCODE_OFFSET Y=15
+
+# 복사 모드를 활성화하는 도우미 스크립트
+[gcode_macro ACTIVATE_COPY_MODE]
+gcode:
+    SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
+    G1 X0
+    ACTIVATE_EXTRUDER EXTRUDER=extruder
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=PRIMARY
+    G1 X100
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=COPY
+    SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
+
+# 미러링 모드를 활성화하는 도우미 스크립트
+[gcode_macro ACTIVATE_MIRROR_MODE]
+gcode:
+    SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
+    G1 X0
+    ACTIVATE_EXTRUDER EXTRUDER=extruder
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=PRIMARY
+    G1 X200
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=MIRROR
+    SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
+```
+
+* 두 색상 설정
+
+```cfg
+[gcode_macro CANCEL_PRINT]
+rename_existing: BASE_CANCEL_PRINT
+gcode:
+    TURN_OFF_HEATERS
+    CLEAR_PAUSE
+    SDCARD_RESET_FILE
+    BASE_CANCEL_PRINT
+
+[gcode_macro PAUSE]
+rename_existing: BASE_PAUSE
+gcode:
+    ##### set defaults #####
+    {% set x = params.X|default(100) %}      #edit to your park position
+    {% set y = params.Y|default(100) %}      #edit to your park position
+    {% set lift_z = params.Z|default(50)| float | abs %} #edit to your desired z lift
+    {% set e = params.E|default(1) %}        #edit to your retract length
+    ##### calculate save lift position #####
+    {% set max_z = (printer.toolhead.axis_maximum.z|float ) %} #leave some room for gcode z offset
+    {% set act_z = printer.toolhead.position.z|float %}
+ 	{% set new_z = act_z + lift_z %}
+	{% if new_z >  max_z %}
+		new_z = max_z
+	{% endif %}
+    SAVE_GCODE_STATE NAME=PAUSE_state
+    BASE_PAUSE
+    M83 ; set E to rel mode
+    {% if printer.extruder.can_extrude|lower == 'true' %}
+      G1 E-{e} F2100
+    {% else %}
+      RESPOND MSG="Extruder not hot enough"
+    {% endif %}
+    {% if "xyz" in printer.toolhead.homed_axes %}    
+      G0 Z{new_z} X{x} Y{y} F6000
+    {% else %}
+      RESPOND MSG="Printer not homed"
+    {% endif %}
+
+
+[gcode_macro RESUME]
+rename_existing: BASE_RESUME
+gcode:
+    ##### set defaults #####
+#    {% set e = params.E|default(1) %} #edit to your retract length
+#    M83 ; set E to rel mode
+#    {% if printer.extruder.can_extrude|lower == 'true' %}
+#      G1 E-{e} F2100
+#    {% else %}
+#      RESPOND MSG="Extruder not hot enough"
+#    {% endif %}
+    RESTORE_GCODE_STATE NAME=PAUSE_state MOVE=1
+    BASE_RESUME
+
+################################################################################
+################################################################################
+
+# 도우미 스크립트를 이용하여 카레지 주차 (T0 및 T1 매크로에서 호출됨)
+[gcode_macro PARK_extruder]
+gcode:
+	RESPOND MSG="좌측 엑스트루더 주차"
+	#첫 번째 카레지를 확실히 이동시키기 위해
+	SET_DUAL_CARRIAGE CARRIAGE=0
+	{% if not "x" in printer.toolhead.homed_axes %}
+	    RESPOND MSG="X 홈 위치 확인"
+	    G28 X
+	{% endif %}
+
+    SAVE_GCODE_STATE NAME=park0
+    G90
+	SET_GCODE_OFFSET X=0 Y=0 #Z=0
+    G1 X{printer.configfile.settings.stepper_x.position_min} F12000
+    RESTORE_GCODE_STATE NAME=park0
+
+[gcode_macro PARK_extruder1]
+gcode:
+	RESPOND MSG="우측 엑스트루더 주차"
+	#두 번째 카레지를 확실히 이동시키기 위해. 결국 어느 카레지가 활성화되었는지 알 수 없습니다
+	SET_DUAL_CARRIAGE CARRIAGE=1
+	{% if not "x" in printer.toolhead.homed_axes %}
+	    RESPOND MSG="X 홈 위치 확인"
+	    G28 X
+	{% endif %}
+
+    SAVE_GCODE_STATE NAME=park1
+    G90
+	SET_GCODE_OFFSET X=0 Y=0 #Z=0
+    G1 X{printer.configfile.settings.dual_carriage.position_max} F12000
+    RESTORE_GCODE_STATE NAME=park1
+
+
+[gcode_macro x_xoffset]
+# 도우미 스크립트, 변수 xoffset이 매크로 실행 중 변경될 것이므로 필요합니다
+# 그리고 매크로 확장은 그 전에 이루어집니다
+gcode:
+	{% set offset = printer["gcode_macro set_stepper_x_range"].xoffset %}
+	RESPOND MSG="Xoffset이 { offset }로 설정됩니다"
+    SET_GCODE_OFFSET Y=0 X={ offset } #Z=0
+	
+
+
+[gcode_macro set_stepper_x_range]
+variable_xoffset: 0
+variable_range_set: 0
+gcode:
+    RESPOND MSG="좌측 엑스트루더 x축 원점 설정"
+#	{ action_respond_info("Extruder1 temperature target: %s" % printer.extruder1.target ) }
+	RESPOND MSG="엑스트루더1 온도 목표: { printer.extruder1.target }"
+	{% if   printer.extruder1.target|int > 0 %}
+ 		RESPOND MSG="우측 엑스트루더 활성화"
+	    #{% set offset= 17 %}
+	    {% set offset= 0 %} #왜 이 값이 17로 설정되었는지 모르겠지만 때때로 프린트에 문제가 생겼습니다!
+	{% else %}
+	    {% set offset=0 %}
+	{% endif %}
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE={offset}
+	RESPOND MSG="좌측 머리의 X 원점이 {offset} mm 왼쪽 끝으로 설정됩니다"
+	#이 프린트에 대한 범위가 설정되어 있으므로 다시 평가되지 않도록 알려줍니다
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=1
+
+[gcode_macro clear_stepper_x_range]
+gcode:
+    RESPOND MSG="좌측 엑스트루더 x축 인쇄 범위 초기화"
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE=0
+	#이 프린트에 대한 범위가 설정되지 않았으므로 다시 평가되어야 합니다
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=0
+	
+
+# 기본 엑스트루더 활성화
+[gcode_macro T0]
+gcode:
+	RESPOND MSG="T0 도구 선택"
+	home_if_not
+	{% if printer.toolhead.extruder != "extruder" %}
+	    PARK_{printer.toolhead.extruder}
+	{% endif %}
+    ACTIVATE_EXTRUDER EXTRUDER=extruder
+    SET_DUAL_CARRIAGE CARRIAGE=0
+	# 한 번만 범위 설정을 실행하여 T1 대상 온도가 0으로 설정된 후 잘못 설정되지 않도록 합니다
+	{% if  printer["gcode_macro set_stepper_x_range"].range_set  == 0  %}
+		RESPOND MSG="좌측 엑스트루더 X 방향 이동 범위 아직 설정되지 않음, 지금 설정합니다"
+		set_stepper_x_range
+	{% endif %}
+	x_xoffset
+
+
+[gcode_macro T1]
+gcode:
+	RESPOND MSG="T1 도구 선택"
+	home_if_not
+	{% if printer.toolhead.extruder != "extruder1" %}
+	    PARK_{printer.toolhead.extruder}
+	{% endif %}
+    ACTIVATE_EXTRUDER EXTRUDER=extruder1
+    SET_DUAL_CARRIAGE CARRIAGE=1
+
+    # X/Y 오프셋은 기본 펌웨어 방법과 반대입니다.
+    # E2가 너무 왼쪽으로 인쇄되는 경우 X 오프셋에 추가해야 합니다.
+    # E2가 너무 아래쪽으로 인쇄되는 경우 Y 오프셋에 추가해야 합니다.
+    # Z 오프셋은 일반적으로 필요하지 않습니다. E2의 물리적 Z 조정만 캘리브레이션하면 됩니다.
+    SET_GCODE_OFFSET X=3.80 Y=0.50 #Z=0
+
+[gcode_macro home_if_not ]
+gcode:
+	{% if printer.toolhead.homed_axes != 'xyz' %}
+	  G28
+    {% endif %}
+
+[gcode_macro probeon]
+gcode:
+ 	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=1
+ 	RESPOND MSG="왼쪽 헤드에 프로브 설치 기록"
+
+[gcode_macro probeoff]
+gcode:
+ 	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=0
+ 	RESPOND MSG="왼쪽 헤드에서 프로브 제거 기록"
+
+[gcode_macro PRIME_LINE]
+gcode: 
+    RESPOND MSG="프라임 라인 인쇄"
+
+    {% set x = params.X|default(2)|float %}
+    {% set y = params.Y|default(70)|float %}
+	{% set z = params.Z|default(0.2)|float %}
+    {% set xline = params.XLINE|default(0.8)|float %}
+    {% set yline = params.YLINE|default(120)|float %}
+	{% set eMultiplier = 0.15 * z  %}
+    SAVE_GCODE_STATE NAME=prime_line
+ 
+	M117 프라임 라인
+
+    G90 ; XYZ를 절대 좌표로 설정
+	M83 ; E를 상대 좌표로 설정
+    # Z 축 이동
+    G1 Z0.3 F3000 ; Z 축 위로 이동
+    # 프라임 위치로 이동
+	G0 Y{y} Z{z}
+    G0 X{x} ; 시작 위치로 이동. 코너 클립을 피하기 위해 정방형 이동
+	G1 Y{y + yline} E{eMultiplier * yline} ; 첫 번째 줄 그리기
+    G1 X{x + xline} E{eMultiplier * xline} ; 약간 옆으로 이동
+    G1 Y{y + 20} E{eMultiplier * (yline - 20)} ; 두 번째 줄 그리기, 하지만 원점으로 돌아가지 않아서 깨끗한 부분을 피하도록 함
+#	G1 E-0.5 F300
+    G1 Z0.5 F3000 ; Z 축 위로 이동
+
+	RESTORE_GCODE_STATE NAME=prime_line
+
+[gcode_macro prepare_toolheads ]
+gcode:
+    RESPOND MSG="툴헤드 준비"
+	# BED_MESH_PROFILE LOAD=70c
+	# 절대 좌표 사용
+    G90
+	# E 리셋
+	G92 E0
+	# 엑스트루더를 상대 좌표 모드로 설정
+	M83
+	home_if_not
+	# 각 새로운 인쇄 시작 시 범위 명시적으로 설정
+	set_stepper_x_range
+	{% if   printer.extruder.target|int > 0 %}
+	    RESPOND MSG="T0 준비"
+		T0
+		SAVE_GCODE_STATE NAME=prime_ext0 
+		# 항상 가장 왼쪽에서 프라임 라인 인쇄
+		SET_GCODE_OFFSET X=0 Y=0 Z=0
+		G0 X-10 Y35 Z0.5  F9000
+		# 공기에서 프라임
+		G1 E5 F300
+		PRIME_LINE X=3 Y=35 Z=0.2 YLINE=100
+		RESTORE_GCODE_STATE NAME=prime_ext0
+	{% endif %}
+	{% if   printer.extruder1.target|int > 0 %}
+	    RESPOND MSG="T1 준비"
+		T1
+		G0 X225 Y35 Z0.5 F9000
+		G1	E5 F300
+		PRIME_LINE X=200 Y=35 Z=0.2 YLINE=100
+	{% endif %}
+	# 매크로가 호출되었을 때 도구헤드를 원래 상태로 설정
+	# 적어도 아이디아메이커는 사용자 정의 매크로를 호출하기 전에 T0/T1을 설정하므로,
+	# 어떤 도구헤드가 설정되었는지 알고 계속하기 전에 그것을 전환해야 합니다
+	# Jinja 확장은 실제로 실행되기 전에 이루어지므로,
+	# 조건문의 printer.toolhead.extruder는 동적으로 변경되지 않고 호출 시 원래 값입니다.
+	
+	{% if printer.toolhead.extruder == "extruder1" %}
+		T1
+	{% else %}
+		T0
+	{% endif %}
+	# 엑스트루더를 절대 좌표 모드로 설정
+	M82
+#	{% if  ( (printer.extruder.target|int > 0) and (printer.extruder1.target|int > 0) ) %}
+#		# 두 개의 엑스트루더 사용, 아무 작업도 하지 않음
+#		RESPOND MSG="두 개의 엑스트루더 사용, 아이디아메이커는 회수를 하지 않습니다"
+#	{% else %}
+#	 	# 아이디아메이커는 시작 시 회수를 강요합니다. 이제 그것을 이미 한 것처럼 생각하게 만듭니다. 지저분한 팁, 네.
+#		RESPOND MSG="두 개의 엑스트루더 중 하나 사용, 아이디아메이커는 회수로 인해 프린트가 손상됩니다, 이를 해결합니다"
+#		G92 E-0.6
+#	{% endif %}
+
+[gcode_macro wait_for_temperatures]
+gcode:
+    
+	# 온도 대기. 목표가 0인 경우 실제로 기다리지 않을 것입니다. 매우 낮은 온도로 플라스팅할 수 없습니다!
+    M190 S{printer.heater_bed.target}
+    M109 T0 S{printer.extruder.target}
+	M109 T1 S{printer.extruder1.target}
+    
+
+[gcode_macro START_PRINT]
+# 이 코드는 프린터 헤드 온도와 베드 온도 목표가 슬라이서에 의해 설정되었음을 가정합니다
+gcode:
+	CLEAR_PAUSE
+	{% if printer["gcode_macro bedmesh"].probe_installed != 0 %}
+	   RESPOND TYPE=error MSG="프로브가 여전히 장착되어 있을 수 있습니다. 프로브를 제거하고 명령어 'probeoff'를 실행하고 다시 인쇄하세요"
+	   CANCEL_PRINT
+	{% else %}
+		T0
+		home_if_not
+		wait_for_temperatures
+        Z_TILT_ADJUST
+
+		BED_MESH_LOAD
+		prepare_toolheads
+	{% endif %}
+
+
+[gcode_macro bedmesh]
+variable_probe_installed: 1
+gcode:
+    {% if printer["gcode_macro bedmesh"].probe_installed == 0 %}
+	    RESPOND MSG="프로브를 설치하고 명령어 'probeon'을 실행하세요"
+	{% else %}
+		RESPOND MSG="TO를 사용하여 바닥 메쉬 측정, x 오프셋 없이"
+
+		home_if_not
+        Z_TILT_ADJUST
+		T0
+		SAVE_GCODE_STATE NAME=bedmesh
+		# 항상 원시 왼쪽 헤드로 측정
+		G90
+		SET_GCODE_OFFSET X=0
+		#G0 Z10 F6000
+		BED_MESH_CALIBRATE
+		#G0 Y0 Z100 #brian: 있었다
+		G28 X
+		RESTORE_GCODE_STATE NAME=bedmesh
+	{% endif %}
+
+
+[gcode_macro BED_MESH_LOAD]
+description: 올바른 온도를 위한 기존 바닥 캘리브레이션 메쉬 로드
+gcode:
+  ##### get target get temperature #####
+  {% set bed_temp = printer.heater_bed.target|int %}
+  ##### join everything to a single mesh name #####
+  {% set mesh_name = "MESH-" + bed_temp|string + "C" %}
+  ##### end of definitions #####
+  {% if printer.configfile.config["bed_mesh " + mesh_name] is defined %}
+    BED_MESH_PROFILE LOAD={mesh_name}
+    RESPOND TYPE=echo MSG="메쉬 프로필 {mesh_name} 로드됨"
+  {% else %}
+    RESPOND TYPE=error MSG="메쉬 프로필 {mesh_name} 없음"
+  {% endif %}
+
+[gcode_macro bedmesh_renew]
+gcode:
+	home_if_not
+	{% set dwell = 60000 %}
+	{% for t in  [50,60,70] %}
+        {% set mesh_name = "MESH-" + t|string + "C" %}
+		RESPOND MSG="베드를 {t} C로 가열"
+		M190 S{t}
+		RESPOND MSG="안정화 {dwell}ms"
+		G4 P{dwell}
+		bedmesh
+		BED_MESH_PROFILE SAVE={mesh_name}
+	{% endfor %}
+	SAVE_CONFIG
+[gcode_macro END_PRINT]
+gcode:
+    
+    M117 인쇄 종료.
+    G91 ; 상대 위치 사용
+    G1 E-1 F300 ; 필라멘트를 약간 후퇴하여 노즐을 들어올리는 데 압력을 줄입니다
+    G1 Z+5 E-2 F1000 ; 약간 Z축을 올리고 더 많은 후퇴를 수행합니다
+#   T1
+#	T0
+#    G90 ; 절대 위치 사용
+# 	G0 Y220 F6000 ; 인쇄물을 접근하기 쉽게 만듭니다
+    m104 S0 T0 ; 열원을 꺼
+    m104 S0 T1 ; 열원을 꺼
+    M140 S0 ; 베드 열기를 꺼
+    G90
+    T0
+    PARK_extruder1
+    PARK_extruder
+    M106 S255 ; 냉각을 위해 팬을 켭니다
+    M84 ; 스테퍼를 끕니다
+    clear_stepper_x_range
+    M106 S0 ; 팬을 끕니다
+    SAVE_AT_END
+
+[gcode_macro SEARCH_VARS]
+gcode:
+    {% set search = params.S|lower %}
+    {% set ns = namespace() %}
+    {% for item in printer  %}
+        {% if ' ' in item %}
+            {% set ns.path = ['printer', "['%s']" % (item), ''] %}
+        {% else %}
+            {% set ns.path = ['printer.', item, ''] %}   
+        {% endif %} 
+
+        {% if search in ns.path|lower %}
+            { action_respond_info(ns.path|join) }
+        {% endif %} 
+
+        {% if printer[item].items() %}
+            {% for childkey, child in printer[item].items() recursive %}
+                {% set ns.path = ns.path[:loop.depth|int + 1] %}
+
+                {% if ' ' in childkey %}
+                    {% set null = ns.path.append("['%s']" % (childkey)) %}
+                {% else %}
+                    {% set null = ns.path.append(".%s" % (childkey)) %}
+                {% endif %} 
+
+                {% if child is mapping  %}
+                    { loop(child.items()) }
+                {% else %}
+                    {% if search in ns.path|lower %}
+                        { action_respond_info("%s : %s" % (ns.path|join, child)) }   
+                    {% endif %} 
+                {% endif %} 
+                
+            {% endfor %}
+        {% endif %} 
+    {% endfor %}
+    
+[gcode_macro SAVE_AT_END]
+variable_save: 1
+gcode:
+  SET_GCODE_VARIABLE MACRO=SAVE_AT_END VARIABLE=save VALUE=1
+  
+[gcode_macro SAVE_IF_SET]
+gcode:
+  {% if printer["gcode_macro SAVE_AT_END"].save == 1 %}
+    SAVE_CONFIG
+  {% endif %}
+
+[gcode_macro INITIALIZE_VARIABLE]
+gcode:
+  {% if 'VARIABLE' not in params %}
+    {action_respond_info("변수 매개변수가 누락되었습니다")}
+  {% elif 'VALUE' not in params %}
+    {action_respond_info("값 매개변수가 누락되었습니다")}
+  {% else %}
+    {% set svv = printer.save_variables.variables %}
+    {% if params.VARIABLE not in svv %}
+      {% set escaped = params.VALUE|replace("\"", "\\\"") %}
+      SAVE_VARIABLE VARIABLE={params.VARIABLE} VALUE="{escaped}"
+    {% endif %}
+  {% endif %}
+
+
+
+[gcode_macro WIPE_LINE]
+gcode:
+  {% set z = params.Z|default(0.25)|float %}
+  {% set n = params.N|default(0.4)|float %}
+
+  {% if printer.toolhead.homed_axes != "xyz" %}
+    {action_respond_info("XYZ를 먼저 홈 위치로 설정하세요")}
+  {% elif printer.extruder.temperature < 170 %}
+    {action_respond_info("엑스트루더 온도가 너무 낮습니다")}
+  {% else %}
+    SAVE_GCODE_STATE NAME=WIPE_LINE_state
+    M82
+    G90
+    G92 E0
+    G1 X10 Y20 Z5 F3000
+    G1 Z{z} F3000
+    G1 X10 Y150 F1500 E10.83
+    G1 X{ n + 10.0 } F5000
+    G1 Y22 F1500 E21.5
+    G1 Y20 F5000
+    RESTORE_GCODE_STATE NAME=WIPE_LINE_state MOVE=0
+  {% endif %}
+  
+[gcode_macro PREP_PRINT]
+description: 인쇄 시작을 위해 프로필을 불러오고 시작합니다
+variable_x_max: 0
+variable_y_max: 0
+variable_z_max: 0
+variable_nozzle: 0
+variable_fila_dia: 0
+variable_bed_temp: 0
+variable_extruder_temp: 0
+variable_chamber_temp: 0
+variable_layer_count: 0
+variable_tool_changes: 0
+variable_cur_layer: 0
+variable_num_layers: 0
+variable_layer_z: 0
+gcode:
+
+  M117 인쇄 초기화...
+
+  # 프린터 빌트된 부피 크기 구하기
+  {% set X_MAX = printer.toolhead.axis_maximum.x|default(100)|float %}
+  {% set Y_MAX = printer.toolhead.axis_maximum.y|default(100)|float %}
+  {% set Z_MAX = printer.toolhead.axis_maximum.z|default(100)|float %}
+
+  # 노즐 직경 및 필라멘트 너비 얻기
+  {% set NOZZLE = printer.extruder.nozzle_diameter|default(0.4)|float %}
+  {% set FILADIA = printer.extruder.filament_diameter|default(1.64)|float %}
+
+  # 프라밍 라인 시작 좌표 설정
+  {% set X_START = 10.0|default(10.0)|float %}
+  {% set Y_START = 20.0|default(20.0)|float %}
+
+  # 프라밍 라인 용량 및 필라멘트 길이 계산
+  {% set PRIMER_WIDTH = 0.75 * NOZZLE %}                    
+  {% set PRIMER_HEIGHT = 0.70 * NOZZLE %}           
+  {% set PRIMER_SECT = PRIMER_WIDTH * PRIMER_HEIGHT %}    
+  {% set PRIMER_VOL = PRIMER_SECT * (X_MAX - 3 * X_START) %}    
+  {% set FILA_SECT = 3.1415 * ( FILADIA / 2.0)**2 %}          
+  {% set FILA_LENGTH = 1.55 * PRIMER_VOL / FILA_SECT %}
+  {% set FILAMENT_TYPE = params.FILAMENT|default(PLA)|string %}
+
+  # 베드, 엑스트루더, 및 챔버 온도 슬라이싱 G코드에서 얻기
+  {% set BED_TEMP = params.BED|default(60)|float %}
+  {% set EXTRUDER_TEMP = params.EXTRUDER|default(210)|float %}
+  {% set CHAMBER_TEMP = params.CHAMBER|default(50)|float %}
+
+  # 레이어 수 얻기
+  {% set NUM_LAYERS = params.COUNT|default(0)|float %}
+  {% set CUR_LAYER = params.NUM|default(0)|float + 1 %}
+
+  # 필요한 도구 변경 횟수 얻기
+  {% set TOOL_CHANGES = params.TOOLS|default(0)|float %}
+
+  # 인쇄 설정 사양 저장
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=x_max VALUE={X_MAX}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=y_max VALUE={Y_MAX}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=z_max VALUE={Z_MAX}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=nozzle VALUE={NOZZLE}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=fila_dia VALUE={FILADIA}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=bed_temp VALUE={BED_TEMP}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=extruder_temp VALUE={EXTRUDER_TEMP}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=chamber_temp VALUE={CHAMBER_TEMP}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=cur_layer VALUE={CUR_LAYER}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=num_layers VALUE={NUM_LAYERS}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=tool_changes VALUE={TOOL_CHANGES}
+
+  # 조명 켜기!
+  # 아직 조명은 없지만 재미있어 보입니다!
+  #WLED_ON PRESET=1
+
+  # Z 프로빙을 위해 T0 선택
+  T0
+  PROBEON
+
+  # 예열 및 인쇄 준비 시작
+  G90 ; 절대 좌표 사용
+  M83 ; 엑스트루더 상대 좌표 모드
+
+  M117 베드 예열 중...
+
+  M104 S{EXTRUDER_TEMP}
+  G4 S10 ; 부분적인 노즐 예열 허용
+  M190 S{BED_TEMP} ; 최종 베드 온도 설정
+  #BED_MESH_PROFILE LOAD="default"
+  BED_MESH_LOAD ; 지정된 온도에 대한 프로필 로드
+  # BEDMESH ; 새 바닥 메쉬 생성, 저장된 것을 로드하지 않음
+  M117 모든 축 홈 위치...
+  G28 ; 모든 축 홈 위치
+  M117 Z-틸트 조정 중...
+  Z_TILT_ADJUST ; 이중 Z 축 캘리브레이션
+
+#  G1 Z50 F240
+#  G1 X2 Y10 F3000
+  M117 온도 안정화 대기...
+
+  M104 S{EXTRUDER_TEMP} ; 최종 노즐 온도 설정
+  G28 X ; 예열 중에 주차
+  M190 S{BED_TEMP} ; 베드 온도 안정화 대기
+  M109 S{EXTRUDER_TEMP} ; 노즐 온도 안정화 대기
+
+  WIPE_LINE
+
+  M117 인쇄 시작

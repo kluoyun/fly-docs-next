@@ -1,134 +1,106 @@
 ---
-sidebar_position: '4'
-sidebar_label: Wi-Fi接続およびKlipper設定
+sidebar_position: 4
+sidebar_label: WIFI接続とklipper設定
 ---
+
+## WIFI接続と基本操作
+
+    [7インチWiFiタッチスクリーンで複数のマシンを制御](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
+
+## Klipper設定
+
+### LED設定
+
+    ```cfg
+    [led LED]
+    white_pin:PA15
+    ```
+
+### PTC設定
+
+    ```cfg
+    [heater_generic warehouse]
+    heater_pin:E_CS
+    sensor_type:ATC Semitec 104GT-2
+    sensor_pin:PA1
+    min_temp:-270
+    max_temp:600
+    control = pid
+    pid_kp = 16.804
+    pid_ki = 0.794
+    pid_kd = 88.854
+    ```
+
+### FAN設定
+
+    ```cfg
+    [fan_generic fan1]
+    pin: FAN1
+    ```
+
+    ```cfg
+    [fan_generic fan2]
+    pin: FAN2
+    ```
 
  
 
+### カスタムGcode
 
-```
-:::tip
+    * スクリーンを下にスワイプするとカスタムGcodeが表示されます。
+    * 1つのボタンで複数のGcode形式を送信できます：
+    * 例：
 
-ファームウェアは工場出荷時にプリフラッシュされていますが、手動でのアップデートをお勧めします。
+    ```cfg
+    G91 
+    G1 X10 F6000
+    G90
+    ```
 
-:::
-```
+    * スクリーン上で入力する形式:(2行目以降、各コマンドの前に\nを追加)
 
-## 画面ファームウェアのダウンロード
-
-```
-* <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/WIFI/update.img">画面ファームウェアをダウンロードするにはクリック</Button>
-
-* 32GB以下のメモリーカードを使用する必要があります。TFカードの転送速度はclass10またはclass10以上でなければならず、SanDiskなどのブランドのTFカードを使用することをお勧めします。
-```
-
-## Wi-Fiの接続方法と基本操作
-
-```
-[7インチWi-Fi対応の静電容量式タッチスクリーンで複数のマシンを制御](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
-```
-
-## Klipperの設定
-
-### LEDの設定
-
-```
-```cfg
-[led LED]
-white_pin:PA15
-```
-```
-
-### PTCサーミスタの設定
-
-```
-```cfg
-[heater_generic warehouse]
-heater_pin:E_CS
-sensor_type:ATC Semitec 104GT-2
-sensor_pin:PA1
-min_temp:-270
-max_temp:600
-control = pid
-pid_kp = 16.804
-pid_ki = 0.794
-pid_kd = 88.854
-```
-```
-
-### FANの設定
-
-```
-```cfg
-[fan_generic fan1]
-pin: FAN1
-```
+    ```cfg
+    G91\nG1 X10 F6000\nG90
+    ```
 
 
-```cfg
-[fan_generic fan2]
-pin: FAN2
-```
-```
 
-### カスタムGコード
+## 使用オブジェクトの除外
 
-```
-* 画面を下にスクロールすると、カスタムGコードが表示されます。
-* 1つのボタンで複数のGコードを送信するフォーマット：
-* 例：
+    * moonrakerを置き換える必要があります。
 
-```cfg
-G91
-G1 X10 F6000
-G90
-```
+    * SSHに接続し、正常にインターネットに接続できることを確認してください。
 
-* 画面上での入力フォーマット：（2行目以降、各コマンドの前に\nを追加）
+    1. moonrakerファイルのバックアップ
 
-```cfg
-G91\nG1 X10 F6000\nG90
-```
-```
+    ```bash
+    mv ~/moonraker ~/moonraker-bak
+    ```
 
-## Moonrakerの再設定手順
+    2. moonrakerサービスを停止
 
-```
-* Moonrakerが必要
+    ```bash
+    sudo systemctl restart moonraker
+    ```
 
-* まずSSHを有効にし、インターネット接続が正常であることを確認してください。
+    3. moonrakerをpull
 
-1. Moonrakerファイルのバックアップ
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
+    ```
 
-```bash
-mv ~/moonraker ~/moonraker-bak
-```
+    4. ブラウザで上位機にアクセスし、`moonraker.conf`を追加してからシステムを再起動します
 
-2. Moonrakerサービスの停止
+    ```bash
+    [network]
+    ```
 
-```bash
-sudo systemctl restart moonraker
-```
+    5. 次に、以下のアドレスをブラウザに入力します。IPは上位機のIPに置き換えてください。
 
-3. Moonrakerのクローンを取得
+    ```bash
+    http://ip:7125/server/network/wifi/scan
+    ```
 
-```bash
-git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
-```
-
-4. ブラウザでアクセスし、`moonraker.conf`に追加し、その後システムを再起動
-
-```bash
-[network]
-```
-
-5. ブラウザで以下のアドレスにアクセスし、ホストIPを確認
-
-```bash
-http://ip:7125/server/network/wifi/scan
-```
-```
-
-- 以下の画面が表示されたら、操作は完了です。
-
-    &lt;ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.webp').default} size="100%" align="left" /&gt;
+* このステップが表示されたら操作完了です
+    
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.webp').default} size="100%" align="left" />

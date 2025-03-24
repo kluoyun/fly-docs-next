@@ -1,132 +1,131 @@
 ---
-sidebar_position: 4
-sidebar_label: Problèmes CAN
+position-sidebar: 4
+label-sidebar: Questions fréquentes sur CAN
 ---
 
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
 
-# Problèmes CAN
+# Questions fréquentes sur CAN
 
-## Points à vérifier avant de rechercher un appareil
+## Remarques avant de rechercher des appareils
 
-    * Avant de rechercher l'ID CAN, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour accéder")
-    * Veuillez noter que vous devez vous connecter via le réseau et non via le port série
-    * Assurez-vous que la carte mère avec le firmware UTOC ou le pont CAN est bien connectée, et que le câble de données connecté à l'hôte a la capacité de transmettre des données
+    * Avant de rechercher les ID CAN, veuillez vous connecter à SSH en cliquant ici.
+    * Veuillez vous assurer que vous vous êtes connecté à SSH via le réseau et non via un port série.
+    * Assurez-vous d'avoir correctement connecté votre carte mère avec UTOC ou une carte mère flashée avec le firmware CAN Bridge, et que le câble de connexion à l'ordinateur de bord a la capacité de transfert de données.
 
-## Vérifier la présence d'un appareil
+## Vérifier si des appareils sont présents
 
-    * Maintenant que vous êtes connecté à l'hôte, vous pouvez entrer `lsusb` pour rechercher des appareils, ce qui donnera l'une des situations suivantes
-        * Si vous entrez `lsusb` et qu'il indique que la commande `ls` n'est pas trouvée, vous pouvez entrer la commande ci-dessous pour installer l'utilitaire
+    * Maintenant que vous êtes correctement connecté à l'ordinateur de bord, vous pouvez entrer `lsusb` pour rechercher des appareils. Vous obtiendrez l'un des cas suivants :
+        * Si vous entrez `lsusb` et que vous obtenez un message indiquant que la commande `ls` n'est pas trouvée, vous pouvez entrer la commande ci-dessous pour installer la commande :
             ```bash
             sudo apt-get install usbutils
             ```
-        * Si vous entrez `lsusb` et qu'il n'y a aucune réaction, c'est un problème système sur lequel nous ne pouvons rien faire, vous devrez changer de système ou utiliser un système fonctionnel
-        * Si vous voyez les informations illustrées dans l'image ci-dessous, veuillez noter que c'est juste un exemple. Vous devez simplement vérifier si `1d50:606f` apparaît
+        * Si vous entrez `lsusb` et qu'il ne se passe rien, c'est probablement un problème système ; dans ce cas, vous devrez changer de système ou utiliser un système qui fonctionne correctement.
+        * Si vous obtenez des informations similaires à celles de l'image ci-dessous, notez que cela n'est qu'une référence. Vous devez simplement vérifier que vous voyez `1d50:606f`.
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f` correspond à l'appareil que vous devez utiliser pour cette session. Vous n'avez pas besoin de vous soucier des informations supplémentaires, car des problèmes système peuvent entraîner des informations incomplètes ou absentes
-    * Si plusieurs `1d50:606f` sont présents, il est recommandé d'en exclure un pour éviter d'interférer avec la programmation ultérieure et la connexion du firmware, comme pour le `FLY MINI PAD` où il est suggéré d'utiliser le UTOC embarqué et non d'autres dispositifs de pont CAN
-    * Si aucun n'est présent, vérifiez vous-même si le câble de données est bien connecté, si le firmware est correctement installé.
+    * `1d50:606f` est l'appareil que vous utiliserez pour cette session. Ignorez les autres indications car des problèmes système peuvent entraîner leur affichage incomplet ou inexistant.
+    * Si plusieurs appareils `1d50:606f` sont détectés, il est recommandé d'en exclure un, car cela pourrait affecter la gravure ultérieure et la connexion au firmware. Par exemple, si vous utilisez le `FLY MINI PAD`, il est conseillé d'utiliser le UTOC embarqué plutôt que d'autres appareils de pontage CAN.
+    * Si aucun appareil n'est trouvé, vérifiez que vos câbles de données sont bien connectés et que le firmware est correctement flashé.
 
-:::warning Attention
-Vous ne pouvez rechercher l'ID CAN que si `1d50:606f` est présent
+:::warning Remarques importantes
+Vous ne pouvez rechercher des ID CAN que si vous avez détecté `1d50:606f`.
 :::
 
-## Diagnostiquer les problèmes en fonction des erreurs
+## Déterminer le problème en fonction des erreurs
 
-    * Voici les erreurs courantes
-        * OSError: [Errno 19] Aucun tel périphérique
-        * can.CanError: Échec de la transmission : [Errno 100] Le réseau est en panne
-        * can.CanError: Échec de la transmission : [Errno 105] Pas d'espace tampon disponible
-    * La première erreur indique que l'hôte ne trouve pas le périphérique CAN (carte mère avec firmware de pont USB ou UTOC)
-    * La deuxième erreur indique que l'hôte n'a pas configuré ou mal configuré CAN0
-    * La troisième erreur est due à une mémoire tampon insuffisante ou à des problèmes système causant l'effondrement de la mémoire tampon
-    * Pour les deuxièmes et troisièmes points, référez-vous à la configuration de CAN0 ci-dessous pour le dépannage
-    * Si l'ID n'est pas trouvé, référez-vous à la section la plus basse
+    * Voici quelques erreurs courantes :
+        * OSError : [Errno 19] Aucun tel périphérique
+        * can.CanError : Échec de la transmission : [Errno 100] Le réseau est inaccessible
+        * can.CanError : Échec de la transmission : [Errno 105] Pas d'espace tampon disponible
+    * La première erreur signifie que l'ordinateur de bord ne trouve pas de périphérique CAN (carte mère flashée avec le firmware USB Bridge ou UTOC).
+    * La deuxième erreur signifie que l'ordinateur de bord n'a pas configuré ou a configuré incorrectement CAN0.
+    * La troisième erreur signifie que l'ordinateur de bord a un espace tampon insuffisant ou un problème systématique qui cause un échec du tampon.
+    * Les points deux et trois peuvent être résolus en configurant CAN0 comme indiqué ci-dessous. Si vous ne trouvez pas d'ID, consultez la section finale.
 
-## Vérifier si l'hôte supporte CAN
+## Vérifier si l'ordinateur de bord prend en charge CAN
 
-    * Si vous utilisez l'hôte FLY, cette étape n'est pas nécessaire
-    * Si votre système est `Ubuntu`, vous aurez besoin de `Ubuntu configurer CAN0` ce document n'est pas encore mis à jour
-    * Entrez la commande ci-dessous pour vérifier si le système supporte CAN
+    * Si vous utilisez un ordinateur de bord FLY, vous n'avez pas besoin d'exécuter cette étape.
+    * Si votre système est `Ubuntu`, vous devez consulter le document `Configuration CAN0 pour Ubuntu` qui n'a pas encore été mis à jour.
+    * Entrez la commande ci-dessous pour déterminer si votre système prend en charge CAN :
 
     ```bash
-    sudo modprobe can && echo "Votre noyau supporte CAN" || echo "Votre noyau ne supporte pas CAN"
+    sudo modprobe can && echo "Votre noyau prend en charge CAN" || echo "Votre noyau ne prend pas en charge CAN"
     ```
-    * Après avoir entré la commande ci-dessus, si votre noyau supporte CAN, il répondra : `Votre noyau supporte CAN` ; sinon, il répondra : `Votre noyau ne supporte pas CAN`.
-    * Si le noyau supporte CAN, vous pouvez passer à l'étape suivante pour configurer CAN0
+    * Après avoir exécuté la commande ci-dessus, si votre noyau prend en charge CAN, vous recevrez le message : « Votre noyau prend en charge CAN ». Sinon, vous recevrez : « Votre noyau ne prend pas en charge CAN ».
+    * Si le message indique que votre noyau prend en charge CAN, vous pouvez passer à l'étape suivante pour configurer CAN0.
 
 ## Configurer CAN0
 
-    * Cette commande remplace la configuration CAN0 existante du système, après exécution, vous devez redémarrer le système
-    * Choisissez parmi les options suivantes en fonction de vos besoins
+    * Cette commande remplace la configuration CAN0 existante du système. Une fois exécutée, le système doit être redémarré.
+    * Choisissez l'une des options selon votre situation réelle :
 ----
-    * Pour un débit de 1M, entrez la commande suivante
+    * Pour une vitesse de 1 Mbit/s, entrez la commande suivante :
 
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
         allow-hotplug can0
         iface can0 can static
             bitrate 1000000
-            up ifconfig $IFACE txqueuelen 1024
+            up ifconfig \$IFACE txqueuelen 1024
             pre-up ip link set can0 type can bitrate 1000000
             pre-up ip link set can0 txqueuelen 1024
     EOF
     ```
 ----
-    * Pour un débit de 500K, entrez la commande suivante
+    * Pour une vitesse de 500 Kbit/s, entrez la commande suivante :
 
     ```bash
     sudo /bin/sh -c "cat > /etc/network/interfaces.d/can0" << EOF
     allow-hotplug can0
     iface can0 can static
         bitrate 500000
-        up ifconfig $IFACE txqueuelen 1024
+        up ifconfig \$IFACE txqueuelen 1024
         pre-up ip link set can0 type can bitrate 500000
         pre-up ip link set can0 txqueuelen 1024
     EOF
     ```
 
-    * Redémarrer l'appareil
+    * Redémarrez l'appareil
 
     ```bash
     sudo reboot
     ```
 
 
-## Points à vérifier si l'ID n'est pas trouvé
+## Considérations après avoir recherché sans succès un ID
 
-    * Si Klipper a configuré l'ID correspondant, vous devez d'abord désactiver l'ID dans la configuration du système, puis éteindre, débrancher puis rebrancher ou appuyer sur le bouton de réinitialisation de la carte mère
-    * Vérifiez si le taux de CAN de l'hôte correspond à celui de la carte mère, des plaques d'outils, etc.
-    * Vous pouvez utiliser le code ci-dessous pour vérifier le taux de CAN de l'hôte
-    * Assurez-vous qu'il n'y a pas de câble déconnecté
-    * Vérifiez si un jumper de `120Ω` est installé entre la plaque d'outils et le dispositif (carte mère avec firmware de pont USB ou UTOC)
-    * Si un jumper de `120Ω` est installé, utilisez un multimètre pour mesurer la résistance entre CAN H et CAN L, qui devrait être d'environ `60Ω` lorsque l'appareil est complètement éteint
-    * Assurez-vous qu'il n'y a pas de câble déconnecté
+    * Si Klipper a configuré un ID spécifique, vous devez d'abord désactiver cet ID dans la configuration système, puis éteindre l'appareil, le débrancher et le rallumer ou appuyer sur le bouton de réinitialisation de la carte mère.
+    * Vérifiez que la vitesse CAN de l'ordinateur de bord est cohérente avec celle de la carte mère, des cartes de contrôle, etc.
+    * Vous pouvez utiliser la commande ci-dessous pour déterminer la vitesse CAN de l'ordinateur de bord :
+    * Vérifiez s'il y a des coupures dans les connexions.
+    * Vérifiez si un pont CAN est correctement installé entre la carte de contrôle et l'appareil (carte mère flashée avec le firmware USB Bridge ou UTOC). Un pont CAN nécessite une résistance de `120Ω`.
+    * Si un pont CAN avec une résistance de `120Ω` est installé, utilisez un multimètre pour mesurer la résistance entre CAN H et CAN L lorsque l'appareil est complètement débranché. La résistance devrait être autour de `60Ω`.
+    * Vérifiez s'il y a des coupures dans les connexions.
 
     ```bash
     ip -details link show can0
     ```
     
-    * La zone encadrée sur l'image ci-dessous indique le taux de CAN de l'hôte et la mémoire tampon
-    * `1024` en haut est la taille actuelle de la mémoire tampon de CAN0
-    * `1000000` en bas est le taux actuel de CAN0
+    * La zone entourée dans l'image ci-dessous représente la vitesse CAN de l'ordinateur de bord et son tampon.
+    * Le nombre `1024` est la taille actuelle du tampon CAN0.
+    * Le nombre `1000000` est la vitesse actuelle de CAN0.
 
     <ImageView image={require('@site/docs/General/get-id/img/details.webp').default} size="80%" align="center" />
 
-    * Si l'UUID n'est toujours pas trouvé, vérifiez soigneusement les points suivants
+    * Si aucune UUID n'a été trouvée, vérifiez attentivement les points suivants :
 
-        * Assurez-vous que la carte mère ou la plaque d'outils CAN est correctement connectée
-        * Vérifiez l'alimentation, il est recommandé de connecter la carte mère à une alimentation VCC
-        * Vérifiez si l'hôte supporte le réseau CAN
-        * Vérifiez que la résistance CAN est d'environ `60Ω`
-        * Vérifiez que la compilation du firmware est correcte
+        * Vérifiez que vous avez correctement connecté la carte mère ou le pont CAN.
+        * Vérifiez que l'alimentation est correctement fournie. Il est recommandé de brancher la source d'alimentation VCC sur la carte mère.
+        * Vérifiez que l'ordinateur de bord prend en charge les réseaux CAN.
+        * Vérifiez que la résistance CAN est autour de `60Ω`.
+        * Vérifiez que le firmware a été compilé correctement.
 
-## Recherche de l'ID
+## Recherche d'ID
 
-    * Entrez la commande suivante pour rechercher l'ID
+    * Entrez la commande ci-dessous pour rechercher des ID :
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * Si un ID apparaît et que `Application:` indique `Klipper` à la fin, cela signifie que cet ID peut être utilisé directement
-    * Si un ID apparaît et que `Application:` indique `CANBOOT` ou `Katapult` à la fin, cela signifie que le firmware doit être flashé avant de pouvoir être utilisé
+    * Si vous obtenez un ID et que la section `Application:` affiche `Klipper`, cela signifie que cet ID peut être utilisé directement.
+    * Si vous obtenez un ID et que la section `Application:` affiche `CANBOOT` ou `Katapult`, cela signifie que vous devez flasher le firmware pour pouvoir l'utiliser.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />

@@ -1,11 +1,7 @@
 ---
 sidebar_position: 6
-sidebar_label: Katapultファームウェアの書き込み
+sidebar_label: Katapultファームウェアの焼付け
 ---
-
-
-
-
 
 import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
@@ -18,55 +14,54 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
     <CANBOOT />
 
     :::tip
-
-    * D5はUSB接続を使用
-    * D5は2024年9月1日から出荷時既にKatapultファームウェアがプリインストールされています
+    * D5のkatapultファームウェアは第3の接続方法を使用しています：USB接続
+    * D5は2024年9月1日に出荷時に既にkatapultファームウェアがプリフラッシュされています
     :::
 
-## 書き込みモードへの移行
+## DFU焼付けモードに入る
 
     :::tip
 
-    左が`BOOTボタン`、右が`RESETボタン`です
+    左側が`BOOTボタン`、右側が`RESETボタン`です
 
     :::
 
-    * 書き込みモードに入る方法は2つあります
-    * 第一の方法：主板の電源が完全に切れている状態で、BOOTボタンを押しながらデータ転送可能なケーブルを主板とデバイスに接続します
-    * 第二の方法：データ転送可能なケーブルを主板とデバイスに接続した後、BOOTボタンを押しながらRESETボタンを押し、RESETボタンを離してからBOOTボタンを離します
+    * 焼付けモードには2つの方法があります
+    * 方法1：マザーボードが完全に電源オフになっている状態で、BOOTボタンを押したままデータ転送用のケーブルをマザーボードとデバイスの間に接続します
+    * 方法2：データ転送用のケーブルをマザーボードとデバイスの間に接続した後、BOOTボタンを押したままRSTボタンを押し、その後RSTボタンを離し最後にBOOTボタンも離します
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/boot.webp').default} size="50%" align="center" />
 
-## ファームウェアの書き込み
+## ファームウェアの焼付け
     <Tabs>
-        <TabItem value="win" label="Windows書き込みガイド" default>
-            * D5のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">自動ダウンロード</Button>
+        <TabItem value="win" label="Windows焼付けチュートリアル" default>
+            * D5のKatapultファームウェア <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">ファームウェアを自動ダウンロードするにはこちらをクリック</Button>
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="ホストマシン書き込みガイド">
+        <TabItem value="linux" label="アップライドマシン焼付けチュートリアル">
 
             <Katapult />
 
-            4. ファームウェアの書き込み
+            4. ファームウェアの焼付け
 
             :::tip
 
-            どれか一つのファームウェアを書き込むだけで大丈夫です
+            一つのファームウェアのみ焼付けます
 
             :::
 
-            * 以下はファームウェアの書き込みコマンドです
+            * 下記はファームウェア書き込みコマンドです
                 ```bash
                 sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D5.bin
                 ```
 
-            5. 下図の矢印の部分に``File downloaded successfully``が表示されたら書き込み成功です
+            5. 画像の矢印部分に示されている内容「File downloaded successfully」が表示されたら焼付け成功です
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
             :::tip
 
-            書き込み完了後、主板の電源を完全に切ってください。
+            焼付けが完了したら、マザーボードを完全に電源オフにする必要があります。
 
             :::
 

@@ -3,38 +3,85 @@ sidebar_position: 7
 sidebar_label: Screen Wiring and Configuration
 ---
 
-
-
 import TFT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_tft.mdx';
+
 
 
 # Screen Wiring and Configuration
 
 :::info
 
-* FLY-TOOLS needs to be connected to the network, then input the `IP+:9999` of the host machine to access
+* FLY-TOOLS needs to be connected to the network and access the upper computer through `IP+:9999`
 * For example, `192.168.6.110:9999`
 
 :::
 
+
+    <Tabs>
+        <TabItem value="tft" label="TFT Wiring" default>
+            * The screen must be configured in FLY TOOLS and KS opened
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
+            * FLY-Pi TFT screen wiring
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="center" />
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/v2.webp').default} size="80%" align="center" />
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft_flyπ.webp').default} size="80%" align="center" />
+
+        </TabItem>
+        <TabItem value="hdmi" label="HDMI Wiring">
+            * The screen must be configured in FLY TOOLS and KS opened
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/hdmi.webp').default} size="80%" align="center" />               
+            * Use an FPC to HDMI module
+            * Please note that a type-C with data transmission capability must be connected to the module
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
+
+        </TabItem>
+    </Tabs>
+
+# TFT Screen Configuration
+
 <Tabs>
-    <TabItem value="tft" label="TFT Wiring" default>
-        * You need to configure the screen according to the instructions below in FLY TOOLS and turn on KS
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
-        * FLY-Pi TFT screen wiring
-            <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="center" />
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/v2.webp').default} size="80%" align="center" />
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft_flyπ.webp').default} size="80%" align="center" />
+    <TabItem value="tft" label="TFT Screen" default>
+        * KS must be opened in FLY TOOLS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="TFT Capacitive Screen Configuration" default>
+## Method One    
+         * Capacitive configuration requires using the following command to configure as `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Please confirm that the DIP switch on the back of the screen is set to `Cap`
+    * Use the following command to check if the modification was successful
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * To modify a resistive screen to a capacitive screen, use the following command
 
-    </TabItem>
-    <TabItem value="hdmi" label="HDMI Wiring">
-        * You need to configure the screen according to the instructions below in FLY TOOLS and turn on KS
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/hdmi.webp').default} size="80%" align="center" />               
-        * Use an FPC to HDMI module
-        * Please note that you need to connect a Type-C cable with data transmission function to the module
-            <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
 
-    </TabItem>
+        <TabItem value="hdmi" label="TFT Resistive Screen Configuration">
+## Method One        
+           * Resistive screen configuration requires using the following command to configure as `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Please confirm that the DIP switch on the back of the screen is set to `Resi`
+        * Use the following command to check if the modification was successful
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * To modify a capacitive screen to a resistive screen, use the following command
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
 </Tabs>
-
 ----

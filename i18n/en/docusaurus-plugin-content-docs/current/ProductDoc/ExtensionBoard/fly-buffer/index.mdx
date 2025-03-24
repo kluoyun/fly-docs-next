@@ -4,21 +4,21 @@ sidebar_position: 1
 
 # Introduction
 
-# Usage of LLL Buffer
+# LLL Filament Buffer Usage
 
-    The LLL filament buffer is a device specifically designed for remote feeding of 3D printers, aimed at simplifying the loading and unloading of materials. This buffer comes equipped with two buttons for feeding and retracting material, allowing users to perform motorized feeding and retraction operations.
+    The LLL filament buffer is a device specially designed for remote filament feeding of 3D printers, aiming to simplify the loading and unloading operations of filaments. The buffer is equipped with two buttons, one for feeding and one for retracting, allowing users to perform electric feeding and retracting operations.
 
 ### Buffer Function:
 
-    When the extruder of the 3D printer pulls in filament, if it tugs on the remote material rack, the buffer detects this action and automatically feeds out a segment of material towards the hot end. This feeding action repeats with each tug, effectively reducing the pulling force on the filament by the extruder, maintaining a stable pushing force, and thereby enhancing the consistency of print quality.
+    When the extruder of a 3D printer feeds filament and pulls the filament spool at the far end, the buffer will detect this action and automatically send a section of filament towards the hot end. Each time a pull occurs, the buffer will repeat this feeding operation. This can effectively reduce the extruder's pull on the filament, maintain the stability of the extruder's thrust, and thus improve the stability of the print quality.
 
-### Filament Runout Detection:
+### Filament Out Detection Function:
 
-    The buffer includes a filament runout detector which, upon detecting no material in the buffer, sends a signal to pause the 3D printer. To utilize this feature, signal pins need to be connected and the 3D printer's configuration modified. However, the buffer function can be used directly without any configuration changes.
+    The buffer is equipped with an inbuilt filament out detector. When it detects that there is no filament in the buffer, it will send a signal to the 3D printer to pause printing. To use this function, you need to connect the signal pin and modify the configuration of the 3D printer. However, the buffer function can be used directly without modifying the configuration.
 
-    Through these design features, the LLL filament buffer not only simplifies material handling but also improves the stability and quality of the 3D printing process.
+    Through the above functional design, the LLL filament buffer not only simplifies filament operations but also improves the stability and print quality of the 3D printing process.
 
-* Please note that the functions can only be used after the material is inserted; otherwise, you can only control the motor via the buttons.
+* Please note that the function can only be used after the filament is connected; otherwise, the motor can only be controlled by the buttons.
 
 ## Model Download Link
 
@@ -27,21 +27,25 @@ sidebar_position: 1
 ## Configuration Reference
 
     ```cfg
-    [filament_switch_sensor filament_runout]
+    [filament_switch_sensor Filament Out Detection]
     pause_on_runout: true
     switch_pin: ^PG7
     runout_gcode:
             PAUSE
-            M118 Material Out
+            M118 Filament Out
     insert_gcode:
-            M118 Material In
+            M118 Filament In
     ```
 
 ## Wiring Reference
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-buffer/img/buffer.webp').default} size="100%" align="center" />
 
+## Stepper Motor Version Wiring Diagram
 
-## Installation Diagram
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-buffer/img/lll2.webp').default} size="100%" align="center" />
+
+## Installation Schematic
 
 <PdfView file="https://cdn.mellow.klipper.cn/SCH-PDF/buffer.pdf"/>
+

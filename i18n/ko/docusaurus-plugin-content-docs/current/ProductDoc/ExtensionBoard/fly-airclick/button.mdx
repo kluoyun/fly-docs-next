@@ -1,0 +1,164 @@
+---
+sidebar_position: 6
+sidebar_label: 버튼 추가
+
+---
+
+# 무선 버튼 추가
+
+    :::info 중요한 정보
+    * 무선 버튼은 `CR927` 모델의 배터리를 장착해야 합니다.
+    :::
+
+    * 메인 화면으로 돌아간 후 빨간색 상자 안의 `+`를 클릭합니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button.webp').default} size="80%" align="Center" />
+    * 아래 화면이 나타나면, 배터리를 정상적으로 장착한 무선 버튼을 한 번 눌러야 합니다.
+    * 빨간색 상자 안에 무선 버튼의 고유 ID가 자동으로 생성됩니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-1.webp').default} size="80%" align="Center" />
+    * 빨간색 상자 안에 원하는 이름으로 버튼을 지정합니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-2.webp').default} size="80%" align="Center" />
+    * 첫 번째 빨간색 상자를 클릭하면 두 번째 파란색 상자가 나타납니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-3.webp').default} size="80%" align="Center" />
+
+
+    :::danger 주의사항
+
+    * 사용자 정의 GCODE와 요청 API는 무선 연결을 통해 제어됩니다.
+    * GPIO 트리거는 유선으로 제어됩니다.
+
+    :::
+
+## 사용자 정의 GCODE
+    * 사용자 정의 `GCODE`를 입력할 수 있으며, 빨간색 상자 안에 실행하려는 코드 또는 매크로 이름을 입력하면 AirClick이 자동으로 프린터에 전송하여 실행합니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/gcode.webp').default} size="80%" align="Center" />
+
+## 요청 API
+
+<Tabs>
+    <TabItem value="ka" label="Klipper API 설정" default>
+
+        1. 미리 정의된 API는 사용자 정의 매크로, 긴급 중지, Klipper 재시작, 펌웨어 재시작, 시스템 종료 등을 구현할 수 있습니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/api.webp').default} size="80%" align="Center" />
+
+        2. 사용자 정의 API 설명
+            - 모든 API는 문서 [Moonraker API](https://moonraker.readthedocs.io/en/latest/web_api/)를 참조하십시오.
+            - `method`는 Moonraker API의 `method`와 일치해야 합니다.
+            - `params`는 Moonraker API의 `params`와 일치해야 합니다.
+        3. 아래는 특정 파일 인쇄 시작 API 예제입니다.
+            - 다음 이미지는 Moonraker 공식 문서의 예제입니다.
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-1.webp').default} size="80%" align="Center" />
+            - 다음은 AirClick의 API 입력 예제입니다.
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-2.webp').default} size="80%" align="Center" />
+        4. 이 버튼을 저장하면 특정 파일을 인쇄할 수 있습니다.
+    </TabItem>
+    <TabItem value="ra" label="RRF API 설정">
+        1. 사용자 정의 API 설명
+            - 모든 API는 문서 [RepRapFirmware HTTP API](https://github.com/Duet3D/RepRapFirmware/wiki/HTTP-requests)를 참조하십시오.
+            - GET 요청 인터페이스만 지원합니다.
+            - `method`는 RRF HTTP API의 `uri`와 일치해야 합니다.
+            - `params`는 RRF HTTP API의 `url query`와 일치해야 합니다.
+        2. 아래는 특정 파일 또는 폴더 삭제 API 예제입니다.
+            - 다음 이미지는 RRF 공식 문서의 예제입니다.
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-1.webp').default} size="80%" align="Center" />
+            - 다음은 AirClick의 API 입력 예제입니다.
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-2.webp').default} size="80%" align="Center" />
+            - 여기서 `params`는 URL 매개변수를 JSON 형식으로 변환해야 합니다. 예를 들어 `/?aaaa=bbb&cccc=ddd`는 다음과 같이 수정됩니다.
+            - 수정 후
+                ```json
+                {
+                    "aaaa": "bbb",
+                    "cccc": "ddd"
+                }
+                ```
+        3. 이 버튼을 저장하면 특정 파일 또는 폴더를 삭제할 수 있습니다.
+    </TabItem>
+
+    <TabItem value="ba" label="BambuLab API 설정">
+        1. 미리 정의된 API는 인쇄 일시 중지, 인쇄 취소, LED 제어 등을 구현할 수 있습니다.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-1.webp').default} size="80%" align="Center" />
+            - LED 제어는 자동 스위치 모드를 권장합니다. 이 모드에서는 LED 상태를 자동으로 감지하고 상태를 전환하여 한 번의 클릭으로 켜거나 끕니다.
+        2. 사용자 정의 API 설명
+            - BambuLab API는 관련 Github Open BambuAPI 문서를 찾아야 합니다.
+        3. 아래는 인쇄 속도 설정 API 예제입니다.
+            - 아래는 BambuLab 로컬 네트워크 MQTT 전송 전체 매개변수입니다.
+                ```json
+                {
+                    "print": {
+                        "sequence_id": "0",
+                        "command": "print_speed",
+                        "param": "2" // 인쇄 속도 레벨 문자열
+                                     // 1 = 조용
+                                     // 2 = 표준
+                                     // 3 = 스포츠
+                                     // 4 = 광기스러움
+                    }
+                }
+                ```
+            - 다음은 AirClick의 API 입력 예제입니다.
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-2.webp').default} size="80%" align="Center" />
+        4. 이 버튼을 저장하면 인쇄 속도를 설정할 수 있습니다.
+    </TabItem>
+
+</Tabs>
+    
+
+## GPIO 트리거 (Klipper 전용)
+    * GPIO 트리거는 STM32F072와 Klipper를 연결해야 합니다.
+    * 펌웨어 플래싱 및 연결은 이 문서를 참조하십시오. <Button variant="contained" disableElevation href="/docs/ProductDoc/ExtensionBoard/fly-airclick/offline-operation-support">펌웨어 플래싱 및 연결</Button>
+    * 사용 가능한 IO는 `PB0`에서 `PB9`까지 총 열 개의 IO이며, 일반적으로 펌웨어를 정상적으로 플래싱하고 Klipper에 연결한 후에는 아래의 참고 구성대로 정상적으로 구성할 수 있습니다.
+    
+        ```cfg
+        [mcu AirClick]
+        serial: /dev/serial/by-id/usb-Klipper_stm32f072xb_AirClick-if00
+        ### USBID를 검색한 후 이 부분을 수정해야 합니다.
+
+        [gcode_button _test]
+        pin: ^!AirClick:PB0
+        press_gcode:
+            M118 PB0
+
+        [gcode_button _test1]
+        pin: ^!AirClick:PB1
+        press_gcode:
+            M118 PB1
+
+        [gcode_button _test2]
+        pin: ^!AirClick:PB2
+        press_gcode:
+            M118 PB2
+
+        [gcode_button _test3]
+        pin: ^!AirClick:PB3
+        press_gcode:
+            M118 PB3
+
+        [gcode_button _test4]
+        pin: ^!AirClick:PB4
+        press_gcode:
+            M118 PB4
+
+        [gcode_button _test5]
+        pin: ^!AirClick:PB5
+        press_gcode:
+            M118 PB5
+
+        [gcode_button _test6]
+        pin: ^!AirClick:PB6
+        press_gcode:
+            M118 PB6
+
+        [gcode_button _test7]
+        pin: ^!AirClick:PB7
+        press_gcode:
+            M118 PB7
+
+        [gcode_button _test8]
+        pin: ^!AirClick:PB8
+        press_gcode:
+            M118 PB8
+
+        [gcode_button _test9]
+        pin: ^!AirClick:PB9
+        press_gcode:
+            M118 PB9
+        ```

@@ -1,37 +1,34 @@
 ---
 sidebar_position: 11
-sidebar_label: メインコントローラーファン
+sidebar_label: 主控ファン
 ---
 
+# ボードに内蔵された5Vファンポート
 
-
-
-# 5Vファンの搭載
-
-## C8は、メインコントローラーの冷却用に5Vの制御可能なインターフェースを搭載しています。接続方法は以下の図の通りです。
+## C8ボードには、メインコントローラーの冷却用に制御可能な5Vインターフェースが内蔵されています。配線方法は以下の図を参照してください。
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/corefan.webp').default} size="80%" align="center" />
 
 ## 参照設定
 
     ```cfg
-    [mcu host]                      # FlyOSはLinux MCUをあなたのためにデフォルトで生成します。定義するだけで使用できます           
+    [mcu host]                      # FlyOSは既にあなたのためにlinux MCUを生成しています。定義するだけで使用できます。           
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # ホストマシンの温度
+    [temperature_sensor FLY-π]      # アップボードの温度
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # ホストマシンの冷却ファン
-    pin: host:gpiochip1/gpio103     # ホストマシンのファンピン
+    [temperature_fan core_fan]      # アップボードの冷却ファン
+    pin: host:gpiochip1/gpio103     # アップボードのファンピン
     max_power: 1.0
-    sensor_type: temperature_host   # ホストマシンのコントローラー温度に設定
-    control:watermark               # 制御方式
-    target_temp: 48                 # ホストマシンの冷却ファン起動温度
-    min_temp: 0                     # 最低温度、この温度以下でエラーが発生します
-    max_temp: 90                    # 最高温度、この温度以上でエラーが発生します
+    sensor_type: temperature_host   # アップボードのメインコントローラー温度に設定
+    control:watermark               # 制御方法
+    target_temp: 48                 # アップボードの冷却ファンが動作開始する温度
+    min_temp: 0                     # 最低温度、これより低い温度ではエラーが発生します
+    max_temp: 90                    # 最高温度、これより高い温度ではエラーが発生します
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # 最大回転速度、フルパワー時の80%
-    min_speed: 0.3                  # 最小回転速度、フルパワー時の30%
+    max_speed: 0.8                  # 最大回転速度、フルパワー運転時の80%
+    min_speed: 0.3                  # 最小回転速度、フルパワー運転時の30%
     ```

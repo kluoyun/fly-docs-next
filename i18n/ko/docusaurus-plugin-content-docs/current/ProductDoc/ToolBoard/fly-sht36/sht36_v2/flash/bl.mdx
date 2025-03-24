@@ -1,10 +1,7 @@
 ---
 sidebar_position: 6
-sidebar_label: BL 펌웨어, 무시하세요
+sidebar_label: BL 펌웨어, 무시하세요!
 ---
-
-
-
 
 import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
@@ -19,112 +16,111 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <CANBOOT />
 
-    :::tip
+    :::팁
 
-    * SHT36 V2는 CAN 연결만 사용할 수 있습니다.
-    * 여기서는 CAN 펌웨어가 500K 및 1M 속도로 제공됩니다.
+    * SHT36 V2는 CAN 연결만 사용 가능합니다.
+    * 이곳에서는 500K와 1M 속도의 CAN 펌웨어를 제공합니다.
+
+    :::
+
+    :::경고 주의사항
+
+    * APMF072는 컴퓨터로 펌웨어를 갱신해야 합니다.
+    * STM32F103은 상위기기로 펌웨어를 갱신해야 합니다.
 
     :::
 
 
-    :::warning 주의사항
+## 펌웨어 모드 진입
 
-    * APMF072는 컴퓨터를 사용하여 펌웨어를 플래시해야 합니다.
-    * STM32F103은 호스트 소프트웨어를 통해 펌웨어를 업데이트해야 합니다.
+    :::팁
 
-    :::
-
-
-## 플래시 모드 진입
-
-    :::tip
-
-    BOOT 점퍼는 원 안에 있습니다.
+    동그라미 친 것은 BOOT 스위치입니다.
 
     :::
 
-    * STM32F103은 이 단계를 수행할 필요가 없습니다!!!
-    * 전원을 완전히 꺼진 상태에서 BOOT 버튼을 누른 채로 데이터 전송 케이블을 보드와 장치에 연결하세요.
+    * STM32F103은 이 단계를 수행하지 않아도 됩니다!!!!
+    * 메인보드가 완전히 전원이 꺼진 상태에서, BOOT 버튼을 누른 채 데이터 전송용 케이블 한쪽을 메인보드에, 다른 쪽을 장치에 연결합니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/boot.webp').default} size="100%" align="center" />
 
-## 펌웨어 플래시
+## 펌웨어 갱신
     <Tabs>
-        <TabItem value="win" label="STM32F072 윈도우 사용하여 플래시하는 방법" default>
+        <TabItem value="win" label="STM32F072를 Windows로 펌웨어 갱신하는 방법" default>
 
-            * SHT36_V2의 Katapult 펌웨어  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">펌웨어 자동 다운로드</Button>
+            * SHT36_V2의 Katapult 펌웨어  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">펌웨어 자동 다운로드하기</Button>
 
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="STM32F072 호스트 소프트웨어 사용하여 플래시하는 방법">
+        <TabItem value="linux" label="STM32F072를 상위기기로 펌웨어 갱신하는 방법">
             
             <Katapult />
 
-            4. 펌웨어 플래시
+            4. 펌웨어 갱신
 
-            :::tip
+            :::팁
 
-            하나의 펌웨어만 플래시하면 됩니다.
+            하나의 펌웨어만 갱신하면 됩니다.
 
             :::
 
-            * 아래는 500K CAN 속도의 펌웨어 플래시 명령어입니다.
+            * 아래는 500K CAN 속도의 펌웨어 갱신 명령어입니다.
             ```bash
             sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_500K.BIN
             ```
                        
-            * 아래는 1M CAN 속도의 펌웨어 플래시 명령어입니다.
+            * 아래는 1M CAN 속도의 펌웨어 갱신 명령어입니다.
             ```bash
             sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_072_1M.BIN
             ```
 
 
-            5. 아래 그림의 화살표에 표시된 내용이 ``File downloaded successfully``로 나타나면 플래시가 성공적으로 완료된 것입니다.
+            5. 아래 화살표 부분에 표시된 내용 ``File downloaded successfully``이 나타나면 펌웨어 갱신이 성공했습니다.
 
                 <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
-            :::tip
+            :::팁
 
-            플래시가 완료되면, 보드의 전원을 한 번 완전히 꺼야 합니다.
+            펌웨어 갱신이 끝나면, 메인보드를 완전히 전원을 차단해야 합니다.
 
             :::
 
         </TabItem>
-        <TabItem value="apm" label="APM32F072 윈도우 사용하여 플래시하는 방법" default>
+        <TabItem value="apm" label="APM32F072를 Windows로 펌웨어 갱신하는 방법" default>
 
-           * SHT36_V2의 Katapult 펌웨어  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">펌웨어 자동 다운로드</Button>
+           * SHT36_V2의 Katapult 펌웨어  <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_V2.zip">펌웨어 자동 다운로드하기</Button>
 
             <APM />
             
         </TabItem>
-        <TabItem value="103" label="STM32F103 klipper를 사용하여 펌웨어 업데이트 방법" default>
+        <TabItem value="103" label="STM32F103을 Klipper로 펌웨어 갱신하는 방법" default>
 
             <LS />
 
-            * 사전 컴파일된 펌웨어를 가져옵니다.
-            * 여기에는 사전 컴파일된 펌웨어가 포함되어 있습니다.
-            * 호스트 소프트웨어가 인터넷에 연결되어 있어야 설치가 가능합니다.
-            * 호스트 소프트웨어는 아래 명령을 실행하여 펌웨어 패키지를 다운로드해야 합니다.
+            * 미리 컴파일된 펌웨어를 가져오기
+            * 여기에는 미리 컴파일된 펌웨어가 포함되어 있습니다.
+            * 상위기기가 인터넷에 연결되어 있어야 설치할 수 있습니다.
+            * 상위기기는 아래 명령어를 실행하여 펌웨어 패키지를 다운로드해야 합니다.
 
             ```bash
             cd && git clone https://github.com/FengHua741/FLY_Katapult.git
             ```
 
-            * 펌웨어 패키지를 이미 다운로드한 경우, 업데이트 후 나머지 작업을 진행하는 것이 좋습니다.
+            * 펌웨어 패키지를 이미 다운로드한 경우 업데이트한 후 나머지 작업을 수행하는 것이 좋습니다.
 
             ```bash
             cd ~/FLY_Katapult && git pull
             ```
 
-            * 이 방법은 CAN을 통해 도구 보드의 기존 Katapult 펌웨어를 직접 업데이트합니다.
-            * `<Toolboard ID>`를 STM32F103 컨트롤러의 도구 보드 CAN ID로 변경해야 합니다.
-            * 아래는 103 버전 1M CAN 속도의 펌웨어 업데이트 명령어입니다.
+            * 이 방법은 CAN 업데이트 도구를 통해 기존 Katapult 펌웨어를 갱신합니다.
+            * `<Toolboard ID>`를 STM32F103 주요 컨트롤러의 도구보드 CAN ID로 바꾸어야 합니다.
+            * 아래는 103 버전 1M CAN 속도의 펌웨어 갱신 명령어입니다.
 
             ```bash
             ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_1M.BIN  -u <Toolboard ID>
             ```
 
-            * 아래는 072 버전 500K CAN 속도의 펌웨어 업데이트 명령어입니다.
+            * 아래는 072 버전 500K CAN 속도의 펌웨어 갱신 명령어입니다.
             ```bash
             ~/klippy-env/bin/python ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/developer/SHT36/FLY_SHT36V2_103_500K.BIN  -u <Toolboard ID>
             ```
@@ -132,7 +128,7 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
                 </TabItem>
             </Tabs>
 
-## 펌웨어가 시작되었는지 확인
+## 펌웨어 시작 확인
 
-    * 펌웨어가 정상적으로 시작되면 LED가 깜빡이기 시작합니다.
+    * 펌웨어가 정상적으로 시작되면 LED가 깜빡거립니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.webp').default} size="100%" align="center" />

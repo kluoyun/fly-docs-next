@@ -1,156 +1,112 @@
 ---
 sidebar_position: 7
 sidebar_label: Eddy Usage
----
 
+---
 
 import LDC1612 from "/docs/DebugDoc/faq/_1612.mdx";
 
 # Eddy Usage
 
     :::info
-
-    * Please note that it is recommended to use a separate Z limit for bed sweeping, and it is not recommended to use the bed sweeping as the Z limit.
-    * When installing Eddy, the position of the bottom relative to the nozzle should be at least 1 - 2 mm above the nozzle.
-    * When calibrating the Eddy frequency, the coil PCB should be at least 5 mm away from the heated bed.
-    * Please do not test the entire heated bed at room temperature, and do not turn on the heated bed during the test.
-
+  * If you have previously configured eddy settings, please delete them
+  * When installing Eddy, the coil should be above the nozzle and 0.6-0.8cm away from the nozzle
+  * Do not turn on the heated bed during testing
+  * Before use, delete the `probe` configuration in the settings
     :::
+
+    :::warning Notice
+    * For multi-Z axis machines, manual leveling needs to be done once properly
+    :::
+
 
 ## Wiring Diagram
 
-    * The trademark should face down.
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/1612.webp').default} size="100%" align="left" />
+    * Install with the trademark facing the heated bed
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/img/1612.webp').default} size="40%" align="left" />
 
 
-## Reference Configuration and Usage Instructions
+## Usage Instructions
+   * Log in to the terminal via SSH tool using the IP address, and execute the script
+    Download the required SSH tool <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">MobaXTerm tool</Button>
 
-##### Add the following configuration to the `printer.cfg` configuration file to debug Eddy.
 
-    ### Bed Sweeping Configuration
-
-        ```cfg
-        [probe_eddy_current fly_eddy_probe]
-        sensor_type: ldc1612
-        z_offset: 2.0
-        i2c_address: 43
-        i2c_mcu: SB2040
-        i2c_bus: i2c1b
-        x_offset: 0
-        y_offset: 0
-        speed:40
-        lift_speed: 5
-        ```
-
-    ### Temperature Compensation Configuration
-
-        ```cfg
-        [temperature_probe fly_eddy_probe]
-        sensor_type:Generic 3950
-        sensor_pin:SB2040:gpio28
-        ```
-
-    ## Mesh Bed Commands
-
-        * Add the following macro to the `printer.cfg` configuration.
-            ```bash
-            [gcode_macro BED_MESH_CALIBRATE]
-             rename_existing: _BED_MESH_CALIBRATE
-             gcode: 
-                   _BED_MESH_CALIBRATE METHOD=rapid_scan {rawparams}
-            ```
-        * For the local area network bed command, it is necessary to ensure that Klipper can use the object exclusion function. It is recommended to add it to the start macro.
-            ```bash
-            BED_MESH_CALIBRATE METHOD=rapid_scan adaptive=1 
-            ```
-
-### bed_mesh Configuration
-
-    * For the `horizontal_move_z` parameter in [bed_mesh], it is recommended to set it to 2 to make Eddy as close to the platform as possible when scanning the platform.
-
-    ```cfg
-    [bed_mesh]
-    horizontal_move_z: 2
+<Tabs>
+  <TabItem value="eddy1" label="International Use">
+    # Please use the following command for international users
+    ### Start installing the eddy automated script
+    * Open the downloaded SSH tool, enter the following command and press Enter, then click to copy
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
     ```
-## Anti-collision Macro
-
-    ### `[quad_gantry_level]` Bed Sweeping Optimization
-        * If `[quad_gantry_level]` is configured, the following macro can be added to the configuration. If not, there is no need to add it.
-        * This macro will reduce the detection height as the height difference of the gantry decreases.
-            ```cfg
-            [gcode_macro QUAD_GANTRY_LEVEL]
-            rename_existing: _QUAD_GANTRY_LEVEL
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_QGL
-                BED_MESH_CLEAR
-                {% if not printer.quad_gantry_level.applied %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _QUAD_GANTRY_LEVEL horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_QGL
-            ```
-
-    ### `[z_tilt]` Bed Sweeping Optimization
-
-        * If `[z_tilt]` is configured, the following macro can be added to the configuration. If not, there is no need to add it.
-        * This macro will reduce the detection height as the height difference of the gantry decreases.
-            ```cfg
-            [gcode_macro Z_TILT_ADJUST]
-            rename_existing: _Z_TILT_ADJUST
-            gcode:
-                SAVE_GCODE_STATE NAME=STATE_Z_TILT
-                BED_MESH_CLEAR
-                {% if not printer.z_tilt.applied %}
-                _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
-                {% endif %}
-                _Z_TILT_ADJUST horizontal_move_z=2 METHOD=rapid_scan ADAPTIVE=1
-                # G28 Z
-                RESTORE_GCODE_STATE NAME=STATE_Z_TILT
-            ```
-
-    ### Eddy is likely to be interfered by the heated bed during bed sweeping optimization macro
-
-        * If a high-power AC heated bed (above 500W) is used.
-        * The following macro is to turn off the heated bed during bed sweeping and reheat it after the bed sweeping is completed.
-            ```cfg
-            [gcode_macro BED_MESH_CALIBRATE]
-            rename_existing: _BED_MESH_CALIBRATE
-            gcode:
-                {% set TARGET_TEMP = printer.heater_bed.target %}
-                M140 S0
-                _BED_MESH_CALIBRATE {rawparams}
-                M140 S{TARGET_TEMP}
-            ```
-
-   # Debugging Steps: 
-   ## The First Step: Modify the Frequency
-
-    ### Default Frequency Modification of ldc16121612
-    This method is only for sht36-v3/SB2040-v3 or SB2040-Pro-v3.
-    The Mobaxterm tool can be used to execute the commands.
-
-    Download the required <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">Mobaxterm tool</Button>.
-
-    [For detailed usage, please refer to](/docs/ProductDoc/SBC/fly-pi-v2/ssh).
-
-
-    Execute the first command and press Enter.
-
-    ```cfg
-sed -i 's/LDC1612_FREQ = 12000000/LDC1612_FREQ = 40000000/g' ~/klipper/klippy/extras/ldc1612.py
+   * Add the following configuration to the `moonraker.conf` file in the `fluidd` web page for easier updates later
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://github.com/xishangyue/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
     ```
+   * If updated, run the following command
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+</TabItem>
 
-    Execute the second command and press Enter.
-  ```cfg
-grep "LDC1612_FREQ = 40000000" ~/klipper/klippy/extras/ldc1612.py
-  ```
-    If the replacement is successful, a line with `LDC1612_FREQ = 40000000` will be returned, indicating that the replacement is successful. If there is no return, it means the replacement is not successful.
-    Or use this command to check if it is successful.
-    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/1612.webp').default} size="110%" align="left" />
-```cfg
-sed -n '10,15p' ~/klipper/klippy/extras/ldc1612.py
-```
-   <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/ldc161240mhz.webp').default} size="30%" align="left" />
+  <TabItem value="eddy2" label="Domestic Use">
+# Please use the following command for domestic users
+### Start installing the eddy automated script
+    * Open the downloaded SSH tool, enter the following command and press Enter, then click to copy
+    
+    ```bash
+    rm -rf ./Eddy-Automated-Configuration-Script
+    git clone https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+   * Add the following configuration to the `moonraker.conf` file in the `fluidd` web page for easier updates later
+    ```bash
+    [update_manager Eddy-Automated-Configuration-Script]
+    type: git_repo
+    channel: dev
+    path: ~/Eddy-Automated-Configuration-Script
+    origin: https://gitee.com/xi2746810485/Eddy-Automated-Configuration-Script.git
+    primary_branch: main
+    install_script: eddy1.sh
+    managed_services: klipper
+    ```
+    * If updated, run the following command
+    ```bash
+    sudo chmod +x ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ./Eddy-Automated-Configuration-Script/eddy1.sh
+    ```
+  </TabItem>
+</Tabs>
 
-    <LDC1612 /> 
+
+* If executed, a message will appear asking for your host machine password
+
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/EDDY1.webp').default} size="100%" align="left" />
+
+* If the message shown is "Select Input", input the corresponding number for your printer, with options in Chinese and English, and press Enter after inputting
+* Select `3z` to ensure that the `printer.cfg` has the `z_tilt` configuration, or select `4z` to ensure that the `printer.cfg` has the `quad_gantry_level` configuration. For independent dual Z, select `3z` [Configuration Reference](https://mellow.klipper.cn/docs/category/klipper-%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE)
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy2.webp').default} size="100%" align="left" />
+
+* If the image shown appears, you need to input `Y` and press Enter
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy4.webp').default} size="100%" align="left" />
+
+* If you are using `sb2040-v3-PROV3`, input `y` and press Enter
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/img/eddy7.webp').default} size="100%" align="left" />
+
+* If the image shown indicates success
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy3.webp').default} size="70%" align="left" />
+
+<LDC1612 />

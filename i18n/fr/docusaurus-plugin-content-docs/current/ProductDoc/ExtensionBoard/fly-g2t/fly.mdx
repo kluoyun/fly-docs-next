@@ -1,79 +1,78 @@
 ---
 sidebar_position: 3
-sidebar_label: Tutoriel d'utilisation de FLY PI
+sidebar_label: Guide d'utilisation de FLY PI
 ---
 
+# Notice concernant l'utilisation de FLY en tant que station supérieure
 
+## Remarques :
 
-# Manuel d'utilisation de FLY
-
-## Points d'attention :
-
-    * Assurez-vous que l'alimentation de l'ordinateur est coupée avant d'installer la carte d'extension.
-    * Évitez d'utiliser la carte d'extension dans un environnement humide ou poussiéreux.
-    * Lors de l'installation de l'écran, veuillez ne pas le brancher ou le débrancher sous tension et faites attention à la direction du câble de l'écran pour éviter tout dommage.
-    * Lors de l'installation du ventilateur, veuillez vérifier les spécifications de courant et de tension du ventilateur pour éviter tout dommage.
-    * L'ordinateur FLY ne peut utiliser que l'interface RS232 centrale, la prise FAN et l'interface FPC pour l'écran !!!
-    * Les versions de l'ordinateur FLY compatibles avec le logiciel G2T sont `PI V2`, `C8`, `PRO X10`
-    * Les séries `Gemini` et `PI V1` ne sont pas compatibles
+- Assurez-vous que la station supérieure est éteinte avant d'installer l'extension.
+- Évitez d'utiliser l'extension dans un environnement humide ou poussiéreux.
+- Lors de l'installation de l'écran, veillez à ne pas le débrancher lorsqu'il est sous tension et assurez-vous de la bonne orientation du câble, afin d'éviter tout dommage.
+- Lors de l'installation du ventilateur, vérifiez les spécifications de courant et de tension pour éviter tout dommage.
+- La station supérieure FLY n'utilise que l'interface RS232 centrale, pas les ports FAN et FPC de l'écran.
+- Les stations supérieures FLY qui peuvent utiliser G2T sont `PI V2`, `C8`, `PRO X10`.
+- Les séries `Gemini` et `PI V1` ne peuvent pas être utilisées.
 
 ## Installation de G2T
 
-    * Voici une référence
-        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.webp').default} size="60%" align="left" />
-    * Référence de câblage
-        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.webp').default} size="60%" align="left" />
+- Ci-dessous est une référence :
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.webp').default} size="60%" align="left" />
+- Référence de câblage :
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.webp').default} size="60%" align="left" />
 
+## Méthode d'utilisation de l'interface RS232 embarquée avec l'outil
 
-## Utilisation de l'outil via la connexion RS232 embarquée
+- Après avoir flashé le système le plus récent sur la station supérieure FLY, vous devez accéder à **l'adresse IP de la station supérieure :9999**.
+- La station supérieure FLY n'utilise que l'interface RS232 centrale, pas les ports FAN et FPC de l'écran.
+- Dans les paramètres du système, trouvez **UART1** et sauvegardez en redémarrant.
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.webp').default} size="100%" align="left" />
 
-    * Après avoir installé le dernier système sur l'ordinateur FLY, vous devez accéder à **l'IP de l'ordinateur + :9999**
-    * L'ordinateur FLY ne peut utiliser que l'interface RS232 centrale, la prise FAN et l'interface FPC pour l'écran !!!
-    * Dans les paramètres du système, trouvez **UART1** et enregistrez puis redémarrez
-        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.webp').default} size="100%" align="left" />
+- Ci-dessous est une configuration de référence :
 
-    * Voici la configuration de référence
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyS1
+    baud: 250000
+    restart_method:command
+    ```
 
-        ```cfg
-        [mcu] 
-        serial: /dev/ttyS1
-        baud: 250000
-        restart_method:command
-        ```
+## Utilisation du ventilateur embarqué 5VFAN
 
-## Utilisation du ventilateur 5V embarqué
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.webp').default} size="50%" align="left" />
 
-            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.webp').default} size="50%" align="left" />
+    ```cfg
+    [mcu host]         
+    serial: /tmp/klipper_host_mcu 
 
-        ```cfg
-        [mcu host]         
-        serial: /tmp/klipper_host_mcu 
+    [temperature_sensor FLY Pi]
+    sensor_type: temperature_host
 
-        [temperature_sensor FLY Pi]
-        sensor_type: temperature_host
+    [temperature_fan core_fan]      # Ventilateur de refroidissement de la station supérieure
+    pin: host:gpiochip1/gpio102     # Broche du ventilateur de la station supérieure
+    max_power: 1.0
+    sensor_type: temperature_host   # Défini comme la température du contrôleur principal de la station supérieure
+    control:watermark               # Mode de contrôle
+    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement de la station supérieure
+    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
+    max_temp: 90                    # Température maximale, au-delà de laquelle une erreur sera signalée
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                  # Vitesse maximale, correspondant à 80% de la puissance maximale
+    min_speed: 0.3                  # Vitesse minimale, correspondant à 30% de la puissance maximale
+    ```
 
-        [temperature_fan core_fan]      # Ventilateur de refroidissement de l'ordinateur
-        pin: host:gpiochip1/gpio102     # Broche du ventilateur de l'ordinateur
-        max_power: 1.0
-        sensor_type: temperature_host   # Réglé sur la température du contrôleur principal de l'ordinateur
-        control:watermark               # Mode de contrôle
-        target_temp: 48                 # Température de déclenchement du ventilateur de refroidissement de l'ordinateur
-        min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
-        max_temp: 90                    # Température maximale, au-dessus de laquelle une erreur sera signalée
-        off_below: 0.10
-        kick_start_time: 0.50
-        max_speed: 0.8                  # Vitesse maximale, à 80% de la puissance maximale
-        min_speed: 0.3                  # Vitesse minimale, à 30% de la puissance maximale
+## Méthode d'utilisation de l'écran
 
-        ```
-
-## Utilisation de l'écran
-
-    * Après avoir installé le dernier système sur l'ordinateur FLY, vous devez accéder à **l'IP de l'ordinateur + :9999**
-        * fly-tft-v2-c est le choix pour l'écran tactile capacitif de 3,5 pouces
-        * fly-tft-v2-r est le choix pour l'écran tactile résistif de 3,5 pouces
-            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.webp').default} size="100%" align="left" />
+- Après avoir flashé le système le plus récent sur la station supérieure FLY, vous devez accéder à **l'adresse IP de la station supérieure :9999**
+    - fly-tft-v2-c est le choix pour un écran TFT capacitif de 3,5 pouces
+    - fly-tft-v2-r est le choix pour un écran TFT résistif de 3,5 pouces
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.webp').default} size="100%" align="left" />
 
 ### Installation de l'écran
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.webp').default} size="60%" align="left" />
+
+# Téléchargement des modèles
+    Téléchargez le modèle nécessaire <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/STEP/G2T.step">Modèle G2t</Button>

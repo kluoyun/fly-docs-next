@@ -2,16 +2,16 @@
 sidebar_position: 2
 ---
 
-# Klipper 断電続打
+# Klipper 断电续打
 
-:::danger 注意事項
+:::danger 须知
 
-* 一部の機器にのみ適用可能
+* 一部 phậnのマシンにのみ適用されます
 
 :::
 
 ## ブランチの切り替え
-    * 上位機にネットワーク接続するためにはSSを使用する必要があり、上位機がインターネットに接続されていることを確認してください
+    * SSを介してネットワーク経由でホストコンピューターに接続し、実行する必要があります。ホストコンピューターがインターネットに接続できることを確認してください
     ```bash
     git clone https://e.coding.net/g-ofpa1390/3D-Printers/klipper-dev.git -b fly-dev klipper
     ```
@@ -21,47 +21,47 @@ sidebar_position: 2
     ```cfg
     [power_resume]
     power_pin: PA10
-    is_shutdown: True # シャットダウン操作を実行するかどうか、デフォルトでは有効
+    is_shutdown: True # シャットダウン操作を実行するかどうか, デフォルトは有効
     start_gcode:
-        # 続打開始前に実行されるgcode
-        # 断電前に保存されたすべてのパラメータは{PR}で取得可能
-        # M118 {PR}を使って利用可能なすべてのパラメータを出力できます
-        M118 続打開始: {PR.print_stats.filename}
+        # 再開前に実行されるgcode
+        # シャットダウン前に保存されたすべてのパラメータは{PR}を使用して取得できます
+        # M118 {PR}を使用して利用可能なすべてのパラメータを出力できます
+        M118 再開: {PR.print_stats.filename}
         {% if PR.print_stats.info.total_layer %}
-            M118 総層数: {PR.print_stats.info.total_layer}
-            M118 中断層: {PR.print_stats.info.current_layer}
+            M118 総レイヤー数: {PR.print_stats.info.total_layer}
+            M118 現在の中断レイヤー: {PR.print_stats.info.current_layer}
         {% endif %}
         M118 中断位置: X:[{PR.POS_X}] Y:[{PR.POS_Y}] Z:[{PR.POS_Z}] E:[{PR.POS_E}]
-        M140 S{PR.bed.target}      ; ホットベッド温度の設定
-        # M104 S180                ; ノズル温度の設定
-        # M109 S180                ; ノズルが設定温度に達するまで待機
+        M140 S{PR.bed.target}      ; ホットベッドの温度を設定
+        # M104 S180                ; エクストルーダーの温度を設定
+        # M109 S180                ; エクストルーダーが設定温度に達するまで待機
         G91                        ; 相対座標
-        G1 Z2 F100                 ; Zを上げてXYの原点復帰準備
+        G1 Z2 F100                 ; Zを上げて、X,Yをリセットする準備
         G90                        ; 絶対座標
-        G28 X Y                    ; XYの原点復帰
-        M140 S{PR.bed.target}      ; ホットベッド温度の設定
-        M104 S{PR.extruder.target} ; ノズル温度の設定
+        G28 X Y                    ; XYをリセット
+        M140 S{PR.bed.target}      ; ホットベッドの温度を設定
+        M104 S{PR.extruder.target} ; エクストルーダーの温度を設定
         M190 S{PR.bed.target}      ; ホットベッドが設定温度に達するまで待機
-        M109 S{PR.extruder.target} ; ノズルが設定温度に達するまで待機
-        M106 S255                  ; 冷却ファンをオンにする
-        M83                        ; 相対押出
+        M109 S{PR.extruder.target} ; エクストルーダーが設定温度に達するまで待機
+        M106 S255                  ; ファンをオンにする
+        M83                        ; 相対的なエクストルーダー
         G1 E10 F400                ; 少し押し出す
         G90                        ; 絶対座標
-        G1 F{PR.gcode_move.speed}  ; 移動速度の設定
+        G1 F{PR.gcode_move.speed}  ; 移動速度を設定
         G1 X{PR.POS_X} Y{PR.POS_Y} Z{PR.POS_Z} ; 開始位置に移動
         {% if PR.gcode_move.absolute_coordinates %}
-            G90 ; 絶対移動
+            G90 ; 絶対的な運動
         {% else %}
-            G91 ; 相対移動
+            G91 ; 相対的な運動
         {% endif %}
         {% if PR.gcode_move.absolute_extrude %}
-            M82 ; 絶対押出
+            M82 ; 絶対的なエクストルーダー
         {% else %}
-            M83 ; 相対押出
+            M83 ; 相対的なエクストルーダー
         {% endif %}
-        G92 E{PR.POS_E} ; 押出位置の設定
+        G92 E{PR.POS_E} ; エクストルーダーの位置を設定
     shutdown_gcode:
         # シャットダウン前に実行されるgcode
-        M118 電源電圧低下、シャットダウン
+        M118 電圧が低いのでシャットダウンします
         # M112 ; 緊急停止
     ```

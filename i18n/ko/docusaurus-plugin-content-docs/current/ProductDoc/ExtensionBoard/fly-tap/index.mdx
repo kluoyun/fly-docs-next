@@ -7,29 +7,29 @@ sidebar_label: 소개
 
 # TAP
 
-## TAP 연결도!
+## TAP 연결 도식!
 
-    :::warning 주의사항
+    :::warning 주의
 
-    * 탭을 서보 포트에 연결하지 마세요. 제한 포트에 연결해야 합니다!!!
+    * tap을 서보 모터 포트에 연결하지 마십시오. 제한 포트에 연결해야 합니다!!
 
     :::
 
     <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/tap.webp').default} size="90%" align="left" />
 
 
-## TAP 설정 가이드
+## TAP 구성 가이드
 
 
     :::tip
 
-    * 탭은 노즐을 직접 제한 트리거로 사용하므로 XY 오프셋이 없습니다.
+    * tap은 노즐을 직접 사용하여 제한 트리거를 하기 때문에 XY 오프셋이 없습니다.
 
     :::
 
     :::tip
 
-    * TAP 수정해야 할 부분은 z 제한 및 프로브입니다.
+    * TAP는 Z 제한 및 프로브만 수정되었습니다.
 
     :::
     ```cfg
@@ -41,16 +41,16 @@ sidebar_label: 소개
 
     [probe]
     pin: ^sht36:PA1              # 신호 인터페이스
-    x_offset: 0                  # X축 - 센서 상대 노즐 오프셋
-    y_offset: 0                  # Y축 - 센서 상대 노즐 오프셋
-    #z_offset: 0                 # Z축 - 센서 상대 노즐 오프셋
-    speed: 3.0                   # 평준화 속도
-    lift_speed: 5                # 프로브 들어올리기 속도
-    samples: 3                   # 샘플링 횟수
-    samples_result: median       # 값 취득 방식(기본값은 median - 중앙값)
-    sample_retract_dist: 3.0     # 평준화 후 회수 거리
-    samples_tolerance: 0.075     # 샘플링 공차(너무 작은 값으로 설정하면 샘플링 횟수가 증가할 수 있음)
-    samples_tolerance_retries: 3 # 공차 초과 재시도 횟수
+    x_offset: 0                  # X축-센서가 노즐에 대한 오프셋
+    y_offset: 0                  # Y축-센서가 노즐에 대한 오프셋
+    #z_offset: 0                 # Z축-센서가 노즐에 대한 오프셋
+    speed: 3.0                   # 레벨링 속도
+    lift_speed: 5                # 프로브 들어올릴 속도
+    samples: 3                   # 샘플 횟수
+    samples_result: median       # 값 가져오기 방식 (기본값 median-중앙값)
+    sample_retract_dist: 3.0     # 레벨링 후퇴 거리
+    samples_tolerance: 0.075     # 샘플 허용 오차 (작은 값이 샘플 횟수를 증가시킬 수 있음에 유의)
+    samples_tolerance_retries: 3 # 허용 오차 초과 재시도 횟수
     activate_gcode:
         {% set PROBE_TEMP = 150 %}
         {% set MAX_TEMP = PROBE_TEMP + 5 %}
@@ -63,7 +63,7 @@ sidebar_label: 소개
             M109 S{ PROBE_TEMP }
             M106 S26
         {% else %}
-            # Temperature target is already low enough, but nozzle may still be too hot.
+            # 온도 목표가 이미 충분히 낮지만, 여전히 노즐이 너무 뜨거울 수 있습니다.
             {% if ACTUAL_TEMP > MAX_TEMP %}
                 { action_respond_info('Extruder temperature %.1fC is still too high, waiting until below %.1fC' % (ACTUAL_TEMP, MAX_TEMP)) }
                 TEMPERATURE_WAIT SENSOR=extruder MAXIMUM={ MAX_TEMP }

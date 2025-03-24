@@ -1,28 +1,24 @@
 ---
 sidebar_position: 5
-sidebar_label: 라즈베리 파이 등의 상위 기기 사용 네트워크 케이블 교재
+sidebar_label: 라즈베리파이 등 상위 기기 유선 네트워크 사용법
 ---
 
-
-
-
-# 네트워크 케이블 사용 교재
-
+# 유선 네트워크 사용법
 
     :::tip
 
-    네트워크 케이블 스크린 펌웨어는 수동으로 업데이트해야 합니다.
+    유선 네트워크 화면 펌웨어는 수동으로 업데이트해야 합니다.
 
     :::
 
-## 스크린 펌웨어 다운로드
+## 화면 펌웨어 다운로드
 
-    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">스크린 펌웨어 다운로드</Button>
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">화면 펌웨어 다운로드</Button>
 
-    * 32GB 이하의 메모리 카드가 필요하며, TF 카드의 전송 속도는 class10 이상이어야 합니다. 샌디스크 등의 브랜드 TF 카드 사용을 권장합니다.
+    * 최대 32GB 메모리 카드를 사용해야 하며, TF 카드의 전송 속도는 반드시 클래스 10급 또는 그 이상이어야 합니다. SanDisk 등의 브랜드를 권장합니다.
 
 
-## 네트워크 케이블 연결
+## 유선 네트워크 연결
 
     <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.webp').default} size="100%" align="left" />
 
@@ -39,22 +35,24 @@ C8 PI_V2 PI GEMINI 시리즈에 적합합니다.
 ## 서비스 설치
 
 :::tip
-다른 상위 기기는 서비스를 직접 설치해야 합니다.
+다른 상위 기기는 서비스를 설치해야 합니다.
 :::
 
 :::warning 주의사항
-설치 과정에서 인터넷 연결이 필요합니다.
+설치 과정에서는 인터넷 연결이 필요합니다.
 :::
     ```bash
     sudo apt install isc-dhcp-server
     ```
-## 네트워크 설정
+
+
+## 네트워크 구성
 
 :::tip
-* 이 교재는 상위 기기의 네트워크 포트를 점유하게 됩니다. 스크린 연결만 사용 가능합니다.
-* 필요하지 않으면 아래의 수정 및 추가 설정만 삭제하면 됩니다.
+* 이 튜토리얼은 상위 기기의 네트워크 포트를 사용하므로, 화면만 사용할 수 있습니다.
+* 필요하지 않다면 아래 수정 및 추가한 구성 내용을 모두 삭제하면 됩니다.
 :::
-    `/etc/network/interfaces.d/eth0` 수정
+    수정 `/etc/network/interfaces.d/eth0`
 
     ```bash
     auto eth0
@@ -66,7 +64,7 @@ C8 PI_V2 PI GEMINI 시리즈에 적합합니다.
     gateway 192.168.251.1
     ```
 
-    `/etc/default/isc-dhcp-server` 수정
+    수정 `/etc/default/isc-dhcp-server`
 
     ```bash
     # Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
@@ -93,7 +91,7 @@ C8 PI_V2 PI GEMINI 시리즈에 적합합니다.
     INTERFACES="eth0"
     ```
 
-    `/etc/dhcp/dhcpd.conf` 수정, 파일 끝에 아래 내용 추가
+    수정 `/etc/dhcp/dhcpd.conf`의 마지막 부분에 아래 내용 추가
 
     ```bash
     # ddns-update-style none;
@@ -106,15 +104,15 @@ C8 PI_V2 PI GEMINI 시리즈에 적합합니다.
     }
     ```
 
-    시스템을 먼저 재부팅한 후, 아래 서비스 재시작을 실행하거나
+    시스템을 재부팅한 후 다음의 서비스 재시작 명령어 실행
 
-    네트워크 서비스 재시작
+    또는 네트워크 서비스 재시작
 
     ```bash
     sudo systemctl restart NetworkManager
     ```
 
-    이 작업은 네트워크 연결을 끊고 다시 연결합니다.
+    이 작업은 인터넷 연결을 끊고 다시 연결합니다.
 
     서비스 재시작
 
@@ -122,14 +120,15 @@ C8 PI_V2 PI GEMINI 시리즈에 적합합니다.
     sudo systemctl restart isc-dhcp-server
     ```
 
-    로컬 IP 주소는 `192.168.251.100`이어야 합니다.
+    본인의 IP 주소는 `192.168.251.100`이어야 합니다.
 
-## WIFI 우선순위 높이기
+
+## WIFI 우선 순위 높이기
 
 :::tip
-* 이 명령은 네트워크 우선순위를 높이는 명령입니다. 추가하지 않으면 정상적인 인터넷 연결 및 다운로드가 불가능합니다!!!
+* 이 명령어는 네트워크 우선 순위를 높이는 것입니다. 이 명령어를 추가하지 않으면 정상적으로 인터넷에 연결되지 못하고 다운로드 등을 할 수 없습니다!!!
 :::
-    * 상위 기기의 `/etc/rc.local`에 아래 명령 추가
+    * 상위 기기의 `/etc/rc.local`에 아래 명령어 추가
 
     ```bash
     sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0

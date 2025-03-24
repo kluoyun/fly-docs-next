@@ -2,11 +2,6 @@
 sidebar_position: 3
 ---
 
-
-
-
-
-
 import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
 
 # TMC 5160
@@ -15,32 +10,31 @@ import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDo
 
 ## Basic Parameters
 
-    * Input Voltage: 12V-24V
-    * Maximum Current: 4.4A
+    * Input voltage: 12V-24V
+    * Maximum current: 4.4A
     * Suitable for: Marlin/Klipper/RRF firmware
-    * Drive Mode Support: TMC: SPI
-    * Stepper/direction interface with microPlyer interpolation
-    * Highest resolution is 256 microsteps
+    * Drive mode support: TMC: SPI
+    * Stepper/direction interface with microstepping interpolation microPlyer
+    * Highest resolution of 256 microsteps
     * Supports stealthChop2 silent operation and smooth motion
-    * Supports resonance suppression at mid-frequency resonance
-    * Supports spreadCycle high dynamic motor control chopper
-    * Supports dcStep load-dependent speed control
-    * Supports stallGuard2 high precision sensorless motor load detection
-    * Supports coolStep current control, up to 75% energy saving
+    * Supports resonance suppression for mid-frequency resonance
+    * Supports spreadCycle high-dynamic motor control chopper
+    * Supports dcStep load-related speed control
+    * Supports stallGuard2 high-precision sensorless motor load detection
+    * Supports coolStep current control, up to 75% energy savings
 
-## Mainboard Jumper Explanation
+## Motherboard Jumper Instructions
 
-    * TMC5160 uses SPI jumpers
-    * The SPI pin for the FLY drive is the fourth pin from the left on the bottom. The CS pin is the SPI pin. If the motherboard does not have the corresponding pin position, SPI cannot be used.
+    * TMC5160 uses SPI jumper
+    * The FLY-driven SPI pin is the fourth pin from the left downwards, and the CS pin is the SPI pin. If the motherboard does not correspond to the pin position, SPI cannot be used
         <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
-
 
 ## TMC5160 Reference Configuration
 
     :::danger
 
-    * The drive sampling resistor is `sense_resistor: 0.075`. Please do not set it incorrectly.
-    * Only one of `spi_bus` and `spi_software` can be selected.
+    * The drive sampling resistor is `sense_resistor: 0.075`, please do not set it incorrectly
+    * spi_bus and spi_software can only choose one
     
     :::
 
@@ -53,24 +47,24 @@ import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDo
     # spi_software_mosi_pin:
     # spi_software_miso_pin:
     # spi_software_sclk_pin: 
-    run_current: 1.0                    # Motor operating current value
-    interpolate: False                  # Whether to enable 256 microstep interpolation (enable is True, disable is False)
+    run_current: 1.0                    # Motor running current value
+    interpolate: False                  # Whether to enable 256 microstep interpolation (True for enable, False for disable)
     sense_resistor: 0.075
     stealthchop_threshold: 0
     driver_DISS2G: 1
     driver_DISS2VS: 1
     ```
 
-## Infinite Limit Usage Instructions
+## Infinite Position Usage Instructions
 
     <DIAG />
 
-    :::tip Infinite Limit Usage Tip
+    :::tip Infinite Position Usage Tips
 
-    * This driver requires you to solder the DIAG pin yourself; otherwise, the infinite limit function cannot be used.
-    * The original `endstop_pin:` needs to be masked or deleted, and add `endstop_pin: tmc5160_stepper_x:virtual_endstop`
-    * After configuring `diag1_pin:`, the limit status refresh is not triggered.
-    * You need to test a suitable value for `driver_SGT:`
+    * This driver requires soldering the DIAG pin by yourself, otherwise the infinite position function cannot be used
+    * The original `endstop_pin:` needs to be shielded or deleted, and add `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * After configuring `diag1_pin:`, the limit status is not triggered
+    * Configuring `driver_SGT: :` requires you to test a suitable value by yourself
 
     :::
 
@@ -80,15 +74,15 @@ import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDo
     [stepper_x]
     # endstop_pin:PF3
     endstop_pin: tmc5160_stepper_x:virtual_endstop
-    homing_retract_dist: 0        # Retract distance should not be changed to 0 as it may cause failed homing
+    homing_retract_dist: 0        # Retraction without changing to 0 may cause homing failure
 
     [tmc5160 stepper_x]
     diag1_pin: ^!
     driver_SGT: 1
 
-    #   After configuration, ensure that the limit status is not triggered
-    #   This pin usually uses the "^" prefix to enable internal pull-up
-    #   Sensitivity is related to belt tension and needs to be adjusted manually
-    #  (Ensure that `driver_SGTHRS` is set to an appropriate sensitivity at the same time)
+    #   After configuration, please ensure that the limit status is not triggered
+    #   This pin usually uses "^" prefix to enable internal pull-up
+    #   Sensitivity is related to belt tightness and needs to be adjusted by yourself
+    #  (Ensure that driver_SGTHRS is also set to a suitable sensitivity)
 
     ```

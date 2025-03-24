@@ -1,7 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USB Firmware Flash
-
+sidebar_label: USB de programmation du firmware
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -12,9 +11,10 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Compilation du firmware USB
+# Compilation USB
 
-## Début de la compilation
+
+## Démarrer la compilation
 
     <SSH />
 
@@ -22,22 +22,32 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Appuyez sur la touche `Q`, puis sur `Y` pour **Save configuration**
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous devriez être de retour à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un peu de temps
+    * Appuyez sur `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * La configuration devrait maintenant être enregistrée et vous êtes sorti dans l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si vous voyez le message suivant, la compilation a réussi
+    * Si la sortie finale ressemble à ceci, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Création du fichier hex out/klipper.bin
         ```
 
-## Vérification de l'entrée en mode flash
+## Entrer en mode de programmation
+
+    :::tip Astuce
+        Les D5 sortis après le 1er septembre 2024 sont déjà pré-programmés avec le firmware Katapult
+    :::
+    * Connectez la carte mère au poste de travail avec un câble de données Type-C, puis **appuyez deux fois sur le bouton reset**, à ce moment-là une LED clignotera sur la carte mère.
+    :::warning Avertissement
+       * Si la LED ne clignote pas, veuillez réenregistrer le firmware Katapult :<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#entrer-en-mode-de-programmation-dfu">Programmer le firmware Katapult</Button>
+       * Si la LED ne clignote pas, veuillez réexécuter cette étape après avoir enregistré le firmware Katapult
+    :::
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
 
     <LS />
 
-## Flash du firmware
+## Programmer le firmware
     
     <CANBOOT />

@@ -1,15 +1,12 @@
 ---
 sidebar_position: 4
-sidebar_label: RS232 Firmware Flashing
-
+sidebar_label: RS232 Firmware Burning
 ---
 
 import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_rs232.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
-
-
 
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_rs232.mdx';
 
@@ -23,14 +20,14 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Select GPIO pins to set at micro-controller startup, input: !PA15 Please note ! is uppercase
+    * Select GPIO pins to set at micro-controller startup, input: !PA15 Please note that ! is uppercase
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/rs232.webp').default} size="100%" align="center" />
-    * Press `Q` key, you will see **Save configuration**, then press `Y` key
+    * Press `Q` key, and when **Save configuration** appears, press `Y` key
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and you are back to the command line interface
+    * Now the configuration should be saved and you should exit to the command line interface
     * Input `make -j4` to start compilation, it takes some time
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * The compilation is successful if the following output is shown
+    * If the following content is output, the compilation is successful
 
         ```bash
         Linking out/klipper.elf
@@ -38,45 +35,45 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Enter Flash Mode
+## Enter Burning Mode
 
     :::tip
 
-    Above is the `RESET button`, below is the `BOOT button`
+    The above is the `RESET button`, and the below is the `BOOT button`
 
     :::
 
-    * There are two methods to enter DFU mode
-    * Method one: With the motherboard completely powered off, hold the BOOT button while connecting the data transfer cable to the motherboard and the host machine
-    * Method two: Connect the data transfer cable to the motherboard and the host machine, hold the BOOT button, press the RST button, release the RST button, and finally release the BOOT button
+    * There are two ways to enter DFU
+    * First method: With the motherboard completely powered off, press and hold the BOOT button while connecting one end of the data cable with data transfer to the motherboard and the other end to the host computer
+    * Second method: Connect one end of the data cable with data transfer to the motherboard and the other end to your host computer, press and hold the BOOT key then press the RST key, then release the RST key and finally release the BOOT key
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Confirm Flash Mode Entry
+## Confirm Whether Entered Burning Mode
 
     <LS />
 
-
-## Flash Firmware 
-
+## Burn Firmware 
+    
     <Katapult />
     
-    3. Flash Firmware
+    3. Burn Firmware
     
         ```bash
         sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/kliper/out/klipper.bin
         ```
 
-    4. Flashing is successful if the following content is shown as indicated by the arrow in the image
+    4. If the content shown by the arrow in the figure below appears `File downloaded successfully`, then the burning is successful
 
         <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
     :::tip
 
-    After flashing, the motherboard needs to be powered off completely.
+    After burning is completed, the motherboard needs to be completely powered off once.
 
     :::
 
-## Confirm Firmware Boot
+## Confirm Whether Firmware Starts
 
-    * If the firmware boots successfully, the LED will light up
+    * If the firmware starts normally, the LED will light up
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />
+

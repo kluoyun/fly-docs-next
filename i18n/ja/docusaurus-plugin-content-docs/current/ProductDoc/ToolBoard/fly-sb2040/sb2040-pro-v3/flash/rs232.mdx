@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-sidebar_label: RS232ファームウェアの焼き込み
+sidebar_label: RS232ファームウェアの書き込み
 ---
 
 import USBFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
@@ -10,9 +10,9 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 
-# RS232ファームウェアのコンパイル
+# RS232 ファームウェアのコンパイル
 
-## コンパイルの開始
+## コンパイル開始
 
     <SSH />
 
@@ -20,14 +20,17 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * マイクロコントローラの起動時に設定するGPIOピンを選択します。入力：!gpio5 注意してください！は大文字です
+    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio5**
+    :::warning
+        英語入力モードで `!gpio5` を入力してください
+    :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * `Q`キーを押すと**Save configuration**が表示されます。この時、`Y`キーを押します
+    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 今、設定が保存され、コマンドラインインターフェースに戻ったはずです
-    * `make -j4`と入力してコンパイルを開始します。時間が少しかかります
+    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * `make -j4` を入力してコンパイルを開始します。時間がかかります
     <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されれば、コンパイル成功です
+    * 最後に次の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
@@ -35,32 +38,31 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## 焼き込みモードへの進入
+## 書き込みモードに入る
 
     :::tip
 
-    左側が`RESETボタン`、右側が`BOOTボタン`です
+    左側が `RESETボタン`、右側が `BOOTボタン` です
 
     :::
 
-    * DFUモードに入る方法は2つあります
-    * 第一の方法：完全に電源を切った状態で、BOOTボタンを押しながらデータ転送用のケーブルを主板とホストPCに接続します
-    * 第二の方法：データ転送用のケーブルを主板とホストPCに接続した状態で、BOOTボタンを押しながらRSTボタンを押し、RSTボタンを離してからBOOTボタンを離します
+    * DFUモードに入るには2つの方法があります
+    * 方法1：マザーボードが完全に電源オフの状態で、BOOTボタンを押し続けながらデータ転送用ケーブルをマザーボードとホストPCに接続します
+    * 方法2：データ転送用ケーブルをマザーボードとホストPCに接続した後、BOOTボタンを押し続けながらRSTボタンを押し、その後RSTボタンを離し最後にBOOTボタンも離します
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
-## 焼き込みモードに入ったかどうかを確認する
+## 書き込みモードに入ったか確認
 
     <LS />
 
 
-## ファームウェアの焼き込み 
+## ファームウェアの書き込み
     
     <USBFLASH />
     
 
 
-## ファームウェアが起動したかどうかを確認する
+## ファームウェアが起動したか確認
 
-    * ファームウェアが正常に起動すると、LEDが点灯します
+    * ファームウェアが正常に起動するとLEDが点灯します
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.webp').default} size="100%" align="center" />
-

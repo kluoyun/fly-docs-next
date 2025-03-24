@@ -2,79 +2,47 @@
 sidebar_position: 10
 ---
 
-# 일시 정지 및 인쇄 취소 사용자 정의 위치
+# 일시 정지 및 취소 시 사용자 지정 위치로 인쇄
 
-    * `printer.cfg` 파일에 `[include mainsail.cfg]` 또는 `[include fluidd.cfg]`를 추가해야 합니다.
-    * 아래 매크로를 `printer.cfg`에 추가하세요.
+    * `printer.cfg`에 `[include mainsail.cfg]` 또는 `[include fluidd.cfg]`를 추가해야 합니다.
+    * 아래의 매크로를 `printer.cfg`에 추가하세요.
 
-## 한국어 번역
+## 중문 번역
 
     ```cfg
     [gcode_macro _CLIENT_VARIABLE]
-    ### 일시 정지 매크로 관련 사용자 정의 설정
-    variable_use_custom_pos   : False ; x, y 사용자 정의 정박 좌표 사용 여부 [True/False]
-    variable_custom_park_x    : 0.0   ; 인쇄 일시 정지 시 X 위치
-    variable_custom_park_y    : 0.0   ; 인쇄 일시 정지 시 Y 위치
-    variable_custom_park_dz   : 2.0   ; 인쇄 일시 정지 시 Z축 상승 거리 (단위: 밀리미터)
+    ### 일시 정지 매크로 관련 사용자 지정 설정
+    variable_use_custom_pos   : False ; 일시 정지 정지 좌표에 x, y 사용 여부 [True/False]
+    variable_custom_park_x    : 0.0   ; 일시 정지 시 X 위치
+    variable_custom_park_y    : 0.0   ; 일시 정지 시 Y 위치
+    variable_custom_park_dz   : 2.0   ; 일시 정지 시 Z 상승 거리 (mm 단위)
 
-    ### 일시 정지 취소 매크로 관련 사용자 정의 설정
-    variable_park_at_cancel   : False ; 인쇄 취소 매크로 실행 시 툴머리를 정박 위치로 이동할 수 있도록 허용 [True/False]
-    variable_park_at_cancel_x : None  ; 인쇄 취소 후 X 위치
-    variable_park_at_cancel_y : None  ; 인쇄 취소 후 Y 위치
+    ### 취소 일시 정지 매크로 관련 사용자 지정 설정
+    variable_park_at_cancel   : False ; 취소 인쇄 매크로 실행 시 툴헤드 이동을 허용할지 여부 [True/False]
+    variable_park_at_cancel_x : None  ; 취소 인쇄 후 X 위치
+    variable_park_at_cancel_y : None  ; 취소 인쇄 후 Y 위치
 
-    ### 일시 정지 및 취소 시 압출기 동작
-    variable_retract          : 1.0     ; 인쇄 일시 정지 시 압출기 회수 길이(mm)
-    variable_cancel_retract   : 5.0     ; 인쇄 취소 시 압출기 회수 길이(mm)
-    variable_speed_retract    : 35.0    ; 압출기 회수 속도 mm/s
-    variable_unretract        : 1.0     ; 인쇄 재개 시 압출 길이
-    variable_speed_unretract  : 35.0    ; 압출기 압출 속도 mm/s
+    ### 일시 정지와 취소 시 엑스트루더 동작
+    variable_retract          : 1.0     ; 일시 정지 인쇄 시 엑스트루더 회수 길이 (mm)
+    variable_cancel_retract   : 5.0     ; 취소 인쇄 시 엑스트루더 회수 길이 (mm)
+    variable_speed_retract    : 35.0    ; 엑스트루더 회수 속도 mm/s
+    variable_unretract        : 1.0     ; 재개 인쇄 시 엑스트루더 회출 길이
+    variable_speed_unretract  : 35.0    ; 엑스트루더 회출 속도 mm/s
     variable_speed_hop        : 15.0    ; Z축 이동 속도 mm/s
     variable_speed_move       : 100.0   ; 이동 속도 mm/s
 
     ### 모터 가열 해제 설정
     ### 하루는 86400초입니다
-    variable_idle_timeout     : 0     ; 시작까지 필요한 유휴 시간(초). 0으로 설정하면 어떤 값도 설정하거나 복원하지 않습니다.
+    variable_idle_timeout     : 0     ; 비활성화 시간 초과가 시작되기 위한 초 수. 값 0은 아무 값도 설정하거나 복원하지 않는다는 것을 의미합니다.
 
-    # !!! 만약 use_fw_retract: True로 설정하면 printer.cfg에 [firmware_retraction]을 정의해야 합니다 !!!
-    variable_use_fw_retract   : False ; 수동 버전 대신 펌웨어 회수 사용 여부 [True/False]
-    variable_runout_sensor    : ""    ; 센서가 정의되어 있으면, 필라멘트가 없음을 감지할 때 RESUME 실행을 취소하는 데 사용됩니다.
-    #                                runout 센서의 설정 이름을 지정하세요, 예: "filament_switch_sensor runout". 힌트: printer.cfg와 동일하게 사용하세요.
-    # !!! 사용자 정의 매크로, 주의해서 사용하고 해당 매크로의 섹션을 검토하십시오.  이 매크로는 상태 LED 설정과 같은 간단한 작업에 사용됩니다. 
-    # 매크로가 기본 매크로 기능을 방해하지 않도록 주의하세요. 단일 줄 명령만 지원하므로 여러 명령이 필요하면 매크로를 생성하세요.
-    variable_user_pause_macro : ""    ; "" 안의 모든 내용은 klipper 기본 일시 정지 (PAUSE_BASE) 함수 실행 후에 실행됩니다.
-    variable_user_resume_macro: ""    ; "" 안의 모든 내용은 klipper 기본 재개 (RESUME_BASE) 함수 실행 전에 실행됩니다.
-    variable_user_cancel_macro: ""    ; "" 안의 모든 내용은 klipper 기본 취소 (CANCEL_PRINT_BASE) 함수 실행 전에 실행됩니다.
-    gcode:
-    ```
-
-## 영어(원본)
-
-    ```cfg
-    [gcode_macro _CLIENT_VARIABLE]
-    variable_use_custom_pos   : False ; use custom park coordinates for x,y [True/False]
-    variable_custom_park_x    : 0.0   ; custom x position; value must be within your defined min and max of X
-    variable_custom_park_y    : 0.0   ; custom y position; value must be within your defined min and max of Y
-    variable_custom_park_dz   : 2.0   ; custom dz value; the value in mm to lift the nozzle when move to park position
-    variable_retract          : 1.0   ; the value to retract while PAUSE
-    variable_cancel_retract   : 5.0   ; the value to retract while CANCEL_PRINT
-    variable_speed_retract    : 35.0  ; retract speed in mm/s
-    variable_unretract        : 1.0   ; the value to unretract while RESUME
-    variable_speed_unretract  : 35.0  ; unretract speed in mm/s
-    variable_speed_hop        : 15.0  ; z move speed in mm/s
-    variable_speed_move       : 100.0 ; move speed in mm/s
-    variable_park_at_cancel   : False ; allow to move the toolhead to park while execute CANCEL_PRINT [True/False]
-    variable_park_at_cancel_x : None  ; different park position during CANCEL_PRINT [None/Position as Float]; park_at_cancel must be True
-    variable_park_at_cancel_y : None  ; different park position during CANCEL_PRINT [None/Position as Float]; park_at_cancel must be True
-    # !!! Caution [firmware_retraction] must be defined in the printer.cfg if you set use_fw_retract: True !!!
-    variable_use_fw_retract   : False ; use fw_retraction instead of the manual version [True/False]
-    variable_idle_timeout     : 0     ; time in sec until idle_timeout kicks in. Value 0 means that no value will be set or restored
-    variable_runout_sensor    : ""    ; If a sensor is defined, it will be used to cancel the execution of RESUME in case no filament is detected.
-    #                                   Specify the config name of the runout sensor e.g "filament_switch_sensor runout". Hint use the same as in your printer.cfg
-    # !!! Custom macros, please use with care and review the section of the corresponding macro.
-    # These macros are for simple operations like setting a status LED. Please make sure your macro does not interfere with the basic macro functions.
-    # Only  single line commands are supported, please create a macro if you need more than one command.
-    variable_user_pause_macro : ""    ; Everything inside the "" will be executed after the klipper base pause (PAUSE_BASE) function
-    variable_user_resume_macro: ""    ; Everything inside the "" will be executed before the klipper base resume (RESUME_BASE) function
-    variable_user_cancel_macro: ""    ; Everything inside the "" will be executed before the klipper base cancel (CANCEL_PRINT_BASE) function
+    # !!! 주의하세요. 만약 use_fw_retract: True를 설정했다면 printer.cfg에서 [firmware_retraction]를 정의해야 합니다!!!
+    variable_use_fw_retract   : False ; 펌웨어 회수 사용, 수동 버전 대신 [True/False]
+    variable_runout_sensor    : ""    ; 센서가 정의된 경우, 필라멘트가 감지되지 않을 때 RESUME 실행을 취소하기 위해 사용됩니다.
+    #                                센서의 구성 이름을 지정하십시오. 예를 들어 "filament_switch_sensor runout". 참고: printer.cfg의 것과 동일하게 사용하십시오.
+    # !!! 사용자 정의 매크로, 주의해서 사용하고 해당 매크로 부분을 검토하십시오.
+    # 이러한 매크로는 상태 LED 설정과 같은 간단한 작업을 위해 사용됩니다. 매크로가 기본 매크로 기능에 방해되지 않도록 주의하십시오. 단일 줄 명령만 지원되므로 여러 명령이 필요한 경우 매크로를 만드십시오.
+    variable_user_pause_macro : ""    ; "" 안의 모든 내용은 klipper 기본 일시 정지 (PAUSE_BASE) 함수 이후에 실행됩니다
+    variable_user_resume_macro: ""    ; "" 안의 모든 내용은 klipper 기본 재개 (RESUME_BASE) 함수 전에 실행됩니다
+    variable_user_cancel_macro: ""    ; "" 안의 모든 내용은 klipper 기본 취소 (CANCEL_PRINT_BASE) 함수 전에 실행됩니다
     gcode:
     ```

@@ -1,57 +1,56 @@
 ---
 sidebar_position: 4
-sidebar_label: マーリン自動 Z-OFFSET
+sidebar_label: Marlin自動Z-OFFSET
 ---
 
-# マーリンの衝突センシング
+# Marlinのの衝突検知
 
 :::info
-この機能は、BD センサのファームウェアバージョン（M102 S - 1 を送信することで取得できます。センサのハードウェアバージョンではない）が
-V1.1b、V1.2b より大きいか、2024 年 3 月以降に購入されたものでなければなりません。そうでない場合は、外部ハードウェアツール（例：STlink）を使用して BD センサにファームウェアをフラッシュする必要があります。
+この機能はBDセンサーファームウェアバージョン（これはM102 S-1を送信することで取得できます、センサー上のハードウェアバージョンではありません）がV1.1b以上、または2024年3月以降に購入された場合に必要です。それ以外の場合、外部ハードウェアツール（例えばSTlink）を使用してファームウェアをBDセンサーに焼く必要があります。
 :::
 
-# どのように動作するか
+# その仕組み
 
-* G28 を実行する際に自動的に z 軸オフセットの較正を行います：ホーミング（ノズルがプラットフォームに接触した後）でトリガーされ - そしてノズルがプラットフォームからちょうど離れるまでゆっくりと上に移動 - この位置を z 軸の 0 点と設定します。
+* G28実行時に自動的にz軸オフセットの調整を行う: ホーム位置（ノズルがプラットフォームに接触した後）でトリガーし——その後ゆっくりと上昇し、ノズルがプラットフォームからわずかに離れる位置——これをz軸の0点として設定します。
 
-# メリット
+# 利点
 
-* 自動 z 軸オフセット較正。
-* 同時に、異なるフィラメントに対して z 軸オフセットを手動で調整することもできます。
-* 温度ドリフトに対応。
-* 温度ドリフトは z 軸オフセットを変化させますが、BD センサを備えたベッド面グリッドの高さマップの範囲は変化しません。つまり、温度が異なってもベッド面グリッドは同じです。
+* 自動z軸オフセットの調整。
+* それでも異なるフィラメントに対して手動でz軸オフセットを調整することができます。
+* 温度変動に対応。
+* 温度変動はz軸オフセットを変えるかもしれませんが、BDセンサーを使用したベッドマッピングの範囲には影響しません。つまり、温度が異なってもベッドマッピングは同じです。
 
 :::info ヒント
-この機能のコードは公式の Marlin GitHub のプルリクエストリストにあります：https://github.com/MarlinFirmware/Marlin/pull/27243
-ですから、以下の Marlin コードを使用してください：https://github.com/markniu/MarlinPULL/tree/bugfix - 2.1.x
+この機能のコードは公式Marlin GitHubのプルリクエストリストにあります: https://github.com/MarlinFirmware/Marlin/pull/27243
+ですので以下のMarlinコードを使用してください: https://github.com/markniu/MarlinPULL/tree/bugfix-2.1.x
 :::
 
-# どのように使用するか
+# 使用方法
 
-`BD_SENSOR`を有効にし、`configuration.h`に`#define BD_SENSOR_CONTACT_PROBE`を追加します
-以下のようになります：
+`BD_SENSOR`を有効にし、`configuration.h`に`#define BD_SENSOR_CONTACT_PROBE`を追加します。
+以下のように表示されるはずです：
 
 ``` bash
 #define BD_SENSOR
 #if ENABLED(BD_SENSOR)
-  #define BD_SENSOR_PROBE_NO_STOP // 各プローブポイントで停止せずにベッドをプローブする`
-  #define BD_SENSOR_CONTACT_PROBE // ホーミング中にノズルの衝突センシングを使用してプローブする`
+  #define BD_SENSOR_PROBE_NO_STOP // 探針を停止せずにベッドをプローブする
+  #define BD_SENSOR_CONTACT_PROBE // ホーム中にノズルの衝突検知を使用してプローブする
 #endif
 ```
 * `configuration.h`でプローブの速度を上げます。
 
-* 感度は速度に依存しているため、Z 軸の速度を調整する必要があります。
-* homing_speed（ホーミング速度）と second_homing_speed（2 回目のホーミング速度）は 3 から 10 の範囲内にするべきで、ここでは Z 軸プローブの送り速度です。
+* センシビリティは速度によりますので、Z軸の速度を調整する必要があります。
+* home_speed（ホーム速度）とsecond_home_speed（セカンドホーム速度）は3〜10の範囲内にあり、ここがZ軸プローブフィード速度です。
 * 例：
 ``` bash
  #define Z_PROBE_FEEDRATE_FAST  (5*60)
  #define Z_PROBE_FEEDRATE_SLOW  (5*60)
 ```
-* `Configuration_adv.h`で Z 軸のホーミングリフトを 4 ミリ以上に増やします。
+* `Configuration_adv.h`でZ軸のホームリフトを4ミリメートルより大きくします。
 ``` bash
 #define HOMING_BUMP_MM      { 5, 5, 5 } 
 ```
-# ホーミングのテスト
-* 「G28 Z」コマンドを約 10 回送信するか、「M48」コマンドを使用して、それが安定しているかを確認してください。
+# ホームテスト
+* 大約10回の`G28 Z`コマンドを送信するか、`M48`コマンドを使用してそれが安定しているかどうかを確認します。
 
-<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=DzmGyJNS9bY">デモビデオ</Button> 
+<Button variant="contained" disableElevation href="https://www.youtube.com/watch?v=DzmGyJNS9bY">デモンストレーションビデオ</Button>

@@ -1,0 +1,81 @@
+---
+sidebar_position: 4
+---
+
+# Fonction de reprise d'impression après coupure d'alimentation Klipper
+
+## Aperçu
+
+- La fonction de reprise d'impression après coupure d'alimentation Klipper signifie que, après une coupure d'alimentation de Klipper et une nouvelle mise sous tension, Klipper peut automatiquement reprendre l'état d'impression.
+- Cette fonction doit être utilisée en conjonction avec le module de mise hors tension sécurisée.
+- Elle n'est pas applicable aux modèles où l'axe Z se déplace lors d'une coupure d'alimentation.
+
+## Configuration
+
+### Fichier de configuration plr.cfg
+
+- Dans la page de configuration de l'imprimante, cliquez sur Nouveau fichier de configuration pour créer un fichier `plr.cfg`.
+- Le contenu du fichier de configuration est le suivant :
+
+    ```cfg
+    [power_loss_resume]
+    # power_pin: PA0 # Broche de mise hors tension du module de mise hors tension sécurisée, connectée au port PA0 de la station inférieure
+    power_pin: host:gpiochip1/gpio21 # Broche de mise hors tension du module de mise hors tension sécurisée, connectée au port PA21 de la station supérieure
+    is_shutdown: True # Exécuter ou non l'opération de mise hors tension, par défaut activée
+    start_gcode:
+        # Gcode à exécuter avant la reprise de l'impression
+        # Tous les paramètres sauvegardés avant la coupure d'alimentation peuvent être récupérés via {PLR}
+        # On peut utiliser M118 {PLR} pour afficher tous les paramètres disponibles
+        M118 Début de la reprise: {PLR.print_stats.filename}
+        M118 Position d'interruption: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; Définir la température de la chambre de chauffe
+        M104 S{PLR.extruder.target-10}  ; Définir la température de l'extrudeur
+        M109 S{PLR.extruder.target-10}  ; Attendre que l'extrudeur atteigne la température définie
+        G91                             ; Coordonnées relatives
+        G1 Z2 F100                      ; Lever le Z, préparer à zéro X,Y
+        G90                             ; Coordonnées absolues
+        G28 X Y                         ; Réinitialiser X,Y
+        M140 S{PLR.bed.target}          ; Définir la température de la chambre de chauffe
+        M104 S{PLR.extruder.target}     ; Définir la température de l'extrudeur
+        M190 S{PLR.bed.target}          ; Attendre que la chambre de chauffe atteigne la température définie
+        M109 S{PLR.extruder.target}     ; Attendre que l'extrudeur atteigne la température définie
+        M83                             ; Extrusion relative
+        # G1 E0.5 F400                  ; Extruder un peu
+    layer_count: 2 # Reprise d'impression spécifiée pour un nombre de couches, puis exécution de layer_change_gcode
+    layer_change_gcode:                
+        # Gcode à exécuter après avoir repris {layer_count} couches
+        M118 Rétablissement de la vitesse d'impression
+        M106 S{PLR.fan_speed}             ; Allumer le ventilateur de refroidissement
+        M220 S{PLR.move_speed_percent}    ; Définir le pourcentage de vitesse demandée
+        M221 S{PLR.extrude_speed_percent} ; Définir le pourcentage de vitesse d'extraction demandé
+    shutdown_gcode:
+        # Gcode à exécuter avant la mise hors tension
+        M118 Tension du courant faible, mise hors tension
+        # M112 ; Arrêt d'urgence
+
+    ```
+
+    :::warning Attention
+
+    - Les macros du fichier de configuration `start_gcode` ci-dessus doivent être modifiées en fonction des conditions réelles de la machine.
+
+    :::
+
+- Enregistrez le fichier de configuration ci-dessus.
+- Ouvrez le fichier `printer.cfg`, ajoutez le contenu suivant en début de fichier :
+
+    ```cfg
+
+    [include plr.cfg]
+
+    ```
+
+- Cliquez sur Enregistrer en haut à droite, puis redémarrez.
+- À ce stade, la fonction de reprise d'impression après coupure d'alimentation Klipper est configurée.
+
+## Test
+
+- Imprimez un fichier quelconque, pendant l'impression, cliquez sur le bouton « Arrêt d'urgence » pour simuler une coupure d'alimentation.
+- Cliquez à nouveau sur « Redémarrage du firmware », attendez que Klipper se connecte normalement.
+- Si une fenêtre de notification apparaît sur le site Web ou dans KlipperScreen, cela indique que la fonction de reprise d'impression après coupure d'alimentation fonctionne correctement.
+- Vous pouvez ensuite tester une situation de coupure d'alimentation réelle.

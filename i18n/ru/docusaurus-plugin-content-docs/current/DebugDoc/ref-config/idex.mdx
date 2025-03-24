@@ -1,0 +1,663 @@
+---
+sidebar_position: 3
+sidebar_label: Двойная ось/idex справочная конфигурация
+---
+
+## Начальный код slicer предоставлен билибили-пользователем muimoon女士:
+```bash
+M190 S【bed_temperature_initial_layer_single】
+{if is_extruder_used【0】}
+M104 S{first_layer_temperature【0】+standby_temperature_delta} T0
+{endif}
+{if is_extruder_used【1】}
+M104 S{first_layer_temperature【1】+standby_temperature_delta} T1
+{endif}
+```
+
+## Настройка второго принтера
+
+```cfg
+[dual_carriage]
+axis: x
+step_pin: PA15
+dir_pin: PA14
+enable_pin: !PA13
+rotation_distance: 40
+microsteps: 16
+full_steps_per_rotation: 200
+endstop_pin: ^!PB4
+position_endstop: 359.35
+position_min: 0
+position_max: 360
+homing_speed: 50
+homing_retract_dist: 5
+step_pulse_duration: 0.000004
+#--------------------------------------------------------------------
+[tmc2209 dual_carriage]
+uart_pin: PC10
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+```
+
+Копирование или зеркальное отображение макросов требует ссылки на соответствующий код в срезере
+
+* ACTIVATE_COPY_MODE Копировать режим
+* ACTIVATE_MIRROR_MODE Зеркальный режим
+
+```cfg
+[gcode_macro PARK_extruder1]
+gcode:
+    SAVE_GCODE_STATE NAME=park1
+    G90
+    G1 X200
+    RESTORE_GCODE_STATE NAME=park1
+
+[gcode_macro T1]
+gcode:
+    PARK_{printer.toolhead.extruder}
+    ACTIVATE_EXTRUDER EXTRUDER=extruder1
+    SET_DUAL_CARRIAGE CARRIAGE=1
+    SET_GCODE_OFFSET Y=15
+
+# Вспомогательный скрипт для активации режима копирования
+[gcode_macro ACTIVATE_COPY_MODE]
+gcode:
+    SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
+    G1 X0
+    ACTIVATE_EXTRUDER EXTRUDER=extruder
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=PRIMARY
+    G1 X100
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=COPY
+    SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
+
+# Вспомогательный скрипт для активации режима отражения
+[gcode_macro ACTIVATE_MIRROR_MODE]
+gcode:
+    SET_DUAL_CARRIAGE CARRIAGE=0 MODE=PRIMARY
+    G1 X0
+    ACTIVATE_EXTRUDER EXTRUDER=extruder
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=PRIMARY
+    G1 X200
+    SET_DUAL_CARRIAGE CARRIAGE=1 MODE=MIRROR
+    SYNC_EXTRUDER_MOTION EXTRUDER=extruder1 MOTION_QUEUE=extruder
+```
+
+* Двухцветная конфигурация
+
+```cfg
+[gcode_macro CANCEL_PRINT]
+rename_existing: BASE_CANCEL_PRINT
+gcode:
+    TURN_OFF_HEATERS
+    CLEAR_PAUSE
+    SDCARD_RESET_FILE
+    BASE_CANCEL_PRINT
+
+[gcode_macro PAUSE]
+rename_existing: BASE_PAUSE
+gcode:
+    ##### задать значения по умолчанию #####
+    {% set x = params.X|default(100) %}      #редактировать до вашей позиции парковки
+    {% set y = params.Y|default(100) %}      #редактировать до вашей позиции парковки
+    {% set lift_z = params.Z|default(50)| float | abs %} #редактировать до вашего желаемого подъема Z
+    {% set e = params.E|default(1) %}        #редактировать до длины ретракции
+    ##### рассчитать сохраненную позицию подъема #####
+    {% set max_z = (printer.toolhead.axis_maximum.z|float ) %} #оставьте немного места для смещения Z G-кода
+    {% set act_z = printer.toolhead.position.z|float %}
+ 	{% set new_z = act_z + lift_z %}
+	{% if new_z >  max_z %}
+		new_z = max_z
+	{% endif %}
+    SAVE_GCODE_STATE NAME=PAUSE_state
+    BASE_PAUSE
+    M83 ; установить E в режим относительных координат
+    {% if printer.extruder.can_extrude|lower == 'true' %}
+      G1 E-{e} F2100
+    {% else %}
+      RESPOND MSG="Экструдер недостаточно нагрет"
+    {% endif %}
+    {% if "xyz" in printer.toolhead.homed_axes %}    
+      G0 Z{new_z} X{x} Y{y} F6000
+    {% else %}
+      RESPOND MSG="Принтер не откалиброван"
+    {% endif %}
+
+
+[gcode_macro RESUME]
+rename_existing: BASE_RESUME
+gcode:
+    ##### задать значения по умолчанию #####
+#    {% set e = params.E|default(1) %} #редактировать до длины ретракции
+#    M83 ; установить E в режим относительных координат
+#    {% if printer.extruder.can_extrude|lower == 'true' %}
+#      G1 E-{e} F2100
+#    {% else %}
+#      RESPOND MSG="Экструдер недостаточно нагрет"
+#    {% endif %}
+    RESTORE_GCODE_STATE NAME=PAUSE_state MOVE=1
+    BASE_RESUME
+
+################################################################################
+################################################################################
+
+# Вспомогательный скрипт для парковки каретки (вызывается из макросов T0 и T1)
+[gcode_macro PARK_extruder]
+gcode:
+	RESPOND MSG="Парковка левого экструдера"
+	#убедитесь, что мы перемещаем первую каретку
+	SET_DUAL_CARRIAGE CARRIAGE=0
+	{% if not "x" in printer.toolhead.homed_axes %}
+	    RESPOND MSG="Калибровка X"
+	    G28 X
+	{% endif %}
+
+    SAVE_GCODE_STATE NAME=park0
+    G90
+	SET_GCODE_OFFSET X=0 Y=0 #Z=0
+    G1 X{printer.configfile.settings.stepper_x.position_min} F12000
+    RESTORE_GCODE_STATE NAME=park0
+
+[gcode_macro PARK_extruder1]
+gcode:
+	RESPOND MSG="Парковка правого экструдера"
+	#убедитесь, что мы перемещаем вторую каретку. После всего, мы не знаем, какая каретка активна
+	SET_DUAL_CARRIAGE CARRIAGE=1
+	{% if not "x" in printer.toolhead.homed_axes %}
+	    RESPOND MSG="Калибровка X"
+	    G28 X
+	{% endif %}
+
+    SAVE_GCODE_STATE NAME=park1
+    G90
+	SET_GCODE_OFFSET X=0 Y=0 #Z=0
+    G1 X{printer.configfile.settings.dual_carriage.position_max} F12000
+    RESTORE_GCODE_STATE NAME=park1
+
+
+[gcode_macro x_xoffset]
+# вспомогательный скрипт, необходимый, так как переменная xoffset будет изменяться во время выполнения макроса
+# и расширение макроса происходит до этого изменения
+gcode:
+	{% set offset = printer["gcode_macro set_stepper_x_range"].xoffset %}
+	RESPOND MSG="Xoffset будет установлено на: { offset }"
+    SET_GCODE_OFFSET Y=0 X={ offset } #Z=0
+	
+
+
+[gcode_macro set_stepper_x_range]
+variable_xoffset: 0
+variable_range_set: 0
+gcode:
+    RESPOND MSG="Настройка левого экструдера по оси X"
+#	{ action_respond_info("Цель температуры экструдера1: %s" % printer.extruder1.target ) }
+	RESPOND MSG="Цель температуры экструдера1: { printer.extruder1.target }"
+	{% if   printer.extruder1.target|int > 0 %}
+ 		RESPOND MSG="Активен правый экструдер"
+	    #{% set offset= 17 %}
+	    {% set offset= 0 %} #Я не знаю, почему это было установлено на 17, но иногда это портило мои печати!
+	{% else %}
+	    {% set offset=0 %}
+	{% endif %}
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE={offset}
+	RESPOND MSG="X-начало для левой головы будет установлено на {offset} мм от левого края рабочей поверхности"
+	#сделайте известным, что диапазон был установлен для этой печати, и его не следует пересматривать снова
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=1
+
+[gcode_macro clear_stepper_x_range]
+gcode:
+    RESPOND MSG="Очистка диапазона печати левого экструдера по оси X"
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=xoffset VALUE=0
+	#сделайте известным, что диапазон не был установлен для этой печати, и его следует пересмотреть снова
+	SET_GCODE_VARIABLE MACRO=set_stepper_x_range VARIABLE=range_set VALUE=0
+	
+
+# Активация основного экструдера
+[gcode_macro T0]
+gcode:
+	RESPOND MSG="Выбор инструмента T0"
+	home_if_not
+	{% if printer.toolhead.extruder != "extruder" %}
+	    PARK_{printer.toolhead.extruder}
+	{% endif %}
+    ACTIVATE_EXTRUDER EXTRUDER=extruder
+    SET_DUAL_CARRIAGE CARRIAGE=0
+	# запустите настройку диапазона только один раз, чтобы не переустановить его после установки целевой температуры T1 на ноль
+	{% if  printer["gcode_macro set_stepper_x_range"].range_set  == 0  %}
+		RESPOND MSG="Диапазон движения левого экструдера по оси X еще не установлен, устанавливаем его сейчас"
+		set_stepper_x_range
+	{% endif %}
+	x_xoffset
+
+
+[gcode_macro T1]
+gcode:
+	RESPOND MSG="Выбор инструмента T1"
+	home_if_not
+	{% if printer.toolhead.extruder != "extruder1" %}
+	    PARK_{printer.toolhead.extruder}
+	{% endif %}
+    ACTIVATE_EXTRUDER EXTRUDER=extruder1
+    SET_DUAL_CARRIAGE CARRIAGE=1
+
+    #Смещения X/Y обратны методу штатного ПО.
+    #Если E2 печатает слишком далеко влево, вы должны ДОБАВИТЬ к смещению X.
+    #Если E2 печатает слишком далеко вниз, вы должны ДОБАВИТЬ к смещению Y.
+    #Смещение Z обычно не требуется. Просто отрегулируйте физическое смещение Z на E2.
+    SET_GCODE_OFFSET X=3.80 Y=0.50 #Z=0
+
+[gcode_macro home_if_not ]
+gcode:
+	{% if printer.toolhead.homed_axes != 'xyz' %}
+	  G28
+    {% endif %}
+
+[gcode_macro probeon]
+gcode:
+ 	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=1
+ 	RESPOND MSG="Записано, что вы установили датчик на левую голову"
+
+[gcode_macro probeoff]
+gcode:
+ 	SET_GCODE_VARIABLE MACRO=bedmesh VARIABLE=probe_installed VALUE=0
+ 	RESPOND MSG="Записано, что вы сняли датчик с левой головы"
+
+[gcode_macro PRIME_LINE]
+gcode: 
+    RESPOND MSG="Печать прямой линии "
+
+    {% set x = params.X|default(2)|float %}
+    {% set y = params.Y|default(70)|float %}
+	{% set z = params.Z|default(0.2)|float %}
+    {% set xline = params.XLINE|default(0.8)|float %}
+    {% set yline = params.YLINE|default(120)|float %}
+	{% set eMultiplier = 0.15 * z  %}
+    SAVE_GCODE_STATE NAME=prime_line
+ 
+	M117 Прямая линия
+
+    G90 ; переводим XYZ в абсолютный режим
+	M83 ; переводим E в относительный режим
+    # движение оси Z 
+    G1 Z0.3 F3000 ;Поднятие оси Z
+    # движение к позиции наката 
+	G0 Y{y} Z{z}
+    G0 X{x} ;Перемещение к начальной позиции. Делаем квадратное движение, чтобы избежать столкновения с углами подложки
+	G1 Y{y + yline} E{eMultiplier * yline} ;Рисование первой линии
+    G1 X{x + xline} E{eMultiplier * xline} ;Перемещение в сторону немного
+    G1 Y{y + 20} E{eMultiplier * (yline - 20)} ;Рисование второй линии, но не возвращаемся к исходной позиции, чтобы избежать подъема
+#	G1 E-0.5 F300
+    G1 Z0.5 F3000 ;Поднятие оси Z
+
+	RESTORE_GCODE_STATE NAME=prime_line
+
+[gcode_macro prepare_toolheads ]
+gcode:
+    RESPOND MSG="Подготовка головок экструдеров"
+	# BED_MESH_PROFILE LOAD=70c
+	# Использование абсолютных координат
+    G90
+	#обнуление E
+	G92 E0
+	#Установка экструдера в режим относительных координат
+	M83
+	home_if_not
+	# явно задаем диапазон в начале каждой новой печати
+	set_stepper_x_range
+	{% if   printer.extruder.target|int > 0 %}
+	    RESPOND MSG="Подготовка T0"
+		T0
+		SAVE_GCODE_STATE NAME=prime_ext0 
+		#Всегда печатаем прямую линию в самом левом углу подложки
+		SET_GCODE_OFFSET X=0 Y=0 Z=0
+		G0 X-10 Y35 Z0.5  F9000
+		# накат в воздухе
+		G1 E5 F300
+		PRIME_LINE X=3 Y=35 Z=0.2 YLINE=100
+		RESTORE_GCODE_STATE NAME=prime_ext0
+	{% endif %}
+	{% if   printer.extruder1.target|int > 0 %}
+	    RESPOND MSG="Подготовка T1"
+		T1
+		G0 X225 Y35 Z0.5 F9000
+		G1	E5 F300
+		PRIME_LINE X=200 Y=35 Z=0.2 YLINE=100
+	{% endif %}
+	#установите головку экструдера в то состояние, в котором она была при вызове макроса. 
+	# По крайней мере, Ideamaker устанавливает T0/T1 перед вызовом пользовательского макроса,
+	# поэтому нам нужно знать, какая головка экструдера была установлена, и переключиться на нее перед продолжением
+	# Расширение Jinja происходит до фактического выполнения макроса, поэтому значение printer.toolhead.extruder в условном
+	# выражении не будет динамически изменено, а вместо этого останется исходным значением при вызове.
+	
+	{% if printer.toolhead.extruder == "extruder1" %}
+		T1
+	{% else %}
+		T0
+	{% endif %}
+	#установите экструдер в абсолютный режим
+	M82
+#	{% if  ( (printer.extruder.target|int > 0) and (printer.extruder1.target|int > 0) ) %}
+#		#Два экструдера в использовании, ничего не делать
+#		RESPOND MSG="Две головы в использовании, Ideamaker не делает ретракцию"
+#	{% else %}
+#	 	#Ideamaker настаивает на ретракции в начале. Теперь мы просто делаем вид, что уже сделали это. Ужасный костыль, да.
+#		RESPOND MSG="Одна из двух голов в использовании, Ideamaker портит печать ретракцией, поэтому обходим это"
+#		G92 E-0.6
+#	{% endif %}
+
+[gcode_macro wait_for_temperatures]
+gcode:
+    
+	# Ждать температур. Если цель температуры равна нулю, она не будет ждать, на самом деле. Так что вы не можете экструдировать при очень низкой температуре :)
+    M190 S{printer.heater_bed.target}
+    M109 T0 S{printer.extruder.target}
+	M109 T1 S{printer.extruder1.target}
+    
+
+[gcode_macro START_PRINT]
+# Этот код предполагает, что цели температуры для подложки и головок принтера были установлены срезером
+gcode:
+	CLEAR_PAUSE
+	{% if printer["gcode_macro bedmesh"].probe_installed != 0 %}
+	   RESPOND TYPE=error MSG="У вас может быть датчик, который все еще установлен. Снимите датчик и выполните команду 'probeoff' и повторите печать"
+	   CANCEL_PRINT
+	{% else %}
+		T0
+		home_if_not
+		wait_for_temperatures
+        Z_TILT_ADJUST
+
+		BED_MESH_LOAD
+		prepare_toolheads
+	{% endif %}
+
+
+[gcode_macro bedmesh]
+variable_probe_installed: 1
+gcode:
+    {% if printer["gcode_macro bedmesh"].probe_installed == 0 %}
+	    RESPOND MSG="Установите датчик и выполните затем команду 'probeon'"
+	{% else %}
+		RESPOND MSG="Измерение сетки подложки с TO, с нулевым смещением X "
+
+		home_if_not
+        Z_TILT_ADJUST
+		T0
+		SAVE_GCODE_STATE NAME=bedmesh
+		#Всегда измеряйте с сырой левой головой
+		G90
+		SET_GCODE_OFFSET X=0
+		#G0 Z10 F6000
+		BED_MESH_CALIBRATE
+		#G0 Y0 Z100 #brian: estaba en 100
+		G28 X
+		RESTORE_GCODE_STATE NAME=bedmesh
+	{% endif %}
+
+
+[gcode_macro BED_MESH_LOAD]
+description: Загрузка существующей сетки подложки для правильной температуры
+gcode:
+  ##### получить цель для температуры #####
+  {% set bed_temp = printer.heater_bed.target|int %}
+  ##### объединить все в одну строку имени сетки #####
+  {% set mesh_name = "MESH-" + bed_temp|string + "C" %}
+  ##### конец определений #####
+  {% if printer.configfile.config["bed_mesh " + mesh_name] is defined %}
+    BED_MESH_PROFILE LOAD={mesh_name}
+    RESPOND TYPE=echo MSG="Загружена сетка подложки {mesh_name} "
+  {% else %}
+    RESPOND TYPE=error MSG="Не найдена сетка подложки {mesh_name} "
+  {% endif %}
+
+[gcode_macro bedmesh_renew]
+gcode:
+	home_if_not
+	{% set dwell = 60000 %}
+	{% for t in  [50,60,70] %}
+        {% set mesh_name = "MESH-" + t|string + "C" %}
+		RESPOND MSG="Нагрев подложки до {t} C"
+		M190 S{t}
+		RESPOND MSG="Установка на {dwell}мс"
+		G4 P{dwell}
+		bedmesh
+		BED_MESH_PROFILE SAVE={mesh_name}
+	{% endfor %}
+	SAVE_CONFIG
+[gcode_macro END_PRINT]
+gcode:
+    
+    M117 Конец печати.
+    G91 ; относительные координаты
+    G1 E-1 F300 ; ретракция немного перед поднятием сопла, чтобы сбросить некоторое давление
+    G1 Z+5 E-2 F1000 ; перемещение Z вверх немного и дополнительная ретракция
+#   T1
+#	T0
+#    G90 ; абсолютные координаты
+# 	G0 Y220 F6000 ; сделать напечатанный объект доступным
+    m104 S0 T0 ; выключить нагрев основного сопла
+    m104 S0 T1 ; выключить нагрев вторичного сопла
+    M140 S0 ; выключить нагрев подложки
+    G90
+    T0
+    PARK_extruder1
+    PARK_extruder
+    M106 S255 ; включить вентилятор для охлаждения
+    M84 ; выключить двигатель
+    clear_stepper_x_range
+    M106 S0 ; выключить вентилятор
+    SAVE_AT_END
+
+[gcode_macro SEARCH_VARS]
+gcode:
+    {% set search = params.S|lower %}
+    {% set ns = namespace() %}
+    {% for item in printer  %}
+        {% if ' ' in item %}
+            {% set ns.path = ['printer', "['%s']" % (item), ''] %}
+        {% else %}
+            {% set ns.path = ['printer.', item, ''] %}   
+        {% endif %} 
+
+        {% if search in ns.path|lower %}
+            { action_respond_info(ns.path|join) }
+        {% endif %} 
+
+        {% if printer[item].items() %}
+            {% for childkey, child in printer[item].items() recursive %}
+                {% set ns.path = ns.path[:loop.depth|int + 1] %}
+
+                {% if ' ' in childkey %}
+                    {% set null = ns.path.append("['%s']" % (childkey)) %}
+                {% else %}
+                    {% set null = ns.path.append(".%s" % (childkey)) %}
+                {% endif %} 
+
+                {% if child is mapping  %}
+                    { loop(child.items()) }
+                {% else %}
+                    {% if search in ns.path|lower %}
+                        { action_respond_info("%s : %s" % (ns.path|join, child)) }   
+                    {% endif %} 
+                {% endif %} 
+                
+            {% endfor %}
+        {% endif %} 
+    {% endfor %}
+    
+[gcode_macro SAVE_AT_END]
+variable_save: 1
+gcode:
+  SET_GCODE_VARIABLE MACRO=SAVE_AT_END VARIABLE=save VALUE=1
+  
+[gcode_macro SAVE_IF_SET]
+gcode:
+  {% if printer["gcode_macro SAVE_AT_END"].save == 1 %}
+    SAVE_CONFIG
+  {% endif %}
+
+[gcode_macro INITIALIZE_VARIABLE]
+gcode:
+  {% if 'VARIABLE' not in params %}
+    {action_respond_info("Отсутствует параметр VARIABLE")}
+  {% elif 'VALUE' not in params %}
+    {action_respond_info("Отсутствует параметр VALUE")}
+  {% else %}
+    {% set svv = printer.save_variables.variables %}
+    {% if params.VARIABLE not in svv %}
+      {% set escaped = params.VALUE|replace("\"", "\\\"") %}
+      SAVE_VARIABLE VARIABLE={params.VARIABLE} VALUE="{escaped}"
+    {% endif %}
+  {% endif %}
+
+
+
+[gcode_macro WIPE_LINE]
+gcode:
+  {% set z = params.Z|default(0.25)|float %}
+  {% set n = params.N|default(0.4)|float %}
+
+  {% if printer.toolhead.homed_axes != "xyz" %}
+    {action_respond_info("Пожалуйста, калибруйте XYZ сначала")}
+  {% elif printer.extruder.temperature < 170 %}
+    {action_respond_info("Температура экструдера слишком низкая")}
+  {% else %}
+    SAVE_GCODE_STATE NAME=WIPE_LINE_state
+    M82
+    G90
+    G92 E0
+    G1 X10 Y20 Z5 F3000
+    G1 Z{z} F3000
+    G1 X10 Y150 F1500 E10.83
+    G1 X{ n + 10.0 } F5000
+    G1 Y22 F1500 E21.5
+    G1 Y20 F5000
+    RESTORE_GCODE_STATE NAME=WIPE_LINE_state MOVE=0
+  {% endif %}
+  
+[gcode_macro PREP_PRINT]
+description: Загружает и начинает печать
+variable_x_max: 0
+variable_y_max: 0
+variable_z_max: 0
+variable_nozzle: 0
+variable_fila_dia: 0
+variable_bed_temp: 0
+variable_extruder_temp: 0
+variable_chamber_temp: 0
+variable_layer_count: 0
+variable_tool_changes: 0
+variable_cur_layer: 0
+variable_num_layers: 0
+variable_layer_z: 0
+gcode:
+
+  M117 Инициализация печати...
+
+  #Получить размеры объема печатного устройства
+  {% set X_MAX = printer.toolhead.axis_maximum.x|default(100)|float %}
+  {% set Y_MAX = printer.toolhead.axis_maximum.y|default(100)|float %}
+  {% set Z_MAX = printer.toolhead.axis_maximum.z|default(100)|float %}
+
+  #Получить диаметр сопла и диаметр филамента для условий
+  {% set NOZZLE = printer.extruder.nozzle_diameter|default(0.4)|float %}
+  {% set FILADIA = printer.extruder.filament_diameter|default(1.64)|float %}
+
+  #Установить начальные координаты прямых линий наката
+  {% set X_START = 10.0|default(10.0)|float %}
+  {% set Y_START = 20.0|default(20.0)|float %}
+
+  #Рассчитать объем экструдирования прямой линии и длину филамента
+  {% set PRIMER_WIDTH = 0.75 * NOZZLE %}                    
+  {% set PRIMER_HEIGHT = 0.70 * NOZZLE %}           
+  {% set PRIMER_SECT = PRIMER_WIDTH * PRIMER_HEIGHT %}    
+  {% set PRIMER_VOL = PRIMER_SECT * (X_MAX - 3 * X_START) %}    
+  {% set FILA_SECT = 3.1415 * ( FILADIA / 2.0)**2 %}          
+  {% set FILA_LENGTH = 1.55 * PRIMER_VOL / FILA_SECT %}
+  {% set FILAMENT_TYPE = params.FILAMENT|default(PLA)|string %}
+
+  #Получить температуры подложки, экструдера и камеры из G-кода срезера
+  {% set BED_TEMP = params.BED|default(60)|float %}
+  {% set EXTRUDER_TEMP = params.EXTRUDER|default(210)|float %}
+  {% set CHAMBER_TEMP = params.CHAMBER|default(50)|float %}
+
+  # Получить количество слоев
+  {% set NUM_LAYERS = params.COUNT|default(0)|float %}
+  {% set CUR_LAYER = params.NUM|default(0)|float + 1 %}
+
+  # Получить количество необходимых смен инструментов
+  {% set TOOL_CHANGES = params.TOOLS|default(0)|float %}
+
+  # Сохранить спецификации печати для последующего использования
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=x_max VALUE={X_MAX}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=y_max VALUE={Y_MAX}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=z_max VALUE={Z_MAX}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=nozzle VALUE={NOZZLE}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=fila_dia VALUE={FILADIA}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=bed_temp VALUE={BED_TEMP}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=extruder_temp VALUE={EXTRUDER_TEMP}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=chamber_temp VALUE={CHAMBER_TEMP}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=cur_layer VALUE={CUR_LAYER}
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=num_layers VALUE={NUM_LAYERS}
+
+  SET_GCODE_VARIABLE MACRO=PREP_PRINT VARIABLE=tool_changes VALUE={TOOL_CHANGES}
+
+  # Включить свет!
+  # У меня пока нет никаких ламп... звучит весело, однако!
+  #WLED_ON PRESET=1
+
+  # Убедитесь, что T0 выбран для Z-калибровки
+  T0
+  PROBEON
+
+  # Начать нагрев и подготовку к печати
+  G90 ; использовать абсолютные координаты
+  M83 ; экструдер в относительном режиме
+
+  M117 Предварительный нагрев подложки для калибровки...
+
+  M104 S{EXTRUDER_TEMP}
+  G4 S10 ; позволить частичное нагревание сопла
+  M190 S{BED_TEMP} ; установить окончательную температуру подложки
+  #BED_MESH_PROFILE LOAD="default"
+  BED_MESH_LOAD ; загрузить профиль для указанной температуры
+  # BEDMESH ; Создание новой сетки подложки вместо загрузки сохраненной
+  M117 Калибровка всех осей...
+  G28 ; калибровка всех осей
+  M117 Корректировка наклона Z...
+  Z_TILT_ADJUST ; калибровка двойной оси Z
+
+
+#  G1 Z50 F240
+#  G1 X2 Y10 F3000
+  M117 Ожидание стабилизации температур...
+
+  M104 S{EXTRUDER_TEMP} ; установить окончательную температуру сопла
+  G28 X ; парковка экструдеров при прогреве для наката
+  M190 S{BED_TEMP} ; ожидание стабилизации температуры подложки
+  M109 S{EXTRUDER_TEMP} ; ожидание стабилизации температуры сопла
+
+  WIPE_LINE
+
+  M117 Начало печати
+
+[de_macro M1091]
+#rename_existing: M99109
+gcode:
+    #Параметры
+    {% set s = params.S|float %}
+    {% set set_tool = params.T|default(0)|int %}
+    
+    M104 {% for p in params %}{'%s%s' % (p, params【p】)}{% endfor %}  ; Установить температуру сопла
+    
+    {% if s != 0 %}
+            {% if (set_tool == 0 ) %}
+                  TEMPERATURE_WAIT SENSOR=extruder MINIMUM={s-3} MAXIMUM={s+3}   ; Ожидание температуры сопла (в пределах 1 градуса)
+            {% else %}
+                  TEMPERATURE_WAIT SENSOR=extruder1 MINIMUM={s-3} MAXIMUM={s+3}   ; Ожидание температуры сопла (в пределах 1 градуса)
+            {% endif %}
+    {% endif %}
