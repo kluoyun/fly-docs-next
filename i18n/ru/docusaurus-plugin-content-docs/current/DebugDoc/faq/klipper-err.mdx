@@ -1,0 +1,145 @@
+---
+sidebar_position: 1
+---
+
+
+
+# Часто встречающиеся сообщения об ошибках
+
+
+## mcu 'xxx': Невозможно подключиться
+
+1. **Сообщение об ошибке**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/cannot_connect.webp').default} size="80%" align="center" />
+
+2. **Причина ошибки**
+
+   * Верхний компьютер не может найти материнскую плату и подключиться к ней
+
+3. **Решение**
+
+   * Просмотрите Klippy.log, прокрутите вниз
+   * Если появляется `[Errno 2]`, это означает, что ID не был найден и добавлен в файл **printer.cfg**
+   
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/errno2.webp').default} size="80%" align="center" />
+
+   * Если появляется **serialhdl.error: mcu 'xxx': Serial connection closed**, это означает, что CAN ID не был найден или заполнен неправильно, необходимо найти ID и ввести его
+   
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/lnvalid_can_uuid.webp').default} size="80%" align="center" />
+
+   * Если появляется **mcu 'mcu': Unable to open CAN port: [Errno 19] No such device**, это означает, что нет **UOTC или материнской платы с CAN мостом**
+   
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/errno19.webp').default} size="80%" align="center" />
+
+   * Если появляется **mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 100] Network is down**, это означает, что **CAN сеть не настроена или CAN0 не запущена**
+   
+   * Если появляется **mcu 'mcu': Unable to open CAN port: Failed to transmit: [Errno 105] Network is down**, это означает, что **буфер CAN сети слишком мал**
+   
+   * Сообщения `[Errno 105] Network is down` и `[Errno 100] Network is down` можно посмотреть в этой документации: [Конфигурация CAN](/docs/DebugDoc/faq/klipper_can.mdx "Щелкните для перехода")
+
+## mcu 'mcu': Недопустимый CAN uuid
+
+1. **Сообщение об ошибке**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/lnvalid_can_uuid.webp').default} size="80%" align="center" />
+
+2. **Причина ошибки**
+
+   * CAN ID не указан или указан неправильно
+
+3. **Решение**
+
+   * Необходимо найти ID и ввести его
+
+## Опция 'serial' в разделе 'mcu' должна быть указана
+
+1. **Сообщение об ошибке**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/serial.webp').default} size="80%" align="center" />
+
+2. **Причина ошибки**
+
+   * USB ID не указан или указан неправильно
+
+3. **Решение**
+
+   * Необходимо найти ID и ввести его
+
+## homing override method always homes X and Y before homing Z. The safe_z_home
+
+1. **Сообщение об ошибке**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/homing.webp').default} size="80%" align="center" />
+
+2. **Причина ошибки**
+
+   * Повторная настройка `[safe_z_home]` и `[homing_override]`
+
+3. **Решение**
+
+   * Настройте только одно из них, другое удалите
+
+## Ошибка ‘XXX ‘mcu’ shutdown: ADC out of range….
+
+1. **Сообщение об ошибке**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/adc.webp').default} size="80%" align="center" />
+
+2. **Причина ошибки**
+
+   * Klipper обнаружил температуру за пределами максимального или минимального порога (термистор может быть разомкнут или замкнут), система перейдет в режим защиты от выключения.
+
+3. **Решение**
+
+   * В конфигурации найдите `min_temp:` минимальную температуру измените на -235
+   * В конфигурации найдите `max_temp:` максимальную температуру измените на 99999999
+   * Проверьте правильность модели термистора
+   * Проверьте правильность подключения пина термистора
+   * Проверьте, есть ли короткое замыкание у термистора
+   * После определения и устранения проблемы верните температуры к исходным значениям
+
+## MCU ‘mcu’ shutdown: Timer too close
+
+1. **Сообщение об ошибке**
+
+   <ImageView image={require('@site/docs/DebugDoc/faq/img/ttc.webp').default} size="80%" align="center" />
+
+2. **Причина ошибки**
+
+   * Основная причина — перегрузка нижнего устройства или превышение времени ожидания верхним устройством
+
+3. **Решение**
+
+   * Уменьшить деталировку
+   * Снижение скорости печати
+   * Переустановка системы верхнего устройства и переустановка прошивки
+
+### Для Raspberry Pi доступен этот метод
+
+   ```bash
+   sudo timedatectl status | grep "NTP service" 
+   sudo timedatectl set-ntp false
+   ```
+
+   * Просмотр состояния службы NTP
+   * Отключение синхронизации NTP
+
+## Communication timeout during homing probe 
+
+1. **Сообщение об ошибке**
+
+   Нет изображений
+
+2. **Причина ошибки**
+
+   * Одновременно работающие CAN и дисплейные службы, скорее всего, вызовут эту ошибку
+
+3. **Решение**
+
+   * Через SSH подключитесь к верхнему устройству по сети и выполните следующий код
+   * Если произведена обновление klipper, он автоматически восстановится
+   * Не выполняйте это во время печати
+   ```bash
+   sed -i 's/TRSYNC_TIMEOUT = 0.025/TRSYNC_TIMEOUT = 0.05/g' ~/klipper/klippy/mcu.py && sudo systemctl restart klipper
+   ```

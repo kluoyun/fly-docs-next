@@ -1,0 +1,99 @@
+---
+sidebar_position: 5
+---
+
+
+
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.5
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-1.5.webp').default} size="80%" align="center" />
+
+## Основные параметры
+
+    * Напряжение питания : 24-48В
+    * Максимальный ток : 6А
+    * Совместимость : ФIRMWARE Marlin/Klipper/RRF
+    * Поддерживаемые режимы управления : TMC : SPI
+    * Интерфейс шаг/направление с поддержкой микроскалирования microPlyer
+    * Максимальная разрешающая способность 256细分
+    * Поддерживает работу в режиме stealthChop2 для тихой работы и плавных движений
+    * Поддерживает подавление резонансов на средних частотах
+    * Поддерживает режим управления loadCycle с высокой динамикой
+    * Поддерживает управление скоростью dcStep, связанное с нагрузкой
+    * Поддерживает детектирование нагрузки stallGuard2 с высокой точностью без датчиков
+    * Поддерживает управление током coolStep для экономии энергии до 75%
+
+## Инструкции по настройке переключателей на материнской плате
+
+    * Для работы TMC5160 Pro необходима настройка SPI переключателя
+    * Пины SPI FLY драйвера находятся на левой стороне, считая сверху, четвертый пин, CS пин является пином SPI. Если конфигурация не соответствует положению пинов, использование SPI невозможно
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
+
+## Установка FPC на материнскую плату
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/line.webp').default} size="80%" align="center" />
+
+## Подключение 12V FAN
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.webp').default} size="80%" align="center" />
+
+
+## Справочная конфигурация TMC5160 Pro
+
+    :::danger
+
+    * Резистор выборки драйвера должен быть установлен как `sense_resistor: 0.033`, ошибочная настройка недопустима
+    * Параметры `spi_bus` и `spi_software` могут быть выбраны только один из них
+    
+    :::
+
+### Пример конфигурации в режиме SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Значение тока при работе двигателя
+    interpolate: False                  # Включить ли 256-кратную микроскалировку (вкл - True, выкл - False)
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```
+
+## Инструкции по использованию без концевиков
+
+    <DIAG />
+
+    :::tip Совет по использованию без концевиков
+
+    * Этот драйвер требует установки 4-пинового FPC для работы
+    * Конечная точка `endstop_pin:` должна быть отключена или удалена, а вместо этого добавлена строка `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * После настройки `diag0_pin:` состояние концевика должно быть неактивным
+    * Настройка `driver_SGT:` требует самостоятельного тестирования подходящего значения
+
+    :::
+
+    * Пример конфигурации
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc5160_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Отступ при обратном ходе не должен быть изменен, чтобы избежать неудачного возврата
+
+    [tmc5160 stepper_x]
+    diag0_pin: ^!
+    driver_SGT: 1
+
+    #   После настройки убедитесь, что состояние концевика неактивно
+    #   Этот пин обычно используется с префиксом "^", чтобы включить внутреннее подтягивание
+    #   Сенсибильность зависит от натяжения ремня и требует настройки
+    #  (убедитесь, что также установлен параметр driver_SGTHRS на подходящее значение)
+
+    ```

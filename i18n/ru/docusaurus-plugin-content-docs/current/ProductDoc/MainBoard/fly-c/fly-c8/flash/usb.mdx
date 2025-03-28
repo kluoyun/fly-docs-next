@@ -1,0 +1,45 @@
+---
+sidebar_position: 3
+sidebar_label: Загрузка прошивки через USB
+---
+
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# Компиляция прошивки через USB
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Нажмите клавишу `Q`, появится запрос **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
+    * Введите `make -j4` для начала компиляции (время может занять немного)
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если вывод содержит следующее, компиляция успешно завершена
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Загрузка прошивки
+
+:::tip
+Для загрузки прошивки выполните следующую команду
+:::
+
+    ```bash
+    sudo fly-flash -d c8 -h -f ~/klipper/out/klipper.bin
+    ```

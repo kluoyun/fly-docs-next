@@ -1,0 +1,75 @@
+---
+sidebar_position: 6
+sidebar_label: Прошивка固WARE Katapult
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Прошивка Katapult
+
+
+## Описание прошивки Katapult
+
+    <CANBOOT />
+
+    :::tip
+        * Прошивка Katapult для D7 использует третий способ подключения: USB-подключение
+        * D7 уже предустановлена прошивка Katapult с завода начиная с 1 сентября 2024 года.
+    :::
+
+## Вход в режим DFU для прошивки
+
+    :::tip
+
+    Слева — кнопка `BOOT`, справа — кнопка `RESET`.
+
+    :::
+
+    * Есть два метода входа в режим прошивки:
+    * Первый: при полном отключении питания, удерживайте кнопку BOOT и подключите данные провод к материнской плате и вашему устройству.
+    * Второй: после подключения данных проводов к материнской плате и вашему устройству, удерживайте кнопку BOOT и нажмите кнопку RST, затем отпустите кнопку RST, а затем отпустите кнопку BOOT.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/boot.webp').default} size="50%" align="center" />
+
+## Прошивка прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по прошивке на Windows" default>
+
+            * Прошивка Katapult для D7 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Щелкните для автоматического скачивания прошивки</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по прошивке через ПО">
+
+            <Katapult />
+
+            4. Прошивка прошивки
+
+            :::tip
+
+            Необходимо прошить только одну из прошивок.
+
+            :::
+
+            * Ниже приведены команды для записи прошивки:
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D7.bin
+                ```
+
+            5. При появлении текста в стрелке "File downloaded successfully", прошивка успешно завершена.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения прошивки, необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

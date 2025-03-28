@@ -1,0 +1,102 @@
+---
+sidebar_position: 1
+sidebar_label: Введение
+---
+
+
+
+# TAP
+
+## Схема подключения TAP!
+
+    :::warning Важное замечание
+
+    * Обратите внимание, что TAP не следует подключать к разъему сервопривода, необходимо подключать к разъему ограничителя!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/tap.webp').default} size="90%" align="left" />
+
+
+## Инструкция по настройке TAP
+
+
+    :::tip
+
+    * Поскольку TAP использует сопло напрямую как триггер ограничителя, никаких смещений по осям X и Y нет.
+
+    :::
+
+    :::tip
+
+    * Изменения в TAP касаются только Z-ограничителя и датчика.
+
+    :::
+    ```cfg
+
+    [stepper_z]
+    endstop_pin: probe:z_virtual_endstop
+    # endstop_pin: ^sht36:PA1  
+    # position_endstop: -0.5        
+
+    [probe]
+    pin: ^sht36:PA1              # Пин сигнала
+    x_offset: 0                  # Смещение по оси X датчика относительно сопла
+    y_offset: 0                  # Смещение по оси Y датчика относительно сопла
+    #z_offset: 0                 # Смещение по оси Z датчика относительно сопла
+    speed: 3.0                   # Скорость выравнивания
+    lift_speed: 5                # Скорость поднятия датчика
+    samples: 3                   # Количество выборок
+    samples_result: median       # Метод выбора значения (по умолчанию - медиана)
+    sample_retract_dist: 3.0     # Расстояние отступа при выравнивании
+    samples_tolerance: 0.075     # Толерантность выборки (небольшие значения могут увеличить количество попыток выборки)
+    samples_tolerance_retries: 3 # Количество повторных попыток превышения толерантности
+    activate_gcode:
+        {% set PROBE_TEMP = 150 %}
+        {% set MAX_TEMP = PROBE_TEMP + 5 %}
+        {% set ACTUAL_TEMP = printer.extruder.temperature %}
+        {% set TARGET_TEMP = printer.extruder.target %}
+
+        {% if TARGET_TEMP > PROBE_TEMP %}
+            { action_respond_info('Целевая температура экструдера %.1f°C слишком высока, снижение до %.1f°C' % (TARGET_TEMP, PROBE_TEMP)) }
+            M106 S255
+            M109 S{ PROBE_TEMP }
+            M106 S26
+        {% else %}
+            # Целевая температура уже достаточно низкая, но сопло может быть все еще слишком горячим.
+            {% if ACTUAL_TEMP > MAX_TEMP %}
+                { action_respond_info('Текущая температура экструдера %.1f°C все еще слишком высока, ожидайте, пока она опустится ниже %.1f°C' % (ACTUAL_TEMP, MAX_TEMP)) }
+                TEMPERATURE_WAIT SENSOR=extruder MAXIMUM={ MAX_TEMP }
+            {% endif %}
+        {% endif %}
+
+    ```
+
+## Изменение начальных макросов
+    * Результат
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-tap/img/klipper.webp').default} size="80%" align="left" />
+
+### Изменение начальных макросов PrusaSlicer 
+
+    ```bash
+    M109 S150
+    print_start
+    M109 S[first_layer_temperature]
+    ```
+
+### Изменение начальных макросов CURA 
+
+    ```bash
+    M109 S150
+    print_start
+    M109 S{material_print_temperature_layer_0} ;Начало нагрева экструдера
+    ```
+
+### Изменение начальных макросов Orca-Slicer 
+
+    ```bash
+    M190 S[bed_temperature_initial_layer_single]
+    M109 S150
+    print_start  PRINT_MIN={first_layer_print_min[0]},{first_layer_print_min[1]} PRINT_MAX={first_layer_print_max[0]},{first_layer_print_max[1]}
+    M109 S[nozzle_temperature_initial_layer]
+    ```

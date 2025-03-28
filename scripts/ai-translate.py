@@ -12,7 +12,7 @@ from logger import logger
 
 DOCS_DIR = "docs"
 SRC_LANG = "zh-Hans"
-TARGET_LANGS = ["en", "ja", "fr", "ja", "ko"]
+TARGET_LANGS = ["en", "ja", "fr", "ko", "ru"]
 I18N_DIR = "i18n"
 TRANSLATE_DIR = f"docusaurus-plugin-content-docs{os.sep}current"
 

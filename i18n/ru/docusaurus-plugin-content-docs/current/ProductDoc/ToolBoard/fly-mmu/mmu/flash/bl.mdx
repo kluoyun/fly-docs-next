@@ -1,0 +1,90 @@
+---
+sidebar_position: 7
+sidebar_label: ПО BL, проигнорировать
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирмварь Katapult
+
+## Описание фирваря Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * Поддерживает все три типа MMU
+    * Здесь доступны только CAN-версия и USB-версия
+    :::
+
+## Вход в режим программирования
+
+    :::tip
+
+    Справа — кнопка RESET, слева — кнопка BOOT
+
+    :::
+
+    * Есть два способа входа в режим программирования
+    * Первый: при полном отключении питания, удерживайте кнопку BOOT, пока не подключите кабель передачи данных к материнской плате и устройству
+    * Второй: после подключения кабеля передачи данных к материнской плате и устройству, удерживайте кнопку BOOT, затем нажмите кнопку RST, отпустите кнопку RST, затем отпустите кнопку BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.webp').default} size="100%" align="center" />
+
+## Программирование фирваря
+    <Tabs>
+        <TabItem value="win" label="Инструкция по программированию на Windows" default>
+        
+            * Фирмварь Katapult для MMU <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/MMU.zip">щелкните для автоматической загрузки фирваря</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по программированию через ПО">
+            
+            <Katapult />
+
+            4. Программирование фирваря
+
+            :::tip
+
+            Необходимо программировать только один из файлов
+
+            :::
+
+            * Ниже приведена команда для записи фирваря с CAN-скоростью 500К
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+                       
+            * Ниже приведена команда для записи фирваря с CAN-скоростью 1М
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_CAN_500K.bin
+                ```
+
+            * Ниже приведена команда для записи USB-фирмваря
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/MMU/FLY_MMU_CANBOOT_USB.bin
+                ```
+
+            5. Если появится содержимое, указанное стрелкой на изображении ниже ``File downloaded successfully``, то программируемый процесс завершен успешно
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения программирования необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Проверка успешности запуска фирваря
+
+    * Если фирварь успешно запущен, светодиоды начнут мигать
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />

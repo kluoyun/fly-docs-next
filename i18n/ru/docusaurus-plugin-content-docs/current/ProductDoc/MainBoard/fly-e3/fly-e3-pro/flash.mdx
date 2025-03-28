@@ -1,0 +1,64 @@
+---
+sidebar_position: 2
+sidebar_label: Компиляция и запись прошивки
+---
+
+
+
+
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# Компиляция и запись прошивки
+
+    :::tip
+
+    * По умолчанию E3 Pro использует microSD-карту для записи прошивки
+    * Приготовьте microSD-карту объемом не более `32 ГБ`
+    * Неисправные карты памяти могут привести к неудачной записи, поэтому рекомендуется использовать карты памяти из рекомендованного списка
+    * Лучше всего использовать карты памяти класса `10` или выше, такие как SanDisk
+
+    :::
+
+
+
+## Подготовительные работы
+
+    <SSH />
+
+## Компиляция прошивки Klipper
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * В конце вывода следующего содержимого означает успешную компиляцию
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * Ниже приведен пример успешной компиляции
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
+
+## Запись прошивки
+
+:::danger Важно
+* На F404ZG предварительно установлен BL-прошивка для записи через microSD-карту
+:::
+
+    <TF />

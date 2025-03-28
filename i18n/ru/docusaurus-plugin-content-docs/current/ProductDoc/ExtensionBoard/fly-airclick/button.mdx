@@ -1,0 +1,163 @@
+---
+sidebar_position: 6
+sidebar_label: Добавление кнопки
+---
+
+# Добавление беспроводной кнопки
+
+    :::info Важное замечание
+    * Для работы беспроводной кнопки необходимо установить батарею, модель батареи — `CR927`
+    :::
+
+    * После возвращения на главную страницу нажмите на красный маркер внутри изображения `+`
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button.webp').default} size="80%" align="Center" />
+    * После появления следующего интерфейса нормально нажмите на установленную батарею беспроводную кнопку
+    * Красный маркер автоматически создаст уникальный ID беспроводной кнопки
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-1.webp').default} size="80%" align="Center" />
+    * В красном маркере введите желаемое имя для кнопки
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-2.webp').default} size="80%" align="Center" />
+    * Нажмите на первый красный маркер, что приведет к появлению второго синего маркера
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/button-3.webp').default} size="80%" align="Center" />
+
+
+    :::danger Важно помнить
+
+    * Самописные GCODE и запросы API управляются через беспроводное соединение
+    * Триггер GPIO управляет через проводное соединение
+
+    :::
+
+## Самописный GCODE
+    * В красном маркере можно ввести необходимый код или имя макроса для самописного GCODE, AirClick автоматически отправит его на принтер для выполнения
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/gcode.webp').default} size="80%" align="Center" />
+
+## Запрос API
+
+<Tabs>
+    <TabItem value="ka" label="Настройка API Klipper" default>
+
+        1. Предопределенные API могут выполнять пользовательские макросы, аварийную остановку, перезагрузку klipper, перезагрузку прошивки и выключение системы
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/api.webp').default} size="80%" align="Center" />
+
+        2. Описание пользовательского API
+            - Все API можно найти в документации [Moonraker API](https://moonraker.readthedocs.io/en/latest/web_api/)
+            - `method` должен быть таким же, как и `method` в Moonraker API
+            - `params` должен быть таким же, как и `params` в Moonraker API
+        3. Рассмотрим пример с API запуска печати заданного файла
+            - Следующее изображение — это пример из официальной документации Moonraker
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-1.webp').default} size="80%" align="Center" />
+            - Пример заполнения API в AirClick
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/klipper-api-2.webp').default} size="80%" align="Center" />
+        4. Сохранение этой кнопки позволит начать печать заданного файла
+    </TabItem>
+    <TabItem value="ra" label="Настройка API RRF">
+        1. Описание пользовательского API
+            - Все API можно найти в документации [RepRapFirmware HTTP API](https://github.com/Duet3D/RepRapFirmware/wiki/HTTP-requests)
+            - Поддерживаются только GET запросы
+            - `method` должен быть таким же, как и `uri` в RRF HTTP API
+            - `params` должен быть таким же, как и `url query` в RRF HTTP API
+        2. Рассмотрим пример с API удаления заданного файла или папки
+            - Следующее изображение — это пример из официальной документации RRF
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-1.webp').default} size="80%" align="Center" />
+            - Пример заполнения API в AirClick
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/rrf-api-2.webp').default} size="80%" align="Center" />
+            - Параметры params необходимо переписать в формат JSON, например, `/?aaaa=bbb&cccc=ddd`
+            - После изменения получится следующее
+                ```json
+                {
+                    "aaaa": "bbb",
+                    "cccc": "ddd"
+                }
+                ```
+        3. Сохранение этой кнопки позволит удалить заданный файл или папку
+    </TabItem>
+
+    <TabItem value="ba" label="Настройка API BambuLab">
+        1. Предопределенные API могут паузировать печать, отменять печать, управлять светодиодами и т. д.
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-1.webp').default} size="80%" align="Center" />
+            - Рекомендуется использовать автоматический режим управления светодиодами, при этом система автоматически определяет состояние светодиодов и переключает их автоматически. Это позволит включить или выключить одним нажатием
+        2. Описание пользовательского API
+            - API BambuLab необходимо самостоятельно найти в соответствующих документах Github Open BambuAPI
+        3. Рассмотрим пример с API настройки скорости печати
+            - Полный параметр отправки по локальной сети MQTT для BambuLab
+                ```json
+                {
+                    "print": {
+                        "sequence_id": "0",
+                        "command": "print_speed",
+                        "param": "2" // Уровень скорости печати в виде строки
+                                     // 1 = тихий
+                                     // 2 = стандартный
+                                     // 3 = спортивный
+                                     // 4 = экстра
+                    }
+                }
+                ```
+            - Пример заполнения API в AirClick
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-airclick/img/bambu-api-2.webp').default} size="80%" align="Center" />
+        4. Сохранение этой кнопки позволит настроить скорость печати
+    </TabItem>
+
+</Tabs>
+    
+
+## Триггер GPIO (только для Klipper)
+    * Для триггера GPIO требуется подключение STM32F072 к klipper
+    * Прошивка и подключение см. в этом документе <Button variant="contained" disableElevation href="/docs/ProductDoc/ExtensionBoard/fly-airclick/offline-operation-support">Прошивка и подключение</Button>
+    * Используемые IO: `PB0` до `PB9`, всего 10 IO. После нормальной прошивки и подключения к Klipper достаточно просто настроить. Ниже приведен пример конфигурации
+    
+        ```cfg
+        [mcu AirClick]
+        serial: /dev/serial/by-id/usb-Klipper_stm32f072xb_AirClick-if00
+        ### Здесь нужно найти USB ID и изменить значение
+
+        [gcode_button _test]
+        pin: ^!AirClick:PB0
+        press_gcode:
+            M118 PB0
+
+        [gcode_button _test1]
+        pin: ^!AirClick:PB1
+        press_gcode:
+            M118 PB1
+
+        [gcode_button _test2]
+        pin: ^!AirClick:PB2
+        press_gcode:
+            M118 PB2
+
+        [gcode_button _test3]
+        pin: ^!AirClick:PB3
+        press_gcode:
+            M118 PB3
+
+        [gcode_button _test4]
+        pin: ^!AirClick:PB4
+        press_gcode:
+            M118 PB4
+
+        [gcode_button _test5]
+        pin: ^!AirClick:PB5
+        press_gcode:
+            M118 PB5
+
+        [gcode_button _test6]
+        pin: ^!AirClick:PB6
+        press_gcode:
+            M118 PB6
+
+        [gcode_button _test7]
+        pin: ^!AirClick:PB7
+        press_gcode:
+            M118 PB7
+
+        [gcode_button _test8]
+        pin: ^!AirClick:PB8
+        press_gcode:
+            M118 PB8
+
+        [gcode_button _test9]
+        pin: ^!AirClick:PB9
+        press_gcode:
+            M118 PB9
+        ```

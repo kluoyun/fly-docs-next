@@ -1,0 +1,63 @@
+---
+sidebar_position: 5
+---
+
+
+
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 5160 Pro V1.2
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro.webp').default} size="80%" align="center" />
+
+## Основные параметры
+
+    * Напряжение питания: 24-48В
+    * Максимальный ток: 6А
+    * Совместимость: Marlin/Klipper/RRF прошивки
+    * Поддерживаемые режимы работы двигателя: TMC: SPI
+    * Интерфейс шаг/направление с поддержкой микрополирования
+    * Максимальная детализация: 256 шагов
+    * Поддержка режима stealthChop2 для бесшумной работы и плавных движений
+    * Подавление резонанса на средних частотах
+    * Поддержка режима spreadCycle для высокодинамичного управления двигателем
+    * Поддержка dcStep для скоростного контроля нагрузки
+    * Поддержка stallGuard2 для точного датчика нагрузки двигателя без датчиков
+    * Поддержка coolStep для управления током с максимальной экономией до 75%
+
+## Инструкции по настройке переключателей на материнской плате
+
+    * TMC5160 Pro использует SPI-переключатели
+    * Пины SPI для FLY-драйвера находятся внизу слева, четвертый сверху вниз. CS-пин — это SPI-пин. Если расположение пинов не совпадает, то SPI использовать нельзя
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
+
+## Подключение вентилятора 12V
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160pro-fan.webp').default} size="80%" align="center" />
+
+
+## Пример конфигурации TMC5160 Pro
+
+    :::danger
+
+    * Значение сенсорного резистора драйвера — `sense_resistor: 0.033`, не устанавливайте неправильно
+    * SPI_BUS и SPI_SOFTWARE можно выбрать только одно
+    
+    :::
+
+### Пример конфигурации в режиме SPI
+
+    ```cfg
+    [tmc5160 stepper_x]
+    cs_pin:
+    spi_bus:
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 1.0                    # Значение тока при работе двигателя
+    interpolate: False                  # Включить ли 256-ступенчатую интерполяцию (вкл — True, выкл — False)
+    sense_resistor: 0.033
+    stealthchop_threshold: 0
+    driver_DISS2G: 1
+    driver_DISS2VS: 1
+    ```

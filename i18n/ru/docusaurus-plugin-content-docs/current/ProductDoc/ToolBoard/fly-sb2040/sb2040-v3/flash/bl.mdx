@@ -1,0 +1,86 @@
+---
+sidebar_position: 6
+sidebar_label: Фирменное ПО BL, пропустить!
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирменное ПО Katapult
+
+## Описание фирменного ПО Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * SB2040_V3 поддерживает CAN и RS232
+    * Здесь предоставляются только прошивки для CAN с скоростью 500K и 1M
+    :::
+
+## Вход в режим программирования
+
+    :::tip
+
+    Слева — кнопка RESET, справа — кнопка BOOT
+
+    :::
+
+    * Есть два способа входа в режим программирования
+    * Первый: при полном отключении питания нажимаем кнопку BOOT, а затем подключаем кабель передачи данных к материнской плате и вашему устройству
+    * Второй: после подключения кабеля передачи данных к материнской плате и вашему устройству нажимаем кнопку BOOT, затем нажимаем кнопку RST, отпускаем кнопку RST, а затем отпускаем кнопку BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/boot.webp').default} size="100%" align="center" />
+
+## Загрузка прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по загрузке на Windows" default>
+
+            * Прошивка Katapult для SB2040 V3 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SB2040_V3.zip">Щелкните для автоматической загрузки прошивки</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по загрузке через ПО">
+
+            <Katapult />
+
+            4. Загрузка прошивки
+
+            :::tip
+
+            Необходимо загрузить только одну из прошивок
+
+            :::
+
+            * Ниже приведена команда для загрузки прошивки с скоростью CAN 500K
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040V3_CANBOOT_CAN_500K.uf2
+                ```
+                       
+            * Ниже приведена команда для загрузки прошивки с скоростью CAN 1M
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040V3_CANBOOT_CAN_1M.uf2
+                ```
+
+
+            5. Если появляется нижеследующее уведомление, загрузка успешна
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения загрузки необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Проверка запуска прошивки
+
+    * Если прошивка успешно запущена, светодиоды начнут мигать
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.webp').default} size="100%" align="center" />

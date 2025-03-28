@@ -1,0 +1,74 @@
+---
+sidebar_position: 1
+sidebar_label: Схематическое изображение TFT FPC линии
+---
+
+# Инструкция по изменению параметров экрана
+:::tip
+Откройте ваш IP:9999 в браузере для доступа к FLY-Tools
+:::
+
+:::
+    * Для использования tft необходимо включить нижеследующие опции, чтобы экран мог быть активирован
+    * После входа в FLY Tools
+* Первый шаг — зайти в fly_TOOLS для изменения параметров
+
+* В FLY TOOLS необходимо настроить экран согласно нижеуказанной конфигурации и включить KS
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
+
+# Схематическое изображение
+## LITE2
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2/img/tftv2.webp').default} size="80%" align="left" />
+
+## LITE2.1
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="left" />
+
+## fly-PI
+<ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="left" />
+
+
+<Tabs>
+    <TabItem value="tft" label="TFT экран" default>
+        * В FLY TOOLS необходимо включить KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="Конфигурация TFT сенсорного экрана" default>
+## Метод первый    
+         * Конфигурация сенсорного экрана требует использования следующей команды для настройки как `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Cap`
+    * Используйте следующую команду для проверки успешности изменения
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * Для изменения конфигурации сенсорного экрана на резистивный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="Конфигурация TFT резистивного экрана">
+## Метод первый        
+           * Конфигурация резистивного экрана требует использования следующей команды для настройки как `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Resi`
+        * Используйте следующую команду для проверки успешности изменения
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * Для изменения конфигурации резистивного экрана на сенсорный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>

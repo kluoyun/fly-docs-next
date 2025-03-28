@@ -1,0 +1,71 @@
+---
+sidebar_position: 6
+sidebar_label: Фирменное ПО BL, проигнорируйте
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирменное ПО BL
+
+    :::tip
+
+    * Обратите внимание, что встроенная загрузочная программа уже предварительно записана на заводе. Её не нужно перезаписывать.
+
+    :::
+
+## Вход в режим программирования
+
+
+    * Существует два способа входа в режим программирования
+    * Первый: полностью отключите электропитание материнской платы, затем коротко замкните BOOT, а затем подключите кабель передачи данных с одной стороны к материнской плате, а с другой стороны к вашему устройству.
+    * Второй: после подключения кабеля передачи данных с одной стороны к материнской плате, а с другой стороны к вашему устройству, коротко замкните BOOT, нажмите кнопку RST, затем отпустите кнопку RST и в конце отключите короткое замыкание BOOT.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-pro/fly-pro-x10/flash/img/boot.webp').default} size="100%" align="center" />
+
+## Запись фирменного ПО
+    <Tabs>
+        <TabItem value="win" label="Инструкция по записи на Windows" default>
+
+            * Фирменное ПО bootloader для PRO X10 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/ProX10.zip">Щелкните для автоматической загрузки фирменного ПО</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по записи через ПК">
+
+            <Katapult />
+
+            4. Запись фирменного ПО
+
+            :::tip
+
+            Необходимо записать только одно из двух фирменных ПО.
+
+            :::
+
+            * Ниже приведена команда записи для katapult-фирменного ПО
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            * Ниже приведена команда записи для bootloader-фирменного ПО
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/ProX10/ProX10_USB_katapult.bin
+                ```
+
+            5. При появлении содержимого, указанного стрелкой на изображении ниже ``File downloaded successfully``, запись успешно завершена.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения записи необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

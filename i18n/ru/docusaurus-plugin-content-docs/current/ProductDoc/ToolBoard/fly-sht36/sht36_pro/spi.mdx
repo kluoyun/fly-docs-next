@@ -1,0 +1,34 @@
+---
+sidebar_position: 8
+sidebar_label: Решение проблем с использованием SPI
+---
+
+# Невозможно использовать драйвер 5160 на плате
+
+    ```bash
+    Unable to write tmc spi 'extruder' register IHOLD_IRUN
+    ```
+
+## Конкретная причина
+
+    * Если используется 5160, появляется ошибка ниже из-за версии инструментальной цепочки для ARM `arm-none-eabi-gcc`
+
+## Методы решения
+    Существуют следующие три метода решения
+
+    * Переключить компилятор инструментальной цепочки `arm-none-eabi-gcc` с `gcc10` на `gcc8`
+    * Заменить операционную систему верхнего уровня
+    * Обновить прошивку до рабочей версии
+
+    Для загрузки и записи прошивки убедитесь, что инструментальная плата может нормально подключаться к CAN и имеет CANBOOT
+
+    * Скачать
+
+    ```bash
+    cd ~/ && git clone https://github.com/FengHua741/FLY_Katapult.git
+    ```
+    * Запись
+
+    ```
+    python3 ~/klipper/lib/canboot/flash_can.py -f ~/FLY_Katapult/Klipper/SHT36PRO/SHT36PRO_KLIPPER_CAN-1M_v0.12.0-229-g589bd64c.bin -u <SHT36PRO_canid>
+    ```

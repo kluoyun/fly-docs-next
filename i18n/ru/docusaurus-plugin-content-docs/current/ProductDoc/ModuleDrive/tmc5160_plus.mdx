@@ -1,0 +1,151 @@
+---
+sidebar_position: 7
+---
+
+
+
+
+
+
+
+# TMC 5160 Plus
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus.webp').default} size="100%" align="center" />
+
+## Основные параметры
+
+    * Напряжение питания : 12-60В
+    * Максимальный ток : 10A
+    * Совместимость : Marlin/Klipper/RRF прошивки
+    * Режимы управления двигателями : TMC : SPI
+    * Интерфейс шаг/направление с поддержкой микроподстановки microPlyer
+    * Максимальная разрешающая способность : 256 мелкое деление
+    * Поддержка работы stealthChop2 для бесшумной работы и плавных движений
+    * Поддержка подавления резонансов на средних частотах
+    * Поддержка режима spreadCycle для высокодинамичного управления двигателем
+    * Поддержка dcStep для управления скоростью в зависимости от нагрузки
+    * Поддержка stallGuard2 для высокоточного бесконтактного определения нагрузки на двигатель
+    * Поддержка coolStep для управления током с возможностью экономии энергии до 75%
+
+## Инструкции по установке перемычек на материнской плате и подключению драйвера
+
+    :::tip
+
+    TMC 5160 Plus использует режим SPI, для FLY материнских плат установите перемычки в соответствии с конфигурацией SPI, для других материнских плат обратитесь к продавцу платы
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
+
+### Установка FPC на материнскую плату
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fpc.webp').default} size="100%" align="center" />
+
+### Настройка RGB переключателя
+
+    :::tip
+
+    При использовании материнской платой EN ноги для управления RGB будет принудительно заблокирован двигатель
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb.webp').default} size="100%" align="center" />
+    
+    * Подключение нескольких драйверов RGB
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_rgb-1.webp').default} size="80%" align="center" />
+
+
+### Подключение 12V FAN
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/5160plus_fan.webp').default} size="100%" align="center" />
+
+## Справочные настройки материнской платы
+
+    :::danger
+
+    Для драйвера используется образец резистора 0.033, не устанавливайте неправильное значение
+
+    :::
+
+
+    <Tabs>
+        <TabItem value="Использование ноги EN драйвера для управления RGB" default>
+        
+        * Переключатель направлений в сторону FAN
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        # enable_pin: !
+
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+        driver_DISS2G: 1
+        driver_DISS2VS: 1
+        ```
+        </TabItem>
+
+
+        <TabItem value="Использование ноги RGB материнской платы для управления RGB" default>
+        
+        * Переключатель направлений в другую сторону от FAN
+
+        ```
+        [stepper_x]
+        step_pin: 
+        dir_pin: 
+        enable_pin: !
+        
+        [tmc5160 stepper_x]
+        cs_pin: 
+        spi_software_mosi_pin: 
+        spi_software_miso_pin: 
+        spi_software_sclk_pin: 
+        run_current: 1.0
+        interpolate: False
+        sense_resistor: 0.033
+        stealthchop_threshold: 0
+        driver_DISS2G: 1
+        driver_DISS2VS: 1
+        ```  
+
+        </TabItem>
+
+        <TabItem value="Справочная конфигурация RGB" default>
+
+        * Управление светодиодами через расширительный модуль <Button variant="contained" disableElevation href="/docs/DebugDoc/addon/led.mdx">Щелкните для перехода</Button>
+
+        ```
+        [neopixel TP_led]
+        pin: 
+        chain_count: 6
+        # Количество светодиодов
+        # Количество лампочек
+        color_order: GRB
+        initial_RED: 0.4    
+        initial_GREEN: 0.8
+        initial_BLUE: 1
+        initial_WHITE: 0.0
+        #66CCFF 
+
+        ```  
+
+        </TabItem>
+
+    </Tabs>
+
+## Предупреждение о токе
+
+    :::danger
+
+    TMC5160 Plus поддерживает ток до 10А, но слишком высокий ток может привести к повреждению двигателя, и требуется усиленное охлаждение
+
+    :::

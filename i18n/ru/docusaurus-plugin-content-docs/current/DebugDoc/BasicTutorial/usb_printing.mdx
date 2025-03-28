@@ -1,0 +1,45 @@
+---
+sidebar_position: 3
+---
+
+# Печать с флешки
+
+Данная инструкция применима только для FLY гуевого интерфейса.
+
+    :::warning Важно
+
+    * Требуется самостоятельная установка
+    * Данная инструкция заменит файл klipper/klippy/extras/virtual_sdcard.py klipper.
+    * Реализует возможность автоматической копии файла с флешки в системную директорию `/tmp`, после выбора файла для печати.
+    * После завершения копирования в веб-интерфейсе появится уведомление `File selected`.
+    * Этот файл будет проверять директорию `sdaX`, если таковая отсутствует, то операция не выполнится (в `sdaX` X обозначает A-Z и 0-9).
+    * На данный момент тестировалось только на FLY гуевом интерфейсе, другие гуевые интерфейсы не тестировались.
+
+    :::
+
+## Метод использования
+
+
+* Подключитесь к гуевому интерфейсу через SSH-софт и выполните следующие команды
+* Обратите внимание, что данная команда перезапустит гуевой интерфейс!
+* Этим шагом активируется функция печати с флешки
+    ```bash
+    sudo rm -rf /etc/udev/rules.d/fly_devices.rules && sudo wget https://cdn.mellow.klipper.cn/Utils/fly_devices.rules -O /etc/udev/rules.d/fly_devices.rules > /dev/null 2>&1 && sudo chmod +x /etc/udev/rules.d/fly_devices.rules && sudo service udev restart && sudo reboot
+    ```
+
+## Метод работы с флешкой для печати
+
+### Резервное копирование и загрузка файла
+
+* Обратите внимание, что данная команда остановит Kipper
+* Этим шагом активируется функция автоматической копии файла с флешки в системную директорию `/tmp`
+    ```bash
+    sudo systemctl stop klipper && mv ~/klipper/klippy/extras/virtual_sdcard.py ~/virtual_sdcard.py && curl -kfsSL https://cdn.mellow.klipper.cn/firmware/virtual_sdcard.py -o ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```
+
+### Этот шаг восстанавливает оригинальный файл
+
+* Обратите внимание, что данная команда восстановит оригинальный Kipper
+    ```bash
+    sudo systemctl stop klipper && mv ~/virtual_sdcard.py ~/klipper/klippy/extras/virtual_sdcard.py && sudo systemctl restart klipper
+    ```

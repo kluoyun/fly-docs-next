@@ -1,0 +1,55 @@
+---
+sidebar_position: 6
+sidebar_label: ПО для BL, проигнорируйте это
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# ПО для BL
+
+    :::tip
+
+    * Обратите внимание, что на заводе уже предварительно записаны `bootloader`, поэтому не нужно повторно записывать его
+
+    :::
+
+## Вход в режим программирования
+
+
+    * Существует два способа входа в режим программирования
+    * Первый: при полном отключении питания от материнской платы коротко замкните BOOT, а затем подключите один конец с данными к материнской плате, а другой конец к вашему устройству
+    * Второй: после подключения одного конца с данными к материнской плате, а другого к вашему устройству, коротко замкните BOOT, нажмите кнопку RST, затем отпустите кнопку RST и finally отсоедините короткое замыкание BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/flash/img/boot.webp').default} size="100%" align="center" />
+
+## Запись ПО
+
+    <Tabs>
+        <TabItem value="win" label="Инструкция по записи на Windows" default>
+            * Bootloader-программное обеспечение для SUPER8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SUPER.zip">Щелкните для автоматической загрузки программы</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по записи через ПО">
+            
+            <Katapult />
+            4. Запись ПО
+            :::tip
+            Необходимо записать только одно из программных обеспечений
+            :::
+            * Ниже приведена команда записи
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/SUPER/SUPER8.bin
+                ```
+            5. При появлении содержимого, указанного стрелкой на изображении ниже ``File downloaded successfully``, запись успешно выполнена
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+            :::tip
+            После записи необходимо полностью отключить питание материнской платы.
+            :::
+        </TabItem>
+    </Tabs>

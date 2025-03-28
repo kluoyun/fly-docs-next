@@ -1,0 +1,82 @@
+---
+sidebar_position: 6
+sidebar_label: Фирменное ПО BL, проигнорируйте
+---
+
+
+
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+import APM from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash-apm.mdx';
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Прошивка для Katapult
+
+## Инструкция по прошивке Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * Поддерживает CAN SHT36/42
+    * Здесь предоставляются только прошивки для CAN с скоростью 500K и 1M
+    :::
+
+## Вход в режим программирования
+
+    :::tip
+
+    Обведённое — это кнопка `BOOT`
+
+    :::
+
+    * При полном отключении питания коротко нажмите кнопку BOOT, затем подключите кабель передачи данных к материнской плате и вашему устройству
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot.webp').default} size="50%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/boot1.webp').default} size="50%" align="center" />
+
+## Программирование прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по программированию STM32F072 через Windows" default>
+
+            * Прошивка для Katapult SHT36 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36.zip">Щёлкните для автоматического скачивания прошивки</Button>
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по программированию STM32F072 через ПК">
+
+            <Katapult />
+
+            4. Программирование прошивки
+
+            :::tip
+
+            Необходимо программировать только одну из прошивок
+
+            :::
+
+            * Ниже приведена команда для записи прошивки со скоростью CAN 500K
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_500K.BIN
+                ```
+                       
+            * Ниже приведена команда для записи прошивки со скоростью CAN 1M
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/developer/SHT36/FLY_SHT36_072_1M.BIN
+                ```
+
+
+            5. При появлении указанного на изображении содержимого ``File downloaded successfully`` прошивка успешно выполнена
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения программирования необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

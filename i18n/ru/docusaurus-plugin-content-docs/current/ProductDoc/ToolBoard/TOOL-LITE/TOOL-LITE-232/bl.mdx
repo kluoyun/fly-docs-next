@@ -1,0 +1,117 @@
+---
+sidebar_position: 6
+sidebar_label: Инструкция по компиляции прошивки BL
+
+---
+
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+
+    :::tip
+
+    * Убедитесь, что ПК может нормально подключаться к сети
+    * Перед компиляцией прошивки необходимо подключиться к ПК через SSH по сети
+    * Не используйте инструменты для работы с последовательным портом для подключения к ПК
+
+    :::
+
+# Компиляция прошивки Katapult
+### Начало компиляции
+  <SSH />
+  ### Описание действий при компиляции и настройке прошивки Katapult
+
+    :::tip
+
+    Убедитесь, что раскладка клавиатуры находится в полупрямом режиме, то есть в английском режиме
+
+    :::
+
+    1. Клавиша `↑` — для перемещения курсора вверх, клавиша `↓` — для перемещения курсора вниз для выбора пунктов меню
+    2. Клавиша `Enter` или пробел `Space` — для выбора пункта меню или перехода в подменю
+    3. Клавиша `ESC` — для возврата на уровень выше
+    4. Клавиша `Q` — для выхода из страницы конфигурации прошивки Katapult
+    5. Клавиша `Y` — при выходе из страницы конфигурации прошивки Katapult, если появляется запрос, нажмите `Y`, чтобы сохранить файл конфигурации
+
+    Ниже приводится описание процесса компиляции:
+    * Подключившись через SSH, введите следующую команду и нажмите Enter:
+
+        ```bash
+        cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+        ```
+
+    * Команда ` rm -rf ~/Katapult/.config && rm -rf ~/Katapult/out` удаляет предыдущие данные компиляции и прошивку, команда `make menuconfig` запускает компиляцию прошивки. После выполнения должна появиться следующая интерфейсная картинка
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * Выберите `Micro-controller Architecture (LPC176x (Smoothieboard))` и нажмите Enter
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * Перейдите в меню и выберите **Raspberry Pi RP2040**, затем нажмите Enter
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+    * Выберите `Build Katapult deployment application (Do not build)`, выберите: **Do not build**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+    * Выберите **Communication interface**, выберите: **Serial (on UART0 GPIO1/GPIO0)**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/UART0.webp').default} size="100%" align="Center" />
+
+    * Выберите **Enable Status LED**, нажмите Enter, выберите `Status LED GPIO Pin (NEW)` и введите: **!gpio18**
+    :::warning
+        Введите `!gpio18` в английской раскладке
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led1.webp').default} size="100%" align="center" />
+    * **Сравните с изображением выше, убедитесь, что все совпадает, прежде чем переходить к следующему шагу**
+    * Нажмите клавишу `Q`, появится запрос **Save configuration**, затем нажмите клавишу `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы вернулись к командной строке
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если вывод содержит следующее содержимое, компиляция успешно завершена
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+``` 
+
+## Переход в режим загрузки
+
+    :::tip
+
+    Стрелка указывает на кнопку `BOOT`
+
+    :::
+
+    * Полностью отключите питание платы, удерживайте кнопку BOOT и подключите кабель передачи данных между платой и вашим устройством
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* Затем введите команду `lsusb`
+```bash
+lsusb
+```
+* Появление изображений, аналогичных изображению ниже, означает, что устройство перешло в режим загрузки
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* Введите следующую команду для записи прошивки и нажмите Enter
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+Ввод команды `mellow` не отобразится
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* Если появляется изображение, как показано ниже, введите `mellow`, нажмите Enter для завершения ввода 
+
+* Если появляется сообщение, как показано на изображении ниже, то поздравляем, запись прошивки успешно завершена
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## Проверка запуска прошивки
+
+* Если прошивка успешно запущена, светодиод начнет мигать
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

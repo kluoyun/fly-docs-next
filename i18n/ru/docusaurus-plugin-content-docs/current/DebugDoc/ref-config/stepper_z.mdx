@@ -1,0 +1,99 @@
+---
+sidebar_position: 9
+---
+
+# Многозначная конфигурация Z
+
+## Двойная Z с одним ограничителем
+
+* Во втором конфигурации Z не нужно добавлять `endstop_pin:`
+
+    ```cfg
+    [stepper_z]
+    step_pin: PA5
+    dir_pin: PA4
+    enable_pin: !PA6
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    endstop_pin: ^!PA9
+    position_endstop: 0
+    position_max: 300
+    homing_speed: 50
+    homing_retract_dist: 5
+
+    [stepper_z1]
+    step_pin: PB10
+    dir_pin:  PB2
+    enable_pin: !PB11
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    step_pulse_duration: 0.000004
+    ```
+
+## Двойная Z с двумя ограничителями
+
+
+* Во втором конфигурации Z нужно добавить `endstop_pin:`
+
+    ```cfg
+    [stepper_z]
+    step_pin: PA5
+    dir_pin: PA4
+    enable_pin: !PA6
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    endstop_pin: ^!PA9
+    position_endstop: 0
+    position_max: 300
+    homing_speed: 50
+    homing_retract_dist: 5
+    step_pulse_duration: 0.000004
+
+    [stepper_z1]
+    step_pin: PB10
+    dir_pin:  PB2
+    enable_pin: !PB11
+    rotation_distance: 4
+    full_steps_per_rotation: 200
+    microsteps: 16
+    step_pulse_duration: 0.000004
+    endstop_pin: ^!PA10
+    ```
+
+## Двойная Z с Probe или BL Touch
+
+
+    * В конфигурации первого Z после `endstop_pin:` измените pin на `probe:z_virtual_endstop  `
+    * Необходимо настроить Probe или BL Touch
+
+        ```cfg
+        [stepper_z]
+        step_pin: PA5
+        dir_pin: PA4
+        enable_pin: !PA6
+        rotation_distance: 4
+        full_steps_per_rotation: 200
+        microsteps: 16
+        endstop_pin: probe:z_virtual_endstop  
+        # position_endstop: 0
+        position_max: 300
+        homing_speed: 50
+        homing_retract_dist: 5
+        step_pulse_duration: 0.000004
+
+        [probe]
+        pin: ^PB4                    # Пин сигнала
+        x_offset: 0                  # Смещение по X - относительно сопла
+        y_offset: 0                  # Смещение по Y - относительно сопла
+        #z_offset: 0                 # Смещение по Z - относительно сопла
+        speed: 3.0                   # Скорость выравнивания
+        lift_speed: 5                # Скорость подъема зонда
+        samples: 3                   # Количество выборок
+        samples_result: median       # Метод выборки (по умолчанию median - медиана)
+        sample_retract_dist: 3.0     # Расстояние отката при выравнивании
+        samples_tolerance: 0.075     # Толерантность выборки (малые значения могут увеличить количество выборок)
+        samples_tolerance_retries: 3 # Количество попыток повтора при превышении толерантности
+        ```

@@ -1,0 +1,55 @@
+---
+sidebar_position: 4
+sidebar_label: Компиляция и запись прошивки версии 103 для CAN
+---
+
+import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/103/_can.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# Компиляция прошивки версии 103 для CAN
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Выберите **GPIO pins to set at micro-controller startup**, введите: !PC13 (обратите внимание на заглавные буквы)
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/103.webp').default} size="100%" align="center" />
+    * Нажмите `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы должны оказаться в командной строке
+    * Введите `make -j4` для начала компиляции (время займет немного)
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если последним выводом будет следующее, то компиляция успешна:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Поиск устройства
+
+    <LS />
+
+
+## Запись прошивки
+
+    * Перед записью прошивки подключите инструментальную плату к UTOC или материнской плате с прошивкой моста с помощью провода XT30. Ниже приведен參考ный рисунок соединения
+    * Убедитесь, что переключатели установлены правильно
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
+    * Проверьте сопротивление между CAN H и CAN L при выключенном питании. Оно должно быть около `60 Ом`. Если показывает `120 Ом`, подключите переходник `120 Ом`. Если около `40 Ом`, удалите переходник
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/120.webp').default} size="50%" align="center" />
+
+    <CANFLASH />
+
+## Проверка запуска прошивки
+
+    * Если прошивка успешно запущена, светодиод загорится
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.webp').default} size="70%" align="center" />

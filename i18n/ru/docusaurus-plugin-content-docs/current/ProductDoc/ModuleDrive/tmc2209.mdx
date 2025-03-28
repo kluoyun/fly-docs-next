@@ -1,0 +1,82 @@
+---
+sidebar_position: 1
+---
+
+
+
+import DIAG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TMC 2209
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209.webp').default} size="80%" align="center" />
+
+## Основные параметры
+
+    * Диапазон входного напряжения: 12В-24В
+    * Совместимость: Marlin/Klipper/RRF прошивки
+    * Моторы практически не теряют шаги
+    * Поддержка режима тихой работы
+    * Большая площадь радиатора для охлаждения, снижает температуру работы драйвера
+    * Режимы управления: TMC: UART
+    * Поддержка обнаружения застревания мотора
+
+## Инструкция по настройке переключателей на материнской плате
+
+    * Для TMC2209 используется UART переключатель
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/jumper.webp').default} size="100%" align="center" />
+    * Пин UART на FLY драйвере находится внизу слева под четвертым контактом, PDN пин совпадает с UART пином. Если разъемы материнской платы не совпадают, то использование UART невозможно
+    * Для других драйверов, если пятый контакт используется на нашей материнской плате, можно использовать этот метод для решения проблемы <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/tmc#unable-to-read-tmc-uart-stepper_x-register-ifcnt%E6%88%96%E8%80%85-unable-to-read-tmc-spi-stepper_x-register-register-%E7%9A%84%E9%94%99%E8%AF%AF">Решение проблем с UART</Button>
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/uart1.webp').default} size="80%" align="center" />
+
+## Справочная конфигурация TMC2209
+
+    :::danger
+
+    Значение сопротивления отбора тока драйвера составляет 0.110, не устанавливайте его неправильно
+
+    :::
+
+    ```cfg
+    [tmc2209 stepper_x]
+    uart_pin: 
+    interpolate: False
+    run_current: 0.8                    # Ток работы двигателя (единицы измерения: мА)
+    sense_resistor: 0.110               # Сопротивление отбора тока драйвера не изменять
+    stealthchop_threshold: 0
+    ```
+
+## Инструкции по использованию без концевиков
+
+    <DIAG />
+
+    :::tip Совет по использованию без концевиков
+
+    * Предыдущая строка `endstop_pin:` должна быть закомментирована или удалена, добавьте `endstop_pin: tmc2209_stepper_x:virtual_endstop`
+    * После настройки `diag_pin:` состояние концевика будет отображаться как не активированный
+    * При настройке `driver_SGTHRS:` необходимо самостоятельно протестировать подходящее значение
+
+    :::
+
+        <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/2209diag.webp').default} size="80%" align="center" />
+
+    * Пример конфигурации
+
+    :::tip
+
+    * На обратной стороне FLY 2209 есть переключатель, который нужно перевести в другое положение
+    * FLY 2209C подключен напрямую к драйверу DIAG, поэтому это действие не требуется
+
+    :::
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2209_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Возврат на место не изменять, иначе может вызвать сбой при настройке
+
+    [tmc2209 stepper_x]
+    diag_pin: ^
+    driver_SGTHRS: 100
+    
+    ```

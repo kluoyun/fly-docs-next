@@ -1,0 +1,60 @@
+---
+sidebar_position: 6
+sidebar_label: ПО для BL, проигнорируйте это
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# ПО для BL
+
+    :::tip
+
+    * Обратите внимание, что на заводе уже предварительно записан `bootloader`, поэтому повторная запись не требуется
+
+    :::
+
+## Переход в режим программирования
+
+    :::tip
+
+    Справа — кнопка `BOOT`, слева — кнопка `RESET`
+
+    :::
+
+    * Есть два способа входа в режим программирования
+    * Первый: при полностью отключенном питании, удерживайте кнопку BOOT и подключите передатчик данных к материнской плате и вашему устройству
+    * Второй: после подключения передатчика данных к материнской плате и вашему устройству, удерживайте кнопку BOOT, затем нажмите кнопку RST, отпустите кнопку RST, затем отпустите кнопку BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/flash/img/boot.webp').default} size="100%" align="center" />
+
+## Запись прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по записи на Windows" default>
+            * Фирменное ПО Katapult для E3 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/E3_V2.bin">Щелкните для автоматической загрузки прошивки</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по записи через ПО">
+            
+            <Katapult />
+            4. Запись прошивки
+            :::tip
+            Необходимо записать только одну прошивку
+            :::
+            * Ниже приведена команда записи прошивки
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/E3/E3_V2.bin
+                ```
+            5. При появлении содержимого с указателем ``File downloaded successfully`` запись успешно завершена
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+            :::tip
+            После завершения записи необходимо полностью отключить питание материнской платы.
+            :::
+        </TabItem>
+    </Tabs>

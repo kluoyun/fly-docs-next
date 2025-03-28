@@ -1,0 +1,86 @@
+---
+sidebar_position: 6
+sidebar_label: Фирменное ПО BL, пропустить!
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирменное ПО Katapult
+
+## Описание фирменного ПО Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * SHT36 PRO поддерживает CAN
+    * Здесь доступны только версии ПО CAN с скоростью 500K и 1M
+    :::
+
+## Вход в режим программирования
+
+    :::tip
+
+    Круглым выделен `BOOT кнопка`
+
+    :::
+
+    * При полном отключении питания платы, коротко замкните BOOT кнопку, а затем подключите кабель передачи данных к плате и вашему устройству
+    * Затем отпустите кнопку BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/boot.webp').default} size="80%" align="center" />
+
+## Прошивка прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по прошивке для Windows" default>
+
+            * Фирменное ПО Katapult для SHT36_PRO    <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_PRO.zip">Щелкните для автоматической загрузки прошивки</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по прошивке через ПО">
+
+            <Katapult />
+
+            4. Прошивка прошивки
+
+            :::tip
+
+            Необходимо прошить только одну из прошивок
+
+            :::
+
+            * Ниже приведена команда для прошивки прошивки с скоростью CAN 500K
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36PRO_CANBOOT_500K.uf2
+            ```
+                       
+            * Ниже приведена команда для прошивки прошивки с скоростью CAN 1M
+            ```bash
+            sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36PRO_CANBOOT_1M.uf2
+            ```
+
+
+            5. Если появляется нижеследующее уведомление, то прошивка успешна
+
+            <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.webp').default} size="100%" align="center" />
+
+
+            :::tip
+
+            После завершения прошивки необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Проверка запуска прошивки
+
+    * Если прошивка запущена нормально, светодиоды начнут мигать
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/led.webp').default} size="70%" align="center" />

@@ -1,0 +1,227 @@
+---
+sidebar_position: 2
+sidebar_label: Руководство по использованию Raspberry Pi
+---
+
+
+
+
+# Инструкция по использованию Raspberry Pi
+
+## Важные замечания:
+
+    * Убедитесь, что источник питания выключен перед установкой расширительной платы.
+    * Избегайте использования расширительной платы в условиях высокой влажности или пыли.
+    * При установке экрана убедитесь, что вы не включаете его во время подключения, обращайте внимание на направление шлейфа, чтобы избежать повреждений.
+    * При установке вентилятора убедитесь, что его параметры тока и напряжения соответствуют требованиям, чтобы предотвратить повреждения.
+    * UART1 уже включен по умолчанию, настройка в системе не требуется.
+    * Обновите образ системы до последней версии, например, `mainsailos`. Не обновляйте ядро.
+    * **Raspberry Pi может использовать все интерфейсы!**
+    * **Внимание:** версия ядра системы должна быть выше `5.17.x`. Проверьте версию ядра командой `uname -r`.
+
+## Ссылка на загрузку системы с предустановленным TFTV2 для Raspberry Pi
+
+    * Системный образ для Raspberry Pi zero2/zero2W/2B/3B/3B+/4B/CM4/5B
+    * В этом образе уже установлены klipper, moonraker, mainsail, fulidd, klipper-screen и другие компоненты.
+
+    ```bash
+    https://cdn.mellow.klipper.cn/IMG/Beta/RPI-TFT-IMG-new.img.xz
+    ```
+
+## Установка G2T
+
+    * Ниже приведена ссылка на пример:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi.webp').default} size="60%" align="left" />
+    * Пример соединения:
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.webp').default} size="60%" align="left" />
+
+
+## Метод подключения к RS232 с помощью встроенной инструментальной панели
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/rpi1.webp').default} size="60%" align="left" />
+
+    * После успешной прошивки системы Raspberry Pi необходимо отредактировать файл config.txt на диске boot
+    * Убедитесь, что UART1 уже включен по умолчанию, настройка в системе не требуется, UART3 требует выполнения следующих шагов
+    * Добавьте следующую запись в файл **config.txt**
+
+    ```bash
+    dtoverlay=uart3
+    ```
+
+    * Если используется uart1, вот пример конфигурации:
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA0
+    baud: 250000
+    restart_method:command
+    ```
+
+    * Если используется uart3, вот пример конфигурации:
+
+    ```cfg
+    [mcu] 
+    serial: /dev/ttyAMA1
+    baud: 250000
+    restart_method:command
+    ```
+
+## Использование встроенного вентилятора 5VFAN
+
+    * Если необходимо управлять устройством через 40PIN Raspberry Pi, следуйте руководству по Klipper для установки:
+        <Button variant="contained" disableElevation href="https://www.klipper3d.org/zh/RPi_microcontroller.html?h=rpi">Микроконтроллер Raspberry Pi</Button>
+        
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.webp').default} size="50%" align="left" />
+
+    ```cfg
+    [mcu host]       
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor Raspberry Pi]
+    sensor_type: temperature_host
+
+    [temperature_fan core_fan] 
+    pin: host:gpio12
+    max_power: 1.0
+    sensor_type: temperature_host   # Настройка как основной контроллер температуры
+    control:watermark                  # Способ управления
+    target_temp: 48                   # Температура запуска вентилятора системы
+    min_temp: 0                     # Минимальная температура, при которой будет ошибка
+    max_temp: 90                    # Максимальная температура, при которой будет ошибка
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                   # Максимальная скорость вентилятора
+    min_speed: 0.3                    # Минимальная скорость вентилятора
+    ```
+
+## Метод использования экрана
+
+    * GitHub-адрес: <Button variant="contained" disableElevation href="https://github.com/kluoyun/FLY-TFT">FLY-TFT</Button>
+
+### 1. Описание
+
+    FLY-TFT-V2 — это TFT-экран на базе чипсета st7796, поддерживающий емкостное и резистивное сенсорное управление, разрешение 320x480, интерфейс SPI.
+
+### 2. Установка системы
+
+    :::tip
+
+    * Внимание: версия ядра системы Raspberry Pi должна быть выше `5.17.x`. Проверьте версию ядра командой `uname -r`.
+    * Обновите образ системы до последней версии, например, `mainsailos`. Не обновляйте ядро.
+    * Необходимо самостоятельно установить <Button variant="contained" disableElevation href="ttps://klipperscreen.readthedocs.io/en/latest/Installation/">KlipperScreen</Button>.
+
+    :::
+
+    * Используйте [Raspberry Imager](https://www.raspberrypi.com/software/) для установки последней версии **MainsailOS**
+        * Скачайте и установите [Raspberry Imager](https://www.raspberrypi.com/software/)
+        * Откройте **Raspberry Imager**
+        * Нажмите **CHOOSE DEVICE**
+        * Выберите подходящую модель устройства
+        * Нажмите **CHOOSE OS**
+        * Выберите **Other specific-purpose OS**
+        * Выберите **3D printing**
+        * Выберите **Mainsail OS**
+        * Выберите последнюю версию. Если ваше устройство поддерживает 64-битную систему, выберите **rpi64**
+        * Нажмите **CHOOSE STORAGE**
+        * Выберите ваше устройство хранения, например, SD-карту
+        * Нажмите **NEXT**, дождитесь завершения установки
+
+### 4. Установка драйверов
+
+    * Установка драйверов для FLY-TFT-V2
+    
+        ```bash
+        git clone https://github.com/kluoyun/FLY-TFT.git
+        cd FLY-TFT
+        sudo chmod +x ./scripts/install.sh
+        ./scripts/install.sh
+        ```
+        
+    
+
+### 5. Использование
+
+    :::tip
+
+    * Для активации сенсорного управления необходима поддержка I²C. Соответствующая настройка — `dtparam=i2c_arm=on`.
+
+    :::
+
+    1. После установки драйверов добавьте в файл config.txt запись поддержки слоя `dtoverlay=fly-tft-v2`
+    2. Откройте файл `/boot/config.txt` (в системе bookworm — `/boot/firmware/config.txt`)
+        ```bash
+        sudo nano /boot/config.txt
+        ```
+    3. В конце файла добавьте следующие настройки
+        ```bash
+        dtoverlay=fly-tft-v2
+        ```
+    * По умолчанию экран отображается горизонтально под углом 90 градусов. Если требуется изменить ориентацию экрана, используйте следующие настройки
+        ```bash
+        dtoverlay=fly-tft-v2,r90  # Горизонтальное положение экрана
+        dtoverlay=fly-tft-v2,r270 # Горизонтальное положение экрана (перевернутое)
+        dtoverlay=fly-tft-v2,r0   # Вертикальное положение экрана
+        dtoverlay=fly-tft-v2,r180 # Вертикальное положение экрана (перевернутое)
+        ```
+        * Можно добавить только одну настройку, нельзя добавлять несколько
+        * Обычно сенсорное управление автоматически адаптируется к ориентации экрана, изменения в системных настройках не требуются
+
+    4. После добавления в конец файла выполните команду `sudo reboot`, чтобы перезагрузить систему
+
+        * Убедитесь, что подключение аппаратного обеспечения выполнено правильно
+        * Установлены драйверы
+        * В файле `/boot/config.txt` (в системе bookworm — `/boot/firmware/config.txt`) добавлена запись поддержки слоя `dtoverlay=fly-tft-v2`
+        * В некоторых системах может появиться устройство fb0 по умолчанию, FLY-TFT будет назначен устройством fb1. Необходимо включить устройство fb1
+        * Выполните команду `ls /dev/fb*` для просмотра устройств. Если появляются два устройства fb0 и fb1, выполните следующую команду для включения устройства fb1 (по умолчанию используется fb0)
+        * Выполните следующую команду для изменения настройки по умолчанию на устройство fb1
+            ```bash
+            sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+            ```
+
+### 6. Использование KlipperScreen
+
+    * В системе MainsailOS KlipperScreen не установлен по умолчанию. Необходимо установить вручную
+    * Следуйте инструкции на [KlipperScreen](https://github.com/KlipperScreen/KlipperScreen) или используйте [kiauh](https://github.com/dw-0/kiauh) для установки
+    * Если KlipperScreen успешно установлен и выполнены все шаги из пункта 5, интерфейс KlipperScreen должен уже быть виден
+
+### 7. Все доступные настройки
+
+    * `speed` **Требуется параметр:** задает максимальную частоту SPI для TFT, в Гц. По умолчанию 96000000 (если наблюдается серьезное искажение экрана, понизьте значение)
+    * Пример: `dtoverlay=fly-tft-v2,speed=80000000`
+
+    * `r0/r90/r180/r270` **Необязательные параметры:** задают ориентацию экрана и сенсора. По умолчанию 90 градусов. Возможные значения: 0, 90, 180, 270. (можно указать только один параметр)
+    * Пример: `dtoverlay=fly-tft-v2,r90` или `dtoverlay=fly-tft-v2,r180`
+
+    * `disable_touch` **Не требует параметров:** отключает функцию сенсорного управления. По умолчанию включена
+    * Пример: `dtoverlay=fly-tft-v2,disable_touch`
+
+    * `invx`,`invy` **Не требуют параметров:** задают направление сенсорного управления. `invx` — отражение по оси X, `invy` — отражение по оси Y
+    * Пример: `dtoverlay=fly-tft-v2,invx` или `dtoverlay=fly-tft-v2,invy` или `dtoverlay=fly-tft-v2,invx,invy`
+
+    * `swapxy` **Не требует параметров:** меняет направление сенсорного управления, поменяя местами оси X и Y, то есть делает экран горизонтальным
+        * Пример: `dtoverlay=fly-tft-v2,swapxy`
+    
+    :::tip
+
+    * **Важно:** Все параметры могут быть указаны одновременно (необязательные параметры можно указать только один). Параметры разделяются запятой, несколько параметров можно указать только в одной строке
+    * **Предупреждение:** Обычно используются только параметры `r0`, `r90`, `r180`, `r270`. Остальные параметры используются только в особых случаях, особенно `invx`, `invy`, `swapxy`.
+
+    :::
+
+    * Пример: `dtoverlay=fly-tft-v2,speed=80000000,r270`
+
+
+## Особые замечания для Raspberry Pi zero2 и zero2W
+
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/zero.webp').default} size="60%" align="left" />
+    * Эти замечания относятся к использованию FLY-TFT-экрана совместно с G2T
+    * Для Raspberry Pi zero2 и zero2w необходимо изменить настройку стандартного вывода, выполнив следующий код, иначе экран не будет отображаться
+    * Обратите внимание, что после выполнения кода необходима перезагрузка для использования
+
+    ```bash
+    sudo sed -i 's/\/dev\/fb0/\/dev\/fb1/g' /etc/X11/xorg.conf.d/99-fbdev.conf
+    ```
+
+## Установка экрана
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.webp').default} size="60%" align="left" />

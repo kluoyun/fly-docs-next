@@ -1,0 +1,91 @@
+---
+sidebar_position: 10
+sidebar_label: Настройка подключения экрана
+---
+
+# Настройка подключения экрана
+
+# Подключение и настройка экрана для версии c8 v1.0-1.2
+
+* Схема подключения для версии c8 v1.0-1.2
+<ImageView image={require('@site/docs/ProductDoc/Screen/TFT/img/c8tft.webp').default} size="80%" align="center" />
+
+# Подключение экрана для версии c8 v1.3
+
+* Схема подключения для версии c8 v1.3
+<ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="left" />
+
+### Справочник по установке и настройке экрана G2T версии c8 v1.0-1.2
+* <Button variant="contained" disableElevation href="/docs\ProductDoc\ExtensionBoard\fly-g2t\rpi">G2T</Button>
+
+* Для доступа к Fly Tools с ПК необходимо подключить ПК к сети и ввести `IP+:9999` в адресной строке браузера
+* Например: `192.168.6.110:9999`
+
+:::
+
+    <Tabs>
+        <TabItem value="tft" label="Подключение TFT" default>
+            * В Fly Tools необходимо настроить экран согласно приведенной ниже инструкции и включить KS
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
+            * Подключение экрана FLY-Pi TFT
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/c8-tft-v2.webp').default} size="80%" align="center" />
+
+        </TabItem>
+        <TabItem value="hdmi" label="Подключение HDMI">
+            * В Fly Tools необходимо настроить экран согласно приведенной ниже инструкции и включить KS
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/hdmi.webp').default} size="80%" align="center" />               
+            * Использование модуля переходника FPC на HDMI
+            * Обратите внимание на необходимость подключения типа C с функцией передачи данных к модулю
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/c8-hdmi.webp').default} size="80%" align="center" />
+
+        </TabItem>
+    </Tabs>
+
+# Настройка экрана TFT
+
+<Tabs>
+    <TabItem value="tft" label="Настройка экрана TFT" default>
+        * В Fly Tools необходимо включить KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="Настройка экрана TFT с емкостным сенсором" default>
+## Метод первый    
+         * Для настройки емкостного экрана используйте следующую команду для установки параметра `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Cap`
+    * Для проверки успешности изменений используйте следующую команду
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * Для изменения настроек емкостного экрана на резистивный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="Настройка экрана TFT с резистивным сенсором">
+## Метод первый        
+           * Для настройки резистивного экрана используйте следующую команду для установки параметра `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Resi`
+        * Для проверки успешности изменений используйте следующую команду
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * Для изменения настроек резистивного экрана на емкостный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>
+    ----

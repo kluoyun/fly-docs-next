@@ -1,0 +1,69 @@
+---
+sidebar_position: 4
+sidebar_label: Прошивка RS232
+---
+
+import USBFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import RS232 from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+
+# Компиляция прошивки RS232
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <RS232 />
+
+    * Выберите **GPIO пины для установки при старте микроконтроллера**, введите: **!gpio5**
+    :::warning
+        Пожалуйста, вводите `!gpio5` в режиме английской раскладки.
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/rs232.webp').default} size="100%" align="center" />
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите клавишу `Y`
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь должна быть сохранена конфигурация и вы вернулись к командной строке
+    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+    <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если выводится следующее содержимое, то компиляция успешно завершена:
+
+        ```bash
+        Linking out/klipper.elf
+        Создание файла uf2 out/klipper.uf2
+        ```
+
+
+## Переключение в режим прошивки
+
+    :::tip
+
+    Слева — кнопка RESET, справа — кнопка BOOT
+
+    :::
+
+    * Есть два способа переключиться в DFU-режим
+    * Первый: полностью отключите питание платы, удерживайте кнопку BOOT, затем подключите данные передачи одной концовкой к плата, другой к компьютеру
+    * Второй: подключите данные передачи одной концовкой к плата, другой к компьютеру, удерживайте кнопку BOOT, затем нажмите кнопку RST, затем отпустите кнопку RST, последовательно отпустите кнопку BOOT
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/boot.webp').default} size="100%" align="center" />
+
+## Проверка входа в режим прошивки
+
+    <LS />
+
+
+## Загрузка прошивки
+    
+    <USBFLASH />
+    
+
+
+## Проверка запуска прошивки
+
+    * Если прошивка запущена нормально, светодиод загорится
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.webp').default} size="100%" align="center" />
+

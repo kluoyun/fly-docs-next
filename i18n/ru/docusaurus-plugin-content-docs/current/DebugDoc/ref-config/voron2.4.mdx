@@ -1,0 +1,511 @@
+---
+sidebar_position: 4
+---
+
+# Справочная конфигурация VORON 2.4
+
+
+```cfg
+
+#####################################################################
+#      Элементы для изменения/проверки
+#####################################################################
+##***Необходимо изменить/проверить следующие элементы:***
+## Путь к MCU                                  [mcu] 
+## Рабочий диапазон принтера                    xyz position   
+## Тип термистора                              [extruder] и [heater_bed]
+## Позиция останова зонда Z                     [safe_z_home] 
+## Смещение позиции зонда Z                    [stepper_z] 
+## PID калибровка                              [extruder] и [heater_bed] 
+## Корректировка шагов двигателя экструдера     [extruder] 
+
+#####################################################################
+#      Вызов файла
+#####################################################################
+### При использовании fuidd или mainsail как интерфейса, удалите '#' перед #[include XXX.cfg].
+### При использовании fuidd или mainsail как интерфейса, удалите '#' перед #[include XXX.cfg].
+[include fluidd.cfg]
+#[include mainsail.cfg]
+
+### Ниже /home/fly замените на имя пользователя вашего хост-компьютера, убедитесь, что это не ROOT пользователь.
+### Замените 'fly' в /home/fly на имя пользователя вашего хост-компьютера, убедитесь, что это не ROOT пользователь.
+[virtual_sdcard]
+path: /home/fly/printer_data/gcodes
+on_error_gcode: CANCEL_PRINT
+
+
+#####################################################################
+#      Основная конфигурация ID
+#####################################################################
+[mcu]
+serial: /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00
+### Используйте ls /dev/serial/by-id/* для поиска ID устройства USB и замените
+### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00 на найденный ID.
+### Для поиска ID устройства USB используйте: ls /dev/serial/by-id/* и замените
+### /dev/serial/by-id/usb-Klipper_rp2040_MELLOW-if00 на найденный ID.
+### Для поиска ID канала CAN используйте: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Замените 'serial:' в ID канала CAN на 'canbus_uuid:', затем добавьте ID.
+### Query the CAN firmware ID with: ~/klippy#env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Replace 'serial:' in the CAN ID with 'canbus_uuid:', then append the ID.
+
+#####################################################################
+#      Мониторинг температуры
+#####################################################################
+[temperature_sensor motherboard]
+sensor_type: temperature_mcu
+
+[temperature_sensor Raspberry Pi]
+sensor_type: temperature_host
+
+#####################################################################
+#      Модель и ускорение
+#####################################################################
+[printer]
+kinematics: corexy
+max_velocity: 300
+max_accel: 2000
+max_z_velocity: 15
+max_z_accel: 300
+square_corner_velocity: 6.0
+
+#####################################################################
+#      Настройки двигателей X/Y
+#####################################################################
+
+[stepper_x]
+## Ссылка: https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:                                        # Проверьте направление двигателя по ссылке выше. Если инвертировано, добавьте ! перед gpio3 
+enable_pin:! 
+rotation_distance: 40
+microsteps: 32
+full_steps_per_rotation: 200                    # Установите 400 для двигателя шагом 0.9°, 200 для 1.8° двигателей
+endstop_pin:
+# endstop_pin: tmc2209_stepper_x:virtual_endstop
+# endstop_pin: tmc5160_stepper_x:virtual_endstop
+position_min: 0
+position_endstop: 300                           # (250mm-300mm-350mm)
+position_max: 300                               # (250mm-300mm-350mm)
+homing_speed: 40                                # Для бесконтактной подстройки рекомендуется не превышать 40 мм/с   
+homing_retract_dist: 0
+homing_positive_dir: true
+
+[tmc2209 stepper_x]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0                        # Установите значение 999999 для включения stealthchop, 0 для использования spreadcycle
+diag_pin: ^
+driver_SGTHRS: 80
+
+[tmc5160 stepper_x]
+cs_pin:
+### spi_bus и spi_software могут использовать только один из них
+### spi_bus and spi_software can only use one of them.
+# spi_bus:
+spi_software_mosi_pin:
+spi_software_miso_pin:
+spi_software_sclk_pin:
+run_current: 1.0
+interpolate: False
+### Нужно настроить сопротивление датчика в зависимости от драйвера
+### The driver sampling resistor needs to be modified according to the driver
+sense_resistor: 0.075
+stealthchop_threshold: 0
+diag0_pin: ^!
+driver_SGT: 1
+
+[stepper_y]
+## Ссылка: https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:                                        # Проверьте направление двигателя по ссылке выше. Если инвертировано, добавьте ! перед gpio0
+enable_pin:!
+rotation_distance: 40
+microsteps: 32
+full_steps_per_rotation: 200
+endstop_pin:
+# endstop_pin: tmc2209_stepper_y:virtual_endstop
+# endstop_pin: tmc5160_stepper_y:virtual_endstop
+position_min: 0
+position_endstop: 300
+position_max: 300
+homing_speed: 40 
+homing_retract_dist: 0
+homing_positive_dir: true
+
+[tmc2209 stepper_y]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+diag_pin: ^
+driver_SGTHRS: 80
+
+[tmc5160 stepper_y]
+cs_pin:
+### spi_bus и spi_software могут использовать только один из них
+### spi_bus and spi_software can only use one of them.
+# spi_bus:
+spi_software_mosi_pin:
+spi_software_miso_pin:
+spi_software_sclk_pin:
+run_current: 1.0
+interpolate: False
+### Нужно настроить сопротивление датчика в зависимости от драйвера
+### The driver sampling resistor needs to be modified according to the driver
+sense_resistor: 0.075
+stealthchop_threshold: 0
+diag0_pin: ^!
+driver_SGT: 1
+
+#####################################################################
+#      Настройки двигателя Z
+#####################################################################
+
+[stepper_z]
+## Ссылка: https://docs.vorondesign.com/build/startup/#v0
+step_pin:
+dir_pin:!                                         # Проверьте направление двигателя по ссылке выше. Если инвертировано, добавьте ! перед gpio25
+enable_pin: !
+rotation_distance: 8
+microsteps: 32
+endstop_pin: ^
+# endstop_pin: probe:z_virtual_endstop  
+position_endstop:-0.5
+position_max: 270
+position_min: -15
+homing_speed: 20
+second_homing_speed: 3.0
+homing_retract_dist: 3.0
+
+[tmc2209 stepper_z]
+uart_pin:
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+[stepper_z1]
+step_pin: 
+dir_pin:
+enable_pin: !
+rotation_distance: 40
+gear_ratio: 80:16
+full_steps_per_rotation: 200
+microsteps: 16
+
+
+[tmc2209 stepper_z1]
+uart_pin:
+interpolate: false
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+##    Двигатель Z2 - справа сзади на драйвере5
+[stepper_z2]
+step_pin:
+dir_pin:
+enable_pin:!
+rotation_distance: 40
+gear_ratio: 80:16
+full_steps_per_rotation: 200
+microsteps: 16
+
+
+[tmc2209 stepper_z2]
+uart_pin:
+interpolate: false
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+[stepper_z3]
+step_pin: 
+dir_pin: 
+enable_pin: !
+rotation_distance: 40
+gear_ratio: 80:16
+full_steps_per_rotation: 200
+microsteps: 16
+
+
+[tmc2209 stepper_z3]
+uart_pin: 
+interpolate: false
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+
+#####################################################################
+#      Экструдер
+#####################################################################
+[extruder]
+## Тип датчика # распространенные термисторы (Generic 3950, ATC Semitec 104GT#2)
+## Тип датчика # распространенные термисторы (Generic 3950, ATC Semitec 104GT#2)
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: 
+#####################################################################
+## Если используется PT1000, подключите перемычку рядом с термочувствительным элементом.
+## Если используется PT1000, подключите перемычку рядом с термочувствительным элементом.
+# sensor_type:PT1000
+# pullup_resistor: 1100
+# sensor_pin: 
+#####################################################################
+#      экструдер
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html#extruder
+[extruder]
+step_pin:
+dir_pin:
+enable_pin: !
+rotation_distance: 21.84
+## rotation_distance = Исходное значение умножается на фактическую длину выдавливания, деленное на запрошенную длину выдавливания.
+## Калибровка шагов: 22.44=старое значение22*фактическое значение102/целевое значение100
+gear_ratio:50:10
+## Соотношение редуктора (геометрическая передача 7.5:1 и эта строка закомментирована; BMG 50:17, выходной вал спереди, входной сзади)
+microsteps:16
+full_steps_per_rotation: 200    
+nozzle_diameter:0.400
+filament_diameter:1.75
+heater_pin:
+min_temp: -50
+max_temp: 300
+max_power: 1.0
+min_extrude_temp: 150
+pressure_advance: 0.05
+##Давление вперед
+##Давление вперед
+##https://www.klipper3d.org/zh/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040
+#max_extrude_only_distance: 200.0   # Для предотвращения ошибок с выдавливанием можно закомментировать этот параметр, но рекомендуется перезагрузить срезку
+# Команда калибровки температуры сопла: PID_CALIBRATE HEATER=extruder TARGET=245
+# Команда калибровки температуры сопла: PID_CALIBRATE HEATER=extruder TARGET=245
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+step_pulse_duration: 0.000004
+
+[tmc2209 extruder]
+uart_pin:gpio9
+uart_address:3
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 0
+
+
+#####################################################################
+#      Теплоотвод для рабочей поверхности
+#####################################################################
+[heater_bed]
+heater_pin: 
+## Проверьте тип термистора. См. https://www.klipper3d.org/Config_Reference.html#common#thermistors для распространенных типов термисторов.
+## Для нагревателей Keenovo используйте "Generic 3950".
+sensor_type:
+sensor_pin:
+max_power: 1.0 
+min_temp: -50
+max_temp: 120
+# Команда калибровки температуры рабочей поверхности: PID_CALIBRATE HEATER=heater_bed TARGET=100
+# Команда калибровки температуры рабочей поверхности: PID_CALIBRATE HEATER=heater_bed TARGET=100
+control: pid
+pid_kp: 68.453
+pid_ki: 2.749
+pid_kd: 426.122
+
+#####################################################################
+#      Управление вентилятором
+#####################################################################
+[fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5                                                # В зависимости от вашего вентилятора, может потребоваться увеличить это значение, если вентилятор не запускается
+off_below: 0.13
+cycle_time: 0.010
+#####################################################################
+[heater_fan hotend_fan]
+pin: 
+max_power: 1.0
+kick_start_time: 0.5
+heater: extruder
+heater_temp: 50.0
+
+#####################################################################
+#      Датчик окончания проволоки
+#####################################################################
+#[filament_switch_sensor Filament_Runout_Sensor]
+#pause_on_runout: True
+#runout_gcode: PAUSE
+#switch_pin: 
+
+#####################################################################
+#      Зонд
+#####################################################################
+### TAP
+[probe]
+pin:
+x_offset: 0
+y_offset: 0
+# z_offset: 0
+speed: 10.0
+samples: 3
+samples_result: median
+sample_retract_dist: 4.0
+samples_tolerance: 0.006
+samples_tolerance_retries: 3
+
+### EDDY
+# [probe_eddy_current fly_eddy_probe]
+# sensor_type: ldc1612
+# z_offset: 0.8
+# i2c_address: 43
+# i2c_mcu:
+# i2c_bus:
+# x_offset: 0
+# y_offset: 0
+# speed:40
+# lift_speed: 5
+
+
+#####################################################################
+#      Процедуры подстройки и регулировки конструкции
+#####################################################################
+### Можно использовать либо safe_z_home, либо homing_override, но не оба
+### Можно использовать либо safe_z_home, либо homing_override, но не оба
+#[safe_z_home]
+#home_xy_position: 206,300
+#speed: 100
+#z_hop: 5
+
+#[homing_override]
+#axes: z
+#set_position_z: 0
+#gcode:
+#   G90
+#   G0 Z15 F600
+#   G28 X Y
+#    ## Позиция ограничителя Z
+#    ## После установки X0 и Y0 замените их вашими значениями (например, X157, Y305)
+#    ## Определение позиции ограничителя Z
+#   G0 X185 Y250 F3600    #250mm   
+#   G28 Z
+#   G0 Z10 F1800
+
+#####################################################################
+#      quad_gantry_level
+#####################################################################
+[quad_gantry_level]
+#gantry_corners:
+#    -60,-10
+#    310,320
+#points:                      # 250mm
+#    50,25
+#    50,175
+#    200,175
+#    200,25
+
+gantry_corners:              # 300mm
+   -60,-10
+   360,370
+points:
+   50,25
+   50,225
+   250,225
+   250,25
+
+#gantry_corners:              # 350mm
+#    -60,-10
+#    410,420
+#points:
+#    50,25
+#    50,275
+#    300,275
+#    300,25
+
+speed: 100
+horizontal_move_z: 1
+retry_tolerance: 0.0075
+retries: 5
+max_adjust: 10
+
+
+#####################################################################
+# Макросы
+#####################################################################
+[idle_timeout]
+### Если принтер простаивает более 30 минут, выключается теплый стол.
+### Если принтер простаивает более 30 минут, выключается теплый стол.
+timeout: 1800 
+
+#[gcode_arcs]
+#### Разрешить интерполяцию кругов
+#### Разрешить интерполяцию кругов
+#resolution: 1.0 
+
+[gcode_macro PRINT_START]          
+### Установите PRINT_START как макрос для начала печати, настройте действия перед началом печати.
+### Установите PRINT_START как макрос для начала печати, настройте действия перед началом печати.
+gcode:
+    G92 E0
+    BED_MESH_CLEAR
+    G28
+    quad_gantry_level
+    G28
+    G1 Z20 F3000
+    #BED_MESH_PROFILE LOAD=default  
+    BED_MESH_CALIBRATE adaptive=1 METHOD=scan SCAN_MODE=rapid
+
+[gcode_macro PRINT_END]            
+### Установите PRINT_END как макрос для завершения печати, настройте действия после завершения печати.
+### Установите PRINT_END как макрос для завершения печати, настройте действия после завершения печати.
+gcode:
+    #   Получить границы
+    {% set max_x = printer.configfile.config["stepper_x"]["position_max"]|float %}
+    {% set max_y = printer.configfile.config["stepper_y"]["position_max"]|float %}
+    {% set max_z = printer.configfile.config["stepper_z"]["position_max"]|float %}
+    
+    #   Проверить конечную позицию для определения безопасных направлений движения
+    {% if printer.toolhead.position.x < (max_x - 20) %}
+        {% set x_safe = 20.0 %}
+    {% else %}
+        {% set x_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.y < (max_y - 20) %}
+        {% set y_safe = 20.0 %}
+    {% else %}
+        {% set y_safe = -20.0 %}
+    {% endif %}
+
+    {% if printer.toolhead.position.z < (max_z - 2) %}
+        {% set z_safe = 2.0 %}
+    {% else %}
+        {% set z_safe = max_z - printer.toolhead.position.z %}
+    {% endif %}
+ 
+    M400                              # Ждать очистки буфера
+    G92 E0                            # Обнулить экструдер
+    G1 E-10.0 F3600                   # Откатить материал
+    G91                               # Относительная позиция
+    G0 Z{z_safe} F3600                # Поднять раму
+    G0 X{x_safe} Y{y_safe} F20000     # Переместить сопло для удаления нитей
+    M104 S0                           # Выключить экструдер
+    M140 S0                           # Выключить теплый стол
+    M106 S0                           # Выключить вентилятор модели
+    G90                               # Установить абсолютную систему координат
+    G0 X{max_x / 2} Y{max_y} F3600    # Остановить сопло сзади
+    BED_MESH_CLEAR                    # Снять сетку кровати
+
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
+
+```

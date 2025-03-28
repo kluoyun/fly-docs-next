@@ -1,0 +1,53 @@
+---
+sidebar_position: 3
+sidebar_label: Прошивка CAN через USB-мост
+---
+
+import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# Прошивка CAN через USB-мост
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
+    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если вывод содержит следующее, компиляция успешно завершена:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Переключение в режим прошивки
+
+    :::tip Подсказка
+        После 1 сентября 2024 года出厂ные D7 уже имеют прошивку Katapult
+    :::
+    * Подключите материнскую плату к компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на материнской плате загорятся светодиоды.
+    :::warning Предупреждение
+       * Если светодиоды не мигают, повторно выполните прошивку прошивки Katapult:<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#enter-dfu-flash-mode">Прошить Katapult</Button>
+       * Если светодиоды не мигают, после прошивки Katapult выполните следующий шаг
+    :::
+
+    <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
+
+    <LS />
+
+## Загрузка прошивки
+
+    <CANBOOT />

@@ -1,0 +1,58 @@
+---
+sidebar_position: 3
+sidebar_label: Запись прошивки CAN
+---
+
+import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+
+# Компиляция прошивки CAN
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Выберите **GPIO pins to set at micro-controller startup**, введите: **!gpio5**
+    :::warning
+        Введите `!gpio5,!gpio19,!gpio24` в английской раскладке клавиатуры.
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.webp').default} size="100%" align="center" />
+    * Нажмите `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
+    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если вывод содержит следующее, компиляция успешна:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Поиск устройства
+
+    <LS />
+
+
+## Запись прошивки
+
+    * Перед записью прошивки подключите инструментальную плату к UTOC или материнской плате с прошивкой моста с помощью провода XT30. Ниже приведен參考ный схема подключения
+    * Убедитесь, что переключатели установлены правильно
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/sb2040v3_utoc.webp').default} size="80%" align="center" />
+    * Проверьте сопротивление между CAN H и CAN L при выключенном питании, оно должно составлять около `60 Ом`. Если сопротивление равно `120 Ом`, то переключатель `120 Ом` должен быть включен, если около `40 Ом`, то переключатель должен быть выключен
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.webp').default} size="100%" align="center" />
+
+    <CANFLASH />
+
+## Проверка запуска прошивки
+
+    * Если прошивка успешно запущена, светодиод загорится
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.webp').default} size="100%" align="center" />
