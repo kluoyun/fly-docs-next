@@ -1,49 +1,45 @@
 ---
 sidebar_position: 1
-sidebar_label: Explications sur la programmation de la mémoire vive
+sidebar_label: Notice sur la programmation de la mise à jour du firmware
 ---
-
-
 
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
-
-
     :::tip
 
-    * La version V3 de SHT36 précharge le firmware Katapult avec une connexion CAN à 1Mbit/s
-    * Le firmware Katapult pour la connexion CAN de la version V3 de SHT36 peut être configuré à 500Kbit/s ou 1Mbit/s, il est possible de le programmer vous-même si nécessaire
+    * Le firmware Katapult est préinstallé sur SHT36 V3 pour la connexion CAN avec un taux de transmission de 1 Mbit/s
+    * Le firmware Katapult connecté via CAN sur SHT36 V3 peut être configuré avec des taux de transmission de 500 Kbit/s ou 1 Mbit/s, selon vos besoins
     * <Button variant="contained" disableElevation href="./bl">Programmation du firmware Katapult</Button>
 
 
     :::
 
-# Explications sur la programmation de la mémoire vive
+# Notice sur la programmation de la mise à jour du firmware
     
-    * La compilation du firmware et la programmation du firmware nécessitent l'utilisation d'un logiciel supérieur
-    * La version V3 de SHT36 peut se connecter à un logiciel supérieur via RS232 ou CAN
-    * RS232 et CAN nécessitent l'utilisation de `XT30(2+2)-F` pour la connexion
-    * Ci-dessous se trouve l'apparence du câble de données `XT30(2+2)-F`
+    * La compilation et la programmation du firmware nécessitent l'utilisation d'un ordinateur principal
+    * SHT36 V3 peut être connecté à l'ordinateur principal via les méthodes RS232 ou CAN
+    * Les connexions RS232 et CAN doivent utiliser le câble de données `XT30(2+2)-F`
+    * Voici le modèle du câble de données `XT30(2+2)-F` ci-dessous
         <ImageView image={require('@site/docs/General/get-id/img/xt30.webp').default} size="80%" align="left" />
 
-:::danger À savoir
-* La programmation de la mémoire vive de la carte mère doit passer par Katapult pour programmer Klipper
-* Si la carte mère a déjà été programmée avec Katapult, il n'est pas nécessaire de procéder à la dernière étape de programmation de Katapult, cela n'est fait que pour prévenir une éventuelle erreur de programmation de la mémoire vive de Katapult
-* Il est possible de vérifier rapidement si la carte mère est entrée en mode Katapult en appuyant deux fois rapidement sur le bouton de réinitialisation, si une LED clignote alors la carte mère est entrée en mode Katapult
+:::danger Informations importantes
+* La programmation du firmware de la carte mère doit passer par Katapult pour programmer Klipper
+* Si vous êtes sûr que la carte mère a déjà été programmée avec Katapult, il n'est pas nécessaire d'effectuer la dernière étape de programmation du firmware Katapult, cela ne sert qu'à prévenir en cas d'échec de la programmation initiale
+* Vous pouvez appuyer rapidement deux fois sur le bouton de réinitialisation pour vérifier si une LED clignote sur la carte mère. Si c'est le cas, cela signifie que la carte mère est dans le firmware Katapult
 :::
 
-## Comment déterminer quel firmware vous avez besoin
+## Comment savoir quel firmware vous avez besoin
 
-    * La version V3 de SHT36 peut se connecter à un logiciel supérieur via les méthodes suivantes
+    * SHT36 V3 peut se connecter à l'ordinateur principal de la manière suivante
     * <Button variant="contained" disableElevation href="./can">Firmware CAN</Button>
-        * Avantage : Si vous avez installé le firmware Katapult, vous pouvez mettre à jour le firmware sans toucher la carte mère et il prend en charge la connexion en bus
-        * Inconvénient : L'utilisation de KlipperScreen peut entraîner des erreurs comme un dépassement de délai lors du retour à zéro
-        * Conseil : Si vous souhaitez utiliser CAN, assurez-vous que votre logiciel supérieur prend en charge CAN et qu'il doit être utilisé avec UTOC ou une carte mère avec un firmware de pont
+        * Avantage : Si le firmware Katapult est installé, vous pouvez mettre à jour le firmware sans toucher à la carte mère et il est compatible avec la communication en bus
+        * Inconvénient : L'utilisation conjointe de KlipperScreen peut entraîner des erreurs telles que le dépassement de délai lors du retour à la position zéro
+        * Indication : Si vous souhaitez utiliser CAN, assurez-vous que l'ordinateur principal prend en charge CAN et qu'il est utilisé avec UTOC ou une carte mère flashée avec le firmware de pont
     * <Button variant="contained" disableElevation href="./rs232">Firmware RS232</Button>
-        * Avantage : Il n'est pas nécessaire d'utiliser un logiciel spécial pour l'utiliser, la communication est fiable et stable
-        * Inconvénient : Une nouvelle programmation de firmware nécessite d'entrer en DFU manuel pour mettre à jour le firmware ou appuyer deux fois rapidement sur RST pour entrer Katapult afin de mettre à jour le firmware
-        * Conseil : Vous devez utiliser G2T ou UTOR pour l'utiliser
+        * Avantage : Nécessite aucun logiciel spécial pour fonctionner, communication fiable et stable
+        * Inconvénient : Pour mettre à jour le firmware, il faut soit entrer en mode DFU manuel, soit appuyer deux fois sur le bouton RST pour entrer dans Katapult
+        * Indication : Nécessite la combinaison avec G2T ou UTOR pour fonctionner
 
-## Explications sur le firmware Katapult
+## Notice sur le firmware Katapult
 
     <CANBOOT />
