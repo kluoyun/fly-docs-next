@@ -15,7 +15,7 @@ import Slider from "react-slick";
 
 function HeroBanner() {
   return (
-    <div className={styles.hero} data-theme="dark">
+    <div className={styles.hero}>
       <div className={styles.heroInner}>
         <Heading as="h1" className={styles.heroProjectTagline}>
           <img
