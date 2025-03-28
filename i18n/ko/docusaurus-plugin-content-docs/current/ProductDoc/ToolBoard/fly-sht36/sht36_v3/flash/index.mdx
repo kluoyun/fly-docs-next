@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
-sidebar_label: 펌웨어 플래싱 안내
----
+sidebar_label: 펌웨어 플래싱 설명
+
 
 import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
 
@@ -9,38 +9,39 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * SHT36 V3 출하 시 1M 속도로 CAN 연결된 Katapult 펌웨어가 미리 프로그래밍되어 있습니다.
-    * SHT36 V3의 CAN 연결된 Katapult 펌웨어는 500K와 1M 속도를 지원하며, 필요에 따라 직접 플래싱할 수 있습니다.
+    * SHT36 V3는 출하 시 1M 속도로 연결된 Katapult 펌웨어가 미리 프로그램되어 있습니다.
+    * SHT36 V3의 Katapult 펌웨어 속도는 500K와 1M로 구분되며, 필요에 따라 직접 플래시할 수 있습니다.
     * <Button variant="contained" disableElevation href="./bl">Katapult 펌웨어 플래싱</Button>
 
 
     :::
 
-# 펌웨어 플래싱 안내
+# 펌웨어 플래싱 설명
     
-    * 펌웨어 컴파일과 펌웨어 플래싱은 모두 호스트 머신을 사용해야 합니다.
-    * SHT36 V3는 RS232 및 CAN 두 가지 연결 방식으로 호스트 머신과 연결할 수 있습니다.
-    * RS232 및 CAN은 `XT30(2+2)-F`를 사용하여 연결해야 합니다.
-    * 아래는 `XT30(2+2)-F` 데이터 케이블의 모양입니다.
+    * 펌웨어 컴파일 및 펌웨어 플래싱은 모두 상위기기(PC)를 사용해야 합니다.
+    * SHT36 V3는 RS232 및 CAN 두 가지 방식으로 상위기기에 연결할 수 있습니다.
+    * RS232와 CAN은 `XT30(2+2)-F` 데이터선을 사용하여 연결해야 합니다.
+    * 아래는 `XT30(2+2)-F` 데이터선의 모습입니다.
         <ImageView image={require('@site/docs/General/get-id/img/xt30.webp').default} size="80%" align="left" />
 
 :::danger 주의사항
 * 메인보드 펌웨어 플래싱은 Katapult를 통해 Klipper를 플래싱해야 합니다.
-* 메인보드가 이미 Katapult 펌웨어로 프로그래밍되었는지 확인한 후 마지막 단계의 Katapult 펌웨어 플래싱을 수행하지 않아도 됩니다. 이것은 메인보드의 Katapult 펌웨어 플래싱이 성공적으로 이루어지지 않은 경우에만 필요한 예방 조치입니다.
-* 메인보드의 리셋 버튼을 두 번 빠르게 누른 후 메인보드에 LED가 깜빡이는지 확인할 수 있습니다. 이는 메인보드가 Katapult 펌웨어로 업데이트되었음을 나타냅니다.
+* 메인보드가 이미 Katapult 펌웨어를 가지고 있는지 확인하고, 마지막에 Katapult 펌웨어를 플래싱하는 것은 단순히 예방 조치일 뿐입니다.
+* 두 번 빠르게 리셋 버튼을 누른 후, 메인보드에서 하나의 LED가 깜빡이는지 확인하세요. 만약 깜빡인다면 메인보드가 Katapult 펌웨어에 들어간 상태입니다.
 :::
 
-## 어느 종류의 펌웨어를 사용해야 하는지 어떻게 알 수 있는가?
+## 어느 종류의 펌웨어가 필요한지 어떻게 판단할 수 있나요?
 
-    * SHT36 V3는 다음 방법으로 호스트 머신에 연결할 수 있습니다.
+    * SHT36 V3는 다음 방법으로 상위기기에 연결할 수 있습니다.
     * <Button variant="contained" disableElevation href="./can">CAN 펌웨어</Button>
-        * 장점: `Katapult` 펌웨어가 설치된 경우 메인보드에 손을 대지 않고 펌웨어를 업데이트할 수 있으며, 버스 연결을 지원합니다.
-        * 단점: `KlipperScreen`과 함께 사용할 때 위치 재설정 시간 초과 등의 오류가 발생할 수 있습니다.
-        * 팁: CAN을 사용하려면 호스트 머신이 CAN을 지원하는지 확인하고, UTOC 또는 브리지 펌웨어가 프로그래밍된 메인보드가 필요합니다.
+        * 장점: `Katapult` 펌웨어를 설치하면 메인보드를 만지지 않고도 펌웨어를 업데이트할 수 있으며, 총선 연결을 지원합니다.
+        * 단점: `KlipperScreen`과 함께 사용할 경우 리홈 타임아웃 등의 오류가 발생할 수 있습니다.
+        * 팁: CAN을 사용하려면 상위기기가 CAN을 지원하는지 확인하고, UTOC 또는 브릿지 펌웨어가 설치된 메인보드와 함께 사용해야 합니다.
     * <Button variant="contained" disableElevation href="./rs232">RS232 펌웨어</Button>
-        * 장점: 특수 소프트웨어 없이 사용할 수 있으며, 통신이 신뢰성 있고 안정적입니다.
-        * 단점: 펌웨어를 다시 플래싱하려면 수동 DFU 모드로 들어가거나 RST 버튼을 두 번 클릭하여 `Katapult`로 진입해야 합니다.
+        * 장점: 특별한 소프트웨어 없이 바로 사용 가능하며, 신뢰성 있고 안정적인 통신을 제공합니다.
+        * 단점: 다시 펌웨어를 플래싱하려면 수동 DFU 모드로 들어가야 하거나, RST 버튼을 두 번 클릭하여 `Katapult`로 진입해야 합니다.
         * 팁: G2T 또는 UTOR와 함께 사용해야 합니다.
-## Katapult 펌웨어 안내
+
+## Katapult 펌웨어 설명
 
     <CANBOOT />
