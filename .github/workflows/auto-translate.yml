@@ -26,6 +26,7 @@ jobs:
   check:
     name: "Check"
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_target' && github.event.action == 'opened'
     strategy:
       matrix:
         node-version: [20]
@@ -55,6 +56,7 @@ jobs:
     name: "Auto Translate"
     runs-on: ubuntu-latest
     needs: [check]
+    if: (!contains(github.event.pull_request.head.ref, '[skip ci]'))
     outputs:
       pushed: ${{ steps.add-commit.outputs.pushed }}
       committed: ${{ steps.add-commit.outputs.committed }}
@@ -90,12 +92,13 @@ jobs:
           add: "i18n/"
           author_name: ${{ github.event.pull_request.user.login }}
           author_email: ${{ github.event.pull_request.user.email }}
-          message: "i18n: 🎉 auto translate"
+          message: "i18n: 🎉 auto translate [skip ci]"
           push: true
   build-test:
     name: "Build and Test"
     runs-on: ubuntu-latest
     needs: [check, translate]
+    if: (!contains(github.event.pull_request.head.ref, '[skip ci]')) && github.event.action != 'opened'
     strategy:
       matrix:
         node-version: [20]
