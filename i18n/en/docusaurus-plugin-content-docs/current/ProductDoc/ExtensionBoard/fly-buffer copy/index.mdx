@@ -1,0 +1,48 @@
+---
+sidebar_position: 1
+---
+
+# Introduction
+
+# Usage of LLL PLUS Buffer
+
+    The LLL filament buffer is a device specifically designed for remote extrusion in 3D printers, aiming to simplify the loading and unloading operations of filaments. The buffer is equipped with two buttons, one for feeding and the other for retracting, allowing users to perform electric feeding and retracting operations.
+
+### Buffer Function:
+
+    When the extruder of the 3D printer feeds, if the filament rack at the far end is pulled, the buffer will detect this action and automatically send a length of filament towards the hotend. Each time this pulling occurs, the buffer will repeat this feeding operation. This can effectively reduce the pulling force on the filament by the extruder, maintaining stable pushing force of the extruder, thereby improving the stability of print quality.
+
+### Filament Runout Detection Function:
+
+    The buffer has an internal filament runout detector. When it detects that there is no filament in the buffer, it will send a signal to pause the printing of the 3D printer. To use this function, the signal pin needs to be connected and the configuration of the 3D printer needs to be modified. However, the buffer function can be used directly without modifying the configuration.
+
+    With the above functional design, the LLL filament buffer not only simplifies the filament operation but also enhances the stability of the 3D printing process and the print quality.
+
+
+* Please note that you need to connect the filament before using the functions; otherwise, you can only control the motor operation through the buttons.
+
+## Model Download Link
+
+    <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/STEP/%E7%BC%93%E5%86%B2%E5%99%A8.zip">Buffer Model</Button>
+
+
+## Configuration Reference
+
+    ```cfg
+    [filament_switch_sensor Runout Detection]
+    pause_on_runout: true
+    switch_pin: ^PG7
+    runout_gcode:
+            PAUSE
+            M118 Runout
+    insert_gcode:
+            M118 Loading
+    ```
+
+## Wiring Diagram
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-buffer/img/lll2.webp').default} size="100%" align="center" />
+
+## Installation Illustration
+
+#<PdfView file="https://cdn.mellow.klipper.cn/SCH-PDF/buffer.pdf"/>

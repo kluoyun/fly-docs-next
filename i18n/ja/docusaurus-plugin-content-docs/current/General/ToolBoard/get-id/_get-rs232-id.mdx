@@ -1,0 +1,86 @@
+## RS232 IDの検索
+
+### 検索する前に注意すべきこと
+
+    * RS232 IDを検索する前に、まず<Button variant="contained" disableElevation href="/docs/DebugDoc/BasicTutorial/#ネットワークIP経由で上位機にSSH接続">SSHに接続してください。</Button>
+    * 注意！WiFi経由でSSHソフトウェアを使用して上位機に接続してください！
+    * UTORが正しく接続されており、上位機に接続されているデータ線がデータ転送機能を持っていることを確認してください
+    * G2Tを使用している場合、システムがUARTリンクを使用することをサポートしているか確認してください
+
+### デバイスの検索
+
+    * 今あなたは正常に上位機にログインしたので、`lsusb`コマンドを入力してデバイスを検索できます。以下のいずれかの状況になります
+        * `lsusb`コマンドを入力すると`ls`コマンドが見つからないと表示される場合、以下のコマンドを入力してインストールできます
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * `lsusb`コマンドを入力しても何も反応がない場合、これはシステムの問題であり解決できません。システムを変更するか、正常なシステムを使用してください
+        * 下図のような情報を得た場合、これは参考情報です。あなたが必要とするのはID後の文字列だけです
+        <ImageView image={require('@site/docs/General/get-id/img/7523.webp').default} size="100%" align="left" />
+    * `1a86:7523`は今回の使用するデバイスに属します。後続のメッセージは無視してください。システムの問題により、完全に表示されない場合やまったく表示されない場合があります
+    * 出現しない場合は、データ線が正しい位置に接続されているか、ファームウェアが適切にフラッシュされているかを確認してください
+
+    :::warning 注意事項
+
+    `1a86:7523`がある場合のみ、以下のコマンドを使用してRS232 IDを検索できます
+
+    :::
+
+
+### RS232 IDの検索
+
+    ```bash
+    ls /dev/serial/by-path/*
+    ```
+
+    <ImageView image={require('@site/docs/General/get-id/img/rs232-id.webp').default} size="100%" align="left" />
+    * `ls /dev/serial/by-path/*`コマンドを入力してもIDが出力されないが、`lsusb`にはデバイスがある場合、上位機を交換するか、上位機システムを交換してください
+    * 注意！UTORはIDを検索する際に2つのIDを表示することがあります
+    * **2つのIDの中から片方のIDだけを設定ファイルに入力してください。どちらか一つが接続できない場合はもう片方のIDを入力してください。IDの後に`-port0`が含まれていることを確認してください。なければ使用できません**
+
+    :::warning 注意事項
+
+    工具ボードとUTORは必ず接地してください！！！そうしないと工具ボードに接続できません！！
+
+    :::
+
+### RS232のIDを設定ファイルに記入する
+
+    * プリンターのWebインターフェースを開き、左側のサイドバーにある「構成」オプションで`fluidd`の場合：`{…}`、`mainsail`の場合：`機械`を探し、クリックして`printer.cfg`を見つけます
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="80%" align="left" />
+
+    * 青色のIDをコピーし、`printer.cfg`の設定ファイル内の`[mcu SHT36]`セクションの`serial:`に貼り付けます。保存して再起動するとメインボードに接続できます。Klipperが``ADC出力範囲外``と表示される場合、これは正常な現象です。ヒートベッドとセンサーを接続し、ヒートベッドとノズルの温度センサーや出力ピンを適切に設定してから、再度保存して再起動してください
+
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-rs232-id.webp').default} size="90%" align="left" />
+
+    :::warning 注意事項
+
+    * RS232 IDには`baud:`と`restart_method:command`を設定する必要があります
+    * 参考設定は以下です
+
+    :::
+
+        ```cfg
+        [mcu SHT36]
+        serial: /dev/serial/by-path/platform-1c1c000.usb-usb-0:1.2:1.0-port0
+        baud: 250000
+        restart_method:command
+        ```
+
+    :::danger
+
+    注意：ドキュメントに出てくるすべてのIDは例示です。実際の各メインボードのIDは異なるため、実際の取得したIDに基づいて修正してください。
+
+    :::
+
+    :::danger
+
+    下記のIDは使用できません！！
+
+    :::
+
+        ```cfg
+        serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        ```
+----

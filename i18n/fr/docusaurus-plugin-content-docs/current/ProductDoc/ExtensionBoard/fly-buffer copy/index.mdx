@@ -1,0 +1,47 @@
+---
+sidebar_position: 1
+---
+
+# Introduction
+
+# Utilisation du tampon LLL PLUS
+
+    Le tampon de consommable LLL est un dispositif conçu pour l’impression 3D à distance avec fil, visant à simplifier les opérations de chargement et de déchargement des consommables. Ce tampon est équipé de deux boutons respectivement pour l'approvisionnement et le retrait, permettant aux utilisateurs d'effectuer des opérations d'approvisionnement et de retrait motorisés.
+
+### Fonction de tamponage :
+
+    Lorsque l'imprimante 3D alimente le buse, si une traction se produit sur le support distant du fil, le tampon détecte cette action et envoie automatiquement un segment de filament vers la buse. À chaque traction, le tampon répète cette opération d'alimentation. Cela permet de réduire efficacement la traction sur le filament par l'imprimante, en maintenant une poussée stable de l'imprimante, ce qui améliore la stabilité de la qualité d'impression.
+
+### Fonction de détection de rupture :
+
+    Le tampon intègre un détecteur de rupture. Lorsqu'il détecte qu'il n'y a plus de filament dans le tampon, il envoie un signal à l'imprimante 3D pour suspendre l'impression. Pour utiliser cette fonction, il est nécessaire de connecter les broches de signal et de modifier la configuration de l'imprimante 3D. En revanche, la fonction de tamponnage peut être utilisée sans modification de configuration.
+
+    Grâce à ces fonctions, le tampon de consommable LLL simplifie non seulement les opérations de consommable, mais améliore également la stabilité du processus d'impression et la qualité d'impression.
+
+* Veuillez noter que vous devez connecter le filament avant d’utiliser les fonctions, sinon vous ne pouvez contrôler le moteur que via les boutons.
+
+## Lien de téléchargement du modèle
+
+    <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/STEP/%E7%BC%93%E5%86%B2%E5%99%A8.zip">Modèle du tampon</Button>
+
+
+## Référence de configuration
+
+    ```cfg
+    [filament_switch_sensor Détection de rupture]
+    pause_on_runout: true
+    switch_pin: ^PG7
+    runout_gcode:
+            PAUSE
+            M118 Rupture de filament
+    insert_gcode:
+            M118 Insertion de filament
+    ```
+
+## Schéma de câblage
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-buffer/img/lll2.webp').default} size="100%" align="center" />
+
+## Schéma d'installation
+
+#<PdfView file="https://cdn.mellow.klipper.cn/SCH-PDF/buffer.pdf"/>

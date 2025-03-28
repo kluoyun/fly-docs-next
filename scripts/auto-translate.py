@@ -166,6 +166,8 @@ class Translater:
                     )  # exist_ok=True 防止已存在目录引发错误
                     tr_str = tr_str.replace(b"\xc2\xa0".decode(), " ")
                     tr_str = tr_str.replace(b"\xe2\x80\x8b".decode(), " ")
+                    if not tr_str.endswith('\n'):
+                        tr_str += "\n"
                     with open(target_file, "w", encoding="utf-8") as f:
                         f.write(tr_str)
                         tr_count += 1

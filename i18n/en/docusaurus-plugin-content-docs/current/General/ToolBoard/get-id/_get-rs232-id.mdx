@@ -1,0 +1,85 @@
+## Search for RS232 ID
+
+### Precautions Before Searching for the Device
+
+    * Before searching for the RS232 ID, please first <Button variant="contained" disableElevation href="/docs/DebugDoc/BasicTutorial/#using-network-ip-to-connect-to-the-host-via-ssh">connect to SSH</Button>
+    * Attention! Please connect to the host via WiFi using an SSH software!
+    * Ensure that UTOR is connected and ensure that the data cable connecting to the host has data transmission capability.
+    * If using G2T, confirm whether the system supports UART connection.
+
+### Search for the Device
+
+    * Now that you have successfully logged into the host, you can enter the command `lsusb` to search for devices, which will result in one of the following situations:
+        * Entering `lsusb` prompts that the `ls` command cannot be found, then you can enter the following command to install it:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * Entering `lsusb` results in no response at all; this indicates a system issue beyond our ability to resolve. You need to replace the system or use a confirmed normal system.
+        * The information shown in the image below is provided as a reference. You only need to confirm the characters after the ID.
+        <ImageView image={require('@site/docs/General/get-id/img/7523.webp').default} size="100%" align="left" />
+    * `1a86:7523` belongs to the device you need to use. Ignore the subsequent prompts as system issues may cause them to display incompletely or not at all.
+    * If none are found, please check if the data cable is properly connected and if the firmware is correctly flashed.
+
+    :::warning Note
+
+    Only when there is `1a86:7523` can you use the following commands to search for the RS232 ID.
+
+    :::
+
+### Search for RS232 ID
+
+    ```bash
+    ls /dev/serial/by-path/*
+    ```
+
+    <ImageView image={require('@site/docs/General/get-id/img/rs232-id.webp').default} size="100%" align="left" />
+    * If entering `ls /dev/serial/by-path/*` does not return any IDs, but `lsusb` shows devices, please replace the host or the host system.
+    * Please note! Two IDs will appear when querying the ID with UTOR!
+    * **Only one of the two IDs needs to be selected and filled into the configuration file**, if one ID fails to connect, fill in the other ID! Ensure that the ID ends with `-port0`, otherwise it cannot be used.
+
+    :::warning Note
+
+    Please ensure that the tool board and UTOR are grounded! Otherwise, connection to the tool board cannot be established!
+
+    :::
+
+### Fill the RS232 ID into the Configuration File
+
+    * Open the printer web interface, find `printer.cfg` under the configuration options in the left sidebar: fluidd is `{...}`, mainsail is `Machine`, click to access it.
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="80%" align="left" />
+
+    * Copy the blue ID and paste it into the `serial:` field under the `[mcu SHT36]` section in the `printer.cfg` configuration file. After saving and restarting, the mainboard can be connected. If Klipper prompts ``ADC out of range``, it is a normal phenomenon. Connect the hotbed and thermistor properly, configure the thermistor pins and output pins for the nozzle and hotbed, then save and restart.
+
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-rs232-id.webp').default} size="90%" align="left" />
+
+    :::warning Note
+
+    * RS232 ID requires configuring `baud:` and `restart_method:command`.
+    * Below is a reference configuration:
+
+    :::
+
+        ```cfg
+        [mcu SHT36]
+        serial: /dev/serial/by-path/platform-1c1c000.usb-usb-0:1.2:1.0-port0
+        baud: 250000
+        restart_method:command
+        ```
+
+    :::danger
+
+    Note: All IDs mentioned in the document are examples. Each mainboard's ID is different, so please modify and fill in according to the actual obtained ID.
+
+    :::
+
+    :::danger
+
+    Please note that the following ID cannot be used!!!
+
+    :::
+
+        ```cfg
+        serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+        ```
+----

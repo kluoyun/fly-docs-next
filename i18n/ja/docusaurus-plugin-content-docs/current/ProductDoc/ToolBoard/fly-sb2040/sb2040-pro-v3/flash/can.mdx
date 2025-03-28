@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: CANファームウェアの焼付け
+sidebar_label: CANファームウェアの書き込み
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -22,15 +22,15 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio5**
     :::warning
-        `!gpio5`を入力する際は英数入力状态下で入力してください。
+        英数入力モードで`!gpio5,!gpio19,!gpio24`と入力してください。
     :::
-        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/can.webp').default} size="100%" align="center" />
-    * `Q`キーを押して「Save configuration」が表示されたら、その後に`Y`キーを押します
-    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインインターフェースに戻ります
-    * `make -j4`を入力してコンパイルを開始します。時間がかかります
-    <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.webp').default} size="100%" align="center" />
+    * `Q`キーを押すと**Save configuration**が表示され、その後に`Y`キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * 現在、設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * コンパイルを開始するには`make -j4`を入力します。時間がかかります
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
@@ -42,17 +42,17 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
     <LS />
 
 
-## ファームウェアの焼付け
+## ファームウェアの書き込み
 
-    * ファームウェアを焼付ける前に、XT30データ線を使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードに接続します。下記は参照配線図です
-    * ドイッチが対応する位置にセットされていることを確認してください
-        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/sb2040v3_utoc.webp').default} size="80%" align="left" />
-    * CAN HとCAN Lが電源オフ状態で60Ω程度の抵抗値を測定できることを確認してください。120Ωであれば120Ωのドアクロックを開け、40Ω程度であればドアクロックを閉じる必要があります
+    * ツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードにXT30データラインで接続してからファームウェアの書き込みを行ってください。下記は参照接続図です
+    * ダイアルスイッチが対応する位置に設定されているか確認してください
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/sb2040v3_utoc.webp').default} size="80%" align="center" />
+    * CAN HとCAN Lが電源オフ状態で60Ω前後の抵抗値になるようにマルチメーターで測定してください。120Ωの場合、ダイアルスイッチを開けてください。40Ω前後の場合、ダイアルスイッチを閉じてください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
 ## ファームウェアの起動確認
 
-    * ファームウェアが正常に起動するとLEDが点灯します
-        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.webp').default} size="100%" align="center" />
+    * 固件が正常に起動するとLEDが点灯します
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.webp').default} size="100%" align="center" />

@@ -23,7 +23,7 @@ class Translater:
         self.file_list = file_list
         self.client = OpenAI(
             api_key=os.getenv("OPENAI_API_KEY"),
-            base_url="https://api.x.ai/v1",
+            base_url=os.getenv("OPENAI_API_URL"),
         )
 
     def stop(self) -> None:
@@ -49,7 +49,8 @@ class Translater:
         13. 翻译结果中不能添加原文中不存在的代码、标签或其他内容，包括但不限于<br>。
         14. 不能修改原文中的空格和制表符。不能替换为非断行空格等。
         15. 绝对不能删除原文中的import语句。
-        16. 须严格遵循上述要求，否则翻译结果可能会有误。
+        16. 绝对不能修改原文中的文件路径，url路径。不能添加空格等内容。
+        17. 须严格遵循上述要求，否则翻译结果可能会有误。
         """
         user_prompt = text
         ret = None
@@ -74,9 +75,9 @@ class Translater:
                         }
                     )
                 completion: ChatCompletion = self.client.chat.completions.create(
-                    model="grok-beta",
+                    model=os.getenv("OPENAI_MODEL"),
                     messages=msg,
-                    timeout=60,
+                    timeout=6000,
                 )
                 # logger.debug(completion.model_dump_json())
                 if completion.choices[0].finish_reason != "stop":
@@ -159,6 +160,8 @@ class Translater:
                     )  # exist_ok=True 防止已存在目录引发错误
                     tr_str = tr_str.replace(b"\xc2\xa0".decode(), " ")
                     tr_str = tr_str.replace(b"\xe2\x80\x8b".decode(), " ")
+                    if not tr_str.endswith('\n'):
+                        tr_str += "\n"
                     with open(target_file, "w", encoding="utf-8") as f:
                         f.write(tr_str)
                         tr_count += 1

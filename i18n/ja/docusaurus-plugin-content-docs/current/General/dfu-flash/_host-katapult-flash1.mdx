@@ -1,0 +1,65 @@
+::: tip
+    * プラグインの書き込み時にインターネットに接続されていることを確認してください。上位機が正常にインターネットに接続されていることを確認してください。
+    * すでにインストール済みの場合、再インストールする必要はありません。
+:::
+
+
+### 書き込み開始
+
+    ::: warning 警告
+       * **非fly上位機** 以下のコードを実行し、ファームウェア書き込みの依存パッケージをインストールしてください！ファームウェアを書き込めなくなります！
+       ```
+      cd && git clone https://github.com/Arksine/katapult.git
+       ```
+      <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
+    :::
+    * 下記のコマンドを使用してデバイスIDを検索し、下図のようなIDが表示されることを確認してください。（注：図内のIDは例示であり、各マザーボードのIDは異なります）
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
+
+
+    * ファームウェアを書き込むには下記のコマンドを使用してください。ファームウェアが正常にコンパイルされていることを確認し、`<あなたのマザーボードID>`を前ステップで取得したIDに置き換えてください。
+
+        ```bash
+        ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<あなたのマザーボードID>
+        ```
+
+    * 参考資料
+        <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
+
+    * 書き込み完了の参考
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
+
+## ファームウェアの更新
+
+<Tabs>
+    <TabItem value="w" label="USBファームウェアの更新" default>
+        * 下記のコマンドを使用してマザーボードIDを検索し、下図のようなIDが表示されることを確認してください。（注：図内のIDは例示であり、各マザーボードのIDは異なります）
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+
+        ::: tip 注意
+            下図の`/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`がマザーボードのIDです。
+        :::
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
+
+        * USBファームウェアの更新には、最新のファームウェアをコンパイルした後、以下のコマンドを使用して更新します。`<あなたのマザーボードID>`を前ステップで取得したIDに置き換えてください。
+
+        ```bash
+        cd ~/klipper/ && make flash FLASH_DEVICE=<あなたのマザーボードID>
+        ```
+
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
+    </TabItem>
+</Tabs> 
+
+## ファームウェアの誤り書き込み対策
+
+    * マザーボードの電源を切って再起動し、リセットボタンを2回押すことで解決できます。
+    * もしくは、WindowsでファームウェアをクリーンアップしてからBLを再び書き込むことができます。
