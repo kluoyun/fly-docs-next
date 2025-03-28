@@ -1,0 +1,61 @@
+---
+sidebar_position: 4
+sidebar_label: Прошивка через USB
+---
+
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+
+
+# Компиляция прошивки через USB
+
+    :::tip
+
+    * По умолчанию出厂 настройки включают CAN-соединение с фиксированной прошивкой Katapult
+    * Если используется прошивка через USB, необходимо установить прошивку Katapult для USB
+    * После первой установки повторная прошивка не требуется
+    * <Button variant="contained" disableElevation href="./bl">Прошивка Katapult</Button>
+
+    :::
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Выберите GPIO пины для установки при старте микроконтроллера, введите: gpio17
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/usb.webp').default} size="100%" align="center" />
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы вернетесь в командную строку
+    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * В конце вывода следующего содержимого компиляция успешно завершена:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## Проверка режима прошивки
+
+
+    <LS />
+
+
+## Прошивка прошивки
+    
+    <Katapult />
+
+## Проверка запуска прошивки
+
+    * Если прошивка успешно запущена, светодиоды загорятся
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.webp').default} size="100%" align="center" />
+

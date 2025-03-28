@@ -1,0 +1,37 @@
+---
+sidebar_position: 11
+sidebar_label: Основной вентилятор
+---
+
+
+
+
+# Интерфейс встроенной 5В вентилятора
+
+## На плате C8 есть контролируемый интерфейс 5В для охлаждения основного процессора, схема подключения представлена на рисунке ниже.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/corefan.webp').default} size="80%" align="center" />
+
+## Справочная конфигурация
+
+    ```cfg
+    [mcu host]                      # FlyOS уже создал для вас Linux MCU по умолчанию, достаточно определить его для использования            
+    serial: /tmp/klipper_host_mcu 
+
+    [temperature_sensor FLY-π]      # Температура верхнего уровня
+    sensor_type: temperature_host
+
+
+    [temperature_fan core_fan]      # Вентилятор охлаждения верхнего уровня
+    pin: host:gpiochip1/gpio103     # Ножка пина верхнего уровня вентилятора
+    max_power: 1.0
+    sensor_type: temperature_host   # Установлено как температура контроллера верхнего уровня
+    control:watermark               # Способ управления
+    target_temp: 48                 # Температура запуска вентилятора охлаждения верхнего уровня
+    min_temp: 0                     # Минимальная температура, при которой будет выдана ошибка
+    max_temp: 90                    # Максимальная температура, при которой будет выдана ошибка
+    off_below: 0.10
+    kick_start_time: 0.50
+    max_speed: 0.8                  # Максимальная скорость, равная 80% от полной мощности
+    min_speed: 0.3                  # Минимальная скорость, равная 30% от полной мощности
+    ```

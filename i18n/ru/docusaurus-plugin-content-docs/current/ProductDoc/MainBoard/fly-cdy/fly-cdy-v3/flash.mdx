@@ -1,0 +1,65 @@
+---
+sidebar_position: 2
+sidebar_label: Компиляция и запись прошивки
+---
+
+
+
+
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+
+# Компиляция и запись прошивки
+
+    :::tip
+
+    * По умолчанию CDV использует TF-карту для записи прошивки
+    * Подготовьте TF-карту объемом не более `32 ГБ`
+    * Использование неизвестных брендов может привести к неудачной записи, рекомендуется использовать следующие рекомендованные TF-карты для обновления прошивки
+    * Скорость передачи данных TF-карты должна быть как минимум `class10`, рекомендуется использовать TF-карты от SanDisk и других известных брендов
+
+    :::
+
+
+
+## Подготовительные работы
+
+    <SSH />
+
+## Компиляция прошивки Klipper
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь конфигурация сохранена, и вы вернулись в командную строку
+    * Введите `make -j4`, чтобы начать компиляцию (время может занять немного)
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если последний вывод содержит следующее, то компиляция успешна
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * Пример успешной компиляции:
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
+
+## Запись прошивки
+
+:::danger Важно
+* CDV предварительно установлен BL-прошивка для записи через TF-карту
+:::
+
+    <TF />

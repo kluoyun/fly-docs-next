@@ -1,0 +1,195 @@
+---
+sidebar_position: 4
+sidebar_label: Подключение материнской платы
+---
+
+
+
+
+# Подключение материнской платы
+
+## Схема разъемов
+
+### Описание разъемов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/interface.webp').default} size="50%" align="center" />
+
+----
+
+### Описание выводов Pin
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/pin.webp').default} size="50%" align="center" />
+
+---
+
+## Подключение источника питания
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/power.webp').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fuse.webp').default} size="40%" align="center" />
+
+----
+
+## Установка драйверов
+
+### Прыжки настройки материнской платы
+
+* **Модель STEP/DIR.** В этом режиме настройку детализации можно задать с помощью jumper, а ток регулируется потенциометром. Наиболее часто встречаются драйверы A4988 и 8825, для которых требуется запросить таблицу детализации производителя, а затем установить детализацию с помощью jumper.
+* **Режим UART.** К наиболее распространенным драйверам, использующим этот режим, относятся TMC2208, TMC2209, TMC2226 и другие. Эти чипы могут взаимодействовать с контроллером через UART асинхронную последовательную связь, параметры драйвера (детализация, ток работы, тихий режим и т.д.) можно настроить через файл конфигурации.
+* **Режим SPI.** К наиболее распространенным драйверам, использующим этот режим, относятся TMC5160, TMC2130, TMC2240 и другие. Параметры драйвера (детализация, ток работы, тихий режим и т.д.) также можно настроить через файл конфигурации.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.webp').default} size="40%" align="center" />
+
+----
+
+### Установка драйверов
+
+* Перед установкой драйверов необходимо провести соответствующую проверку, чтобы избежать повреждения драйверов или материнской платы.
+* **Драйвер FLY:** Если функция возврата домой без концевиков не используется, переключите переключатель кодов на положение 1; если же эта функция используется, переключите переключатель кодов в положение ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.webp').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Внимание!!! При установке модуля драйвера обязательно убедитесь, что направление вставки правильно, то есть EN вывод должен быть слева сверху, иначе это может повредить драйвер и даже материнскую плату!!! Обязательно приклейте радиатор к драйверу!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.webp').default} size="40%" align="center" />
+
+
+----
+
+## Подключение шаговых двигателей
+
+* Самый распространенный тип шагового двигателя в 3D принтерах — двухфазный четырехпроводной шаговый двигатель, принцип действия которого показан на рисунке. Есть два способа определить схему проводов шагового двигателя:
+    1. Короткое замыкание любых двух проводов шагового двигателя из четырех, и попробуйте вращать вал двигателя рукой. Если сопротивление очень большое, значит, эти два провода являются одной группой катушек, то есть A+ и B+ или A- и B-. Если сопротивление небольшое, как при отсутствии короткого замыкания, то эти два провода не являются одной группой катушек.
+    2. Используйте звуковой режим мультиметра для измерения любых двух проводов из четырех. Если звуковой сигнал响起, это означает, что эти два провода являются одной группой. В противном случае это не одна группа, и нужно заменить один провод и повторить измерение.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.webp').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/motor.webp').default} size="40%" align="center" />
+
+----
+
+## Подключение нагревательных трубок
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/heater.webp').default} size="60%" align="center" />
+
+----
+
+## Подключение теплого стола
+
+* **Теплый стол на переменном токе:** При подключении реле солидного состояния обратите внимание на правильность подключения входа и выхода.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.webp').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-ac-2.webp').default} size="40%" align="center" />
+
+* **Теплый стол на постоянном токе:** При подключении MOS к теплому столу на постоянном токе обратите внимание на мощность. Максимальный ток теплого стола на постоянном токе не должен превышать 10 А. Если превышает 10 А, рекомендуется использовать внешний модуль MOS для подключения теплого стола, иначе это может вызвать необратимые повреждения материнской платы.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bed-dc.webp').default} size="60%" align="center" />
+
+----
+
+## Подключение датчиков температуры
+
+### Введение в типы датчиков температуры
+
+* Способ подключения термистора показан на следующем рисунке. Тип термистора следует уточнить у продавца.
+* Если термистор был приобретен у FLY (как показано на следующем рисунке), установите sensor_type в значение: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.webp').default} size="30%" align="center" />
+
+* Если используется стандартный NTC 100K (как показано на следующем рисунке), установите sensor_type в значение: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.webp').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.webp').default} size="40%" align="center" />
+
+----
+
+### Подключение датчиков температуры к материнской плате
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/nozzle.webp').default} size="40%" align="center" />
+
+
+
+----
+
+## Подключение вентиляторов
+
+* **Подключение вентиляторов**
+
+    :::tip
+
+    * MOS необходимо установить
+
+    :::
+
+    * Подключение вентиляторов
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fan.webp').default} size="30%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fanmos1.webp').default} size="30%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/fan-voltage.webp').default} size="30%" align="center" />
+
+----
+
+## Подключение концевых выключателей
+
+* Концевые выключатели бывают двух типов: NO (обычно открытый) и NC (обычно закрытый). В 3D принтерах рекомендуется использовать **NC (обычно закрытый)**, так как в случае проблем с цепью концевого выключателя система сможет своевременно сообщить об ошибке, предотвращая ненужные аварии и повреждения принтера.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/endstop.webp').default} size="40%" align="center" />
+
+----
+
+## Подключение датчиков выравнивания
+
+### Подключение датчика BL-Touch
+
+* У BL-Touch всего пять проводов, три из которых образуют первую группу, отвечающую за питание датчика и подъем/опускание зонда. Вторая группа представляет собой землю и сигнальный провод, передающий сигнал концевика. При подключении BL-Touch внимательно проверьте последовательность проводов, неправильное подключение может привести к permanentному повреждению датчика и материнской платы!!! Метод подключения показан на следующем рисунке.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/bltouch.webp').default} size="40%" align="center" />
+
+----
+
+### Подключение датчика Klicky
+
+* Klicky — это датчик выравнивания третьей стороной, который можно легко собрать самостоятельно с минимальными затратами, при этом он стабилен в работе и имеет высокую стоимость-эффективность, рекомендуется к использованию. Метод подключения показан на следующем рисунке.
+* Адрес проекта: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "адрес проекта, переход по ссылке")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/klicky.webp').default} size="40%" align="center" />
+
+----
+
+### Подключение датчика Voron Tap
+
+* Tap — это зонд z на основе сопла, подходящий для принтеров V2 и Trident. Полностью перемещаемый головной модуль срабатывает световым выключателем, обеспечивая более точную точность, чем обычные концевые выключатели, и может работать со всеми популярными печатными платформами.
+
+    :::warning
+
+    Не рекомендуется подключать Voron Tap к **24В**, в некоторых версиях использование **24В** может привести к повреждению датчика Tap с вероятностью, это не проблема продукта FLY, а недостаток дизайна Voron Tap, пожалуйста, имейте это в виду!!!
+
+    :::
+
+    :::danger
+
+    Внимание: Нельзя подключать 5В и GND наоборот, иначе это может повредить датчик Tap и даже материнскую плату!!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/tap.webp').default} size="40%" align="center" />
+
+----
+
+## Подключение экрана FLY-Mini12864
+
+* На следующем рисунке показан способ подключения экрана FLY mini12864, для других производителей экранов обратитесь к соответствующему производителю. Если подключение экрана mini12864 нарушено или произошло неверное подключение, это может привести к тому, что ПК не сможет подключиться к MCU. Если после подключения экрана mini12864 раньше успешно подключались к MCU материнской платы, а после подключения mini12864 подключение к MCU невозможно, попробуйте вынуть провода mini12864!!!
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/mini12864.webp').default} size="30%" align="center" />
+
+----
+
+## Подключение к ПК
+
+* Материнская плата подключается к порту USB компьютера через интерфейс TypeC, также может подключаться через последовательный порт к компьютеру. Здесь рассматривается только первый вариант.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-cdy/fly-cdy-v3/img/wiring/connect-host.webp').default} size="40%" align="center" />
+
+----

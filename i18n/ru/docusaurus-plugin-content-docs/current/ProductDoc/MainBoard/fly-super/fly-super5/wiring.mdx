@@ -1,0 +1,212 @@
+---
+sidebar_position: 4
+sidebar_label: Подключение материнской платы
+---
+
+
+
+
+# Подключение материнской платы
+
+## Схема разъемов
+
+### Описание интерфейса
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/interface.webp').default} size="50%" align="center" />
+
+----
+
+### Описание выводов
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/pin.webp').default} size="50%" align="center" />
+
+---
+
+## Подключение источника питания
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/power.webp').default} size="40%" align="center" />
+    * Установка плавкого предохранителя
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/fuse.webp').default} size="40%" align="center" />
+
+----
+
+## Установка драйверов
+
+### Настройки драйверов на материнской плате
+
+* **Модель STEP/DIR.** В этом режиме настройку деления можно установить с помощью jumper, а ток регулируется потенциометром. Самые распространенные драйверы A4988 и 8825 требуют проверки таблицы деления производителя, после чего деление устанавливается с помощью jumper.
+* **Режим UART.** Самые распространенные драйверы, использующие этот режим: TMC2208, TMC2209, TMC2226 и т.д. Эти драйверы могут взаимодействовать с контроллером через UART-асинхронную последовательную связь, параметры драйвера (деление, рабочий ток, тихий режим и т.д.) можно настроить через файл конфигурации.
+* **Режим SPI.** Самые распространенные драйверы, использующие этот режим: TMC5160, TMC2130, TMC2240 и т.д. Параметры драйвера (деление, рабочий ток, тихий режим и т.д.) также можно настроить через файл конфигурации.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.webp').default} size="40%" align="center" />
+
+----
+
+### Установка драйверов
+
+* Перед установкой драйверов необходимо провести соответствующую проверку, чтобы избежать повреждений драйверов или материнской платы.
+* **Драйвер FLY:** Если функцию возврата без датчиков не используется, переключатель кодов должен быть установлен в положение 1; если эта функция используется, переключатель кодов должен быть установлен в положение ON.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.webp').default} size="40%" align="center" />
+
+    :::danger
+
+    * **Внимание!!! При установке модуля драйвера обязательно убедитесь, что направление вставки правильное, то есть EN-пин находится в левом верхнем углу, иначе может быть поврежден драйвер или даже материнская плата!!! Обязательно установите термопасту на драйвер!!!**
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-install.webp').default} size="40%" align="center" />
+
+
+----
+
+## Подключение шаговых двигателей
+
+:::info
+* Независимо от производителя, двафазовые шаговые двигатели всегда имеют четыре вывода в итоге. Независимо от цвета (черный, белый, зеленый, желтый), все они представляют собой четыре провода. Поэтому необходимо разделить их на группы A и B.
+* Для двухфазных четырехпроводных шаговых двигателей не важно, какая группа является A, а какая B, важно только определить одну группу. В настройках программы можно изменить направление вращения двигателя.
+:::
+
+* Самый распространенный тип шагового двигателя в 3D-принтерах — это двухфазный четырехпроводный двигатель. Его принцип работы показан на рисунке. Есть два способа определения последовательности проводов шагового двигателя:
+    * Подключите любые два фазовых провода, и попробуйте вращать ось вручную. Если появляется заметное сопротивление, то эти два провода принадлежат одной группе. В противном случае они не принадлежат одной группе, и нужно протестировать другие провода.
+    * Используйте мультиметр, установленный в режим проверки цепи. Проверьте любые два фазовых провода шагового двигателя. Если они соединены, то принадлежат одной группе; в противном случае не принадлежат одной группе, и нужно протестировать другие провода.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.webp').default} size="50%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/motor.webp').default} size="40%" align="center" />
+
+----
+
+## Подключение нагревательного элемента
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/heater.webp').default} size="60%" align="center" />
+
+----
+
+## Подключение теплого стола
+
+* **Теплый стол на переменном токе:** При подключении реле твердотельного типа убедитесь, что вход и выход не перепутаны.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.webp').default} size="20%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/bed-ac-2.webp').default} size="40%" align="center" />
+
+* **Теплый стол на постоянном токе:** При подключении MOS к теплому столу на постоянном токе обратите внимание на мощность. Максимальный ток для теплого стола на постоянном токе не должен превышать 10 А. Если ток превышает 10 А, рекомендуется использовать внешний модуль MOS для подключения теплого стола, чтобы избежать необратимых повреждений материнской платы.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/bed-dc.webp').default} size="60%" align="center" />
+
+----
+
+## Подключение термочувствительных элементов
+
+### Описание типов термочувствительных элементов
+
+* Способ подключения термочувствительного элемента показан на следующем рисунке. Тип термочувствительного элемента следует уточнить у продавца.
+
+* Если термочувствительный элемент приобретен у fly (как показано на следующем рисунке), установите параметр sensor_type в значение: **ATC Semitec 104GT-2**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.webp').default} size="30%" align="center" />
+
+* Если термочувствительный элемент является стандартным NTC 100К (как показано на следующем рисунке), установите параметр sensor_type в значение: **Generic 3950**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.webp').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.webp').default} size="40%" align="center" />
+
+----
+
+### Подключение термочувствительных элементов к материнской плате
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/ntc-4.webp').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/ntc-5.webp').default} size="40%" align="center" />
+
+----
+
+## Подключение вентиляторов
+
+* **Подключение вентиляторов**
+
+    :::tip
+
+    Выбор напряжения для вентилятора. Для этого достаточно короткого замыкания соответствующего напряжения с помощью jumper. Выбор показан на следующем рисунке. Примечание: способы подключения в рамках желтых рамок на рисунке одинаковы.
+    Внимание!!! Неправильный выбор напряжения для вентилятора может повредить вентилятор или модуль MOS.
+
+    :::
+    * Установка модуля MOS (без учета полярности). Как показано на следующем рисунке
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/mos.webp').default} size="30%" align="center" />
+    * Подключение вентиляторов
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/fan.webp').default} size="30%" align="center" />
+
+----
+
+## Подключение ограничителей хода
+
+* Ограничители хода бывают двух типов: NO (обычно открыт) и NC (обычно закрыт). В 3D-принтерах рекомендуется использовать **NC (обычно закрыт)**. Таким образом, при возникновении проблем в цепи ограничителя хода система сразу выдаст ошибку, что поможет избежать ненужных столкновений и повреждений принтера.
+
+**Напряжение ограничителя хода Super8 можно изменить, заменив короткозамыкающий резистор. Доступные варианты: 3.3v, 5v, 12v, по умолчанию 5V. Напряжение по умолчанию уже удовлетворяет большинство случаев использования, изменения не требуется. Если изменения необходимы, используйте его осторожно.**
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/endstop-voltage.webp').default} size="40%" align="center" />
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/endstop.webp').default} size="40%" align="center" />
+
+----
+
+## Подключение датчиков выравнивания
+
+### Подключение металлического датчика приближения
+
+* Официальная рекомендация VORON — использовать датчик приближения Omron TL-Q5MC (ранее официально рекомендовался PL08N, принцип работы одинаковый, только различаются расстояния обнаружения). Способ подключения показан на следующем рисунке.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/pl08.webp').default} size="40%" align="center" />
+
+----
+
+### Подключение BL-Touch
+
+* BL-touch имеет пять проводов, три из которых образуют первую группу, ответственную за питание датчика и поднятие/опускание зонда. Вторая группа представляет собой землю и сигнал, который подает сигнал о границах. При подключении BL-touch внимательно проверьте последовательность проводов, неправильное подключение может повредить датчик и материнскую плату на постоянной основе!!!
+    
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/bltouch.webp').default} size="40%" align="center" />
+
+----
+
+### Подключение Klicky
+
+* Klicky — это датчик выравнивания стороннего производства, который можно легко изготовить дома за низкую стоимость, при этом он стабилен и имеет высокую стоимость-эффективность, рекомендуется к использованию. Способ подключения показан на следующем рисунке.
+* Адрес проекта: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "адрес проекта, переход по ссылке")
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/klicky.webp').default} size="40%" align="center" />
+
+----
+
+### Подключение Voron Tap
+
+* Tap — это z-зонд на основе сопла, подходящий для V2 и Trident-принтеров. Весь механизм перемещается, чтобы активировать механический выключатель, точность выше, чем у обычных ограничителей хода, и он может работать с почти всеми платформами печати.
+
+    :::warning
+
+    Voron Tap не рекомендуется подключать **24V**, некоторые версии могут вызывать поломку датчика Tap при использовании **24V**, что не связано с продукцией Fly, а является недостатком дизайна Voron Tap, пожалуйста, имейте это в виду!!!
+
+    :::
+
+    :::danger
+
+    Внимание: нельзя перепутать 5V и GND, иначе может повредить датчик Tap и даже материнскую плату!!!
+
+    :::
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/tap.webp').default} size="40%" align="center" />
+
+----
+
+## Подключение экрана FLY-Mini12864
+
+* На следующем рисунке показан способ подключения экрана FLY mini12864. Для экранов других производителей обратитесь к соответствующему производителю. Если подключение экрана mini12864 в обратном порядке или неправильное, это может привести к тому, что компьютер не сможет подключиться к MCU. Если до подключения экрана mini12864 соединение с MCU было нормальным, а после подключения mini12864 соединение пропало, попробуйте отключить подключение mini12864.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/mini12864.webp').default} size="30%" align="center" />
+
+----
+
+## Подключение к компьютеру
+
+* Материнская плата подключается к компьютеру через разъем TypeC или через последовательный порт. Здесь рассматривается только первый вариант.
+
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super5/img/wiring/connect-host.webp').default} size="40%" align="center" />
+
+----

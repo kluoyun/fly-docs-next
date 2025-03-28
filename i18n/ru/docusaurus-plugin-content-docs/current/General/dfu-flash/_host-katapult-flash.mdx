@@ -1,0 +1,96 @@
+:::tip
+    * При установке программы для прошивки необходимо подключение к интернету. Убедитесь, что ваш компьютер уже правильно подсоединен к сети интернет.
+    * Если программа уже установлена, повторная установка не требуется.
+:::
+
+### Начало прошивки
+
+    :::warning Предупреждение
+       * **Не настройте компьютер Fly**. Не забудьте выполнить следующий код для установки пакетов зависимостей для прошивки! В противном случае прошивка не будет возможна!
+       ```
+      cd && git clone https://github.com/Arksine/katapult.git
+       ```
+      <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
+    :::
+    * Используйте нижеследующую команду для поиска ID вашего устройства, результат должен соответствовать показанному ниже ID (примечание: показанный в изображении ID является примером, каждый материнская плата имеет уникальный ID):
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
+
+
+    * Для прошивки используйте следующую команду, убедитесь, что firmware уже скомпилированы, *замените `<ваш ID платы>` на ID, найденный на предыдущем шаге*
+
+        ```bash
+        ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<ваш ID платы>
+        ```
+
+    * Ссылка для справки:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
+
+    * Пример успешной прошивки:
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
+
+## Обновление прошивки
+
+<Tabs>
+    <TabItem value="w" label="Обновление USB-прошивки" default>
+    * Используйте следующую команду для поиска ID вашей материнской платы, результат должен соответствовать показанному ниже ID (примечание: показанный в изображении ID является примером, каждый материнская плата имеет уникальный ID):
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+    :::tip Важно
+        На изображении ниже `dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00` является ID материнской платы
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
+
+    * Для обновления USB-прошивки необходимо после компиляции последней версии firmware ввести следующую команду для обновления, *замените `<ваш ID платы>` на ID, найденный на предыдущем шаге*
+
+        ```bash
+        cd ~/klipper/ && make flash FLASH_DEVICE=<ваш ID платы>
+        ```
+       <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
+    </TabItem>
+
+
+    <TabItem value="l" label="Обновление CAN-моста прошивки">
+    * Для обновления CAN-моста USB-прошивки нужно после компиляции последней версии firmware ввести следующую команду для перезагрузки в Katapult. (На изображении ниже показан пример, ID на изображении является примером, пожалуйста, используйте ID из вашего конфигурационного файла)
+    :::tip Важно
+       * `<ваш CANBUS UUID>` — это UUID платы CANBUS из вашего файла конфигурации `printer.cfg`
+    :::
+        
+        <br/>
+
+        ```bash
+        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <ваш CANBUS UUID>
+        ```
+    :::tip Важно
+       * На изображении ниже `f95cee90e1f9` является UUID материнской платы CANBUS
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
+    * После перезагрузки в Katapult используйте следующую команду для поиска ID вашей материнской платы, результат должен соответствовать показанному ниже ID (примечание: показанный в изображении ID является примером, каждый материнская плата имеет уникальный ID)
+
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+    :::tip Важно
+        На изображении ниже `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00` является ID материнской платы
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
+
+    * Убедитесь, что новая прошивка скомпилирована, затем выполните команду для прошивки. *Замените `<ваш ID платы>` на ID, найденный на предыдущем шаге*
+
+        ```bash
+        cd ~/klipper/ && make flash FLASH_DEVICE=<ваш ID платы>
+        ```
+       <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
+    </TabItem>
+
+</Tabs>
+
+## Решение проблем с неправильной прошивкой
+
+    * Отключите питание платы, снова включите его и быстро дважды нажмите кнопку сброса на плате.
+    * Или используйте очистку Windows и повторную прошивку BL.

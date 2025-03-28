@@ -1,0 +1,59 @@
+::::предупреждение
+
+* Рекомендуется не выполнять поиск ID и прошивку固件 во время печати
+* CAN-программное обеспечение для платы Katapult и Klipper с одинаковыми ID на одной материнской плате полностью совпадают
+
+::::
+
+::::предупреждение
+
+* Убедитесь, что CAN-сеть верхнего уровня уже настроена
+* При наличии `1d50:606f` после выполнения команды lsusb можно использовать следующую команду для поиска ID CAN
+* Скорость CAN для инструментальной платы должна совпадать с верхним уровнем, иначе ID найти и записать невозможно
+
+::::
+
+* Для запроса UUID CANBus выполните следующую команду:
+
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+
+    * После ввода появится одно из следующих состояний (ниже представлены примеры):
+        * Первый случай: материнская плата с прошивкой моста показывает один ID и выводит сообщение `Application: Klipper`
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />  
+        * Второй случай: материнская плата с прошивкой моста вместе с инструментальной платой, требующей записи, показывает два ID
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />  
+        * Третий случай: использование UTOC вместе с инструментальной платой, требующей записи
+        * Примечание: UTOC не показывает ID
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />  
+        * Четвертый случай: отсутствие ID, обычно связано с занятостью Klipper, неправильной скоростью CAN0 на верхнем уровне или аномалиями подключения
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />  
+
+    * Обычно инструментальная плата в режиме CANBOOT выведет `Application: CanBoot`, и соответствующий индикатор прошивки будет мигать. В этом случае необходимо записать прошивку Klipper, иначе подключение невозможно!!!
+    * Примечание: если у вас уже установлена прошивка Klipper и ID добавлено в конфигурацию, ID не будет показан и будет занят Klipper. Необходимо временно отключить соответствующий ID и полностью выключить и перезагрузить материнскую плату.
+
+::::предупреждение
+
+* Если UUID не найден, см. документацию ниже  
+* <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">Сборник проблем CAN</Button>
+
+::::
+
+* Прошивка прошивки
+
+    * Замените `241696050c56` в следующей команде на найденный UUID (обратите внимание на пробел после `-u`)
+        ```bash
+        python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
+        ```
+
+    * При успешной записи появится `CAN Flash Success`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />  
+
+* Для обновления прошивки достаточно скомпилировать новую прошивку и повторно выполнить команду записи, но убедитесь, что ID можно найти или Klipper уже подключен
+
+        ```bash
+        python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash1.webp').default} size="100%" align="left" />  
+

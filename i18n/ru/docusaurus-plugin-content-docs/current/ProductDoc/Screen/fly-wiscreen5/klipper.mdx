@@ -1,0 +1,122 @@
+---
+sidebar_position: 4
+sidebar_label: Настройка Wi-Fi и klipper
+---
+
+
+
+
+    :::tip
+
+    Прошивка уже установлена на заводе, но рекомендуется выполнить ручное обновление один раз
+
+    :::
+
+## Скачать прошивку для экрана
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen5/WIFI/update.img">Щелкните для загрузки прошивки экрана</Button>
+
+    * Необходимо использовать карту памяти объемом не более 32 ГБ, скорость передачи данных TF-карты должна быть класса 10 или выше, рекомендуется использовать TF-карты от SanDisk и других брендов
+
+## Подключение Wi-Fi и базовые операции
+
+    [Управление несколькими машинами с помощью 7-дюймового Wi-Fi сенсорного экрана](https://www.bilibili.com/video/BV1mr421b7Bf/?spm_id_from=333.788&vd_source=36affb37d7228751cd1fcbbda487dfdf)
+
+## Настройка Klipper
+
+### Настройка LED
+
+    ```cfg
+    [led LED]
+    white_pin:PA15
+    ```
+
+### Настройка ptc
+
+    ```cfg
+    [heater_generic warehouse]
+    heater_pin:E_CS
+    sensor_type:ATC Semitec 104GT-2
+    sensor_pin:PA1
+    min_temp:-270
+    max_temp:600
+    control = pid
+    pid_kp = 16.804
+    pid_ki = 0.794
+    pid_kd = 88.854
+    ```
+
+### Настройка FAN
+
+    ```cfg
+    [fan_generic fan1]
+    pin: FAN1
+    ```
+
+
+    ```cfg
+    [fan_generic fan2]
+    pin: FAN2
+    ```
+
+ 
+
+### Пользовательские G-code
+
+    * После сворачивания экрана появляются пользовательские G-code,
+    * Одна кнопка отправляет несколько команд в формате G-code:
+    * Пример:
+
+    ```cfg
+    G91 
+    G1 X10 F6000
+    G90
+    ```
+
+    * Формат ввода на экране (начиная со второй строки, каждая команда предваряется \n):
+
+    ```cfg
+    G91\nG1 X10 F6000\nG90
+    ```
+
+
+
+## Использование объектов исключения
+
+    * Требуется замена moonraker
+
+    * Сначала подключитесь к SSH и убедитесь, что есть доступ в интернет
+
+    1. Сделайте резервную копию moonraker
+
+    ```bash
+    mv ~/moonraker ~/moonraker-bak
+    ```
+
+    2. Остановите службу moonraker
+
+    ```bash
+    sudo systemctl restart moonraker
+    ```
+
+    3. Склонируйте moonraker
+
+    ```bash
+    git clone https://e.coding.net/g-ofpa1390/3D-Printers/moonraker-dev.git -b flylcd-dev moonraker
+    ```
+
+    4. В браузере откройте компьютер верхнего уровня и добавьте `moonraker.conf`, затем перезагрузите систему
+
+    ```bash
+    [network]
+    ```
+
+    5. Затем в браузере введите следующий адрес, где IP нужно заменить на IP компьютера верхнего уровня
+
+    ```bash
+    http://ip:7125/server/network/wifi/scan
+    ```
+
+* Это шаг указывает, что операция завершена
+   
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/moonraker.webp').default} size="100%" align="left" />

@@ -1,0 +1,53 @@
+---
+sidebar_position: 3
+sidebar_label: Загрузка прошивки USB-моста для CAN
+---
+
+import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# Загрузка прошивки USB-моста для CAN
+
+## Начало компиляции
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
+    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если вывод содержит следующее, компиляция успешно завершена
+
+        ```bash
+        Сборка out/klipper.elf
+        Создание hex файла out/klipper.bin
+        ```
+    
+## Перевод в режим загрузки
+
+    :::tip Подсказка
+        После 1 сентября 2024 года出厂ные D5 уже имеют прошивку Katapult
+    :::
+    * Подключите основную плату к хост-компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на плате должны моргать светодиоды.
+    :::warning Предупреждение
+       * Если светодиоды не моргают, повторно загрузите прошивку Katapult: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#вход_в_режим_dfu_загрузки">Загрузить прошивку Katapult</Button>
+       * Если светодиоды не моргают, после загрузки прошивки Katapult выполните следующий шаг
+    :::
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
+
+    <LS />
+
+## Загрузка прошивки
+
+
+    <CANBOOT />

@@ -1,0 +1,75 @@
+---
+sidebar_position: 6
+sidebar_label: Фирменное ПО BL, проигнорируйте
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирменное ПО Katapult
+
+## Описание фирменного ПО Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * D8 подключается через USB
+
+    :::
+
+## Вход в режим программирования
+
+    :::tip
+
+    Слева — кнопка «RST», справа — кнопка «BOOT»
+
+    :::
+
+    * Есть два способа входа в режим программирования
+    * Первый: полностью отключите электропитание материнской платы, удерживайте кнопку BOOT и подключите передатчик данных (одно из его концов к материнской плате, другое — к вашему устройству)
+    * Второй: после подключения передатчика данных (одно из его концов к материнской плате, другое — к вашему устройству), удерживайте кнопку BOOT, нажмите кнопку RST, затем отпустите кнопку RST, а затем отпустите кнопку BOOT
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d8-h723/flash/img/boot.webp').default} size="50%" align="center" />
+
+## Программирование прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по программированию на Windows" default>
+
+            * Фирменное ПО Katapult для D8 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/D.zip">Щелкните для автоматической загрузки прошивки</Button>
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по программированию с помощью ПО">
+
+            <Katapult />
+
+            4. Программирование прошивки
+
+            :::tip
+
+            Необходимо программировать только одну прошивку
+
+            :::
+
+            * Ниже приведена команда для записи прошивки
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/D/FLY_D8_H723.bin
+                ```
+
+            5. Если появится указанное в изображении ниже содержимое «File downloaded successfully», то программирование успешно завершено
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения программирования необходимо полностью отключить электропитание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

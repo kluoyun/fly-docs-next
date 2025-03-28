@@ -1,0 +1,82 @@
+---
+sidebar_position: 3
+sidebar_label: Руководство по использованию FLY PI
+---
+
+
+
+# Инструкция по использованию FLY пульта управления
+
+## Важные замечания:
+
+    * Убедитесь, что питание выключено перед установкой расширительной платы.
+    * Избегайте использования расширительной платы в условиях высокой влажности или сильной пыли.
+    * При установке экрана обращайте внимание на направление кабеля и не подключайте/не отключайте его при включенном питании, чтобы избежать повреждений.
+    * При установке вентилятора учитывайте его параметры тока и напряжения, чтобы предотвратить повреждения.
+    * FLY пульт управления может использовать только средний интерфейс RS232, а также разъемы FAN и FPC экрана !!!!
+    * На FLY пульте управления можно использовать пульты управления G2T: `PI V2`, `C8`, `PRO X10`
+    * Серии `Gemini` и `PI V1` не поддерживаются
+
+## Установка G2T
+
+    * Ниже приведена ссылка для справки
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/piv2.webp').default} size="60%" align="left" />
+    * Схема подключения
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/wiring.webp').default} size="60%" align="left" />
+
+
+## Метод подключения инструментального терминала через встроенный RS232
+
+    * После обновления системы на FLY пульте управления необходимо зайти на **IP пульта управления +:9999**
+    * FLY пульт управления может использовать только средний интерфейс RS232, а также разъемы FAN и FPC экрана !!!!
+    * В настройках системы найдите **UART1** и сохраните, затем перезагрузите
+        <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/uart.webp').default} size="100%" align="left" />
+
+    * Ниже приведен пример конфигурации
+
+        ```cfg
+        [mcu] 
+        serial: /dev/ttyS1
+        baud: 250000
+        restart_method:command
+        ```
+
+## Использование встроенного вентилятора 5VFAN
+
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/fan.webp').default} size="50%" align="left" />
+
+        ```cfg
+        [mcu host]         
+        serial: /tmp/klipper_host_mcu 
+
+        [temperature_sensor FLY Pi]
+        sensor_type: temperature_host
+
+        [temperature_fan core_fan]      # Вентилятор охлаждения пульта управления
+        pin: host:gpiochip1/gpio102     # Пин пульта управления вентилятора
+        max_power: 1.0
+        sensor_type: temperature_host   # Установите как температуру контроллера пульта управления
+        control:watermark               # Способ контроля
+        target_temp: 48                 # Температура запуска вентилятора охлаждения пульта управления
+        min_temp: 0                     # Минимальная температура, ниже которой будет вызвано сообщение об ошибке
+        max_temp: 90                    # Максимальная температура, выше которой будет вызвано сообщение об ошибке
+        off_below: 0.10
+        kick_start_time: 0.50
+        max_speed: 0.8                  # Максимальная скорость, равная 80% полной мощности
+        min_speed: 0.3                  # Минимальная скорость, равная 30% полной мощности
+
+        ```
+
+## Метод использования экрана
+
+    * После обновления системы на FLY пульте управления необходимо зайти на **IP пульта управления +:9999**
+        * fly-tft-v2-c — это выбор экрана TFT емкостный 3,5 дюйма
+        * fly-tft-v2-r — это выбор экрана TFT резистивный 3,5 дюйма
+            <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tools.webp').default} size="100%" align="left" />
+
+### Установка экрана
+
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-g2t/img/tft.webp').default} size="60%" align="left" />
+
+# Скачать модели
+    Скачать необходимую модель <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/STEP/G2T.step">G2t модель</Button>

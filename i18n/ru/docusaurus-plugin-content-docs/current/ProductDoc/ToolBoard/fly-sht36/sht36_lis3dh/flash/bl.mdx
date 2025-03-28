@@ -1,0 +1,87 @@
+---
+sidebar_position: 6
+sidebar_label: ПО BL, проигнорируйте!
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирменное ПО Katapult
+
+## Описание фирменного ПО Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * Поддержка SHT36 и LIS3DH для CAN
+    * Здесь доступны только ПО для CAN с скоростью 500K и 1M
+    :::
+
+## Вход в режим программирования
+
+    :::tip
+
+    Выделенное круглым — это `BOOT-кнопка`.
+
+    :::
+
+    * При полном отключении питания платы коротко замкните BOOT-кнопку, а затем подключите шину данных одной концовкой к плате, а другой концовкой к вашему устройству.
+    * Затем отпустите кнопку BOOT
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/boot.webp').default} size="50%" align="center" />
+
+## Программирование ПО
+    <Tabs>
+        <TabItem value="win" label="Инструкция по программированию на Windows" default>
+
+            * Фирменное ПО для SHT36_LIS3DH Katapult <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SHT36_LIS3DH.zip">Щелкните для автоматической загрузки firmware</Button>
+
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по программированию через ПО">
+
+            <Katapult />
+
+            4. Программирование ПО
+
+            :::tip
+
+            Необходимо запрограммировать только одно ПО.
+
+            :::
+
+            * Ниже приведена команда для записи ПО с CAN-скоростью 500K:
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_500K.uf2
+                ```
+                        
+                * Ниже приведена команда для записи ПО с CAN-скоростью 1M:
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SHT36/FLY_SHT36LIS3DH_CANBOOT_CAN_1M.uf2
+                ```
+
+
+            5. Если появляется нижеследующее уведомление, то процесс программирования успешно завершен.
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.webp').default} size="100%" align="center" />
+
+
+            :::tip
+
+            После завершения процесса программирования необходимо полностью отключить питание платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Проверка запуска ПО
+
+    * Если ПО успешно запущено, светодиод начнет мигать.
+    <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.webp').default} size="100%" align="center" />

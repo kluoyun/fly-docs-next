@@ -1,0 +1,79 @@
+---
+sidebar_position: 6
+sidebar_label: Фирменное ПО BL, проигнорируйте
+
+---
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирменное ПО BL
+
+    :::tip
+
+    * Обратите внимание, что загрузчик уже предварительно записан на заводе, повторная запись не требуется
+
+    :::
+
+## Вход в режим программирования
+
+
+    * Существует два способа входа в режим программирования
+    * Первый: полностью отключите питание материнской платы, затем коротко замкните BOOT и BOOT1, после чего подключите один конец с данными передачи к материнской плате, а другой — к вашему устройству
+    * Второй: после подключения одного конца с данными передачи к материнской плате и другого к вашему устройству, коротко замкните BOOT и BOOT1, затем нажмите кнопку RST, затем отпустите кнопку RST и finally отсоедините короткое замыкание BOOT. 
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/boot.webp').default} size="100%" align="center" />
+
+## Программирование прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по программированию в Windows" default>
+
+            * Прошивка загрузчика для Gemini <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/GeminiV3.bin">Щелкните для автоматической загрузки прошивки</Button>
+
+            * Переключатель DIP-реле `3`, `4` выставьте вправо, чтобы соединить нижний компьютер с верхним через встроенный USB
+            * Переключатель DIP-реле `1`, `2` выставьте влево, иначе это может повлиять на соединение между нижним и верхним компьютером
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip3.webp').default} size="50%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по программированию в Linux">
+
+            * Переключатель DIP-реле `1`, `2` выставьте вправо, чтобы соединить нижний компьютер с верхним через встроенный USB
+            * Переключатель DIP-реле `3`, `4` выставьте влево, иначе это может повлиять на соединение между нижним и верхним компьютером
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/dip1.webp').default} size="50%" align="center" />
+            * После установки переключателей таким образом, нижний порт USB будет занят нижним компьютером, поэтому подключение других устройств запрещено
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
+
+            <Katapult />
+
+            4. Запись прошивки
+
+            :::tip
+
+            Необходимо записать только одну из прошивок
+
+            :::
+
+            * Ниже приведена команда записи загрузчика
+                ```bash
+                sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/FLY_Katapult/BL/Gemini/GeminiV3.bin
+                ```
+
+            5. При появлении содержимого, показанного стрелкой на изображении ниже (``File downloaded successfully``), запись успешно выполнена
+
+            :::warning
+
+            Ошибки, указанные красной стрелкой после этой строки, игнорируются!!!
+
+            :::
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения записи необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>

@@ -1,0 +1,145 @@
+---
+sidebar_position: 6
+sidebar_label: Инструкция по компиляции прошивки BL
+---
+
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+
+    :::tip
+
+    * Убедитесь, что ПК может нормально подключаться к сети
+    * Перед компиляцией прошивки необходимо подключиться к ПК через SSH по сети
+    * Не используйте инструменты терминала через последовательный порт для подключения к ПК
+
+    :::
+
+# Компиляция прошивки Katapult
+### Начало компиляции
+  <SSH />
+  ### Описание операций компиляции и настройки прошивки Katapult
+
+    :::tip
+
+    Убедитесь, что режим ввода клавиш находится в полуширинном режиме, то есть в английском режиме
+
+    :::
+
+    1. Клавиша вверх `↑`, клавиша вниз `↓` — используются для перемещения курсора вверх или вниз для выбора пунктов меню
+    2. Клавиша подтверждения `Enter` или пробел `Space` — используется для выбора пункта меню или входа в подменю
+    3. Клавиша выхода `ESC` — используется для возврата на предыдущее меню
+    4. Клавиша `Q` — используется для выхода из страницы настроек прошивки Katapult
+    5. Клавиша `Y` — при выходе из страницы настроек прошивки Katapult с подсказкой, нажмите клавишу `Y`, чтобы сохранить файл конфигурации
+
+    Далее介绍一下, как скомпилировать прошивку:
+    * Подключившись через SSH, введите следующую команду и нажмите Enter:
+
+        ```bash
+        cd ~/katapult && rm -rf ~/katapult/.config && rm -rf ~/katapult/out && make menuconfig
+        ```
+
+    * Где `rm -rf ~/katapult/.config && rm -rf ~/katapult/out` — это удаление предыдущих данных компиляции и прошивки, `make menuconfig` — команда для компиляции прошивки, после выполнения должна появиться следующая интерфейсная картинка
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * Выберите `Micro-controller Architecture (LPC176x (Smoothieboard))` и нажмите Enter
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/bl1.webp').default} size="100%" align="Center" />
+
+    * Войдите в меню, затем выберите **Raspberry Pi RP2040** и нажмите Enter
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL2040.webp').default} size="100%" align="Center" />
+
+    * Выберите `Build Katapult deployment application (Do not build)`, выберите: **Do not build**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/BL16K.webp').default} size="100%" align="Center" />
+
+    * Выберите **Communication interface**, выберите: **CAN bus**
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/CAN-BUS.webp').default} size="100%" align="Center" />
+
+    * Выберите `(4) CAN RX gpio number`, удалите `4` и введите `1`
+    * Выберите `(5) CAN TX gpio number`, удалите `5` и введите `0`
+
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+    * Скорость шины CAN по умолчанию составляет 1000000, если требуется изменить на 500000
+    * Это для 1М
+       <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/TXRX.webp').default} size="100%" align="Center" />
+    * Это для 5к
+       <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/5K.webp').default} size="100%" align="Center" />
+
+    * Выберите **Enable Status LED** и нажмите Enter, выберите `Status LED GPIO Pin (NEW)` и введите: **!gpio18**
+    :::warning
+        Введите `!gpio18` в английском режиме
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/led1.webp').default} size="100%" align="center" />
+    * **Проверьте вышеизображенный рисунок, убедитесь, что все соответствует изображению, прежде чем продолжить**
+    * Нажмите клавишу `Q`, появится запрос **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь должны быть сохранены настройки и вы вышли в командную строку
+    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если выводится следующее содержимое, то компиляция успешно завершена
+
+```bash
+  Linking out/katapult.elf
+  Creating bin file out/katapult.bin
+  Creating legacy binary out/canboot.bin
+  Building out/lib/rp2040/elf2uf2/elf2uf2
+  Creating uf2 file out/katapult.uf2
+  Creating legacy uf2 file out/canboot.uf2
+  Compiling out/src/deployer.o
+  Compiling out/src/generic/armcm_boot.o
+  Compiling out/src/generic/armcm_reset.o
+  Building out/deployer_ctr.o
+  Compiling out/katapult_payload.o
+  Preprocessing out/src/generic/armcm_deployer.ld
+  Linking out/deployer.elf
+  Creating hex file out/deployer.bin
+``` 
+
+## Переход в режим загрузки
+
+    :::tip
+
+    Стрелка указывает на кнопку `BOOT`
+
+    :::
+
+    * Отключите питание платы, зажмите кнопку BOOT, а затем подключите кабель передачи данных с одной стороны к материнской плате, а с другой стороны к вашему устройству
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="60%" align="center" />
+* Затем введите команду `lsusb`
+```bash
+lsusb
+```
+* Появление изображения ниже означает, что система перешла в режим загрузки
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot1.webp').default} size="80%" align="center" />
+
+* Введите следующую команду для записи прошивки и нажмите Enter
+```bash
+make flash FLASH_DEVICE=2e8a:0003 
+```
+:::tip
+Ввод команды `mellow` не будет отображаться
+:::
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+* Если появится изображение ниже, введите `mellow`, после чего просто нажмите Enter 
+
+* Если появилось сообщение, как показано на изображении ниже, то поздравляем, прошивка успешно завершена
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot2.webp').default} size="100%" align="center" />
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/boot3.webp').default} size="100%" align="center" />
+## Проверка запуска прошивки
+
+* Если прошивка успешно запущена, светодиод начнет мигать
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+
+* Для поиска ID CAN введите команду и нажмите Enter
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+```
+* Если команда выше не найдет ID, попробуйте ввести следующую команду
+```bash
+~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can1
+```
+После ввода появится изображение с ID, указанный ID является справочным значением и не может использоваться
+<ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/canid.webp').default} size="100%" align="center" />

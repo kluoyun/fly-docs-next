@@ -1,0 +1,64 @@
+---
+sidebar_position: 2
+sidebar_label: Компиляция и запись прошивки
+---
+
+
+
+
+import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
+import UTOC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+
+# Компиляция и запись прошивки
+
+    :::tip
+
+    * По умолчанию для F407ZG используется запись прошивки через TF-карту
+    * Приготовьте TF-карту объемом не более `32 ГБ`
+    * Нестандартные карты памяти могут привести к неудаче записи, поэтому рекомендуется использовать рекомендованные ниже карты памяти для обновления прошивки
+    * Лучше всего использовать TF-карты класса `10` или выше, например, от производителя SanDisk
+
+    :::
+
+
+
+## Подготовка
+
+    <SSH />
+
+## Компиляция прошивки Klipper
+
+    <MakeOperate/>
+
+    <USB />
+
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите клавишу `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы должны вернуться в командную строку
+    * Введите `make -j4`, чтобы начать компиляцию (время займет достаточно долго)
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если последний вывод содержит следующее, то компиляция успешно завершена
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+        
+    * Пример успешной компиляции:
+
+        <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
+
+## Запись прошивки
+
+:::danger Важно
+* Для F404ZG предварительно установлены прошивки BL для записи через TF-карту
+:::
+
+    <TF />

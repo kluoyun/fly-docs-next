@@ -1,0 +1,136 @@
+---
+sidebar_position: 5
+sidebar_label: Инструкция по использованию сетевого кабеля для Raspberry Pi и других хост-компьютеров
+---
+
+
+
+
+# Инструкция по использованию сетевого кабеля
+
+
+    :::tip
+
+    Фирменное ПО экрана необходимо обновлять вручную
+
+    :::
+
+## Скачивание прошивки экрана
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/wiscreen/wiscreen7/Cable/update.img">Щелкните для загрузки прошивки экрана</Button>
+
+    * Необходима карта памяти объемом не более 32 ГБ, скорость записи карты памяти должна быть класса 10 или выше, рекомендуется использовать карту памяти SanDisk и т. д.
+
+
+## Подключение сетевого кабеля
+
+    <ImageView image={require('@site/docs/ProductDoc/Screen/fly-wiscreen7/img/fpc.webp').default} size="100%" align="left" />
+
+
+## Системные пакеты для совместимости с FLY хост-компьютером
+
+:::tip
+Совместимо с сериями C8 PI_V2 PI GEMINI
+:::
+
+    * <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/IMG/Beta/FLY_OS%E7%BD%91%E7%BA%BF%E5%B1%8F%E7%B3%BB%E7%BB%9F.img.xz">Скачать системный пакет</Button>
+
+
+## Установка службы
+
+:::tip
+Для других хост-компьютеров установка службы производится самостоятельно
+:::
+
+:::warning Важно
+Процесс установки требует подключения к интернету
+:::
+    ```bash
+    sudo apt install isc-dhcp-server
+    ```
+## Настройка сети
+
+:::tip
+* Данная инструкция займет порт на хост-компьютере, использование только экрана через сетевой кабель возможно
+* Если не требуется, просто полностью удалите добавленные ниже настройки
+:::
+    Изменить `/etc/network/interfaces.d/eth0`
+
+    ```bash
+    auto eth0
+    iface eth0 inet static
+    address 192.168.251.100
+    netmask 255.255.255.0
+    broadcast 192.168.251.255
+    network 192.168.251.0
+    gateway 192.168.251.1
+    ```
+
+    Изменить `/etc/default/isc-dhcp-server`
+
+    ```bash
+    # Параметры по умолчанию для isc-dhcp-server (используются скриптом /etc/init.d/isc-dhcp-server)
+
+    # Путь к конфигурационному файлу dhcpd (по умолчанию: /etc/dhcp/dhcpd.conf).
+    #DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
+    #DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
+
+    # Путь к файлу PID dhcpd (по умолчанию: /var/run/dhcpd.pid).
+    #DHCPDv4_PID=/var/run/dhcpd.pid
+    #DHCPDv6_PID=/var/run/dhcpd6.pid
+
+    # Дополнительные параметры для запуска dhcpd.
+    #       Не используйте параметры -cf или -pf здесь; используйте вместо этого DHCPD_CONF/ DHCPD_PID
+    #OPTIONS=""
+
+    # На каких интерфейсах должен работать сервер DHCP (dhcpd)?
+    #       Разделяйте несколько интерфейсов пробелами, например: "eth0 eth1".
+    INTERFACESv4="eth0"
+    #INTERFACESv4="eth0"
+    INTERFACESv6=""
+    #INTERFACES="eth0"
+
+    INTERFACES="eth0"
+    ```
+
+    Изменить `/etc/dhcp/dhcpd.conf`, добавить в конец следующее содержимое
+
+    ```bash
+    # ddns-update-style none;
+    subnet 192.168.251.0 netmask 255.255.255.0 {
+        range 192.168.251.100 192.168.251.200;
+        option routers 192.168.251.1;
+        option domain-name-servers 8.8.8.8, 8.8.4.4; # Google Public DNS в качестве примера
+        default-lease-time 600; # Время аренды по умолчанию в секундах
+        max-lease-time 7200;    # Максимальное время аренды в секундах
+    }
+    ```
+
+    Сначала перезагрузить систему, затем выполнить следующие команды для перезапуска службы
+
+    Или перезапустить службу сети
+
+    ```bash
+    sudo systemctl restart NetworkManager
+    ```
+
+    Данная операция приведет к разрыву соединения и повторному подключению
+
+    Перезапустить службу
+
+    ```bash
+    sudo systemctl restart isc-dhcp-server
+    ```
+
+    IP-адрес данного устройства должен быть `192.168.251.100`
+
+## Повышение приоритета WIFI
+
+:::tip
+* Данная команда повышает приоритет сети, без ее добавления невозможно нормально подключаться к интернету и скачивать файлы и т. д.!!!
+:::
+    * Пожалуйста, добавьте нижеследующую команду в файл `/etc/rc.local` хост-компьютера
+
+    ```bash
+    sudo ip route del default && sudo ip route add default via $(ip route show dev wlan0 | grep 'default via' | awk 'NR==1 {print $3}') dev wlan0
+    ```

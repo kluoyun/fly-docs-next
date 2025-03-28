@@ -1,0 +1,89 @@
+---
+sidebar_position: 7
+sidebar_label: Подключение экрана и конфигурация
+---
+
+
+
+import TFT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tft.mdx';
+
+
+
+# Подключение экрана и конфигурация
+
+:::info
+
+* FLY-TOOLS необходимо подключиться к интернету и ввести IP-адрес компьютера с портом `+9999`, чтобы получить доступ к верхнему уровню.
+* Например: `192.168.6.110:9999`
+
+:::
+
+
+    <Tabs>
+        <TabItem value="tft" label="Подключение TFT" default>
+            * Необходимо настроить экран в FLY TOOLS и включить KS
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft.webp').default} size="80%" align="center" />
+            * Подключение экрана FLY-Pi TFT
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-tft.webp').default} size="80%" align="center" />
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/v2.webp').default} size="80%" align="center" />
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tft_flyπ.webp').default} size="80%" align="center" />
+
+        </TabItem>
+        <TabItem value="hdmi" label="Подключение HDMI">
+            * Необходимо настроить экран в FLY TOOLS и включить KS
+                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/hdmi.webp').default} size="80%" align="center" />               
+            * Использование модуля FPC для HDMI
+            * Обратите внимание, что необходимо подключить тип-C с функцией передачи данных к модулю
+                <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
+
+        </TabItem>
+    </Tabs>
+
+# Настройка экрана TFT
+
+<Tabs>
+    <TabItem value="tft" label="Настройка экрана TFT" default>
+        * В FLY TOOLS необходимо включить KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="Настройка сенсорного экрана TFT" default>
+## Метод один    
+         * Для настройки сенсорного экрана используйте следующую команду для установки в `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Cap`
+    * Используйте следующую команду для проверки успешности изменения
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * Для изменения настроек сенсорного экрана на резистивный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+</TabItem>
+
+        <TabItem value="hdmi" label="Настройка резистивного экрана TFT">
+## Метод один        
+           * Для настройки резистивного экрана используйте следующую команду для установки в `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Resi`
+        * Используйте следующую команду для проверки успешности изменения
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * Для изменения настроек резистивного экрана на сенсорный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+</TabItem>
+</Tabs>    
+</TabItem>
+</Tabs>
+    ----

@@ -1,0 +1,139 @@
+---
+sidebar_position: 6
+sidebar_label: Настройка экрана и его подключения
+---
+
+
+
+import TFT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tft.mdx';
+import HDMI from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_hdmi.mdx';
+
+
+
+# Настройка экрана и его подключения
+
+:::info
+
+* Для lite2.1 необходимо подключиться к системе через SSH и ввести указанные ниже команды, чтобы использовать Fly Tools для настройки экрана:
+```bash
+sudo sed -i 's/board=fly-lite2/board=fly-lite2.1/g' /boot/FlyOS-Env.txt
+```
+:::
+
+
+* Для работы с Fly Tools необходимо, чтобы верхний компьютер был подключен к сети и можно было получить доступ по адресу `IP+:9999`
+* Например: `192.168.6.110:9999`
+
+<Tabs>
+    <TabItem value="tft" label="Экран TFT" default>
+        * В FLY TOOLS необходимо включить KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
+        <Tabs>
+    <TabItem value="tft" label="Настройка экрана TFT с емкостным触摸ем" default>
+## Метод один    
+         * Для настройки емкостного экрана используйте следующую команду для изменения настройки на `fly-tft-v2-c`
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
+```
+         * Убедитесь, что переключатель на обратной стороне экрана установлен в положение `Cap`
+    * Проверьте успешность изменений с помощью следующей команды
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
+ * Для изменения настроек емкостного экрана на резистивный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+``` 
+## Метод два
+* Используйте следующие инструменты: кардридер, SD/TF-карта с записанным образом lite2
+* Вставьте SD/TF-карту в кардридер и подключите его к USB порту компьютера. В этом случае на компьютере появится диск boot
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* Щелкните правой кнопкой мыши по значку диска boot, после чего откроется изображение файлов
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* Найдите файл с названием `FlyOS-Env.txt`
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* Дважды щелкните правой кнопкой мыши по файлу `FlyOS-Env.txt`, чтобы открыть его
+* Найдите строки 8 и 11 на изображении и сделайте необходимые изменения
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1c.webp').default} size="80%" align="center" />
+
+</TabItem>
+
+        <TabItem value="hdmi" label="Настройка экрана TFT с резистивным触摸ем">
+## Метод один        
+           * Для настройки резистивного экрана используйте следующую команду для изменения настройки на `fly-tft-v2-r` 
+```cfg
+sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+```
+                                * Убедитесь, что переключатель на обратной стороне экрана установлен в положение `Resi`
+        * Проверьте успешность изменений с помощью следующей команды
+```cfg
+sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+```
+                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
+ * Для изменения настроек резистивного экрана на емкостный используйте следующую команду
+
+```cfg
+sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
+```
+## Метод два
+* Используйте следующие инструменты: кардридер, SD/TF-карта с записанным образом lite2
+* Вставьте SD/TF-карту в кардридер и подключите его к USB порту компьютера. В этом случае на компьютере появится диск boot
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* Щелкните правой кнопкой мыши по значку диска boot, после чего откроется изображение файлов
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* Найдите файл с названием `FlyOS-Env.txt`
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* Дважды щелкните правой кнопкой мыши по файлу `FlyOS-Env.txt`, чтобы открыть его
+* Найдите строки 8 и 11 на изображении и сделайте необходимые изменения
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyoslite2.1r.webp').default} size="80%" align="center" />
+
+
+ </TabItem>
+                        </Tabs>
+        * Подключение экрана TFT для FLY-Lite
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tftv2.webp').default} size="80%" align="center" />
+    </TabItem>
+
+    <TabItem value="hdmi" label="Настройка HDMI">
+        * В FLY TOOLS необходимо выполнить настройку экрана и включить KS
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />               
+## Метод
+* Используйте следующие инструменты: кардридер, SD/TF-карта с записанным образом lite2
+* Вставьте SD/TF-карту в кардридер и подключите его к USB порту компьютера. В этом случае на компьютере появится диск boot
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-pf.webp').default} size="30%" align="center" />
+
+* Щелкните правой кнопкой мыши по значку диска boot, после чего откроется изображение файлов
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/boot-wj.webp').default} size="80%" align="center" />
+
+* Найдите файл с названием `FlyOS-Env.txt`
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/flyos.webp').default} size="80%" align="center" />
+
+* Дважды щелкните правой кнопкой мыши по файлу `FlyOS-Env.txt`, чтобы открыть его
+* Найдите строки 8 и 11 на изображении и сделайте необходимые изменения
+
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi.webp').default} size="80%" align="center" />
+
+        
+        * Подключение экрана HDMI для FLY-Lite
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/hdmi1.webp').default} size="80%" align="center" />
+    </TabItem>
+</Tabs>

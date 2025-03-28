@@ -1,0 +1,85 @@
+---
+sidebar_position: 6
+sidebar_label: Фирменное ПО BL, пропустить!
+---
+
+
+
+
+
+import WIN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-uf2-flash.mdx';
+import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-uf2-flash.mdx';
+import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# Фирменное ПО Katapult
+
+## Описание Фирменного ПО Katapult
+
+    <CANBOOT />
+
+    :::tip
+
+    * SB2040 поддерживает CAN
+    * Здесь доступны только прошивки CAN с скоростью 500K и 1M
+    :::
+
+## Вход в режим программирования
+
+    :::tip
+
+    Обведённым является `BOOT-кнопка`
+
+    :::
+
+    * При полном отключении питания, удерживайте BOOT-кнопку и подключите данные провода к материнской плате и вашему устройству
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/boot.webp').default} size="50%" align="center" />
+
+## Программирование прошивки
+    <Tabs>
+        <TabItem value="win" label="Инструкция по программированию на Windows" default>
+
+            * Фирменное ПО Katapult для SB2040 <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/firmware/BL/SB2040.zip">Щелкните для автоматической загрузки прошивки</Button>
+
+            <WIN />
+            
+        </TabItem>
+        <TabItem value="linux" label="Инструкция по программированию через ПК">
+
+            <Katapult />
+
+            4. Программирование прошивки
+
+            :::tip
+
+            Необходимо запрограммировать только одну из прошивок
+
+            :::
+
+            * Ниже приведена команда для записи прошивки с CAN-скоростью 500K
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040_CANBOOT_500K.uf2
+                ```
+                       
+            * Ниже приведена команда для записи прошивки с CAN-скоростью 1M
+                ```bash
+                sudo ~/klipper/lib/rp2040_flash/rp2040_flash ~/FLY_Katapult/BL/SB2040/FLY_SB2040_CANBOOT_1M.uf2
+                ```
+
+
+            5. Если появляется нижеследующее уведомление, то процесс программирования завершён успешно
+
+                <ImageView image={require('@site/docs/General/dfu-flash/img/flash3.webp').default} size="100%" align="center" />
+
+            :::tip
+
+            После завершения программирования необходимо полностью отключить питание материнской платы.
+
+            :::
+
+        </TabItem>
+    </Tabs>
+
+## Проверка стартапа прошивки
+
+    * Если прошивка успешно запущена, светодиоды начнут мигать
+        <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/led.webp').default} size="50%" align="center" />

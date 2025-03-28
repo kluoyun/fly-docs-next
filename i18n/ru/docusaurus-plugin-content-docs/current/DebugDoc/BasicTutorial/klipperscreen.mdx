@@ -1,0 +1,55 @@
+---
+sidebar_position: 7
+sidebar_label: Расширенные функции KlipperScreen
+---
+
+
+
+
+# Расширенные функции KlipperScreen
+
+## Способ отображения курсора мыши в KlipperScreen
+
+    * Откройте конфигурационный файл принтера `KlipperScreen.conf`. Этот файл автоматически создается после установки KlipperScreen. Если его нет, создайте его самостоятельно.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf.webp').default} size="100%" align="center" />
+    * Добавьте следующий код в верхнюю часть конфигурации
+    ```cfg
+    [main]
+    show_cursor: True
+    ```
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf-1.webp').default} size="80%" align="center" />
+    * Сохраните и перезагрузите систему
+
+## Удаленное подключение к другому компьютеру
+
+    * Откройте конфигурационный файл принтера `KlipperScreen.conf`. Этот файл автоматически создается после установки KlipperScreen. Если его нет, создайте его самостоятельно
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/ks/conf.webp').default} size="100%" align="center" />
+    * Добавьте следующий код в верхнюю часть конфигурации
+    * Можно изменить имя принтера на `VORON-300` и IP-адрес подключаемого устройства на `192.168.6.217`.
+    * Обратите внимание, что второй `[printer KlipperScreen]` предназначен для подключения к удаленному устройству. Используйте эту конфигурацию для отладки или выключения принтера
+    :::warning Важно
+
+    * Убедитесь, что все устройства находятся в одной локальной сети
+
+    :::
+
+    ```cfg
+    # Определите принтер и имя. Имя — это любое значение после первого слова printer
+    [printer VORON-300]
+    # Определите хост/порт moonraker, если они отличаются от 127.0.0.1 и 7125
+    moonraker_host: 192.168.6.217
+    # Порты 443 и 7130 будут использовать https/wss
+    moonraker_port: 7125
+    # Ключ API moonraker, если подключение не происходит с доверенного IP-адреса клиента
+    moonraker_api_key: False
+
+    # Определите принтер и имя. Имя — это любое значение после первого слова printer
+    [printer KlipperScreen]
+    # Определите хост/порт moonraker, если они отличаются от 127.0.0.1 и 7125
+    moonraker_host: 127.0.0.1
+    # Порты 443 и 7130 будут использовать https/wss
+    moonraker_port: 7125
+    # Ключ API moonraker, если подключение не происходит с доверенного IP-адреса клиента
+    moonraker_api_key: False
+
+    ```
