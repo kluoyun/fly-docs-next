@@ -15,9 +15,6 @@ jobs:
   build-test:
     name: "Build and Test"
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,3 +52,26 @@ jobs:
         run: pnpm install
       - name: Test build website
         run: pnpm run build
+  auto-merge:
+    name: Auto Merge PR
+    runs-on: ubuntu-latest
+    needs: [build-test]
+    if: needs.build-test.result == 'success'
+    steps:
+      - name: Auto merge PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo, number: pull_number } = context.issue;
+            try {
+              await github.rest.pulls.merge({
+                owner,
+                repo,
+                pull_number,
+                merge_method: 'merge'
+              });
+              console.log(`Successfully merged PR #${pull_number}`);
+            } catch (error) {
+              console.error(`Failed to merge PR #${pull_number}:`, error);
+            }
