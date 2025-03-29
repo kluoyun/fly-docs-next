@@ -4,27 +4,28 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import Translate, {translate} from '@docusaurus/Translate';
-import useBaseUrl, {useBaseUrlUtils} from '@docusaurus/useBaseUrl';
+import Translate, { translate } from '@docusaurus/Translate';
+import useBaseUrl, { useBaseUrlUtils } from '@docusaurus/useBaseUrl';
 
 import Heading from '@theme/Heading';
 import styles from './index.module.css';
 
 import Slider from "react-slick";
 
+import MzLogo from '@site/static/img/Mz.svg';
 
 function HeroBanner() {
   return (
     <div className={styles.hero}>
       <div className={styles.heroInner}>
         <Heading as="h1" className={styles.heroProjectTagline}>
-          <img
-            alt={translate({message: 'mellow logo'})}
-            className={styles.heroLogo}
-            src={useBaseUrl('/img/Mz.png')}
-            width="300"
-            height="300"
-          />
+          <div className={styles.heroLogo}>
+            <MzLogo
+              alt={translate({ message: 'mellow logo' })}
+              width="300"
+              height="300"
+            ></MzLogo>
+          </div>
           <span
             className={styles.heroTitleTextHtml}
             // eslint-disable-next-line react/no-danger
@@ -44,7 +45,7 @@ function HeroBanner() {
             <Translate>查看文档</Translate>
           </Link>
           <Link className="button button--info" to="https://3dmellow.com/">
-            <Translate>3D Mellow Shop</Translate>
+            <Translate>产品选型</Translate>
           </Link>
           <span className={styles.indexCtasGitHubButtonWrapper}>
             <iframe
@@ -86,9 +87,9 @@ function TopBanner() {
 
 export default function Home() {
   const {
-    siteConfig: {customFields, tagline},
+    siteConfig: { customFields, tagline },
   } = useDocusaurusContext();
-  const {description} = customFields;
+  const { description } = customFields;
   return (
     <Layout title={tagline} description={description}>
       <main>

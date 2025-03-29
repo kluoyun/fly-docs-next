@@ -62,7 +62,7 @@ const PdfView = (props) => {
     );
 
     return (
-        <Worker workerUrl="/js/pdfjs-dist@3.4.120/pdf.worker.min.js">
+        <Worker workerUrl="/js/pdfjs-dist@3.11.174/pdf.worker.min.js">
             <div
                 style={{
                     alignItems: 'center',
