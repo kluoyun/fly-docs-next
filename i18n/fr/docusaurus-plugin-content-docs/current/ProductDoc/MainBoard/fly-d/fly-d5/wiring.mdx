@@ -1,204 +1,37 @@
 ---
-sidebar_position: 4
-sidebar_label: Branchement de la carte mère
+position_sidebar: 4
+label_sidebar: Connexion de la carte mère
 ---
 
+import DRIVER_JUMPER from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/MainBoard/fly-d/_driver_jumper.mdx';
 
 
-# Branchement de la carte mère
+# Connexion de la carte mère
 
-## Schéma des interfaces
-
-### Explication des interfaces
+## Explication des interfaces
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/interface.webp').default} size="50%" align="center" />
 
 ----
 
-### Explication des broches
+## Explication des broches
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/pin.webp').default} size="50%" align="center" />
-
 ---
 
-## Raccordement de l'alimentation
+<DRIVER_JUMPER />
+---
 
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/power.webp').default} size="40%" align="center" />
+## Connexion de la carte mère
 
-----
-
-## Installation des drivers
-
-### Sauts de configuration du driver de la carte mère
-
-* **Mode STEP/DIR.** Dans ce mode, le réglage de la subdivision est effectué à l'aide d'un capuchon de saut, et le courant est ajusté via un potentiomètre. Le plus souvent, les pilotes A4988 et 8825 nécessitent de consulter le tableau de configuration fourni par le fabricant pour régler la subdivision via le capuchon de saut.
-* **Mode UART.** Les pilotes les plus courants utilisant ce mode sont : TMC2208, TMC2209, TMC2226, etc. Ces puces de pilotage peuvent communiquer en série UART avec le contrôleur principal, et la subdivision, le courant de fonctionnement et le mode silencieux du pilote peuvent être configurés en modifiant un fichier de configuration.
-* **Mode SPI.** Les pilotes les plus courants utilisant ce mode sont : TMC5160, TMC2130, TMC2240, etc. Il est également possible de configurer la subdivision, le courant de fonctionnement et le mode silencieux du pilote en modifiant un fichier de configuration.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/drive-dip.webp').default} size="40%" align="center" />
-
-----
-
-### Installation des drivers
-
-* Avant l'installation des drivers, une vérification appropriée doit être effectuée pour éviter tout dommage sur les drivers ou la carte mère.
-* **Driver FLY :** Si vous n'utilisez pas la fonctionnalité de retour à zéro sans limite, placez le commutateur de sélection en position 1 ; dans le cas contraire, si vous souhaitez utiliser cette fonctionnalité, placez-le en position ON.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/fly2209-dip.webp').default} size="40%" align="center" />
-
-    :::danger
-
-    * **Attention !!! Lors de l'installation du module driver, assurez-vous que la direction soit correcte, c'est-à-dire que la broche EN soit en haut à gauche, sinon cela peut endommager le driver et même la carte mère !!! Assurez-vous également de bien fixer un dissipateur thermique sur le driver !!!**
-
-    :::
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/drive-install.webp').default} size="40%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/sensorless.webp').default} size="40%" align="center" />
-
-----
-
-## Raccordement des moteurs pas à pas
-
-:::info
-* Quel que soit le fabricant, un moteur pas à pas biphasé se terminera toujours par 4 fils. Peu importe la couleur (noir, blanc, vert, jaune), il s'agit toujours de 4 fils. Par conséquent, il faut regrouper les fils en deux groupes, A et B.
-* Pour un moteur biphasé à 4 fils, il n'est pas nécessaire de savoir quel est le groupe A ou B, il suffit de déterminer un groupe et modifier la direction du moteur dans la configuration.
+:::attention Remarque
+En raison de la résolution trop élevée des images, il est impossible de les voir clairement en naviguant sur le site web. Veuillez placer le curseur de la souris sur la vue de câblage et cliquer avec le bouton droit pour enregistrer l'image sur le bureau et l'examiner !
 :::
 
-* Dans une imprimante 3D, le moteur pas à pas biphasé à 4 fils est le plus couramment utilisé. Son principe est illustré ci-dessous. Il existe deux méthodes pour identifier l'ordre des fils du moteur pas à pas :
-    * Connectez arbitrairement deux fils de phase ensemble, puis tournez manuellement l'axe du moteur. Si une résistance significative est ressentie, alors ces deux fils appartiennent au même groupe. Sinon, ils ne sont pas du même groupe et il faut tester d'autres fils de phase.
-    * Utilisez un multimètre réglé sur le mode continuité pour tester arbitrairement deux fils de phase du moteur pas à pas. Si les fils sont connectés, alors ils appartiennent au même groupe. Sinon, ils ne sont pas du même groupe et il faut tester d'autres fils de phase.
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/motor-sch.webp').default} size="50%" align="center" />
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/motor.webp').default} size="40%" align="center" />
-
-----
-
-## Raccordement des tubes chauffants
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/heater.webp').default} size="60%" align="center" />
-
-----
-
-## Raccordement du lit chauffant
-
-* **Lit chauffant AC :** Lors du raccordement du relais à semi-conducteur, assurez-vous de ne pas inverser l'entrée et la sortie.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bed-ac-1.webp').default} size="20%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bed-ac-2.webp').default} size="40%" align="center" />
-
-* **Lit chauffant DC :** Lors du branchement du MOS embarqué sur le lit chauffant DC, veillez à respecter la puissance maximale, car le courant maximal d'un lit chauffant DC ne doit pas dépasser 10 A. Si ce seuil est dépassé, il est recommandé d'utiliser un module externe MOS pour le lit chauffant, afin d'éviter des dommages irréversibles sur la carte mère.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bed-dc.webp').default} size="60%" align="center" />
-
-----
-
-## Raccordement des sondes de température
-
-### Introduction sur les sondes de température
-
-* La méthode de connexion des sondes de température est illustrée ci-dessous. Le type de résistance thermique doit être consulté auprès du vendeur.
-* Si vous avez acheté un modèle FLY (comme illustré ci-dessous), configurez sensor_type en tant que : **ATC Semitec 104GT-2**
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-1.webp').default} size="30%" align="center" />
-
-* Si vous utilisez une NTC 100K standard (comme illustré ci-dessous), configurez sensor_type en tant que : **Generic 3950**
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-2.webp').default} size="40%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-3.webp').default} size="40%" align="center" />
-
-----
-
-### Raccordement des sondes de température sur la carte mère
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-4.webp').default} size="40%" align="center" />
-
-----
-
-## Raccordement des ventilateurs
-
-* **Raccordement des ventilateurs**
-
-    :::tip
-
-    Les interfaces encadrées en rouge dans l'image ci-dessous permettent de contrôler un ventilateur à double sortie via une seule broche, c'est-à-dire qu'une broche contrôle deux ventilateurs.
-
-    :::
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/fan.webp').default} size="30%" align="center" />
-
-----
-
-## Raccordement des interrupteurs limites
-
-:::warning Attention
-Ne pas utiliser d'interrupteurs limites triphasés achetés en kit. Ce type d'interrupteur pourrait causer un court-circuit sur la carte mère et endommager celle-ci !!! Veuillez vous conformer strictement à la méthode de raccordement indiquée dans le schéma !!!
+:::danger Avertissement
+Ne pas utiliser les interrupteurs de limite d'origine achetés en tant que produits finis à trois fils, car ils peuvent provoquer un court-circuit de la carte mère et endommager celle-ci !!! Veuillez connecter les câbles conformément exactement aux méthodes indiquées dans la vue de câblage !!!
 :::
 
-* Un interrupteur limite peut être de type NO (ouvert normalement) ou NC (fermé normalement). Généralement, dans une imprimante 3D, il est recommandé d'utiliser **NC (fermé normalement)**, afin que le système détecte rapidement une erreur en cas de problème dans le circuit des interrupteurs limites, évitant ainsi des collisions inutiles qui pourraient endommager l'imprimante.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/endstop.webp').default} size="40%" align="center" />
-
-----
-
-## Raccordement des capteurs de niveau
-
-### Raccordement des capteurs de proximité métalliques
-
-* La version officielle de VORON recommande d'utiliser le capteur Omron TL-Q5MC (précédemment, la version officielle recommandait PL08N, mais leurs principes sont identiques, seul la distance de détection diffère) pour le nivellement du lit chaud. La méthode de raccordement est illustrée ci-dessous.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/pl08.webp').default} size="40%" align="center" />
-
-----
-
-### Raccordement de BL-Touch
-
-* BL-touch a cinq fils, trois pour la première paire, responsables de l'alimentation du capteur et du déploiement du stylet, la deuxième paire pour la masse et la ligne de signal, émettant un signal de fin de course. Lors du raccordement de BL-touch, vérifiez attentivement l'ordre des fils, car une mauvaise connexion pourrait endommager définitivement le capteur et la carte mère !!! La méthode de raccordement est illustrée ci-dessous.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bltouch.webp').default} size="40%" align="center" />
-
-----
-
-### Raccordement de Klicky
-
-* Klicky est un capteur de nivellement tiers pouvant être fabriqué à faible coût chez soi avec des performances stables et une bonne rentabilité, recommandé pour une utilisation. La méthode de raccordement est illustrée ci-dessous.
-* Adresse du projet : [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Adresse du projet, cliquez pour accéder")
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/klicky.webp').default} size="40%" align="center" />
-
-----
-
-### Raccordement de Voron Tap
-
-* Tap est un z-probe basé sur la buse, compatible avec les conceptions V2 et Trident. L'ensemble de l'outil mobile déclenche l'interrupteur optique, offrant une précision supérieure aux interrupteurs limites traditionnels et pouvant utiliser pratiquement toutes les plateformes d'impression disponibles sur le marché.
-
-    :::warning
-
-    Tap de Voron n'est pas recommandé pour être connecté à **24V**, certaines versions utilisant **24V** ont une probabilité non négligeable de brûler le capteur Tap, ce n'est pas un problème du produit Fly, mais une lacune de conception de Voron Tap, merci de prendre note !!!
-
-    :::
-
-    :::danger
-
-    Attention : Ne connectez pas 5V et GND à l'envers, sinon cela pourrait endommager le capteur Tap et même la carte mère !!!
-
-    :::
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/tap.webp').default} size="40%" align="center" />
-
-----
-
-## Raccordement du LCD FLY-Mini12864
-
-* L'image ci-dessous montre la méthode de raccordement du LCD FLY-mini12864. Pour les écrans d'autres fabricants, veuillez consulter les fabricants concernés. Si l'écran Mini12864 est inversé ou mal connecté, cela pourrait empêcher la liaison entre la machine supérieure et le MCU. Si vous pouvez normalement connecter la machine supérieure au MCU avant d'utiliser l'écran Mini12864, mais que cela ne fonctionne plus après l'utilisation de Mini12864, essayez de débrancher les connexions de l'écran Mini12864.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/mini12864.webp').default} size="30%" align="center" />
-
-----
-
-## Connexion à la machine supérieure
-
-* La carte mère est connectée à la machine supérieure via l'interface TypeC USB, ou peut également être connectée via le port série à la machine supérieure. Seule la première méthode est expliquée ici.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/connect-host.webp').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/d5_wiring.webp').default} size="80%" align="center" />
 
 ----
