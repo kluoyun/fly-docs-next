@@ -1,205 +1,37 @@
 ---
 sidebar_position: 4
-sidebar_label: Mainboard Wiring
+sidebar_label: Main Board Wiring
 ---
 
+import DRIVER_JUMPER from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/MainBoard/fly-d/_driver_jumper.mdx';
 
 
-# Mainboard Wiring
+# Main Board Wiring
 
-## Interface Diagram
-
-### Interface Description
+## Interface Description
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/interface.webp').default} size="50%" align="center" />
 
 ----
 
-### Pin Description
+## Pin Description
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/pin.webp').default} size="50%" align="center" />
-
 ---
 
-## Power Wiring
+<DRIVER_JUMPER />
+---
 
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/power.webp').default} size="40%" align="center" />
+## Main Board Wiring
 
-----
-
-## Driver Installation
-
-### Mainboard Driver Jumper
-
-* **STEP/DIR Mode.** In this mode, subdivision is set by using a jumper cap and current is adjusted by a potentiometer. The most common are A4988, 8825 drivers which require referring to the manufacturer's provided subdivision table and setting the subdivision via jumper caps.
-* **UART Mode.** The most common drivers using this mode are: TMC2208, TMC2209, TMC2226, etc. These driver chips can communicate with the main controller via UART asynchronous serial communication, and the driver's subdivision, operating current, silent mode, etc., can be set by modifying the configuration file.
-* **SPI Mode.** The most common drivers using this mode are: TMC5160, TMC2130, TMC2240, etc. The driver's subdivision, operating current, silent mode, etc., can also be set by modifying the configuration file.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/drive-dip.webp').default} size="40%" align="center" />
-
-----
-
-### Driver Installation
-
-* The corresponding checks should be performed before installing the driver to avoid damaging the driver or the motherboard.
-* **FLY Driver:** If the zeroing without limit switch function is not used, set the DIP switch to position 1; conversely, if the zeroing without limit switch function is used, set the DIP switch to ON.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/fly2209-dip.webp').default} size="40%" align="center" />
-
-    :::danger
-
-    * **Attention!!! When installing the driver module, ensure the correct insertion direction, i.e., EN pin at the top left corner, otherwise it may damage the driver or even the motherboard!!! Ensure that heat sinks are applied to the drivers!!!
-
-    :::
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/drive-install.webp').default} size="40%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/sensorless.webp').default} size="40%" align="center" />
-
-----
-
-## Stepper Motor Wiring
-
-:::info
-* Regardless of the manufacturer, the final appearance of two-phase stepper motors corresponds to four wires. Regardless of color, whether black, white, green, yellow, etc., they correspond to four wires. Therefore, we need to group the wires into two groups: A and B.
-* For two-phase four-wire stepper motors, there is no need to know which is Group A or Group B; mainly determining one group is sufficient, and the motor direction can be modified in the configuration.
+:::warning Note
+Due to the high resolution of the images, it cannot be clearly viewed when browsing on the web page. Please place the mouse cursor over the wiring diagram, right-click, and save the image to the desktop to view!
 :::
-
-* In 3D printers, the most commonly used is the two-phase four-wire stepper motor, and its principle is as shown in the figure. There are two methods to identify the motor wire sequence:
-    * Connect any two phase wires arbitrarily, and if you feel significant resistance when manually turning the motor shaft, then these two phase wires belong to the same group. Conversely, they do not belong to the same group, and other phase wires need to be tested.
-    * Use a multimeter set to continuity mode to test any two phase wires of the stepper motor. If they are connected, they belong to the same group; conversely, they do not belong to the same group, and other phase wires need to be tested.
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/motor-sch.webp').default} size="50%" align="center" />
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/motor.webp').default} size="40%" align="center" />
-
-----
-
-## Heater Wire Connection
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/heater.webp').default} size="60%" align="center" />
-
-----
-
-## Bed Wiring
-
-* **AC Bed:** When wiring the solid-state relay, pay attention to not connecting the input and output incorrectly.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bed-ac-1.webp').default} size="20%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bed-ac-2.webp').default} size="40%" align="center" />
-
-* **DC Bed:** When connecting the onboard MOS to the DC bed, note the power usage. The maximum current for the DC bed cannot exceed 10A. If it exceeds 10A, it is recommended to use an external MOS module for the bed to avoid irreversible damage to the motherboard.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bed-dc.webp').default} size="60%" align="center" />
-
-----
-
-## Thermistor Wiring
-
-### Thermistor Type Introduction
-
-* The wiring method for thermistors is as shown below. Please consult the purchasing merchant for the type of thermistor.
-
-* If purchased from fly (as shown below), please configure sensor_type as: **ATC Semitec 104GT-2**
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-1.webp').default} size="30%" align="center" />
-
-* If it is a conventional NTC 100K (as shown below), please configure sensor_type as: **Generic 3950**
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-2.webp').default} size="40%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-3.webp').default} size="40%" align="center" />
-
-----
-
-### Mainboard Thermistor Wiring
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/ntc-4.webp').default} size="40%" align="center" />
-
-----
-
-## Fan Wiring
-
-* **Fan Wiring**
-
-    :::tip
-
-    The interface outlined in red in the diagram controls the same fan through both upper and lower connectors, i.e., one-to-two control.
-
-    :::
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/fan.webp').default} size="30%" align="center" />
-
-----
-
-## Limit Switch Wiring
 
 :::warning Warning
-Do not use the purchased three-wire limit switch. This type of limit switch may cause the motherboard to short circuit and damage the motherboard!!! Please follow the wiring method shown in the diagram!!!
+Do not use the purchased finished **three-wire limit switch**, as this type of limit switch may cause the **main board short circuit** and **damage the main board**!!! Please connect the wires strictly according to the wiring method shown in the wiring diagram!!!
 :::
 
-* Limit switches have normally open (NO) and normally closed (NC) types. Generally, in 3D printers, it is recommended to use **normally closed (NC)**, so that the system will promptly report errors when there is a problem with the limit switch circuit, avoiding unnecessary collisions and printer damage.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/endstop.webp').default} size="40%" align="center" />
-
-----
-
-## Leveling Sensor Wiring
-
-### Metal Proximity Switch Wiring
-
-* VORON officially recommends using the Omron Omron TL-Q5MC sensor (previously recommended PL08N, both work on the same principle but have different detection distances) for hotbed leveling. The wiring method is as shown below.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/pl08.webp').default} size="40%" align="center" />
-
-----
-
-### BL-Touch Wiring
-
-* BL-Touch has five wires, three of which form the first group for powering the sensor and retracting the probe, while the second group consists of ground and signal lines, outputting limit signals. Please carefully verify the wire sequence when wiring BL-Touch. Incorrect wiring may permanently damage the sensor and motherboard!!! The wiring method is as shown below.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/bltouch.webp').default} size="40%" align="center" />
-
-----
-
-### Klicky Wiring
-
-* Klicky is a third-party leveling sensor that can be made at home at very low cost with stable performance and high cost-effectiveness, and is recommended for use. The wiring method is as shown below.
-* Project Address: [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Project Address, click to jump")
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/klicky.webp').default} size="40%" align="center" />
-
-----
-
-### Voron Tap Wiring
-
-* Tap is a z-probe based on the nozzle, suitable for V2 and Trident printer designs. The entire toolhead moves to trigger the optical switch, providing better precision than conventional limit switches and can be used with almost all print platforms.
-
-    :::warning
-
-    Voron Tap is not recommended to connect to **24V**, as some versions may cause the Tap sensor to burn out due to **24V**. This is not a problem with the Fly product, but a design defect of Voron Tap, please be aware!!!
-
-    :::
-
-    :::danger
-
-    Note: Do not reverse the 5V and GND, otherwise it may damage the Tap sensor or even the motherboard!!!
-
-    :::
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/tap.webp').default} size="40%" align="center" />
-
-----
-
-## FLY-Mini12864 LCD Wiring
-
-* The following diagram shows the wiring method for the FLY mini12864. Please consult the corresponding manufacturer for screens from other manufacturers. Reversing or miswiring the Mini12864 screen may cause the host computer to fail to connect to the MCU. If the Mini12864 screen was previously working fine with the motherboard's MCU but fails to connect after being used, try removing the Mini12864 wiring!!!
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/mini12864.webp').default} size="30%" align="center" />
-
-----
-
-## Connection to Host Computer
-
-* The motherboard connects to the host computer via a Type-C interface or can also be connected via a serial port. Only the former is introduced here.
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/wiring/connect-host.webp').default} size="40%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/img/d5_wiring.webp').default} size="80%" align="center" />
 
 ----
