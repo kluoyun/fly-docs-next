@@ -285,12 +285,12 @@ const config = {
         ],
         logo: {
           alt: 'Mellow Logo',
-          src: '/img/logo.png',
-          width: 64,
-          height: 64,
+          src: '/img/logo-mellow.svg',
+          width: 80,
+          height: 80,
           href: 'https://mellow.klipper.cn',
         },
-        copyright: `Copyright © ${new Date().getFullYear()} 3D Mellow, Inc. All rights reserved</br><a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备2022093047号-1</a>`,
+        copyright: `Copyright © ${new Date().getFullYear()} 3D Mellow, Inc. All rights reserved<br/><a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备2022093047号-1</a>`,
       },
       announcementBar: {
         id: `announcementBar-next`,
