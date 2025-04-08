@@ -1,47 +1,49 @@
 import WIN32 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
 
-# Préparation du USB pour le M2WE
+# Préparer l'USB pour graver sur M2WE
 
 ### Préparation
 
-* Installez d'abord le logiciel `Win32DiskImager`
-* Il est déconseillé d'utiliser `balenaetcher` pour l'impression de système
-* Décompressez le système, le fichier décompressé se terminera par `.img`
-* Téléchargez le [pilote M2WE BOOT](/docs/ResDownload/auxiliary_software/ "cliquez pour accéder")
+    * Installez d'abord le logiciel `Win32DiskImager` 
+    <Button variant="contained" disableElevation href="https://mellow.klipper.cn/docs/ResDownload/auxiliary_software/">Outil de formatage</Button>
+    * Décompressez le système, le fichier décompressé aura une extension `.img`
+    * Il est déconseillé d'utiliser `balenaetcher` ou `Raspberry Pi` pour graver le système
+    * Si le M2WE contient des données, veillez à faire une sauvegarde
+       * Téléchargez le [pilote M2WE BOOT](/docs/ResDownload/auxiliary_software/ "cliquez pour accéder")
 
-### Installation des pilotes
+### Installation du pilote
 
-* Ouvrez le logiciel `Zadig`
-* Sauf pour le premier `Zadig`, qui ne nécessite pas d'installation et peut être exécuté directement, les deux autres doivent être installés. Le processus d'installation consiste simplement à cliquer sur `Suivant` ou `Next`
-* Ouvrez `Zadig`, cochez `List All Devices` dans le menu déroulant `Options` en haut
+    * Ouvrez le logiciel `Zadig`
+    * Sauf pour le premier `Zadig`, qui peut être exécuté directement sans installation, les deux autres nécessitent une installation. Passez toutes les étapes en cliquant sur `Suivant` ou `Next`.
+    * Ouvrez `Zadig`, dans la barre de menu en haut, cochez `List All Devices`
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
 
 :::tip
-Assurez-vous que l'appareil est connecté au PC lorsque le bouton est appuyé.
+Assurez-vous que le périphérique est connecté à l'ordinateur pendant que vous appuyez sur le bouton.
 :::
 
-    * Installez bien le M2WE et maintenez la touche BOOT enfoncée tout en branchant le câble USB double tête sur le PC
+    * Connectez le M2WE après avoir installé correctement, en maintenant la touche BOOT et en branchant le câble USB double tête sur l'ordinateur
 
     <ImageView image={require('@site/docs/General/fly-os/img/usb-boot.webp').default} size="80%" align="center" />
             <Tabs>
                 <TabItem value="c8" label="FLY-C8" default>
-                    * Port FLY-C8
+                    * Port de FLY-C8
 
                     <ImageView image={require('@site/docs/General/fly-os/img/c8-boot.webp').default} size="80%" align="center" />
                 </TabItem>
                 <TabItem value="piv2" label="FLY-Pi v2" default>
-                    * Port FLY-Pi v2
+                    * Port de FLY-Pi v2
 
                     <ImageView image={require('@site/docs/General/fly-os/img/piv2-boot.webp').default} size="80%" align="center" />
                 </TabItem>
                 <TabItem value="piv1" label="FLY-Pi(π)" default>
-                    * Port FLY-Pi
+                    * Port de FLY-Pi
 
                     <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.webp').default} size="80%" align="center" />
                 </TabItem>
                 <TabItem value="gemini" label="FLY-Gemini" default>
-                    * Port FLY-Gemini
+                    * Port de FLY-Gemini
 
                     <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.webp').default} size="80%" align="center" />
 
@@ -52,27 +54,31 @@ Assurez-vous que l'appareil est connecté au PC lorsque le bouton est appuyé.
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="left" />
 
-    * Si tout se passe bien, un nouveau `Unknown Device #x` ou `USB Device(VID_1f3a_PID_efe8)` apparaîtra dans zadig, sélectionnez-le
+    * Si tout se passe bien, un `Device Inconnu #x` ou `USB Device(VID_1f3a_PID_efe8)` supplémentaire apparaîtra dans zadig, sélectionnez-le
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="left" />
 
-    * Après avoir sélectionné l'appareil, vérifiez que l'ID USB correspond à celui de l'image ci-dessus. Si ce n'est pas le cas, choisissez un autre appareil
-    * La deuxième zone de l'image ci-dessus ne doit sélectionner que `WinUSB(vxxxxxxx)`, peu importe la version
-    * Cliquez sur `Install Driver` pour installer le pilote
+    * Après avoir sélectionné le périphérique, vérifiez que l'ID USB correspond à celui de l'image ci-dessus. Si ce n'est pas le cas, choisissez un autre périphérique
+    * Dans la deuxième zone de l'image, il n'y a que la version `WinUSB(vxxxxxxx)` disponible, le numéro de version n'a pas d'importance
+    * Cliquez sur `Installer le pilote` pour installer le pilote
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="left" />
 
-    * L'installation du pilote USB est réussie (le pilote n'a besoin d'être installé qu'une seule fois, si vous devez graver à nouveau plus tard, il n'est pas nécessaire de réinstaller le pilote)
+    * L'installation du pilote USB est réussie (le pilote ne doit être installé qu'une seule fois, si vous devez graver à nouveau par la suite, il n'est pas nécessaire de réinstaller le pilote)
     * Ouvrez le FLY-BOOT installé, cliquez sur `Vérifier le périphérique`
-    * Si toutes les étapes précédentes ont été effectuées correctement, un message indiquant la découverte d'un périphérique disponible s'affichera
-    * Cliquez sur `Démarrer BOOT`, si tout se passe bien, un message indiquant que le `BOOT` a été activé avec succès s'affichera
+    * Si les étapes précédentes ont été effectuées correctement, un message indiquant la découverte d'un périphérique utilisable apparaîtra
+    * Cliquez sur `Démarrer BOOT`, si tout fonctionne correctement, un message indiquant que le BOOT a été activé avec succès apparaîtra
 
 ### Formattage de M2WE
 
-    * Utilisez le logiciel `TFFormatter.exe` pour formater le disque `BOOT`
+    * Utilisez le logiciel `TFFormatter.exe` pour formatter le disque BOOT
 
     <ImageView image={require('@site/docs/General/fly-os/img/sdformatter.webp').default} size="80%" align="left" />
 
-    * Ou utilisez la gestion de disque intégrée de Windows pour supprimer la partition, puis recréez-la après la suppression
-    * Vous pouvez maintenant ouvrir l'Explorateur de fichiers, un lecteur USB de 14,5 Go apparaîtra (un eMMC de 16 Go affiche une taille de 14,5 Go)
-    * Vous pouvez donc utiliser Win32diskimager pour graver l'image du système, en choisissant le lecteur correspondant au lecteur USB de 14,5 Go
+    * Ou utilisez la gestion des disques intégrée de Windows pour supprimer la partition, puis recréez-la après suppression
+    * Vous pouvez maintenant ouvrir l'Explorateur de fichiers, il y aura un lecteur USB de 14,5 Go (une eMMC de 16 Go affiche une taille de 14,5 Go)
+    * Cela permet de graver le système directement via Win32diskimager, en sélectionnant ce lecteur USB de 14,5 Go
+
+### Gravure vers M2WE
+
+<WIN32 />

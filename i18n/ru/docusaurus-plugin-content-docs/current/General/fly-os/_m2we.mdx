@@ -1,82 +1,84 @@
-import WIN32 from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
+Импорт WIN32 из '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
 
 # Через подготовку USB запись на M2WE
 
-## Подготовительные работы
+## Подготовка
 
-    * Сначала установите программное обеспечение `Win32DiskImager`
-    * Рекомендуется не использовать `balenaetcher` для записи системы
-    * Распакуйте систему, после распаковки файлы будут иметь расширение `.img`
-    * Скачайте [драйвер M2WE BOOT](/docs/ResDownload/auxiliary_software/ "Щелкните для перехода")
+* Сначала установите программное обеспечение `Win32DiskImager`
+    <Button variant="contained" disableElevation href="https://mellow.klipper.cn/docs/ResDownload/auxiliary_software/">Инструмент для форматирования</Button>
+* Распакуйте систему, распакованный файл должен иметь расширение `.img`
+* Не рекомендуется использовать `balenaetcher` или `Raspberry Pi` для записи системы
+* Если у вас есть данные на M2WE, сделайте резервную копию
+   * Скачать [драйвер M2WE BOOT](/docs/ResDownload/auxiliary_software/ "Щелкните, чтобы перейти") 
 
-## Установка драйверов
+## Установка драйвера
 
-    * Запустите программу `Zadig`
-    * За исключением первого `Zadig`, который можно запустить без установки, остальные требуют установки. В процессе установки все время нажимайте `Далее` или `Next`
-    * Откройте `Zadig`, в верхнем меню выберите `Options` и отметьте `List All Devices`
+* Запустите программу `Zadig`
+* За исключением первого `Zadig`, который не требует установки и может быть запущен сразу, остальные необходимы для установки. В процессе установки все действия выполняются по кнопке `Далее` или `Next`
+* Запустите `Zadig`, в верхнем меню выберите `Options` и поставьте галочку напротив `List All Devices`
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
 
 :::tip
-Убедитесь, что устройство подключено к компьютеру в状态下 кнопки нажата
+Убедитесь, что устройство подключено к компьютеру при нажатой клавише BOOT
 :::
 
-    * Подключите установленное устройство M2WE, удерживая кнопку BOOT и подключите двусторонний USB к компьютеру
+* Подключите установленный M2WE, удерживая кнопку BOOT и подключив двунаправленный USB к компьютеру
 
     <ImageView image={require('@site/docs/General/fly-os/img/usb-boot.webp').default} size="80%" align="center" />
             <Tabs>
                 <TabItem value="c8" label="FLY-C8" default>
-                    * Порт FLY-C8
+                    * Порты FLY-C8
 
                     <ImageView image={require('@site/docs/General/fly-os/img/c8-boot.webp').default} size="80%" align="center" />
                 </TabItem>
                 <TabItem value="piv2" label="FLY-Pi v2" default>
-                    * Порт FLY-Pi v2
+                    * Порты FLY-Pi v2
 
                     <ImageView image={require('@site/docs/General/fly-os/img/piv2-boot.webp').default} size="80%" align="center" />
                 </TabItem>
                 <TabItem value="piv1" label="FLY-Pi(π)" default>
-                    * Порт FLY-Pi
+                    * Порты FLY-Pi
 
                     <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.webp').default} size="80%" align="center" />
                 </TabItem>
                 <TabItem value="gemini" label="FLY-Gemini" default>
-                    * Порт FLY-Gemini
+                    * Порты FLY-Gemini
 
                     <ImageView image={require('@site/docs/General/fly-os/img/pi-boot.webp').default} size="80%" align="center" />
 
                 </TabItem>
             </Tabs>
 
-    * Запустите zadig
+* Запустите zadig
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="left" />
 
-    * Если всё сделано правильно, в zadig появится новый элемент `Неизвестное устройство #x` или `USB Device(VID_1f3a_PID_efe8)`, выберите его
+* Если всё сделано правильно, в zadig появится дополнительное устройство `Неизвестное устройство #x` или `USB Device(VID_1f3a_PID_efe8)`, выберите его
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="left" />
 
-    * После выбора устройства проверьте, совпадает ли USB ID с приведённым на изображении выше. Если нет, выберите другое устройство
-    * Во втором месте на изображении можно выбрать только `WinUSB(vxxxxxxx)`, версия не важна
-    * Нажмите `Install Driver` для установки драйвера
+* После выбора устройства проверьте, совпадает ли USB ID с изображением выше. Если нет, повторите выбор другого устройства
+* На втором месте можно выбрать только `WinUSB(vxxxxxxx)`, версия无所谓
+* Нажмите `Install Driver` для установки драйвера
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="left" />
 
-    * Успешная установка USB драйвера (драйвер устанавливается один раз, при последующей записи системы драйвер устанавливать не нужно)
-    * Запустите установленную программу FLY-BOOT, нажмите `Проверить устройство`
-    * Если предыдущие шаги выполнены правильно, система сообщит о доступном устройстве
-    * Нажмите `Запустить BOOT`, если всё нормально, будет показано успешное включение BOOT
+* Успешная установка драйвера USB (драйвер устанавливается один раз, если в будущем снова будете делать запись, драйвер устанавливать не нужно)
+* Откройте установленный FLY-BOOT и нажмите `Проверить устройство`
+* Если предыдущие шаги выполнены корректно, появится сообщение о том, что доступное устройство обнаружено
+* Нажмите кнопку `Запустить BOOT`, если всё нормально, появится сообщение об успешном включении BOOT
 
 ## Форматирование M2WE
 
-    * Используйте программное обеспечение `TFFormatter.exe` для форматирования диска BOOT
+* Используйте программу `TFFormatter.exe` для форматирования диска BOOT
 
     <ImageView image={require('@site/docs/General/fly-os/img/sdformatter.webp').default} size="80%" align="left" />
 
-    * Или используйте стандартную функцию Windows для удаления разделов, после удаления разделов создайте их заново
-    * Теперь можно открыть проводник, там появится флешка размером 14.5 ГБ (16 ГБ eMMC отображаются как 14.5 ГБ)
-    * Таким образом можно использовать Win32diskimager для записи системного образа, указав диск букву этого флеш-накопителя размером 14.5 ГБ
+* Или используйте встроенные средства управления дисками Windows для удаления разделов, после чего создайте новый раздел
+* Теперь можно открыть проводник, появится флешка размером 14.5 ГБ (16 ГБ eMMC показывает размер как 14.5 ГБ)
+* Таким образом можно использовать Win32diskimager для записи системного образа, выбирая букву диска этой 14.5 ГБ флешки
 
-## Запись на M2WE
+### Запись на M2WE
 
 <WIN32 />
