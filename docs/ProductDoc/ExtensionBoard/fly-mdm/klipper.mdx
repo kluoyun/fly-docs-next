@@ -1,0 +1,55 @@
+---
+sidebar_position: 4
+sidebar_label: Klipper配置
+---
+
+# Klipper配置
+
+## 断料功能配置
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # 替换成自己使用的引脚, 连接到断料检测的引脚
+pause_on_runout: True
+# 当设置为 "True "时，会在检测到耗尽后立即暂停打印机。
+# 请注意, 如果 pause_on_runout 为 False 并且没有定义。
+# runout_gcode的话, 耗尽检测将被禁用。
+# 默认为 True。
+
+runout_gcode:
+    PAUSE
+    M118 断料
+# insert_gcode:
+event_delay: 1.0
+# 事件之间的最小延迟时间（秒）。
+# 在这个时间段内触发的事件将被默许忽略。
+# 默认为3秒。
+
+pause_delay: 0.5
+# 暂停命令和执行 runout_gcode 之间的延迟时间, 单位是秒。
+# 如果在OctoPrint的情况下，增加这个延迟可能改善暂
+# 停的可靠性。如果OctoPrint表现出奇怪的暂停行为，
+# 考虑增加这个延迟。
+# 默认为0.5秒。
+
+```
+
+## 堵料功能配置
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # 替换成自己使用的引脚, 连接到堵料检测的引脚
+detection_length: 3.5 # 触发传感器 switch_pin 引脚状态变化的最小距离。
+extruder: extruder
+#   该传感器相关联的挤出机。
+#   必须提供此参数。
+    
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 堵料
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```
