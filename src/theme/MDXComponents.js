@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 
 import ImageView from '@site/src/components/ImageView';
 import PdfView from '@site/src/components/PdfView';
+import AsciiNema from '@site/src/components/AsciiNema';
 
 export default {
     // Re-use the default mapping
@@ -19,4 +20,6 @@ export default {
 
     ImageView,
     PdfView,
+
+    AsciiNema,
 };
