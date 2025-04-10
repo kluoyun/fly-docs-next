@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkklipper_docs=self.webpackChunkklipper_docs||[]).push([["72423"],{69108:function(e,c,r){r.r(c),r.d(c,{DocSearchModal:function(){return n.He}});var n=r(39327)}}]);
