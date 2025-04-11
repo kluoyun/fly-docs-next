@@ -1,0 +1,59 @@
+---
+sidebar_position: 7
+sidebar_label: 리턴 시간 초과 문제
+---
+
+# Klipper 리턴 시간 초과 문제
+
+## 경고
+
+:::warning 이 경고는 현재 페이지의 모든 명령에 적용됩니다.
+- 명령을 실행한 후 `sed: can't read ~/klipper/klippy/mcu.py: No such file or directory`와 같은 오류가 발생하는 경우
+- 또는 파일을 찾을 수 없는 유사한 오류(`No such file or directory`)가 나타나는 경우
+- Klipper가 설치되어 있는지 확인하고, Klipper를 설치한 사용자가 로그인했는지 확인하세요.
+:::
+
+## 오류 설명
+
+- 오류 메시지: `Error during homing z: Communication timeout during homing`
+
+- 리턴 시간 초과问题是 Z축 리턴 과정에서 주로 발생합니다 (X, Y도 발생할 수 있지만 확률이 낮습니다).
+- Klipper는 실시간성을 매우 엄격히 요구하며, 다중 MCU 리턴 과정에서 Klipper가 `0.025초` 내에 올바른 응답을 받지 못하면 리턴 시간 초과로 간주합니다.
+
+## 해결 방법
+
+- Klipper 코드의 `0.025초`는 너무 엄격하므로 이를 적절히 늘려서 리턴 시간 초과 문제를 해결할 수 있습니다.
+- 아래 명령어를 실행하여 Klipper 코드의 시간 초과 시간을 `0.05초`로 수정할 수 있습니다.
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.05/' ~/klipper/klippy/mcu.py
+    ```
+    - 아무런 출력이 없으면 수정이 성공적으로 완료된 것입니다.
+
+- 수정 후 Klipper 서비스를 다시 시작해야 변경사항이 적용됩니다.
+
+    ```bash
+    sudo systemctl restart klipper
+    ```
+    - 아무런 출력이 없으면 재시작이 성공적으로 완료된 것입니다.
+
+## 기타 명령어
+
+- Klipper 코드의 시간 초과 시간을 확인하려면 아래 명령어를 실행하세요.
+
+    ```bash
+    grep "TRSYNC_TIMEOUT =" ~/klipper/klippy/mcu.py
+    ```
+    - 일반적으로 다음 내용이 출력됩니다 (만약 시간 초과 시간을 수정했다면 수정된 시간이 출력됩니다).
+
+        ```bash
+        TRSYNC_TIMEOUT = 0.025
+        ```
+
+- 수정된 코드를 원래대로 복원하려면 아래 명령어를 실행하세요.
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.025/' ~/klipper/klippy/mcu.py
+    ```
+    - 아무런 출력이 없으면 복원이 성공적으로 완료된 것입니다.
+

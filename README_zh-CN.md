@@ -196,14 +196,5 @@
 ## 多语言翻译支持情况
 
 > [!TIP]
-> 本站除中文和日文外大部分内容均由 AI 生成，请注意代码和配置文件的正确性。
-
-| **CODE** | **Language**       | _Status_                                                                                                                          | **Maintainer**                                                                                                    |
-| :------: | :----------------- | :-------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- |
-|   ALL    | **Entire project** | [![gitlocalized ](https://gitlocalize.com/repo/9688/whole_project/badge.svg)](https://gitlocalize.com/repo/9688?utm_source=badge) | ALL                                                                                                               |
-|    EN    | **English**        | [![gitlocalized ](https://gitlocalize.com/repo/9688/en/badge.svg)](https://gitlocalize.com/repo/9688/en?utm_source=badge)         | AI                                                                                                                |
-|    JA    | **日本語**         | [![gitlocalized ](https://gitlocalize.com/repo/9688/ja/badge.svg)](https://gitlocalize.com/repo/9688/ja?utm_source=badge)         | <a href="https://github.com/Psych0h3ad"><img src="https://github.com/Psych0h3ad.png" width="20" height="20"/></a> |
-|    FR    | **Français**       | [![gitlocalized ](https://gitlocalize.com/repo/9688/fr/badge.svg)](https://gitlocalize.com/repo/9688/fr?utm_source=badge)         |                                                                                                                   |
-|    DE    | **Deutsch**        | [![gitlocalized ](https://gitlocalize.com/repo/9688/de/badge.svg)](https://gitlocalize.com/repo/9688/de?utm_source=badge)         |                                                                                                                   |
-|    RU    | **Русский**        | [![gitlocalized ](https://gitlocalize.com/repo/9688/ru/badge.svg)](https://gitlocalize.com/repo/9688/ru?utm_source=badge)         |                                                                                                                   |
-|    KO    | **한국어**         | [![gitlocalized ](https://gitlocalize.com/repo/9688/ko/badge.svg)](https://gitlocalize.com/repo/9688/ko?utm_source=badge)         |                                                                                                                   |
+> - 本站除中文外其他语言的翻译内容均由AI生成，请注意代码和配置文件的正确性。
+> - 建议切换到中文查看示例配置部分。感谢您的理解。

@@ -267,6 +267,14 @@ const config = {
                 label: 'Facebook',
                 href: 'https://www.facebook.com/groups/395979321769632',
               },
+              {
+                label: 'Bilibili',
+                href: 'https://space.bilibili.com/702717862',
+              },
+              {
+                label: 'YouTube',
+                href: 'https://www.youtube.com/@3DMELLOWPrinter',
+              },
             ],
           },
           {

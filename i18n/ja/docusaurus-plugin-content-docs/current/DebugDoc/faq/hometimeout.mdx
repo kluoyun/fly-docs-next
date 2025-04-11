@@ -1,0 +1,59 @@
+---
+sidebar_position: 7
+sidebar_label: 正確位置復帰タイムアウト問題
+---
+
+# Klipper正確位置復帰タイムアウト問題
+
+## ヒント
+
+:::warning 本ページのすべてのコマンドに適用されるヒント
+- コマンドを実行した後、エラー「`sed: can't read ~/klipper/klippy/mcu.py: No such file or directory`」のようなファイルが見つからないエラーが出る場合
+- または類似の「No such file or directory」エラーが出る場合
+- Klipperがインストールされていることを確認し、Klipperをインストールしたユーザでログインしていることを確認してください。
+:::
+
+
+## エラーの説明
+
+- エラーメッセージ：`Error during homing z: Communication timeout during homing`
+
+- 正確位置復帰タイムアウト問題は、ほとんどの場合、複数のMCUを使用するZ軸の正位置復帰プロセスで発生します（X、Yも発生することがありますが、発生確率はZより低いです）。
+- Klipperはリアルタイム性が非常に厳格であり、複数のMCUでの正位置復帰プロセス中に、Klipperが`0.025秒以内`に正しい応答を受け取らなかった場合、正位置復帰タイムアウトと判断されます。
+
+## 解決策
+
+- Klipperコード内の`0.025秒`という時間は非常に厳格なので、これを適切に増やして正位置復帰タイムアウト問題を解決できます。
+- 下記のコマンドを実行することで、Klipperコード内のタイムアウト時間を`0.05秒`に直接変更できます。
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.05/' ~/klipper/klippy/mcu.py
+    ```
+    - コマンド実行後に何も出力されない場合は、正常に変更されました。
+
+- 変更が有効になるには、Klipperサービスを再起動する必要があります。
+
+    ```bash
+    sudo systemctl restart klipper
+    ```
+    - コマンド実行後に何も出力されない場合は、正常に再起動されました。
+
+## その他のコマンド
+
+- Klipperコード内のタイムアウト時間を確認するには、以下のコマンドを実行します。
+
+    ```bash
+    grep "TRSYNC_TIMEOUT =" ~/klipper/klippy/mcu.py
+    ```
+    - 正常な出力は以下になります（タイムアウト時間が変更されている場合は、変更後の値が出力されます）。
+
+        ```bash
+        TRSYNC_TIMEOUT = 0.025
+        ```
+
+- タイムアウト時間を変更したコードを元に戻すには、以下のコマンドを実行します。
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.025/' ~/klipper/klippy/mcu.py
+    ```
+    - コマンド実行後に何も出力されない場合は、正常に変更されました。

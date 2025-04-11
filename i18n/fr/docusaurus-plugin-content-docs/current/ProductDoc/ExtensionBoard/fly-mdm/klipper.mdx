@@ -1,0 +1,53 @@
+---
+sidebar_position: 4
+sidebar_label: Configuration de Klipper
+---
+
+# Configuration de Klipper
+
+## Configuration de la détection de rupture de filament
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # Remplacez par le connecteur que vous utilisez, branché sur le connecteur de détection de rupture
+pause_on_runout: True
+# Lorsque cette option est définie à "True", l'imprimante sera mise en pause dès qu'une rupture est détectée.
+# Notez que si pause_on_runout est défini sur False et que runout_gcode n'est pas spécifié,
+# la détection de rupture sera désactivée.
+# Valeur par défaut : True.
+
+runout_gcode:
+    PAUSE
+    M118 Rupture de filament
+# insert_gcode:
+event_delay: 1.0
+# Délai minimal entre les événements (en secondes).
+# Les événements déclenchés dans ce délai seront ignorés.
+# Valeur par défaut : 3 secondes.
+
+pause_delay: 0.5
+# Délai de latence entre l'instruction de pause et l'exécution de runout_gcode, en secondes.
+# Si OctoPrint présente des comportements de pause étranges, augmenter ce délai peut améliorer la fiabilité.
+# Valeur par défaut : 0.5 seconde.
+
+```
+
+## Configuration de la détection de bouchage de filament
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # Remplacez par le connecteur que vous utilisez, branché sur le connecteur de détection de bouchage
+detection_length: 3.5 # Longueur minimale pour déclencher un changement d'état du connecteur switch_pin.
+extruder: extruder
+# Le moteur associé à ce capteur.
+# Ce paramètre doit être spécifié.
+
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 Bouchage de filament
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```

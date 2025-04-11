@@ -1,27 +1,29 @@
 import WIN32 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
 
-# USBを介してM2WEに準備
+# USB経由でM2WEにシステムをインストールする方法
 
 ### 準備作業
 
-    * ソフトウェア`Win32DiskImager`をインストールしてください
-    * システムの焼込には`balenaetcher`は推奨されません
-    * システムを展開し、展開後のファイル名の拡張子は`.img`になります
-    * [M2WE BOOTドライバー](/docs/ResDownload/auxiliary_software/ "クリックしてジャンプ") をダウンロードしてください  
+    * `Win32DiskImager`ソフトウェアのインストールをお願いします
+    <Button variant="contained" disableElevation href="https://mellow.klipper.cn/docs/ResDownload/auxiliary_software/">フォーマットツール</Button>
+    * システムを解凍し、解凍後のファイル名の拡張子は`.img`になります
+    * `balenaEtcher`や`Raspberry Pi`を使用したシステムの焼込みは推奨しません
+    * M2WEにデータがある場合はバックアップをお願いします
+       * [M2WE BOOTドライバーのダウンロード](/docs/ResDownload/auxiliary_software/ "クリックしてジャンプ")
 
 ### ドライバーのインストール
 
-    * `Zadig`ソフトウェアを開きます
-    * 最初の`Zadig`はインストールせずに直接実行できますが、他の2つはインストールする必要があります。インストールプロセスでは全て`次へ`または`Next`を選択してください
-    * `Zadig`を開き、上部メニューの`Options`から`List All Devices`にチェックを入れます
+    * `Zadig`ソフトウェアを開く
+    * 最初の`Zadig`はインストールせずそのまま実行可能ですが、他の二つはインストールが必要です。インストールの際は全て「次へ」または「Next」を選択してください
+    * `Zadig`を開き、メニューの`Options`で「すべてのデバイスをリストする」にチェックを入れる
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
 
 :::tip
-デバイスをコンピュータに接続する前にボタンを押した状態にしてください
+キーを押した状態でデバイスをコンピュータに接続してください
 :::
 
-    * M2WEをインストールし、BOOTキーを押しながらダブルヘッドUSBをコンピュータに接続します
+    * M2WEのインストールが完了しており、BOOTボタンを押しながら両頭USBをコンピュータに接続する
 
     <ImageView image={require('@site/docs/General/fly-os/img/usb-boot.webp').default} size="80%" align="center" />
             <Tabs>
@@ -48,35 +50,37 @@ import WIN32 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/
                 </TabItem>
             </Tabs>
 
-    * zadigを開きます
+    * zadigを開く
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="left" />
 
-    * 問題なければ、この時点でzadigに`Unknown Device #x`または`USB Device(VID_1f3a_PID_efe8)`が追加されます。それを選択します
+    * 問題がなければ、ここでzadigに`Unknown Device #x`または`USB Device(VID_1f3a_PID_efe8)`が追加されます。それを選択する
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="left" />
 
-    * デバイスを選択した後、USB IDが上の画像と一致していることを確認してください。一致しない場合は他のデバイスを選択してください
-    * 上の画像の2つ目の箇所は`WinUSB(vxxxxxxx)`を選択してください。バージョン番号は関係ありません
-    * `ドライバーのインストール`をクリックしてドライバーをインストールします
+    * 選択したデバイスのUSB IDが図と同じであることを確認してください。異なっている場合、他のデバイスを選択してください
+    * 上記の図の2番目は「WinUSB(vxxxxxxx)」を選択できれば問題ありません。バージョン番号は関係ありません
+    * 「Install Driver」をクリックしてドライバーをインストールする
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="left" />
 
-    * USBドライバーのインストールに成功しました（ドライバーは一度だけインストールすればよく、再焼込の際はドライバーをインストールする必要はありません）
-    * インストールされたFLY-BOOTを開き、`デバイスの確認`をクリックします
-    * 前の手順が正しく行われた場合、利用可能なデバイスが見つかったと表示されます
-    * `BOOT`を起動し、正常であれば`BOOT`が成功したと表示されます
+    * USBドライバーのインストールが成功しました（ドライバーは一度だけインストールすればOKです。再度焼込みを行う際にはインストールする必要はありません）
+    * インストール済みのFLY-BOOTを開き、「デバイスのチェック」をクリックする
+    * 前述の手順が正しく行われた場合、「利用可能なデバイスが見つかりました」というメッセージが表示されるはずです
+    * 「BOOT」を起動すると正常であれば「BOOT」が成功に有効化された旨のメッセージが表示されます
 
 ### M2WEのフォーマット
 
-    * `TFFormatter.exe`ソフトウェアを使用して`BOOT`ディスクをフォーマットします
+    * `TFFormatter.exe`ソフトウェアを使用して「BOOT」ディスクをフォーマットする
 
     <ImageView image={require('@site/docs/General/fly-os/img/sdformatter.webp').default} size="80%" align="left" />
 
-    * または、Windowsの標準機能であるディスク管理を使ってパーティションを削除し、削除後に新しいパーティションを作成します
-    * これでファイルエクスプローラーを開くことができます。14.5GBのUSBドライブ（16GB eMMCの表示サイズは14.5GB）が追加されます
-    * このようにすると、Win32diskimagerを使用してシステムイメージを焼込めるようになり、ドライブレターはこの14.5GB USBドライブのものに設定します
+    * またはWindows標準のディスク管理でパーティションを削除し、削除後に新しいパーティションを作成してください
+    * これでファイルエクスプローラーを開くと、14.5GBのUディスクが追加されます（16GB eMMCの表示サイズは14.5GBです）
+    * この時点でWin32diskimagerを使ってシステムイメージを焼込むことができます。ドライブ選択はこの14.5GBのUディスクを選んでください
 
-### M2WEへの焼込
+
+
+### M2WEへのシステム焼込み
 
 <WIN32 />
