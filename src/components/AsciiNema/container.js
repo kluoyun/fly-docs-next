@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import * as AsciinemaPlayer from "asciinema-player";
 
@@ -9,10 +9,14 @@ export default function AsciinemaContainer({
     width,
 }) {
     const ref = useRef < HTMLDivElement > (null);
+    const [isPlayerCreated, setIsPlayerCreated] = useState(false);
 
     useEffect(() => {
-        AsciinemaPlayer.create(url, ref.current, options);
-    }, [url, options]);
+        if (!isPlayerCreated) {
+            AsciinemaPlayer.create(url, ref.current, options);
+            setIsPlayerCreated(true);
+        }
+    }, [url, options, isPlayerCreated]);
 
     return (
         <div style={{ textAlign: 'center' }}>
