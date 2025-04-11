@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import * as AsciinemaPlayer from "asciinema-player";
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
 import "asciinema-player/dist/bundle/asciinema-player.css";
-// import "./styles.css";
 
 // cols: number;
 // rows: number;
@@ -17,25 +17,20 @@ import "asciinema-player/dist/bundle/asciinema-player.css";
 // fontSize: string;
 
 const Asciinema = (props) => {
-    if (props.url === undefined || props.url === "") {
-        return (
-            <div>
-                <p>
-                    错误，AsciiNema URL无效
-                </p>
-            </div>
-        );
-    }
-    const ref = useRef < HTMLDivElement > (null);
-
-    useEffect(() => {
-        AsciinemaPlayer.create(props.url, ref.current, props.options);
-    }, [props.url, props.options]);
-
     return (
+        <BrowserOnly
+            fallback={
+                <a href={props.url} title="Asciinema video player">
+                    Asciinema cast
+                </a>
+            }
+        >
+            {() => {
+                const AsciinemaContainer = require("./container.js").default;
+                return <AsciinemaContainer {...props} />;
+            }}
 
-        <div ref={ref} className="not-prose ap-container" />
-
+        </BrowserOnly>
     );
 }
 
