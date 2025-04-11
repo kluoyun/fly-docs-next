@@ -1,0 +1,61 @@
+---
+sidebar_position: 7
+sidebar_label: Problème de délai d'homologation
+---
+
+# Problème de délai d'homologation de Klipper
+
+## Avertissement
+
+:::warning Cet avertissement s'applique à toutes les commandes de cette page
+- Si vous obtenez une erreur du type `sed: can't read ~/klipper/klippy/mcu.py: No such file or directory` après avoir exécuté une commande
+- Ou toute autre erreur similaire indiquant qu'un fichier est introuvable (`No such file or directory`)
+- Veuillez vous assurer que votre klipper est installé et que l'utilisateur actuel est celui qui a installé klipper.
+:::
+
+
+## Description de l'erreur
+
+- Message d'erreur : `Error during homing z: Communication timeout during homing`
+
+- Le problème de délai d'homologation se produit généralement pendant l'homologation de l'axe Z multi-mcu (l'axe X, Y peut aussi survenir mais avec une probabilité plus faible)
+- La raison en est que Klipper a des exigences strictes en matière de temps réel, et si Klipper ne reçoit pas une réponse correcte du mcu dans `0.025 seconde`, il considère que le processus d'homologation a dépassé le délai.
+
+## Solution
+
+- Le délai de `0.025 seconde` dans le code de Klipper est trop sévère, ce délai peut être augmenté pour résoudre le problème de délai d'homologation.
+- Exécutez la commande suivante pour modifier directement le délai de timeout dans le code de klipper à `0.05 seconde`.
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.05/' ~/klipper/klippy/mcu.py
+    ```
+    - Si aucune sortie n'est affichée après l'exécution de la commande, cela signifie que la modification a réussi.
+
+- Après la modification, vous devez redémarrer le service klipper pour que les modifications prennent effet.
+
+    ```bash
+    sudo systemctl restart klipper
+    ```
+    - Si aucune sortie n'est affichée après l'exécution de la commande, cela signifie que le redémarrage a réussi.
+
+## Autres commandes
+
+- Pour visualiser le délai de timeout dans le code de klipper, exécutez la commande suivante.
+
+    ```bash
+    grep "TRSYNC_TIMEOUT =" ~/klipper/klippy/mcu.py
+    ```
+    - La sortie normale doit être la suivante (si le délai de timeout a été modifié, il affichera le délai modifié).
+
+        ```bash
+        TRSYNC_TIMEOUT = 0.025
+        ```
+
+- Pour restaurer le code modifié, exécutez la commande suivante.
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.025/' ~/klipper/klippy/mcu.py
+    ```
+    - Si aucune sortie n'est affichée après l'exécution de la commande, cela signifie que la modification a réussi.
+ 
+

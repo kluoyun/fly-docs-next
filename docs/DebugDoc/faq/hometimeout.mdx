@@ -1,0 +1,59 @@
+---
+sidebar_position: 7
+sidebar_label: 归位超时问题
+---
+
+# Klipper归位超时问题
+
+## 提示
+
+:::warning 该提示适用于当前页面的所有命令
+- 如果执行命令后提示`sed: can't read ~/klipper/klippy/mcu.py: No such file or directory`这种错误
+- 或者任何类似的找不到文件的错误(`No such file or directory`)
+- 请确认你的klipper已安装，且当前登录用户为安装klipper的用户。
+:::
+
+
+## 错误描述
+
+- 报错信息：`Error during homing z: Communication timeout during homing`
+
+- 归位超时问题，大多数出现在多mcu的Z轴归位过程中（X,Y也有，出现概率比Z低）
+- 原因是Klipper对实时性要求极其严格，在多mcu归位过程中，如果Klipper没有在`0.025秒`内收到mcu的正确响应，就会认为归位超时。
+
+## 解决方案
+
+- Klipper代码中的`0.025秒`过于严苛，可以适当加大这个时间来解决归位超时问题。
+- 执行下面的命令可直接将klipper代码中的超时时间修改为`0.05秒`。
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.05/' ~/klipper/klippy/mcu.py
+    ```
+    - 执行命令后如果没有任何输出则说明修改成功。
+
+- 修改成功后需要重启klipper服务才能生效。
+
+    ```bash
+    sudo systemctl restart klipper
+    ```
+    - 执行命令后如果没有任何输出则说明重启成功。
+
+## 其它命令
+
+- 如果需要查看klipper代码中的超时时间，执行下面的命令即可。
+
+    ```bash
+    grep "TRSYNC_TIMEOUT =" ~/klipper/klippy/mcu.py
+    ```
+    - 正常会输出以下内容（如果修改了超时时间，则会输出修改后的时间）。
+
+        ```bash
+        TRSYNC_TIMEOUT = 0.025
+        ```
+
+- 如果需要将修改的代码还原，执行下面的命令即可。
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.025/' ~/klipper/klippy/mcu.py
+    ```
+    - 执行命令后如果没有任何输出则说明修改成功。
