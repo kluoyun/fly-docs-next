@@ -1,55 +1,18 @@
-:::tip
-    * When installing the programming plugin, please ensure your host machine is connected to the internet.
-    * If you have already installed it, there is no need to install it again.
-:::
-
-
-### Start Programming
-
-    :::warning Warning
-       * For **non-fly host machines**, please make sure to run the following code to install the dependencies for firmware programming! Otherwise, the firmware cannot be programmed!
-       ```
-      cd && git clone https://github.com/Arksine/katapult.git
-       ```
-      <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
-    :::
-    * Use the command below to search for your device ID, and it should display the ID as shown in the image (Note: The ID in the image is for reference only; each motherboard has a different ID).
-
-        ```bash
-        ls /dev/serial/by-id/*
-        ```
-        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
-
-
-    * To program the firmware, use the code below. Make sure the firmware has been compiled, and replace `<your motherboard ID>` with the ID queried in the previous step.
-
-        ```bash
-        ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your motherboard ID>
-        ```
-
-    * Below is a reference:
-        <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
-
-    * After programming is complete, refer to:
-        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
-
-## Firmware Update
-
 <Tabs>
-    <TabItem value="w" label="USB Firmware Update" default>
-        * Use the command below to search for your motherboard ID, and it should display the ID as shown in the image (Note: The ID in the image is for reference only; each motherboard has a different ID).
+    <TabItem value="w" label="Flashing the USB firmware" default>
+        * Use the following command to search for your motherboard ID, which should display the ID shown in the image below (note: the ID shown in the image is for reference only, and each motherboard has a different ID):
 
         ```bash
         ls /dev/serial/by-id/*
         ```
 
         :::tip Note
-            In the image below, `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00` is the motherboard ID.
+            The reference ID `/dev/serial/by-id/usb-Klipper_rp2040_12345-if00` in the image below is the motherboard ID.
         :::
 
-        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/General/dfu-flash/img/ck.webp').default} size="80%" align="center" />
 
-        * To update the USB firmware, after compiling the latest firmware, input the command below. Replace `<your motherboard ID>` with the ID queried in the previous step.
+        * To update the USB firmware, input the following command after compiling the latest firmware, replacing `<your motherboard ID>` with the ID queried in the previous step:
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<your motherboard ID>
@@ -59,7 +22,6 @@
     </TabItem>
 </Tabs> 
 
-## Solution for Incorrect Firmware Programming
-
-    * Power off the motherboard, then power it on again and quickly click reset twice.
-    * Or use Windows to clean the firmware and reprogram BL.
+## Solution for flashing the wrong firmware
+    * Press and hold the button to enter DFU mode, and the computer will recognize it as a new USB drive; drag the firmware into it.
+    * Clean the firmware using WINDOWS and then re-flash the firmware.
