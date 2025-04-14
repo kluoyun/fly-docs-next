@@ -1,0 +1,62 @@
+---
+sidebar_position: 7
+sidebar_label: Homing Timeout Issue
+---
+
+# Klipper Homing Timeout Issue
+
+## Prompt
+
+:::warning This prompt applies to all commands on this page
+- If you receive an error message like `sed: can't read ~/klipper/klippy/mcu.py: No such file or directory` after executing a command
+- Or any similar file not found errors (`No such file or directory`)
+- Please confirm that Klipper is installed and the current user is the user who installed Klipper.
+:::
+
+
+## Error Description
+
+- Error Message: `Error during homing z: Communication timeout during homing`
+
+- The homing timeout issue mostly occurs during the Z-axis homing process in multi-mcu setups (X, Y also occur, but with lower probability).
+- The reason is that Klipper has extremely strict real-time requirements. If Klipper does not receive a correct response from the mcu within `0.025 seconds`, it will consider the homing as a timeout.
+
+## Solution
+
+- The `0.025 seconds` in the Klipper code is too stringent and can be appropriately increased to solve the homing timeout issue.
+- Execute the following command to directly modify the timeout time in the Klipper code to `0.05 seconds`.
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.05/' ~/klipper/klippy/mcu.py
+    ```
+    - If there is no output after executing the command, it means the modification was successful.
+
+- After successfully modifying, you need to restart the Klipper service for the changes to take effect.
+
+    ```bash
+    sudo systemctl restart klipper
+    ```
+    - If there is no output after executing the command, it means the restart was successful.
+
+## Other Commands
+
+- To view the timeout time in the Klipper code, execute the following command.
+
+    ```bash
+    grep "TRSYNC_TIMEOUT =" ~/klipper/klippy/mcu.py
+    ```
+    - It will normally output the following content (if the timeout time has been modified, it will output the modified time).
+
+        ```bash
+        TRSYNC_TIMEOUT = 0.025
+        ```
+
+- To revert the modified code, execute the following command.
+
+    ```bash
+    sed -i 's/TRSYNC_TIMEOUT = [0-9.]*$/TRSYNC_TIMEOUT = 0.025/' ~/klipper/klippy/mcu.py
+    ```
+    - If there is no output after executing the command, it means the modification was successful.
+  
+
+---

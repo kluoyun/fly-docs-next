@@ -2,9 +2,9 @@ name: Auto Comment on PR
 
 on:
   pull_request_target:
-    types: 
+    types:
       - opened
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   comment:
@@ -22,10 +22,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN  }}
           script: |
             const { owner, repo, number: issue_number } = context.issue;
-            
+
             // Get PR creator's username
             const prCreator = context.payload.pull_request.user.login;
-            
+
             const commentBody = `🔊@${prCreator} 🚀Thanks for your contribution 🎉. Please wait for the unit test to complete, it will be automatically translated later. 🔥`;
             github.rest.issues.createComment({
               owner,
@@ -39,4 +39,4 @@ jobs:
                 issue_number,
                 labels: ['waiting-review','auto-translate','auto-merge']
               });
-              
+

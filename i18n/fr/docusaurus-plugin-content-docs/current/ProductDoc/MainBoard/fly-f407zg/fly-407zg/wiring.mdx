@@ -1,13 +1,16 @@
 ---
-position-cote-dans-la-barre-de-navigation: 4
-étiquette-de-la-barre-de-navigation: Branchement de la carte mère
+sidebar_position: 4
+sidebar_label: Branchement de la carte mère
 ---
+
+
+
 
 # Branchement de la carte mère
 
-## Schéma des connecteurs
+## Schéma des interfaces
 
-### Explications des connecteurs
+### Explications des interfaces
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/interface.webp').default} size="50%" align="center" />
 
@@ -19,33 +22,33 @@ position-cote-dans-la-barre-de-navigation: 4
 
 ---
 
-## Branchement de l'alimentation
+## Raccordement de l'alimentation
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/power.webp').default} size="40%" align="center" />
 ----
 
-## Installation des moteurs
+## Installation des pilotes
 
-### Commutateurs de saut pour la carte mère
+### Jumpers pour les pilotes sur la carte mère
 
-* **Mode STEP/DIR.** Dans ce mode, la subdivision est définie en utilisant un capuchon de commutateur de saut, et le courant est ajusté en régulant le potentiomètre. Les pilotes les plus couramment utilisés, comme A4988 et 8825, nécessitent de consulter le tableau de configuration fourni par le fabricant pour définir la subdivision.
-* **Mode UART.** Les pilotes les plus couramment utilisés dans ce mode sont : TMC2208, TMC2209, TMC2226, etc. Ces puces de pilote peuvent communiquer de manière asynchrone en série avec le contrôleur principal via UART, et la subdivision, le courant de fonctionnement et le mode silencieux du pilote peuvent être configurés en modifiant le fichier de configuration.
-* **Mode SPI.** Les pilotes les plus couramment utilisés dans ce mode sont : TMC5160, TMC2130, TMC2240, etc. Ces puces de pilote peuvent également configurer la subdivision, le courant de fonctionnement et le mode silencieux du pilote en modifiant le fichier de configuration.
+* **Mode STEP/DIR.** Dans ce mode, le subdivisionnement est configuré en utilisant un shorting cap, et le courant est ajusté en modulant un potentiomètre. Les pilotes les plus courants comme A4988 et 8825 nécessitent de consulter le tableau de configuration fourni par le fabricant, puis de configurer le subdivisionnement via le shorting cap.
+* **Mode UART.** Les pilotes les plus courants utilisant ce mode sont : TMC2208, TMC2209, TMC2226, etc. Ces puces de pilote peuvent communiquer en série asynchrone avec le contrôleur principal via UART, et les paramètres tels que le subdivisionnement, le courant de fonctionnement et le mode silencieux peuvent être configurés en modifiant les fichiers de configuration.
+* **Mode SPI.** Les pilotes les plus courants utilisant ce mode sont : TMC5160, TMC2130, TMC2240, etc. De même, ces pilotes peuvent également configurer le subdivisionnement, le courant de fonctionnement et le mode silencieux via modification des fichiers de configuration.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.webp').default} size="40%" align="center" />
 
 ----
 
-### Installation des moteurs
+### Installation des pilotes
 
-* Avant d'installer les moteurs, une vérification appropriée doit être effectuée pour éviter tout dommage au moteur ou à la carte mère.
-* **Moteurs FLY :** Si la fonction de retour à zéro sans limite n'est pas utilisée, déplacez l'interrupteur de sélection vers la position 1 ; inversement, si la fonction de retour à zéro sans limite est utilisée, placez l'interrupteur de sélection vers la position ON.
+* Les pilotes doivent être vérifiés avant installation afin d'éviter tout dommage au pilote ou à la carte mère.
+* **FLY Driver :** Si la fonction de retour à zéro sans limite n'est pas utilisée, positionnez l'interrupteur DIP sur la position 1 ; inversement, si vous souhaitez utiliser la fonction de retour à zéro sans limite, positionnez l'interrupteur DIP sur ON.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.webp').default} size="40%" align="center" />
 
     :::danger
 
-    * **Attention !!! Lors de l'installation du module de pilotage, assurez-vous que la direction est correcte, c'est-à-dire que la broche EN se trouve en haut à gauche, sinon cela peut endommager le pilote et même la carte mère !!! Assurez-vous d'ajouter un dissipateur thermique au pilote !!!
+    * **Attention !!! Lorsque vous installez les modules de pilote, assurez-vous que la direction est correcte, c’est-à-dire que la broche EN doit être située en haut à gauche, sinon cela peut endommager le pilote et même la carte mère !!! Assurez-vous également de bien fixer un dissipateur thermique au pilote !!!**
 
     :::
 
@@ -54,70 +57,69 @@ position-cote-dans-la-barre-de-navigation: 4
 
 ----
 
-## Branchement des moteurs pas à pas
+## Raccordement des moteurs pas à pas
 
 :::info
-* Quelle que soit la marque de moteur pas à pas biphasé, il apparaît finalement sous forme de 4 fils. Quel que soit leur couleur, noir, blanc, vert, jaune, ils correspondent tous à 4 fils. Nous devons donc regrouper ces fils en deux groupes, A et B.
-* Pour les moteurs pas à pas biphasiques à 4 fils, nous n'avons pas besoin de savoir quel est le groupe A et quel est le groupe B, il suffit de s'assurer qu'un groupe est défini, puis modifier la direction du moteur dans la configuration.
-
+* Peu importe le fabricant, un moteur pas à pas biphasé se termine toujours par 4 fils. Peu importe la couleur (noir, blanc, vert, jaune), il s'agit toujours de 4 fils. Par conséquent, nous devons regrouper les fils en deux groupes, A et B.
+* Pour un moteur pas à pas biphasé à 4 fils, il n'est pas nécessaire de savoir quel est le groupe A ou B, il suffit de déterminer un groupe dans les paramètres de configuration pour inverser la direction du moteur.
 :::
 
-* Dans les imprimantes 3D, le moteur pas à pas biphasique à 4 fils est le plus couramment utilisé. Son principe est illustré ci-dessous. Il existe deux méthodes pour identifier l'ordre des fils du moteur pas à pas :
-    * Connectez deux fils arbitraires ensemble et tournez l'axe du moteur à la main. S'il y a une résistance significative, alors ces deux fils sont un groupe. Sinon, ils ne forment pas un groupe, et vous devez tester les autres fils.
-    * Utilisez un multimètre réglé sur le mode de continuité et testez n'importe quelle paire de fils du moteur pas à pas. Si elle est conductrice, alors ces deux fils sont un groupe. Sinon, ils ne forment pas un groupe, et vous devez tester les autres fils.
+* Le moteur pas à pas biphasé à 4 fils est le plus couramment utilisé dans les imprimantes 3D. Son principe est illustré ci-dessous. Il existe deux méthodes pour identifier l'ordre des fils du moteur pas à pas :
+    * Connectez arbitrairement deux fils entre eux, puis essayez de tourner manuellement l'axe du moteur. Si une résistance significative est ressentie, alors ces deux fils appartiennent au même groupe. Sinon, ils ne forment pas un groupe et vous devez tester d'autres fils.
+    * Utilisez un multimètre réglé sur le mode continuité, testez arbitrairement deux fils du moteur pas à pas. S'ils sont connectés, alors ils appartiennent au même groupe ; sinon, ils ne forment pas un groupe et vous devez tester d'autres fils.
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.webp').default} size="50%" align="center" />
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/motor.webp').default} size="40%" align="center" />
 
 ----
 
-## Branchement de la résistance de chauffage
+## Raccordement du chauffage
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/heater.webp').default} size="60%" align="center" />
 
 ----
 
-## Branchement du lit chauffant
+## Raccordement du lit chauffant
 
-* **Lit chauffant AC :** Veillez à ne pas inverser l'entrée et la sortie lors du branchement du relais à semiconducteurs.
-
+* **Lit chauffant AC :** Veillez à ne pas inverser les entrées et sorties lors du raccordement du relais à semi-conducteurs.
+    
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.webp').default} size="20%" align="center" />
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-ac-2.webp').default} size="40%" align="center" />
 
-* **Lit chauffant DC :** Attention à la puissance lors de la connexion du MOS au lit chauffant DC. La tension maximale du lit chauffant DC ne doit pas dépasser 10A. Si la valeur est supérieure à 10A, il est recommandé d'utiliser un MOS externe pour le lit chauffant afin d'éviter des dommages irréversibles à la carte mère.
+* **Lit chauffant DC :** Lorsque vous branchez un MOS sur un lit chauffant DC, veillez à respecter la puissance. La courant maximum pour un lit chauffant DC ne doit pas dépasser 10A. Si cela est dépassé, il est recommandé d'utiliser un module MOS externe pour le lit chauffant, sinon cela pourrait causer des dommages irréversibles à la carte mère.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bed-dc.webp').default} size="60%" align="center" />
 
 ----
 
-## Branchement du thermistor
+## Raccordement des sondes de température
 
-### Introduction aux types de thermistances
+### Introduction des types de sondes
 
-* Le branchement des thermistances se fait selon la méthode illustrée ci-dessous. Le type de thermistor doit être consulté auprès du vendeur.
-* Si le thermistor est acheté par FLY (comme illustré ci-dessous), configurez le paramètre sensor_type en tant que : **ATC Semitec 104GT-2**
+* La méthode de connexion des sondes est illustrée ci-dessous. Le type de résistance thermique doit être consulté auprès du vendeur.
+    
+* Si vous avez acheté un produit FLY (comme illustré ci-dessous), configurez sensor_type en tant que : **ATC Semitec 104GT-2**
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.webp').default} size="30%" align="center" />
 
-* Si le thermistor est un NTC 100K standard (comme illustré ci-dessous), configurez le paramètre sensor_type en tant que : **Generic 3950**
+* Si vous utilisez un NTC 100K classique (comme illustré ci-dessous), configurez sensor_type en tant que : **Generic 3950**
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.webp').default} size="40%" align="center" />
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.webp').default} size="40%" align="center" />
 
 ----
 
-### Branchement du thermistor sur la carte mère
+### Raccordement des sondes de température sur la carte mère
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-4.webp').default} size="40%" align="center" />
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-5.webp').default} size="40%" align="center" />
 
 
-
 ----
 
-## Branchement des ventilateurs
+## Raccordement des ventilateurs
 
-* **Branchement des ventilateurs**
+* **Raccordement des ventilateurs**
 
     :::tip
 
@@ -125,51 +127,51 @@ position-cote-dans-la-barre-de-navigation: 4
 
     :::
 
-    * Branchement des ventilateurs
+    * Raccordement des ventilateurs
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/fan.webp').default} size="30%" align="center" />
 
 ----
 
-## Branchement des interrupteurs de fin de course
+## Raccordement des interrupteurs limites
 
-* Les interrupteurs de fin de course ont deux types : NO (ouvert normalement) et NC (fermé normalement). En général, dans les imprimantes 3D, il est recommandé d'utiliser **NC (fermé normalement)**. Ainsi, lorsque le circuit de l'interrupteur de fin de course présente un problème, le système signalera immédiatement une erreur, ce qui permet d'éviter des collisions inutiles et d'éviter d'endommager l'imprimante.
+* Les interrupteurs limites ont deux types : NO (ouvert normal) et NC (fermé normal). En général, dans les imprimantes 3D, il est recommandé d’utiliser **NC (fermé normal)**, car cela permet à l’ordinateur de détecter rapidement toute anomalie dans le circuit et éviter ainsi des collisions inutiles, évitant ainsi d'endommager l'imprimante.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/endstop.webp').default} size="40%" align="center" />
 
 ----
 
-## Branchement des capteurs de nivellement
+## Raccordement des sondes de calibrage
 
-### Branchement de BL-Touch
+### Raccordement de BL-Touch
 
-* BL-touch a cinq fils au total, trois pour le premier groupe, responsable de l'alimentation du capteur et du mouvement du ressort, et le deuxième groupe comprend le fil de masse et le fil de signal, qui transmettent le signal de fin de course. Vérifiez attentivement l'ordre des fils lors du branchement de BL-touch, une connexion incorrecte pourrait endommager de manière permanente le capteur et la carte mère !!! Le branchement est illustré ci-dessous.
+* BL-Touch a cinq fils en tout, trois pour le premier groupe, qui alimentent le capteur et contrôlent l'extension du stylet. Le deuxième groupe comprend le fil de masse et le fil de signal, qui transmettent le signal de fin de course. Veuillez vérifier attentivement l'ordre des fils lors du raccordement de BL-Touch, car une mauvaise connexion pourrait endommager irrémédiablement le capteur et la carte mère !!! Méthode de raccordement illustrée ci-dessous.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/bltouch.webp').default} size="40%" align="center" />
 
 ----
 
-### Branchement de Klicky
+### Raccordement de Klicky
 
-* Klicky est un capteur de nivellement tiers qui peut être fabriqué à bas coût chez soi et qui offre des performances stables et une bonne rapport qualité-prix. Il est recommandé. Le branchement est illustré ci-dessous.
-* Adresse du projet : [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Adresse du projet, cliquez pour accéder")
+* Klicky est un capteur de calibration tiers qui peut être fabriqué à faible coût chez soi, et qui offre des performances stables et un bon rapport qualité-prix. Il est recommandé d'utiliser ce produit. Méthode de raccordement illustrée ci-dessous.
+* Adresse du projet : [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Lien vers le projet, cliquez pour accéder")
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/klicky.webp').default} size="40%" align="center" />
 
 ----
 
-### Branchement de Voron Tap
+### Raccordement de Voron Tap
 
-* Tap est un sondeur z basé sur la buse, conçu pour les imprimantes V2 et Trident. Le capot entier se déplace pour activer l'interrupteur optique, offrant une précision supérieure aux interrupteurs de fin de course traditionnels, et peut utiliser presque toutes les plates-formes d'impression du marché.
+* Tap est un sondeur Z basé sur la buse, adapté aux imprimantes V2 et Trident. L'ensemble de la tête mobile est utilisé pour activer l'interrupteur optique, ce qui offre une précision supérieure à celle des interrupteurs limites traditionnels et peut être utilisé avec presque toutes les plateformes d'impression disponibles sur le marché.
 
     :::warning
 
-    Voron Tap n'est pas recommandé pour être connecté à **24V**, certains versions peuvent provoquer la défaillance du capteur Tap en raison de 24V, ce n'est pas un problème de produit Fly, mais une déficience de conception de Voron Tap, veuillez noter !!!
+    La connexion de Voron Tap au **24V** n'est pas recommandée. Certaines versions utilisant **24V** présentent une probabilité non négligeable de brûler le capteur Tap, ce qui n'est pas lié aux produits Fly mais à un défaut de conception de Voron Tap, veuillez prendre note !!!
 
     :::
 
     :::danger
 
-    Attention : Ne branchez pas le 5V et GND à l'envers, sinon cela peut endommager le capteur Tap et même la carte mère !!!
+    Attention : La polarité de 5V et GND ne doit pas être inversée, sinon cela pourrait endommager le capteur Tap et même la carte mère !!!
 
     :::
 
@@ -178,10 +180,9 @@ position-cote-dans-la-barre-de-navigation: 4
 ----
 
 
+## Connexion à l'ordinateur principal
 
-## Connexion à l'hôte
-
-* La carte mère se connecte à l'hôte via l'interface Type-B USB, ou elle peut être connectée via un port série à l'hôte. Seule la première méthode sera présentée ici.
+* La carte mère est connectée à l'ordinateur principal via un port USB Type-B, ou peut également être connectée via un port série. Seule la première méthode est introduite ici.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-f407zg/fly-407zg/img/wiring/connect-host.webp').default} size="40%" align="center" />
 

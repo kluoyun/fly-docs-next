@@ -1,9 +1,12 @@
 ---
-position secondaire: 4
-étiquette du côté: Carte mère câblage
+sidebar_position: 4
+sidebar_label: Branchement de la carte mère
 ---
 
-# Carte mère câblage
+
+
+
+# Branchement de la carte mère
 
 ## Schéma des interfaces
 
@@ -19,34 +22,34 @@ position secondaire: 4
 
 ---
 
-## Branchement de l'alimentation
+## Raccordement de l'alimentation
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/power.webp').default} size="40%" align="center" />
 
 ----
 
-## Installation des moteurs
+## Installation des drivers
 
-### Sauter les broches de la carte mère
+### Jumpers des cartes mères pour les drivers
 
-* **Mode STEP/DIR.** Dans ce mode, le réglage de la subdivision est effectué à l'aide d'un capuchon de saut, et l'intensité est ajustée à l'aide d'un potentiomètre. Les pilotes les plus courants nécessitent généralement une consultation de la table de configuration fournie par le fabricant pour la subdivision, puis un réglage à l'aide d'un capuchon de saut.
-* **Mode UART.** Les pilotes les plus couramment utilisés dans ce mode sont : TMC2208, TMC2209, TMC2226, etc. Ces puces de pilotage peuvent communiquer de manière asynchrone en série avec le contrôleur principal via UART, et les paramètres tels que la subdivision, l'intensité de fonctionnement et le mode silencieux peuvent être configurés en modifiant le fichier de configuration.
-* **Mode SPI.** Les pilotes les plus couramment utilisés dans ce mode sont : TMC5160, TMC2130, TMC2240, etc. Ces puces de pilotage peuvent également configurer les paramètres tels que la subdivision, l'intensité de fonctionnement et le mode silencieux en modifiant le fichier de configuration.
+* **Mode STEP/DIR.** Dans ce mode, le réglage de la subdivision est effectué à l'aide d'un shorting cap, tandis que l'intensité est ajustée via un potentiomètre. Les pilotes les plus courants, comme A4988 et 8825, nécessitent de consulter le tableau de configuration fourni par le fabricant pour régler la subdivision via le shorting cap.
+* **Mode UART.** Les pilotes les plus courants utilisant ce mode sont : TMC2208, TMC2209, TMC2226, etc. Ces puces de pilote peuvent communiquer en série asynchronous avec le contrôleur via UART, et leurs paramètres tels que la subdivision, l'intensité de fonctionnement et le mode silencieux peuvent être configurés en modifiant des fichiers de configuration.
+* **Mode SPI.** Les pilotes les plus courants utilisant ce mode sont : TMC5160, TMC2130, TMC2240, etc. Ces puces de pilote peuvent également configurer des paramètres comme la subdivision, l'intensité de fonctionnement et le mode silencieux via des fichiers de configuration.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/drive-dip.webp').default} size="40%" align="center" />
 
 ----
 
-### Installation des moteurs
+### Installation des drivers
 
-* Avant l'installation des moteurs, une vérification appropriée doit être effectuée afin d'éviter tout dommage au moteur ou à la carte mère.
-* **Pilote FLY :** Si vous n'utilisez pas la fonction de réinitialisation sans fin, placez l'interrupteur à bascule sur la position 1 ; si vous souhaitez utiliser la fonction de réinitialisation sans fin, placez l'interrupteur à bascule sur la position ON.
+* Avant d'installer les drivers, une inspection appropriée est nécessaire pour éviter tout dommage au driver ou à la carte mère.
+* **Drivers FLY :** Si vous n’utilisez pas la fonctionnalité de retour à zéro sans limite, placez l’interrupteur à bascule sur la position 1 ; sinon, si vous souhaitez utiliser cette fonctionnalité, placez l’interrupteur à bascule en position ON.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/fly2209.webp').default} size="40%" align="center" />
 
     :::danger
 
-    * **Attention !!!** Lors de l'installation du module de pilotage, assurez-vous que la direction est correcte, c'est-à-dire que la broche EN est en haut à gauche, sinon cela peut endommager le pilote voire la carte mère !!! Assurez-vous de bien fixer un dissipateur thermique au pilote !!!
+    * **Attention !!! Lors de l'installation du module de pilotage, assurez-vous que la direction soit correcte, c'est-à-dire que la broche EN soit à l'angle supérieur gauche, sinon cela peut endommager le driver et même la carte mère !!! Assurez-vous d'appliquer un dissipateur thermique sur le driver !!!**
 
     :::
 
@@ -58,57 +61,55 @@ position secondaire: 4
 ## Branchement des moteurs pas à pas
 
 :::info
-* Quelle que soit la marque de moteur pas à pas biphasé, il se présente toujours sous forme de 4 fils. Peu importe la couleur, noir, blanc, vert, jaune, il s'agit toujours de 4 fils. Par conséquent, nous devons regrouper les fils en deux groupes, A et B.
-* Pour les moteurs pas à pas biphasiques à 4 fils, il n'est pas nécessaire de savoir quel est le groupe A et quel est le groupe B, il suffit de déterminer qu'il s'agit d'un groupe. La direction du moteur peut être modifiée dans la configuration.
-
+* Quel que soit le fabricant, un moteur pas à pas biphasé se terminera toujours par 4 fils. Peu importe la couleur, noir, blanc, vert, jaune, etc., il s'agit toujours de 4 fils. Par conséquent, nous devons regrouper ces fils en deux groupes : A et B.
+* Pour un moteur pas à pas biphasé à 4 fils, il n'est pas nécessaire de savoir quel est le groupe A ou B, il suffit de déterminer qu'il s'agit d'un groupe. La direction du moteur peut être configurée dans les paramètres.
 :::
 
-* Dans l'imprimante 3D, le moteur pas à pas biphasique à 4 fils est le plus couramment utilisé. Son principe est illustré ci-dessous. Il existe deux méthodes pour identifier l'ordre des fils du moteur pas à pas :
-    * Connectez deux fils aléatoires entre eux, puis tournez l'arbre du moteur à la main. Si une résistance notable est ressentie, alors ces deux fils appartiennent au même groupe. Sinon, ils ne sont pas du même groupe, et vous devez tester d'autres fils.
-    * Utilisez un multimètre réglé sur le mode de détection de circuit, puis testez les deux fils aléatoires du moteur pas à pas. Si le circuit est fermé, alors ces deux fils appartiennent au même groupe. Sinon, ils ne sont pas du même groupe, et vous devez tester d'autres fils.
+* Le moteur pas à pas biphasé à 4 fils est le plus couramment utilisé dans les imprimantes 3D. Voici son principe illustré ci-dessous. Il existe deux méthodes pour identifier l'ordre des fils du moteur pas à pas :
+    * Connectez arbitrairement deux fils en phase, puis tournez l'arbre du moteur à la main. Si une résistance notable apparaît, alors ces deux fils appartiennent au même groupe. Sinon, ils ne sont pas dans le même groupe, et il faut tester d'autres fils en phase.
+    * Utilisez un multimètre réglé sur le mode continuité, et testez arbitrairement deux fils en phase du moteur pas à pas. S'ils sont connectés, ils appartiennent au même groupe ; sinon, ils ne sont pas dans le même groupe, et il faut tester d'autres fils en phase.
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/motor-sch.webp').default} size="50%" align="center" />
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/motor.webp').default} size="40%" align="center" />
 
 ----
 
-## Branchement du tube chauffant
+## Raccordement des tubes chauffants
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/heater.webp').default} size="60%" align="center" />
 
 ----
 
-## Branchement de la plaque chauffante
+## Raccordement du lit chauffant
 
-* **Plaque chauffante AC :** Lors du branchement du relais à semiconducteurs, veillez à ne pas inverser l'entrée et la sortie.
+* **Lit chauffant AC :** Lors du branchement du relais à semi-conducteurs, assurez-vous de ne pas inverser l'entrée et la sortie.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/bed-ac-1.webp').default} size="20%" align="center" />
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/bed-ac-2.webp').default} size="40%" align="center" />
 
-* **Plaque chauffante DC :** Lors de la connexion de la plaque chauffante DC au MOS monté sur la carte, veillez à respecter la puissance. La courant maximal de la plaque chauffante DC ne doit pas dépasser 10A. Si cette valeur est dépassée, il est recommandé d'utiliser un module MOS externe pour utiliser la plaque chauffante, sinon cela pourrait causer des dommages irréversibles à la carte mère.
+* **Lit chauffant DC :** Lorsque vous branchez un MOS sur un lit chauffant DC, veillez à respecter la puissance. La tension maximale du lit chauffant DC ne doit pas dépasser 10 A. Si elle dépasse 10 A, il est recommandé d'utiliser un module MOS externe pour le lit chauffant, afin d'éviter tout dommage irréversible à la carte mère.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/bed-dc.webp').default} size="60%" align="center" />
 
 ----
 
-## Branchement du thermistor
+## Raccordement des sondes de température
 
-### Introduction des types de thermistances
+### Introduction sur les types de sondes
 
-* La méthode de branchement du thermistor est illustrée ci-dessous. Le type de thermistor doit être demandé au vendeur lors de l'achat.
-
-* Si vous avez acheté un FLY (comme illustré ci-dessous), configurez sensor_type en tant que : **ATC Semitec 104GT-2**
+* La méthode de raccordement des sondes est illustrée ci-dessous. Le type de résistance thermique doit être consulté auprès du vendeur.
+* Si vous avez acheté un fly (comme illustré ci-dessous), configurez sensor_type en tant que : **ATC Semitec 104GT-2**
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-1.webp').default} size="30%" align="center" />
 
-* Si vous avez un thermistor NTC 100K standard (comme illustré ci-dessous), configurez sensor_type en tant que : **Generic 3950**
+* Si vous utilisez une NTC 100K classique (comme illustré ci-dessous), configurez sensor_type en tant que : **Generic 3950**
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-2.webp').default} size="40%" align="center" />
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8/img/wiring/ntc-3.webp').default} size="40%" align="center" />
 
 ----
 
-### Branchement du thermistor sur la carte mère
+### Raccordement des sondes de température sur la carte mère
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/nozzle.webp').default} size="40%" align="center" />
 
@@ -116,9 +117,9 @@ position secondaire: 4
 
 ----
 
-## Branchement des ventilateurs
+## Raccordement des ventilateurs
 
-* **Branchement des ventilateurs**
+* **Raccordement des ventilateurs**
 
     :::tip
 
@@ -126,46 +127,45 @@ position secondaire: 4
 
     :::
 
-
-    * Branchement des ventilateurs
+    * Raccordement des ventilateurs
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/fan.webp').default} size="30%" align="center" />
 
 ----
 
-## Branchement des interrupteurs de fin de course
+## Raccordement des interrupteurs de fin de course
 
-* Les interrupteurs de fin de course ont deux types : normalement ouvert (NO) et normalement fermé (NC). En général, sur une imprimante 3D, il est recommandé d'utiliser **normalement fermé (NC)**, car si le câblage de l'interrupteur de fin de course pose problème, le système signalera immédiatement une erreur, évitant ainsi certains accidents non nécessaires et la protection de l'imprimante.
+* Les interrupteurs de fin de course ont deux types : NO (ouvert normal) et NC (fermé normal). En général, sur les imprimantes 3D, il est recommandé d'utiliser **NC (fermé normal)**, afin que lorsqu'une panne survient dans le circuit de l'interrupteur de fin de course, le système puisse détecter l'erreur rapidement et éviter ainsi des collisions inutiles qui pourraient endommager l'imprimante.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/endstop.webp').default} size="40%" align="center" />
 
 ----
 
-## Branchement des capteurs de nivellement
+## Raccordement des capteurs de nivellement
 
-### Branchement de BL-Touch
+### Raccordement de BL-Touch
 
-* BL-touch a cinq fils au total, trois appartiennent au premier groupe, responsable de l'alimentation du capteur et du mouvement du pinceau, le deuxième groupe est composé de la masse et de la ligne de signal, qui transmettent le signal de fin de course. Vérifiez soigneusement l'ordre des fils lors du branchement de BL-touch, une mauvaise connexion peut endommager de manière permanente le capteur et la carte mère !!! La méthode de branchement est illustrée ci-dessous.
+* BL-touch a cinq fils en tout, trois fils composent le premier groupe, responsables de l'alimentation du capteur et du déploiement du stylet, le deuxième groupe est constitué d'un fil de terre et d'un fil de signal, qui transmettent le signal de fin de course. Veuillez vérifier attentivement l'ordre des fils lors du branchement de BL-touch, une mauvaise connexion pourrait endommager définitivement le capteur et la carte mère !!! Méthode de câblage comme illustré ci-dessous.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/bltouch.webp').default} size="40%" align="center" />
 
 ----
 
-### Branchement de Klicky
+### Raccordement de Klicky
 
-* Klicky est un capteur de nivellement tiers qui peut être fabriqué à faible coût à la maison et qui offre des performances stables et un bon rapport qualité-prix, il est recommandé d'être utilisé. La méthode de branchement est illustrée ci-dessous.
-* Adresse du projet : [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "adresse du projet, cliquez pour accéder")
+* Klicky est un capteur de nivellement tiers, capable d'être fabriqué à faible coût chez soi, et offre des performances stables et un excellent rapport qualité-prix, fortement recommandé. Méthode de câblage comme illustré ci-dessous.
+* Adresse du projet : [jlas1/Klicky-Probe](https://github.com/jlas1/Klicky-Probe "Adresse du projet, cliquez pour sauter")
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/klicky.webp').default} size="40%" align="center" />
 
 ----
 
-### Branchement de Voron Tap
+### Raccordement de Voron Tap
 
-* Tap est un z-probe basé sur le bec de l'imprimante, adapté aux designs d'imprimantes V2 et Trident. L'ensemble de l'outil de tête se déplace pour activer l'interrupteur lumineux, offrant une précision supérieure à celle des interrupteurs de fin de course conventionnels, pouvant être utilisé avec presque toutes les plateformes d'impression disponibles sur le marché.
+* Tap est un probe Z basé sur le bec de l'imprimante, adapté aux designs V2 et Trident. L'ensemble de la tête mobile active l'interrupteur lumineux pour la précision plus élevée que les interrupteurs de fin de course conventionnels, et peut utiliser presque toutes les plateformes d'impression du marché.
 
     :::warning
 
-    Voron Tap ne doit pas être connecté à **24V**, certaines versions utilisant **24V** ont une probabilité élevée de brûler le capteur Tap, ce n'est pas un problème du produit Fly, mais une lacune de conception de Voron Tap, veuillez prendre note !!!
+    Voron Tap n'est pas recommandé pour être branché sur **24V**, certaines versions utilisant **24V** ont une probabilité non négligeable de brûler le capteur Tap, ce qui n'est pas un problème lié aux produits Fly, mais une lacune dans la conception de Voron Tap, veuillez le noter !!!
 
     :::
 
@@ -179,17 +179,17 @@ position secondaire: 4
 
 ----
 
-## Branchement de l'écran LCD FLY-Mini12864
+## Raccordement de l'écran FLY-Mini12864
 
-* La figure ci-dessous montre le mode de branchement de l'écran LCD mini12864 de FLY, pour les écrans de autres fabricants, veuillez consulter le fabricant correspondant. Si l'écran LCD mini12864 est inversé ou mal connecté, cela peut entraîner une déconnexion de l'ordinateur de bord avec le MCU. Si vous pouvez normalement connecter l'ordinateur de bord au MCU avant d'utiliser l'écran LCD mini12864, mais que vous ne pouvez plus vous connecter après l'utilisation de l'écran LCD mini12864, essayez de déconnecter le câblage de l'écran LCD mini12864 !!!
+* Ci-dessous est le mode de branchement du FLY-mini12864. Pour les écrans de autres fabricants, veuillez consulter les fabricants concernés. Un mauvais branchement ou une inversion du mini12864 peut entraîner une impossibilité de connexion entre l'ordinateur de contrôle et le MCU. Si après avoir utilisé l'écran mini12864, il n'est plus possible de connecter l'ordinateur de contrôle au MCU alors qu'avant cela fonctionnait, essayez de débrancher les fils du mini12864 !!!
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/mini12864.webp').default} size="30%" align="center" />
 
 ----
 
-## Connexion à l'ordinateur de bord
+## Connexion à l'ordinateur de contrôle
 
-* La carte mère se connecte à l'ordinateur de bord via l'interface TypeC, elle peut aussi se connecter à l'ordinateur de bord via le port série. Ici, seules les connexions via l'interface TypeC sont décrites.
+* La carte mère peut être connectée à l'ordinateur de contrôle via un port Type-C USB, ou via un port série. Seul le premier cas est expliqué ici.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-e3/fly-e3-v2/img/wiring/connect-host.webp').default} size="40%" align="center" />
 

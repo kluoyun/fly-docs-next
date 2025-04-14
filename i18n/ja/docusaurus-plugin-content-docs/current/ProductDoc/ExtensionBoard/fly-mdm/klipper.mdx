@@ -1,0 +1,52 @@
+---
+sidebar_position: 4
+sidebar_label: Klipper設定
+---
+
+# Klipper設定
+
+## 切斷検知機能の設定
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # 自分で使用しているピンに置き換えてください。フィラメント切れ検知に接続します。
+pause_on_runout: True
+# Trueに設定すると、フィラメントが切れるとすぐにプリンターを一時停止します。
+# 注意: pause_on_runoutがFalseで、runout_gcodeが定義されていない場合、切れ検知は無効になります。
+# デフォルトはTrueです。
+
+runout_gcode:
+    PAUSE
+    M118 切れ
+# insert_gcode:
+event_delay: 1.0
+# イベント間の最小遅延時間（秒）。この時間内にトリガーされたイベントは無視されます。
+# デフォルトは3秒です。
+
+pause_delay: 0.5
+# 一時停止コマンドとrunout_gcode実行の間の遅延時間（秒）。
+# OctoPrintを使用している場合、この遅延を増やすことで一時停止の信頼性が向上する可能性があります。
+# OctoPrintで奇妙な一時停止挙動が見られる場合は、この遅延を増やすことを検討してください。
+# デフォルトは0.5秒です。
+
+```
+
+## ブロック検知機能の設定
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # 自分で使用しているピンに置き換えてください。フィラメント詰まり検知に接続します。
+detection_length: 3.5 # switch_pinピンの状態が変化する最小距離。
+extruder: extruder
+# そのセンサーに関連付けられたエクストルーダー。
+# このパラメーターは必須です。
+
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 堵り
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```

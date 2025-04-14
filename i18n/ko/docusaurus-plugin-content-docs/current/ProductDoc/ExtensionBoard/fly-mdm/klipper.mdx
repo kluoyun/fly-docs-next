@@ -1,0 +1,55 @@
+---
+sidebar_position: 4
+sidebar_label: Klipper 구성
+
+---
+
+# Klipper 구성
+
+## 필라멘트 소진 기능 구성
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # 사용 중인 핀으로 대체, 필라멘트 소진 감지 핀에 연결
+pause_on_runout: True
+# 설정이 "True"로 되어있을 경우 감지 후 프린터를 즉시 일시 중단합니다.
+# 주의: pause_on_runout이 False이고 runout_gcode가 정의되지 않은 경우,
+# 소진 감지가 비활성화됩니다.
+# 기본값은 True입니다.
+
+runout_gcode:
+    PAUSE
+    M118 필라멘트 소진
+# insert_gcode:
+event_delay: 1.0
+# 이벤트 간 최소 지연 시간(초).
+# 이 시간 내에 트리거된 이벤트는 무시될 수 있습니다.
+# 기본값은 3초입니다.
+
+pause_delay: 0.5
+# 일시 중단 명령과 runout_gcode 실행 간의 지연 시간(초).
+# OctoPrint의 경우 이 지연 시간을 늘릴 수 있으므로 일시 중단 신뢰성을 개선할 수 있습니다.
+# OctoPrint에서 이상한 일시 중단 동작이 나타나는 경우 이 지연 시간을 늘려보세요.
+# 기본값은 0.5초입니다.
+
+```
+
+## 필라멘트 블록 기능 구성
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # 사용 중인 핀으로 대체, 블록 감지 핀에 연결
+detection_length: 3.5 # switch_pin 핀 상태 변화를 트리거하는 최소 거리.
+extruder: extruder
+# 이 센서와 연관된 엑스트루더.
+# 반드시 제공해야 합니다.
+
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 필라멘트 블록
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```
