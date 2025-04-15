@@ -39,6 +39,163 @@ i2c_speed: 4000000
 sensor_type: Generic 3950
 sensor_pin:SB2040:gpio28
 
+
 [force_move]
 enable_force_move: true
+
+[gcode_macro CALIBRATE_EDDY]
+description: 执行Eddy电流传感器校准及后续调平流程 
+gcode:
+    # ========== 开始校准 Eddy 电流传感器 ==========
+    M117 开始校准 Eddy 电流传感器...
+
+    # 安全检测：检查打印机是否处于暂停状态
+    {% if printer.pause_resume.is_paused|lower == 'true' %}
+        {action_raise_error("校准前请先恢复打印状态")}
+    {% endif %}
+    
+    SET_KINEMATIC_POSITION X={printer.toolhead.axis_maximum.x / 2} Y={printer.toolhead.axis_maximum.y / 2} Z=0
+
+    # 执行校准流程 
+    LDC_CALIBRATE_DRIVE_CURRENT CHIP=fly_eddy_probe 
+
+    # 尝试输出 DRIVE_CURRENT_FEEDBACK 的值
+    M117 Eddy 电流校准完成，反馈值: {DRIVE_CURRENT_FEEDBACK}
+
+    # 检查反馈值是否在正常范围内
+    {% if DRIVE_CURRENT_FEEDBACK is defined %}
+        {% if DRIVE_CURRENT_FEEDBACK < 10 or DRIVE_CURRENT_FEEDBACK > 20 %}
+            M117 警告：Eddy 电流反馈值异常（{DRIVE_CURRENT_FEEDBACK}）。请检查连接。
+        {% else %}
+            M117 Eddy 电流反馈值正常（{DRIVE_CURRENT_FEEDBACK}）。
+        {% endif %}
+    {% else %}
+        M117 错误：无法获取 DRIVE_CURRENT_FEEDBACK 值。
+    {% endif %}
+    
+    G1 Z2 F300
+    
+    # 提示用户执行手动Z偏移校准
+    M117 请执行手动Z偏移校准。
+
+    # 执行Eddy有效距离校准
+    PROBE_EDDY_CURRENT_CALIBRATE CHIP=fly_eddy_probe 
+
+    # 提示校准完成
+    M117 已完成所有校准流程！
+
+[gcode_macro TEMP_COMPENSATION]
+description: 温度补偿校准流程
+gcode:
+  {% set bed_temp = params.BED_TEMP|default(90)|int %}
+  {% set nozzle_temp = params.NOZZLE_TEMP|default(250)|int %}
+  {% set temperature_range_value = params.TEMPERATURE_RANGE_VALUE|default(3)|int %}
+  {% set desired_temperature = params.DESIRED_TEMPERATURE|default(80)|int %}
+  {% set Temperature_Timeout_Duration = params.TEMPERATURE_TIMEOUT_DURATION|default(6500000000)|int %}
+    # 安全检查：确保所有轴未锁定
+    {% if printer.pause_resume.is_paused %}
+        { action_raise_error("错误：打印机处于暂停状态，请先恢复使能") }
+    {% endif %}
+    # 第一步：归位所有轴
+    STATUS_MESSAGE="正在归位所有轴..."
+    G28
+    STATUS_MESSAGE="归位完成"
+    # 第二步：自动调平
+    Z_TILT_ADJUST
+    # 第三步：Z轴安全抬升
+    STATUS_MESSAGE="Z轴抬升中..."
+    G90
+    G0 Z5 F2000  # 以较慢速度抬升防止碰撞
+    # 第四步：设置超时和温度校准
+    SET_IDLE_TIMEOUT TIMEOUT={Temperature_Timeout_Duration}
+    STATUS_MESSAGE="开始温度探头校准..."
+    TEMPERATURE_PROBE_CALIBRATE PROBE=fly_eddy_probe TARGET={desired_temperature} STEP={temperature_range_value}
+    # 第五步：设置打印温度（根据实际需求修改）
+    STATUS_MESSAGE="设置工作温度..."
+    SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET={bed_temp}
+    SET_HEATER_TEMPERATURE HEATER=extruder TARGET={nozzle_temp}
+    # 完成提示
+    STATUS_MESSAGE="温度补偿流程完成！"
+    description: G-Code macro
+
+[gcode_macro BED_MESH_CALIBRATE]
+rename_existing: _BED_MESH_CALIBRATE
+gcode: 
+       _BED_MESH_CALIBRATE horizontal_move_z=2 METHOD=rapid_scan {rawparams}
+       G28 X Y
+### 3z轴调平宏
+[gcode_macro Z_TILT_ADJUST]
+rename_existing: _Z_TILT_ADJUST
+gcode:
+    # ========== 状态保存 ==========
+    SAVE_GCODE_STATE NAME=STATE_Z_TILT
+    
+    # ========== 环境准备 ==========
+    BED_MESH_CLEAR                       # 清除旧床网数据 
+    
+    # ========== 主调平流程 ==========
+    {% if not printer.z_tilt.applied %}
+        # 首次快速粗调 
+        _Z_TILT_ADJUST horizontal_move_z=10 retry_tolerance=1
+        G0 Z10 F6000                     # 使用标准 G-code 命令替代 HORIZONTAL_MOVE_Z
+    {% endif %}
+    
+    # 精确二次调平 
+     _Z_TILT_ADJUST horizontal_move_z=2 retry_tolerance=0.005 retries=20 METHOD=rapid_scan ADAPTIVE=1
+        G0 Z10 F6000                     # 使用标准 G-code 命令替代 HORIZONTAL_MOVE_Z
+
+    # ========== 后处理 ==========
+    G90                                 # 强制绝对坐标模式 
+    G0 Z10 F6000                        # 抬升Z轴到安全高度 
+    M117 z_tilt Completed                  # 显示完成状态 
+    G28                                 # 回到原点
+    # ========== 状态恢复 ==========
+    RESTORE_GCODE_STATE NAME=STATE_Z_TILT
+    M400          
+
+### 4z轴调平宏
+[gcode_macro QUAD_GANTRY_LEVEL]
+rename_existing: _QUAD_GANTRY_LEVEL 
+gcode:
+    # ========== State Save ==========
+    SAVE_GCODE_STATE NAME=STATE_QGL 
+    
+    # ========== Environment Preparation ==========
+    BED_MESH_CLEAR                       # Clear existing bed mesh data 
+    
+    # ========== Main Leveling Process ==========
+    {% if not printer.quad_gantry_level.applied %}
+        # Initial coarse adjustment 
+        _QUAD_GANTRY_LEVEL horizontal_move_z=10 retry_tolerance=1
+        G0 Z10 F6000                     # Use standard G-code commands instead of HORIZONTAL_MOVE_Z
+        # Set retry tolerance and speed
+        # Note: Specific parameters depend on _QUAD_GANTRY_LEVEL macro implementation
+        # For example, if _QUAD_GANTRY_LEVEL supports RETRY_TOLERANCE parameter:
+        # _QUAD_GANTRY_LEVEL RETRY_TOLERANCE=0.1 SPEED=200.0
+    {% endif %}
+    
+    # Fine secondary leveling 
+     _QUAD_GANTRY_LEVEL horizontal_move_z=2 retry_tolerance=0.005 retries=20 METHOD=rapid_scan ADAPTIVE=1
+        G0 Z10 F6000                     # Use standard G-code commands instead of HORIZONTAL_MOVE_Z
+        # Set auto-compensation algorithm, maximum adjustments, and speed
+        # Note: RETRY_TOLERANCE may have been set previously or adjusted as needed
+    
+    # ========== Post-Processing ==========
+    G90                                 # Force absolute coordinate mode 
+    G0 Z10 F6000                        # Raise Z axis to safe height 
+    M117 QGL Completed                  # Display completion status 
+    G28                                 # Return to origin
+    # ========== State Restore ==========
+    RESTORE_GCODE_STATE NAME=STATE_QGL 
+    M400                
+
+[gcode_macro CALIBRATE_DD]
+description: 移动轴宏 
+gcode:
+    # 归零X/Y轴 
+    G28 X Y 
+
+    # 移动打印头到热床中心（适配多数CoreXY机型）
+    G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000 
+    SET_KINEMATIC_POSITION Z={printer.toolhead.axis_maximum.z-10}
 ```
