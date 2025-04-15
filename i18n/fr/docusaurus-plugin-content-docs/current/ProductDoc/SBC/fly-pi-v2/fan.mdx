@@ -1,18 +1,25 @@
 ---
 sidebar_position: 8
-sidebar_label: Entrée de ventilateur 5V embarquée
+sidebar_label: Port USB 5V ventilateur intégré
 ---
 
-# Entrée de ventilateur 5V embarquée
 
-## La carte Pi-V2 embarque une interface contrôlable de 5V pour le refroidissement du contrôleur principal, avec la méthode de câblage comme indiqué ci-dessous
+
+
+# Port USB 5V ventilateur intégré
+
+## La carte Pi-V2 intègre une interface contrôlable de 5V, destinée au refroidissement principal, avec la méthode de câblage comme indiqué ci-dessous
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.webp').default} size="80%" align="left" />
 
+## Avant d'ajouter la configuration, exécutez la commande suivante via SSH
+```cfg
+wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+```
 
 ## Configuration de référence
 
     ```cfg
-    [mcu host]                      # FlyOS a généré par défaut votre linux MCU, définissez-le pour l'utiliser           
+    [mcu host]                      # Le système FlyOS a généré automatiquement le MCU Linux pour vous, définissez-le pour l'utiliser            
     serial: /tmp/klipper_host_mcu 
 
     [temperature_sensor FLY-π]      # Température du contrôleur supérieur
@@ -22,13 +29,13 @@ sidebar_label: Entrée de ventilateur 5V embarquée
     [temperature_fan core_fan]      # Ventilateur de refroidissement du contrôleur supérieur
     pin: host:gpiochip1/gpio103     # Broche du ventilateur du contrôleur supérieur
     max_power: 1.0
-    sensor_type: temperature_host   # Définir comme température du contrôleur principal
+    sensor_type: temperature_host   # Défini comme température du contrôleur principal
     control:watermark               # Mode de contrôle
     target_temp: 48                 # Température de démarrage du ventilateur de refroidissement du contrôleur supérieur
-    min_temp: 0                     # Température minimale, une erreur sera signalée si elle est inférieure à celle-ci
-    max_temp: 90                    # Température maximale, une erreur sera signalée si elle est supérieure à celle-ci
+    min_temp: 0                     # Température minimale, une erreur sera signalée en dessous de cette valeur
+    max_temp: 90                    # Température maximale, une erreur sera signalée au-delà de cette valeur
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Vitesse maximale, correspondant à 80% de la puissance pleine
-    min_speed: 0.3                  # Vitesse minimale, correspondant à 30% de la puissance pleine
+    max_speed: 0.8                  # Vitesse maximale, correspond à 80 % de la puissance maximale
+    min_speed: 0.3                  # Vitesse minimale, correspond à 30 % de la puissance maximale
     ```

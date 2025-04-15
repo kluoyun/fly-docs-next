@@ -3,32 +3,39 @@ sidebar_position: 8
 sidebar_label: ボード内蔵5Vファンポート
 ---
 
+
+
+
 # ボード内蔵5Vファンポート
 
-## Pi-V2にはボード内蔵の5V制御可能なインターフェースが搭載されており、メインコントローラーの放熱に使用されます。配線方法は下図をご覧ください。
+## Pi-V2は、メインコントローラーの冷却用に制御可能な5Vインターフェースを搭載しており、配線方法は下図の通りです
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.webp').default} size="80%" align="left" />
 
+## 設定を追加する前にsshで実行するコマンド
+```cfg
+wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+```
 
 ## 参照設定
 
     ```cfg
-    [mcu host]                      # FlyOSは既にあなたのためにLinux MCUを生成しています。定義するだけで使用できます。           
+    [mcu host]                      # FlyOSはすでにあなたのためにlinux MCUを生成しています。設定すると使用できます            
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # オーバーレイマシン温度
+    [temperature_sensor FLY-π]      # 上位機器の温度
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # オーバーレイマシン放熱ファン
-    pin: host:gpiochip1/gpio103     # オーバーレイマシンファンピン
+    [temperature_fan core_fan]      # 上位機器の冷却ファン
+    pin: host:gpiochip1/gpio103     # 上位機器のファンピン
     max_power: 1.0
-    sensor_type: temperature_host   # オーバーレイマシン主控温度を設定
+    sensor_type: temperature_host   # 上位機器のメインコントローラー温度を設定
     control:watermark               # 制御方法
-    target_temp: 48                 # オーバーレイマシン放熱ファン起動温度
-    min_temp: 0                     # 最低温度、これより低い場合はエラーが出ます
-    max_temp: 90                    # 最高温度、これより高い場合はエラーが出ます
+    target_temp: 48                 # 上位機器の冷却ファンが動作する温度
+    min_temp: 0                     # 最低温度、これより低い場合はエラーになります
+    max_temp: 90                    # 最高温度、これより高い場合はエラーになります
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # 最大回転速度、最大出力時の80％です
-    min_speed: 0.3                  # 最小回転速度、最大出力時の30％です
+    max_speed: 0.8                  # 最大回転速度、フルパワー時の80%
+    min_speed: 0.3                  # 最小回転速度、フルパワー時の30%
     ```
