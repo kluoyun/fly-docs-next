@@ -3,30 +3,38 @@ sidebar_position: 11
 sidebar_label: Main Control Fan
 ---
 
+
+
+
 # Onboard 5V Fan Port
 
-## Gemini has an onboard 5V controllable interface for main control cooling, and the wiring method is shown in the following figure
+## The Gemini board is equipped with a controllable 5V interface for main control heat dissipation, and the wiring method is as follows:
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.webp').default} size="80%" align="center" />
+
+## Command to execute before adding configuration via SSH
+```cfg
+wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+```
 
 ## Reference Configuration
 
     ```cfg
-    [mcu host]                      # FlyOS has generated a linux MCU for you by default, just define and use           
+    [mcu host]                      # FlyOS has already generated the Linux MCU for you, define it to use          
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Host computer temperature
+    [temperature_sensor FLY-π]      # Host machine temperature
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # Host computer cooling fan
-    pin: host:gpiochip1/gpio103     # Host computer fan pin
+    [temperature_fan core_fan]      # Host machine cooling fan
+    pin: host:gpiochip1/gpio103     # Host machine fan pin
     max_power: 1.0
-    sensor_type: temperature_host   # Set to host computer main control temperature
-    control:watermark               # Control method
-    target_temp: 48                 # Host computer cooling fan start temperature
-    min_temp: 0                     # Minimum temperature, an error will be reported below this temperature
-    max_temp: 90                    # Maximum temperature, an error will be reported above this temperature
+    sensor_type: temperature_host   # Set as the host machine main control temperature
+    control:watermark               # Control mode
+    target_temp: 48                 # Temperature at which the host machine cooling fan starts
+    min_temp: 0                     # Lowest temperature, below this value will cause an error
+    max_temp: 90                    # Highest temperature, above this value will cause an error
     off_below: 0.10
     kick_start_time: 0.50
     max_speed: 0.8                  # Maximum speed, 80% of full power operation
