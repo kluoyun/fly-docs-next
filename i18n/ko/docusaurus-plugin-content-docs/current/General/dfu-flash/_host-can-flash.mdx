@@ -1,58 +1,59 @@
-::: 팁
+::: tip
 
-* 프린팅 중 ID 찾기 및 펌웨어 업데이트를 권장하지 않습니다.
+* ID를 찾거나 펌웨어를 플래시하는 것은 모두 프린팅 중에는 권장하지 않습니다.
 * 동일한 메인보드 또는 Katapult 도구 보드의 CAN 펌웨어와 Klipper의 CAN 펌웨어는 그들의 ID가 완전히 일치합니다.
 
 :::
 
-::: 주의
+::: warning
 
-* 호스트 컴퓨터의 CAN 네트워크가 구성되었는지 확인하십시오.
-* `lsusb` 후에 `1d50:606f`가 표시될 때만 아래 명령어로 CAN ID를 검색할 수 있습니다.
-* 도구 보드의 CAN 속도가 호스트 컴퓨터와 일치하지 않으면 ID를 찾을 수 없으며 펌웨어를 쓸 수 없습니다.
+* 상위 컴퓨터의 CAN 네트워크가 구성되었는지 확인하시기 바랍니다.
+* `lsusb` 명령어 실행 후에 `1d50:606f`가 나타날 경우에만 아래 명령어를 사용하여 CAN ID를 검색할 수 있습니다.
+* 도구 보드의 CAN 속도가 상위 컴퓨터와 같아야 하며 그렇지 않으면 ID를 찾을 수 없고 플래시할 수도 없습니다.
 
 :::
 
-* CANBus UUID를 조회하기 위해 다음 명령을 실행하세요:
+* 다음 명령어를 실행하여 CANBus UUID를 조회하세요:
 
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
 
-    * 입력 후 기계에 따라 다음과 같은 상황이 발생할 수 있으며, 아래는 참고용입니다.
-        * 첫 번째 경우: 브리지 펌웨어를 업데이트한 메인보드에서는 하나의 ID가 표시되고 `Application: Klipper`라는 메시지가 표시됩니다.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />  
-        * 두 번째 경우: 브리지 펌웨어를 업데이트한 메인보드와 펌웨어를 업데이트해야 하는 도구 보드가 함께 사용되면 두 개의 ID가 표시됩니다.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />  
-        * 세 번째 경우: UTOC와 펌웨어를 업데이트해야 하는 도구 보드를 사용합니다.
-        * 주의: UTOC는 ID가 표시되지 않습니다.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />  
-        * 네 번째 경우: ID가 표시되지 않는 경우 일반적으로 Klipper에 의해 점유되어 있으며, 호스트 컴퓨터의 CAN0 속도가 올바르지 않거나 배선 문제가 있을 수 있습니다.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />  
+    * 입력 후 기기에 따라 아래와 같은 몇 가지 상황이 나타날 수 있으며, 참고하세요:
+        * 첫 번째 경우: 브리지 펌웨어가 설치된 메인보드에서 ID 하나가 나타나고 "Application: Klipper"라는 메시지가 표시됩니다.
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />
+        * 두 번째 경우: 브리지 펌웨어가 설치된 메인보드와 함께 도구 보드를 사용하는 경우 두 개의 ID가 나타납니다.
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />
+        * 세 번째 경우: UTOC와 도구 보드를 사용하는 경우
+        * 팁: UTOC는 ID가 표시되지 않습니다.
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />
+        * 네 번째 경우: ID가 나타나지 않으며 일반적으로 Klipper에 의해 점유된 경우, 상위 컴퓨터의 CAN0 속도가 올바르지 않거나 연결이 잘못된 경우입니다.
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />
 
-    * 일반적으로 펌웨어를 업데이트해야 하는 도구 보드가 CANBOOT 상태일 경우 `Application: CanBoot`이라는 메시지가 표시되며, 해당 펌웨어 LED가 깜빡입니다. 이때 Klipper 펌웨어를 업데이트해야 하며, 그렇지 않으면 연결할 수 없습니다!!!
-    * 주의: Klipper 펌웨어가 이미 설정 파일에 ID를 입력했다면, ID는 표시되지 않고 Klipper에 의해 점유됩니다. 이 경우 해당 ID를 차단하고 메인보드를 완전히 전원을 끈 후 재부팅해야 합니다.
+    * 일반적으로 도구 보드가 CANBOOT 상태에 있을 경우 "Application: CanBoot"이라는 메시지와 함께 해당 펌웨어 LED가 깜빡이는 것이 표시됩니다. 이 경우 Klipper 펌웨어를 플래시해야 하며 그렇지 않으면 연결할 수 없습니다!
+    * 팁: Klipper 펌웨어가 이미 설정 파일에 ID를 입력한 경우, ID는 표시되지 않고 Klipper에 의해 점유되며, 해당 ID를 차단하고 메인보드를 완전히 전원을 끈 후 다시 시작해야 합니다.
 
-::: 주의
+    ::: warning
 
-* UUID를 찾지 못했다면 아래 문서를 참조하세요.
-* <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN 문제 모음집</Button>
+    * UUID를 찾을 수 없는 경우 아래 문서를 참조하세요.
+    * <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN 문제 모음집</Button>
 
-:::
+    :::
 
-* 펌웨어 업데이트
+# 펌웨어 플래싱
 
-    * 아래 명령의 `241696050c56`를 UUID 조회에서 찾은 UUID로 바꾸세요. `-u` 뒤에는 공백이 있어야 합니다.
-        ```bash
-        python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
-        ```
+* 아래 명령어에서 `241696050c56`를 UUID를 찾은 UUID로 바꾸세요. `-u` 뒤에는 공백이 있어야 합니다.
+    ```bash
+    python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
+    ```
 
-    * 아래 그림과 같이 `CAN Flash Success`가 표시되면 펌웨어 업데이트가 성공했습니다.
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />  
+* 아래 사진과 같이 `CAN Flash Success`가 나타나면 플래싱 성공입니다.
+    <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />
 
-* 펌웨어를 업데이트하려면 펌웨어를 다시 컴파일한 후 위 명령을 다시 실행하면 됩니다. 그러나 ID를 찾거나 Klipper가 연결된 상태여야 합니다.
+## 펌웨어 업데이트가 필요한 경우 펌웨어를 재컴파일한 후 다시 플래싱 명령을 실행하면 펌웨어를 업데이트할 수 있습니다. 하지만 ID를 찾거나 Klipper가 연결될 수 있도록 해야 합니다.
 
-        ```bash
-        python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
-        ```
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash1.webp').default} size="100%" align="left" />  
+    ```bash
+    python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
+    ```
+    <ImageView image={require('@site/docs/General/dfu-flash/img/canflash1.webp').default} size="100%" align="left" />  
+
