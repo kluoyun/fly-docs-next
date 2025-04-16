@@ -3,16 +3,24 @@ sidebar_position: 11
 sidebar_label: Ventilateur principal
 ---
 
-# Connecteur de ventilateur 5V sur la carte mère
 
-## La carte Gemini dispose d'un connecteur 5V contrôlable pour le refroidissement du contrôleur principal, avec la méthode de câblage comme indiqué ci-dessous
+
+
+# Connecteur de ventilateur 5V intégré
+
+La carte Gemini intègre un connecteur de ventilation de 5V contrôlable, destiné à refroidir le contrôleur principal. La méthode de connexion est illustrée ci-dessous.
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.webp').default} size="80%" align="center" />
+
+## Commande à exécuter via SSH avant d'ajouter la configuration
+```cfg
+wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+```
 
 ## Configuration de référence
 
     ```cfg
-    [mcu host]                      # FlyOS a généré automatiquement le MCU Linux pour vous, définissez-le pour l'utiliser            
+    [mcu host]                      # Le système FlyOS a généré automatiquement pour vous le MCU Linux, définissez-le pour l'utiliser           
     serial: /tmp/klipper_host_mcu 
 
     [temperature_sensor FLY-π]      # Température du contrôleur supérieur
@@ -22,13 +30,13 @@ sidebar_label: Ventilateur principal
     [temperature_fan core_fan]      # Ventilateur de refroidissement du contrôleur supérieur
     pin: host:gpiochip1/gpio103     # Broche du ventilateur du contrôleur supérieur
     max_power: 1.0
-    sensor_type: temperature_host   # Défini comme température du contrôleur principal
+    sensor_type: temperature_host   # Définir comme température du contrôleur principal
     control:watermark               # Mode de contrôle
     target_temp: 48                 # Température de démarrage du ventilateur de refroidissement du contrôleur supérieur
-    min_temp: 0                     # Température minimale, une erreur se produira en dessous de cette valeur
-    max_temp: 90                    # Température maximale, une erreur se produira au-delà de cette valeur
+    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
+    max_temp: 90                    # Température maximale, au-delà de laquelle une erreur sera signalée
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Vitesse maximale, 80% de la puissance maximale
-    min_speed: 0.3                  # Vitesse minimale, 30% de la puissance maximale
+    max_speed: 0.8                  # Vitesse maximale, correspondant à 80 % de la puissance maximale
+    min_speed: 0.3                  # Vitesse minimale, correspondant à 30 % de la puissance maximale
     ```

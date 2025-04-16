@@ -1,34 +1,42 @@
 ---
 sidebar_position: 11
-sidebar_label: 主控风扇
+sidebar_label: 主控ファン
 ---
 
-# ボードに組み込まれた5Vファンポート
 
-## Geminiにはボードに組み込まれた5Vの制御可能なインターフェースがあり、メインコントローラーの放熱に使用されます。配線方法は以下の図をご覧ください。
+
+
+# ボード搭載5Vファンポート
+
+## ジェミニボードには、メインコントローラーの冷却用に制御可能な5Vインターフェースが搭載されています。配線方法は下図の通りです。
 
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/img/corefan.webp').default} size="80%" align="center" />
 
-## 参照構成
+## 設定を追加する前に、SSHで実行する必要があるコマンド
+```cfg
+wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+```
+
+## 参照設定
 
     ```cfg
-    [mcu host]                      # FlyOSは既にLinux MCUを自動的に生成しています。これを使用するためには定義するだけです。           
+    [mcu host]                      # FlyOSは既にあなたのためにlinux MCUを生成しています。定義すれば使用可能です           
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # 上位機器の温度
+    [temperature_sensor FLY-π]      # アップボード温度
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # 上位機器の放熱ファン
-    pin: host:gpiochip1/gpio103     # 上位機器のファンピン
+    [temperature_fan core_fan]      # アップボード冷却ファン
+    pin: host:gpiochip1/gpio103     # アップボードファンピン番号
     max_power: 1.0
-    sensor_type: temperature_host   # 上位機器のメインコントローラーの温度として設定
-    control:watermark               # 制御方法
-    target_temp: 48                 # 上位機器の放熱ファンが動作を開始する温度
-    min_temp: 0                     # この温度より低い場合、エラーが発生します
-    max_temp: 90                    # この温度より高い場合、エラーが発生します
+    sensor_type: temperature_host   # 上位機主控温度を設定
+    control:watermark               # 制御方式
+    target_temp: 48                 # 上位機冷却ファンの起動温度
+    min_temp: 0                     # 最低温度、これより低いとエラーが出ます
+    max_temp: 90                    # 最高温度、これより高いとエラーが出ます
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # 最大回転速度、これは最大出力の80％に相当します
-    min_speed: 0.3                  # 最小回転速度、これは最大出力の30％に相当します
+    max_speed: 0.8                  # 最大回転速度、フルパワーランニング時の80%です
+    min_speed: 0.3                  # 最小回転速度、フルパワーランニング時の30%です
     ```
