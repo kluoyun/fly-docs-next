@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USB firmware burning
+sidebar_label: USB Firmware Burning
 ---
 
 import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -11,9 +11,9 @@ import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# USB firmware compilation
+# USB Firmware Compilation
 
-## Start compilation
+## Start Compilation
 
     <SSH />
 
@@ -21,12 +21,12 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Press the `Q` key, and when you see **Save configuration**, press the `Y` key again
+    * Press `Q`, when **Save configuration** appears, press `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Now the configuration should be saved and you should have exited to the command line interface
-    * Enter `make -j4` to start compiling, it will take some time
+    * Enter `make -j4` to start compilation, it takes a while
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the output below is displayed, the compilation was successful
+    * If the following content is output at the end, the compilation is successful
 
         ```bash
         Linking out/klipper.elf
@@ -34,48 +34,6 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Firmware burning
+## Firmware Burning
     
     <TF />
-
-## Firmware burning 2
-    <Tabs>
-        <TabItem value="linux" label="dfu burning">
-            * Insert the jumper cap on `boot1` as shown in the following image and then press `rst` to restart the motherboard
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
-            * Enter the command below to check if the motherboard has entered dfu mode
-            ```bash
-            lsusb
-            ```
-            * After pressing `Enter`, the output should match the content in the following image, indicating that the motherboard has successfully entered dfu mode
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. Burning firmware
-
-            * The dfu write command is as follows:
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. When the content at the arrow in the image below is displayed ``File downloaded successfully``, the burning is successful
-
-            :::warning
-
-            Ignore any errors after the line pointed to by the red arrow!!
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            After burning, remove the jumper cap from the motherboard and press the `rst` button to restart the motherboard
-
-            :::
-
-        </TabItem>
-    </Tabs>

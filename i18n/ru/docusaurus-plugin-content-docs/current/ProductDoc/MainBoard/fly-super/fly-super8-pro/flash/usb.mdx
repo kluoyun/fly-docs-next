@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: Загрузка прошивки через USB
+sidebar_label: Запись прошивки через USB
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -21,12 +21,12 @@ import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Нажмите клавишу `Q`, появится предложение **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+    * Теперь конфигурация должна быть сохранена, и вы должны вернуться в командную строку
+    * Введите `make -j4` для начала компиляции (время займет немного)
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее, компиляция успешно завершена
+    * Если в конце выводится следующее содержимое, то компиляция успешна
 
         ```bash
         Linking out/klipper.elf
@@ -34,48 +34,6 @@ import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Загрузка прошивки
-
+## Запись прошивки
+    
     <TF />
-
-## Загрузка прошивки 2
-    <Tabs>
-        <TabItem value="linux" label="Загрузка через dfu">
-            * Согласно приведенным ниже изображениям, установите перемычку на `boot1` и перезагрузите материнскую плату кнопкой `rst`
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-super/fly-super8-pro/flash/img/boot.webp').default} size="50%" align="center" />
-            * Введите следующую команду для проверки, находится ли материнская плата в режиме dfu
-            ```bash
-            lsusb
-            ```
-            * После ввода команды и нажатия клавиши `Enter` вы увидите содержимое изображения ниже, где наличие указанных данных означает успешный переход в режим dfu
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu.webp').default} size="50%" align="center" />
-           
-            <dfu />
-
-            4. Загрузка прошивки
-
-            * Ниже приведены команды для записи через dfu
-                ```bash
-                cd ~/klipper
-                ```
-                ```bash
-                make flash FLASH_DEVICE=0483:df11
-                ```
-            5. При появлении содержимого, указанного стрелкой на изображении ниже ``File downloaded successfully``, загрузка завершена успешно
-
-            :::warning
-
-            Пропустите ошибки после этой строки красной стрелки!!
-
-            :::
-
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/dfu1.webp').default} size="100%" align="center" />
-
-            :::tip
-
-            После завершения загрузки удалите перемычку с материнской платы и нажмите кнопку `rst` для перезагрузки платы
-
-            :::
-
-        </TabItem>
-    </Tabs>
