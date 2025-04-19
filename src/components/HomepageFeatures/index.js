@@ -4,16 +4,7 @@ import styles from './styles.module.css';
 import Translate, {translate} from '@docusaurus/Translate';
 
 const FeatureList = [
-  {
-    title: <Translate>主控板</Translate>,
-    Svg: require('@site/static/img/mainboard.png').default,
-    url: '/docs/category/%E4%B8%BB%E6%9D%BF%E7%B1%BB',
-    description: (
-      <>
-        <Translate>精确控制您的3D打印机核心，支持Klipper，RRF，Marlin等固件提供卓越的稳定性和兼容性，确保每次打印都完美无瑕。</Translate>
-      </>
-    ),
-  }, {
+ {
     title: <Translate>上位机</Translate>,
     Svg: require('@site/static/img/sbc.png').default,
     url: '/docs/category/%E4%B8%8A%E4%BD%8D%E6%9C%BA%E7%B1%BB',
@@ -24,12 +15,22 @@ const FeatureList = [
     ),
   },
   {
+    title: <Translate>主控板</Translate>,
+    Svg: require('@site/static/img/mainboard.png').default,
+    url: '/docs/category/%E4%B8%BB%E6%9D%BF%E7%B1%BB',
+    description: (
+      <>
+        <Translate>精确控制您的3D打印机，支持Klipper，RRF，Marlin等固件，提供卓越的稳定性和兼容性，确保每次打印都完美无瑕。</Translate>
+      </>
+    ),
+  },
+  {
     title: <Translate>工具头板</Translate>,
     Svg: require('@site/static/img/toolboard.png').default,
     url: '/docs/category/%E5%B7%A5%E5%85%B7%E6%9D%BF%E7%B1%BB',
     description: (
       <>
-        <Translate>专为各种打印机型适配的高兼容工具头板，轻松连接CANBus，RS232，USB等通信协议，实现多样化打印。</Translate>
+        <Translate>专为各种打印机机型适配的高兼容工具头板，轻松连接CANBus，RS232，USB等通信协议，实现多样化打印。</Translate>
       </>
     ),
   },
