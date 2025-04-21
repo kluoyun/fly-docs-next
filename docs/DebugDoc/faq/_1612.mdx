@@ -13,17 +13,34 @@
 分成两小步骤
 :::
 * 第一步
-* 打印提供的高度模型<Button variant="contained" disableElevation href="http://cdn.mellow.klipper.cn/STL/Current%20Height%20Test%20Model.stl">高度模型</Button>
+* 检查自己的归位宏是否是`safe_z_home` 如已配置那么继续下一步
+```cfg
+[safe_z_home]                
+home_xy_position:150,150     # xy 中心点坐标 计算方式：热床最大值除以2 自行进行调整
+speed:300                    # 归位速度
+z_hop:10                     # 归位之前抬升高度
+```
 * 点击如图片显示的宏命令`CALIBRATE_DD`点击执行
-* 通过控制台控制z轴离热床大概3cm-5cm的高度拿出打印好的高度模型放到工具头下方 然后继续控制z轴,直到压到高度模型的中心点圆点，然后继续按照提示操作
+* 通过控制台控制z轴工具头碰到热床，然后继续按照提示操作
 
 * 点击如图片显示的宏命令`CALIBRATE_EDDY`点击执行
+<ImageView image={require('@site/docs/DebugDoc/faq/img/DD.webp').default} size="50%" align="left" />
+<ImageView image={require('@site/docs/DebugDoc/faq/img/eddyRC.webp').default} size="50%" align="left" />
+* 点击如图片显示的宏命令CALIBRATE_EDDY点击执行
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy5.webp').default} size="50%" align="left" />
 * 然后会出现如下的UI界面
 * 用A4纸调整Z—offset 弹出来的UI界面 调整`z—offset`数值调整前先看一下klipper文档的教程[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
 * 找到了合适的数值点`ACCEPT`
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
 * 校准完成后`SAVE_CONFIG`保存参数    
+
+:::info
+* 完成了测试归位
+* 如没有正常归位
+* 找到下面的文件进行修改参考电流值
+<ImageView image={require('@site/docs/DebugDoc/faq/img/PR.webp').default} size="50%" align="left" />
+<ImageView image={require('@site/docs/DebugDoc/faq/img/DL.webp').default} size="50%" align="left" />
+:::
 
     ### 第二步：温度补偿
     :::info
@@ -48,7 +65,6 @@
     * `ABORT`  可用于终止校准并忽略结果。
     * 当校准完成使用`SAVE_CONFIG`去保存温度偏移设置果！
     * 综上所述，与大多数其他程序相比，上述校准过程更具挑战性，也更耗时。它可能需要练习和多次尝试才能够在广泛的温度范围内提供出色的首层打印效果！
-
 ## 如何微调z—offset
 * 第一步：使用pursa/OrcaSlicer/cura/Bambu Studio 切一个200x200高度0.2的一个方片去打印微调z—offset
 * 第二步：通过打印机ip进入`fluidd` `mainsail`找到仪表板`移动控制`z轴偏移微调z_OFFset
