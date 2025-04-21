@@ -1,69 +1,89 @@
 :::info
-* `z_tilt`機能または`quad_gantry_level（QGL）`機能を搭載したプリンターでは、複数のzレベル調整を実行することを忘れないでください。
-    :::
+* `z_tilt`機能または`quad_gantry_level（QGL）`機能を搭載したプリンターの場合、複数のz調整を行うことを忘れないでください。
+:::
 
-## 注意：
-* 次の画像に従ってxyオフセットを設定し、次のステップに進んでください [xyオフセット校正（Probe_Calibrate）方法](https://www.klipper3d.org/Probe_Calibrate)
+## 注意事項：
+* 次の画像に従ってxyオフセットを設定し、次のステップに進んでください。[xyオフセット校正（Probe_Calibrate）方法](https://www.klipper3d.org/Probe_Calibrate)
 <ImageView image={require('@site/docs/DebugDoc/faq/img/eddyzxd.webp').default} size="50%" align="left" />
 <ImageView image={require('@site/docs/DebugDoc/faq/img/eddypz.webp').default} size="50%" align="left" />
 <ImageView image={require('@site/docs/DebugDoc/faq/img/xypy.webp').default} size="50%" align="left" />
 
-### EDDYの校正手順：
-* イメージに表示されるマクロコマンド`CALIBRATE_EDDY`をクリックして実行します
+### 第一步：EDDY校準
+:::info
+2つの小さなステップに分けられます。
+:::
+* 第一步
+* 自分のリターンマクロが`safes_z_home`であるか確認してください。すでに設定されている場合は、次の手順に進んでください。
+```cfg
+[safe_z_home]                
+home_xy_position:150,150     # xy中心点座標 計算方法：ヒートベッドの最大値を2で割り、適宜調整してください
+speed:300                    # リターン速度
+z_hop:10                     # リターン前の高さリフト
+```
+* 表示されているマクロコマンド`CALIBRATE_DD`をクリックして実行します
+* コンソールでz軸ヘッドがヒートベッドに接触するようにしてから、指示に従って操作を続けます
+
+* 表示されているマクロコマンド`CALIBRATE_EDDY`をクリックして実行します
+<ImageView image={require('@site/docs/DebugDoc/faq/img/DD.webp').default} size="50%" align="left" />
+<ImageView image={require('@site/docs/DebugDoc/faq/img/eddyRC.webp').default} size="50%" align="left" />
+* 表示されているマクロコマンドCALIBRATE_EDDYをクリックして実行します
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy5.webp').default} size="50%" align="left" />
-* 次に、以下のUIインターフェースが表示されます
-* A4紙を使用してZオフセットを調整してください。ポップアップされたUIインターフェースで`zオフセット`の数値を調整する前に、klipperドキュメントのチュートリアル[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)をご覧ください
+* すると以下のUIインターフェースが表示されます
+* A4紙を使用してZ—offsetを調整します。ポップアップされるUIインターフェースで`z—offset`の数値を調整する前に、klipperドキュメントのチュートリアル[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)を確認してください
 * 適切な数値を見つけたら`ACCEPT`をクリックします
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
-* 校正が完了したら`SAVE_CONFIG`をクリックしてパラメータを保存します  
+* 校正が完了したら`SAVE_CONFIG`でパラメーターを保存します  
 
-### 2つ目のステップ：温度補正
+:::info
+* テストリターンが完了しました
+* 正常にリターンしない場合
+* 以下のファイルを参照して電流値を修正してください
+<ImageView image={require('@site/docs/DebugDoc/faq/img/PR.webp').default} size="50%" align="left" />
+<ImageView image={require('@site/docs/DebugDoc/faq/img/DL.webp').default} size="50%" align="left" />
+:::
+
+### 第二ステップ：温度補正
 :::info
 * 温度補正を行う前に、ヒートベッドとノズルを加熱しないでください
 :::
 
-* 下の画像に示されるマクロコマンド`TEMP_COMPENSATION`をクリックして実行します
+* 下の画像に表示されているマクロコマンド`TEMP_COMPENSATION`をクリックして実行します
 <ImageView image={require('@site/docs/DebugDoc/faq/img/temp.webp').default} size="50%" align="left" />
 <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/img/eddy6.webp').default} size="50%" align="left" />
 
-1. この操作を行った後、UIはZ軸調整ボックスを表示します。上記で言及されている手動[Z軸オフセット校正（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)を使用して、紙をノズルとベッドの間に挟み、その値を確認してください。
+1. この操作を行った後、UIにZ軸調整ボックスが表示されます。上記で説明した手動[Z軸オフセット校正（Paper Test）方法](https://www.klipper3d.org/Bed_Level.html#the-paper-test)を使用し、紙をノズルとベッドの間に挟み、その値を確認してください。
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="30%" align="left" />
-2. 値を受け入れた後、自動的にヒートベッドの温度を80℃、ノズルの温度を250℃に調整します。
-3. 部屋がエアコンや窓がある場合、エディーの温度上昇を確保するために、エアコンを切るか窓を閉めてください。風は温度の上昇に影響を与える可能性があります。
-4. エディーの温度が上昇すると、システムは約3℃ごとに手動Zオフセット校正を促します。ヒートベッドの温度は非常に高いため、火傷に注意してください!!!
+2. 値を受け入れた後、自動的にヒートベッドの温度を80℃、ノズルの温度を250℃に設定します。
+3. もし、あなたがエアコンをつけている部屋や窓を開けている部屋で作業している場合、Eddyの温度が上がるのを確実にするために、エアコンを切るか窓を閉じることをお勧めします。風は温度の上昇に影響を与える可能性があります。
+4. Eddyの温度が上がると、システムは定期的に3℃ごとに手動Zオフセット校正を促します。ヒートベッドの温度は非常に高いので、注意してください!!
 <ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="30%" align="left" />
-5. 手動Zオフセット校正（Paper Test）を繰り返し行い、校正が完了するまで続けます。エディーの温度が上がらなくなったら、以下の関連コマンドを使用して校正を事前に終了することができます。
+5. 手動Zオフセット校正（Paper Test）を繰り返し行い、校正が完了するまで操作を続けてください。もしEddyの温度が上がらなくなったら、以下の関連コマンドを使用して校正を早めに終了することができます。
 
-* ドリフト校正中に使用できる追加のgcodeコマンドには、`TEMPERATURE_PROBE_NEXT`があります
-* `TEMPERATURE_PROBE_NEXT`は、EDDyが目標温度`80℃`に達する前に新しいデータを強制的にサンプリングするために使用されます。
-* `TEMPERATURE_PROBE_COMPLETE`は、EDDyが設定温度`80℃`に達する前に校正を完了するために使用されます。
-* `ABORT`は、結果を無視して校正を終了するために使用できます。
-* 校正が完了したら、温度オフセット設定を保存するために`SAVE_CONFIG`を使用してください！
-* 上記の手順は、他の多くのプログラムと比較してより挑戦的であり、時間がかかる可能性があります。広範囲の温度範囲で優れたファーストレイヤープリントを得るために練習と何度も試行が必要になるかもしれません。
+* 校正中に利用可能な追加gcodeコマンドには以下があります：TEMPERATURE_PROBE_NEXT
+* `TEMPERATURE_PROBE_NEXT`　目標温度`80℃`に達する前にEDDyに新しいデータを強制的にサンプリングします。
+* `TEMPERATURE_PROBE_COMPLETE`　目標温度`80℃`に達する前に校正を完了させます。
+* `ABORT`　校正を中止し、結果を無視するために使用します。
+* 校正が完了したら`SAVE_CONFIG`で温度オフセット設定を保存してください！
+* 上記の校正プロセスは、他の多くのプログラムと比較してより挑戦的で時間がかかりますが、広範な温度範囲で優れたファーストレイヤー印刷結果を得るために練習と複数回の試行が必要です！
 
-## z—offsetの微調整方法
-* 最初のステップ：pursa/OrcaSlicer/cura/Bambu Studioを使用して、高さ0.2の200x200mmの四角いスライスをカットして、z—offsetの微調整を行います
-* 第二のステップ：プリンターのIPアドレスにアクセスして`fluidd` `mainsail`を開き、ダッシュボードの`移動制御`からZ軸オフセットを使用してz_OFFsetを微調整します
+## Z—offsetを微調整する方法
+* 第一步：Pursa/OrcaSlicer/Cura/Bambu Studioを使用して、高さ0.2の200x200mmの四角形を印刷して、Z—offsetを微調整します
+* 第二歩：プリンターIPにアクセスして`fluidd` `mainsail`を開き、ダッシュボードの「モーションコントロール」でZ軸オフセットを微調整します。
 <ImageView image={require('@site/docs/DebugDoc/faq/img/Zoff.webp').default} size="80%" align="left" />
-* 校正が完了したら`SAVE_CONFIG`をクリックしてパラメータを保存します
+* 校正が完了したら`SAVE_CONFIG`でパラメーターを保存します
 
-## 数値が変化しない場合の調整コマンド
-* 下記のコマンドを使用してZ—offsetを調整します。ポップアップされたUIインターフェースで`z—offset`を調整する数値は、印刷プロセス中に調整する数値です[Paper test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
-```bash
-G28
-PROBE_CALIBRATE METHOD=AUTO  
-```
-<ImageView image={require('@site/docs/DebugDoc/faq/img/UI.webp').default} size="50%" align="left" />
-* 校正が完了したら`SAVE_CONFIG`をクリックしてパラメータを保存します
+## 数値が変化しない場合
+* 画像内のファイルを見つけてそれに従って修正します
+<ImageView image={require('@site/docs/DebugDoc/faq/img/zoffsetui.webp').default} size="50%" align="left" />
+* 校正が完了したら`SAVE_CONFIG`でパラメーターを保存します
 
 :::info
- * 上記の操作が完了したが、スキャンベッドに失敗した場合は、zリミッタを仮想リミッタに変更し、元のendstop_pin`endstop_pin: probe:z_virtual_endstop`を上書きしてください
+* 上記の操作が完了したが、掃床が失敗した場合、Zリミットを仮想リミットに変更し、元のendstop_pinを上書きします。`endstop_pin: probe:z_virtual_endstop`
 :::
-
 
 ## コイルモデルのダウンロードリンク
 
-        ```bash
-        https://cdn.mellow.klipper.cn/STEP/sen.step
-        https://cdn.mellow.klipper.cn/STEP/1612.step
-        ```
+```bash
+https://cdn.mellow.klipper.cn/STEP/sen.step
+https://cdn.mellow.klipper.cn/STEP/1612.step
+```
