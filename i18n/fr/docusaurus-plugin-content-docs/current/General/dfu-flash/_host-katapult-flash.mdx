@@ -1,18 +1,18 @@
-:::tip
-    * Lors de l'installation du plugin de gravure, veillez à être connecté à Internet et assurez-vous que votre ordinateur supérieur est correctement connecté à Internet.
-    * Si vous avez déjà installé le plugin, vous n'avez pas besoin de le réinstaller.
+:::astuce
+    * Lors de l'installation du plug-in de gravure, une connexion Internet est nécessaire. Veuillez vous assurer que votre ordinateur de contrôle est correctement connecté à Internet.
+    * Si le plug-in a déjà été installé, il n'est pas nécessaire de le réinstaller.
 :::
 
 ### Démarrer la gravure
 
-    :::warning Avertissement
-       * **Non fly ordinateur supérieur** Veuillez exécuter le code ci-dessous pour installer les paquets nécessaires pour la gravure de firmware ! Sinon, le firmware ne pourra pas être gravé !
+    :::avertissement Avertissement
+       * **Non FLY PC** : Veuillez impérativement exécuter le code ci-dessous pour installer les paquets de dépendances nécessaires à la gravure ! Sinon, la gravure des firmwares ne fonctionnera pas !
        ```
       cd && git clone https://github.com/Arksine/katapult.git
        ```
       <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
     :::
-    * Utilisez la commande ci-dessous pour rechercher votre ID de périphérique, un ID comme celui montré dans l'image suivante devrait apparaître (Remarque : l'ID montré dans l'image est fourni à titre indicatif, chaque carte mère a un ID différent)
+    * Utilisez la commande ci-dessous pour rechercher l'ID de votre appareil, un ID similaire à celui de l'image ci-dessous doit apparaître (remarque : l'ID de l'image est fourni à titre indicatif, chaque carte mère a un ID différent)
 
         ```bash
         ls /dev/serial/by-id/*
@@ -20,13 +20,13 @@
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
 
-    * Pour graver le firmware, utilisez la commande ci-dessous, assurez-vous d'avoir compilé le firmware, *remplacez `<votre ID de carte mère>` par l'ID que vous avez trouvé à l'étape précédente*
+    * Pour graver le firmware, utilisez la commande ci-dessous, assurez-vous d'avoir compilé le firmware, et remplacez `<votre ID de carte mère>` par l'ID trouvé dans l'étape précédente
 
         ```bash
         ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<votre ID de carte mère>
         ```
 
-    * Ci-dessous est une référence
+    * Référence ci-dessous
         <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
 
     * Référence après la gravure
@@ -36,17 +36,17 @@
 
 <Tabs>
     <TabItem value="w" label="Mise à jour du firmware USB" default>
-    * Utilisez la commande ci-dessous pour rechercher votre ID de carte mère, un ID comme celui montré dans l'image suivante devrait apparaître (Remarque : l'ID montré dans l'image est fourni à titre indicatif, chaque carte mère a un ID différent)
+    * Utilisez la commande ci-dessous pour rechercher l'ID de votre carte mère, un ID similaire à celui de l'image ci-dessous doit apparaître (remarque : l'ID de l'image est fourni à titre indicatif, chaque carte mère a un ID différent)
 
         ```bash
         ls /dev/serial/by-id/*
         ```
-    :::tip Remarque
-        Dans l'image ci-dessous, `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00` est l'ID de la carte mère.
+    :::astuce Remarque
+        L'ID `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00` de l'image correspond à l'ID de la carte mère.
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
-    * Pour mettre à jour le firmware USB, vous devez compiler le firmware le plus récent, puis exécuter la commande ci-dessous, *remplacez `<votre ID de carte mère>` par l'ID que vous avez trouvé à l'étape précédente*
+    * La mise à jour du firmware USB nécessite de compiler le dernier firmware, puis d'exécuter la commande suivante, en remplaçant `<votre ID de carte mère>` par l'ID trouvé à l'étape précédente
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<votre ID de carte mère>
@@ -56,9 +56,9 @@
 
 
     <TabItem value="l" label="Mise à jour du firmware CAN via pont">
-    * Pour mettre à jour le firmware CAN via pont, vous devez compiler le firmware le plus récent, puis exécuter la commande ci-dessous pour le réinitialiser dans Katapult. (Comme indiqué dans l'image ci-dessous, l'ID montré est fourni à titre indicatif, veuillez utiliser l'ID dans votre fichier de configuration)
-    :::tip Remarque
-       * `<votre UUID CANBUS>` est l'UUID CANBUS de votre carte mère dans votre fichier de configuration **printer.cfg**
+    * Pour mettre à jour le firmware CAN via pont, il est nécessaire de compiler le dernier firmware, puis d'exécuter la commande suivante pour réinitialiser Katapult. (L'ID de l'image ci-dessous est fourni à titre indicatif, veuillez utiliser l'ID spécifié dans votre fichier de configuration)
+    :::astuce Remarque
+       * `<votre UUID CANBUS>` correspond à l'UUID CANBUS de la carte mère dans le fichier de configuration **printer.cfg**
     :::
         
         <br/>
@@ -66,21 +66,21 @@
         ```bash
         ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <votre UUID CANBUS>
         ```
-    :::tip Remarque
-       * Dans l'image ci-dessous, `f95cee90e1f9` est l'UUID CANBUS de la carte mère.
+    :::astuce Remarque
+       * L'UUID CANBUS `f95cee90e1f9` de l'image ci-dessous est fourni à titre indicatif.
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
-    * Après avoir réinitialisé dans Katapult, utilisez la commande ci-dessous pour rechercher votre ID de carte mère, un ID comme celui montré dans l'image suivante devrait apparaître (Remarque : l'ID montré dans l'image est fourni à titre indicatif, chaque carte mère a un ID différent)
+    * Après avoir réinitialisé Katapult, utilisez la commande suivante pour rechercher l'ID de votre carte mère, un ID similaire à celui de l'image ci-dessous doit apparaître (remarque : l'ID de l'image est fourni à titre indicatif, chaque carte mère a un ID différent)
 
         ```bash
         ls /dev/serial/by-id/*
         ```
-    :::tip Remarque
-        Dans l'image ci-dessous, `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00` est l'ID de la carte mère.
+    :::astuce Remarque
+        L'ID `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00` de l'image correspond à l'ID de la carte mère.
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
 
-    * Assurez-vous d'exécuter la gravure après la compilation du nouveau firmware, *remplacez `<votre ID de carte mère>` par l'ID que vous avez trouvé à l'étape précédente*
+    * Assurez-vous d'avoir compilé le nouveau firmware avant d'exécuter la gravure. Remplacez `<votre ID de carte mère>` par l'ID trouvé à l'étape précédente
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<votre ID de carte mère>
@@ -90,7 +90,7 @@
 
 </Tabs>
 
-## Méthodes pour résoudre le problème de gravure incorrecte de firmware
+## Solution pour la gravure incorrecte du firmware
 
-    * Éteignez le courant de la carte mère, rallumez-la, puis cliquez rapidement deux fois sur le bouton de réinitialisation de la carte mère.
-    * Ou utilisez WINDOWS pour nettoyer le firmware et reflasher BL
+* Éteignez la carte mère, réallumez-la, puis appuyez rapidement deux fois sur le bouton reset pour réactiver le mode de gravure.
+* Ou bien, utilisez une machine Windows/ordinateur principal pour regraver le firmware Katapult en suivant ce lien<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#entrer-en-mode-de-gravage-dfu">Graver le firmware Katapult</Button>
