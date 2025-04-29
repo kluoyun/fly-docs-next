@@ -1,18 +1,18 @@
 ::: tip
-    * プラグインの書き込み時にインターネットに接続されている必要がありますので、上位機が正常にインターネットに接続されていることを確認してください。
-    * もしすでにインストール済みの場合、再度インストールする必要はありません。
+    * プラグインの書き込み時にインターネットに接続されていることを確認してください。上位機が正常にインターネットに接続されていることを確認してください。
+    * すでにインストール済みの場合は再度インストールする必要はありません。
 :::
 
 ### 書き込み開始
 
     ::: warning 警告
-       * **Fly以外の上位機** は必ず以下のコードを実行して、ファームウェア書き込みの依存パッケージをインストールしてください！それがないとファームウェアを書き込めません！
+       * **非fly上位機** は以下のコードを実行して、ファームウェア書き込みの依存パッケージをインストールしてください。そうでないとファームウェアが書き込めません！
        ```
       cd && git clone https://github.com/Arksine/katapult.git
        ```
       <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
     :::
-    * 下記のコマンドを使用してデバイスIDを検索し、以下のように表示されるIDが表示されることを確認してください。（図中のIDは例示であり、各マザーボードのIDは異なります）
+    * 次のコマンドを使用してデバイスIDを検索し、下図に示すIDが表示されることを確認してください。（注：図中のIDは例であり、各ボードには異なるIDがあります）
 
         ```bash
         ls /dev/serial/by-id/*
@@ -20,45 +20,49 @@
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
 
-    * ファームウェアを書き込むには、以下のコードを使用してください。ファームウェアが正常にコンパイルされていることを確認してください。`<あなたのマザーボードID>` を前ステップで取得したIDに置き換えてください。
+    * ファームウェアの書き込みには次のコードを使用してください。ファームウェアが正常にコンパイルされていることを確認し、`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
 
         ```bash
-        ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<あなたのマザーボードID>
+        ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<あなたのボードID>
         ```
-
-    * 参考例
+    `fast`システムではこのコマンドを使用してファームウェアを書き込みます。`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
+    
+            ```bash
+            python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<あなたのボードID>
+            ```
+    * 参考情報
         <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
 
-    * 書き込み完了時の参照
+    * 書き込み完了の参考
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
 
 ## ファームウェアの更新
 
 <Tabs>
     <TabItem value="w" label="USBファームウェアの更新" default>
-    * 下記のコマンドを使用してマザーボードのIDを検索し、以下のように表示されるIDが表示されることを確認してください。（図中のIDは例示であり、各マザーボードのIDは異なります）
+    * ボードのIDを検索するために次のコマンドを使用してください。下図に示すIDが表示されることを確認してください。（注：図中のIDは例であり、各ボードには異なるIDがあります）
 
         ```bash
         ls /dev/serial/by-id/*
         ```
     ::: tip 注意
-        下図の`/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`がマザーボードのIDです。
+        下図の`/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`がボードのIDです。
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
-    * USBファームウェアの更新には、最新のファームウェアをコンパイルした後、以下のコマンドを入力して更新してください。`<あなたのマザーボードID>` を前ステップで取得したIDに置き換えてください。
+    * USBファームウェアの更新には、最新のファームウェアがコンパイルされた後、次のコマンドを使用して更新してください。`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
 
         ```bash
-        cd ~/klipper/ && make flash FLASH_DEVICE=<あなたのマザーボードID>
+        cd ~/klipper/ && make flash FLASH_DEVICE=<あなたのボードID>
         ```
        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
     </TabItem>
 
 
     <TabItem value="l" label="CANブリッジファームウェアの更新">
-    * CANブリッジファームウェアを更新する場合、最新のファームウェアをコンパイルした後、以下のコマンドを入力してKatapultにリセットします。（下図は例示であり、図中のIDは参考値です。あなたの設定ファイル内のIDをご確認ください）
+    * CANブリッジファームウェアを更新するには、最新のファームウェアがコンパイルされた後、次のコマンドを使用してKatapultにリセットします。（下図は例であり、IDは実際の構成ファイル内のIDに従ってください）
     ::: tip 注意
-       * `<あなたのCANBUS UUID>`は**printer.cfg**設定ファイル内のマザーボードのCANBUS UUIDです。
+       * `<あなたの CANBUS UUID>`は**printer.cfg**構成ファイル内のマザーボードのCANBUS UUIDです。
     :::
         
         <br/>
@@ -70,27 +74,27 @@
        * 下図の`f95cee90e1f9`がマザーボードのCANBUS UUIDです。
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
-    * Katapultにリセットした後、以下のコマンドを使用してマザーボードのIDを検索し、以下のように表示されるIDが表示されることを確認してください。（図中のIDは例示であり、各マザーボードのIDは異なります）
+    * Katapultにリセット後、次のコマンドを使用してボードのIDを検索し、下図に示すIDが表示されることを確認してください。（注：図中のIDは例であり、各ボードには異なるIDがあります）
 
         ```bash
         ls /dev/serial/by-id/*
         ```
     ::: tip 注意
-        下図の`/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`がマザーボードのIDです。
+        下図の`/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`がボードのIDです。
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
 
-    * 新しいファームウェアのコンパイル後に実行してください。`<あなたのマザーボードID>` を前ステップで取得したIDに置き換えてください。
+    * 新しいファームウェアがコンパイルされた後に実行することを確認し、`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
 
         ```bash
-        cd ~/klipper/ && make flash FLASH_DEVICE=<あなたのマザーボードID>
+        cd ~/klipper/ && make flash FLASH_DEVICE=<あなたのボードID>
         ```
        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
     </TabItem>
 
 </Tabs>
 
-## 間違ったファームウェアの書き込み解決法
+## 間違ったファームウェアの解決方法
 
-* マザーボードを電源オフにして、再起動すると、リセットボタンを素早くダブルクリックすることで、再度書き込みモードに入ることができます。
-* または、window/上位機を使用してkatapultファームウェアを再び書き込むことができます。<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfu燒錄模式">katapultファームウェアの書き込み</Button>
+* ボードを電源オフにして、再起動後にresetボタンを素早くダブルクリックすると、再び書き込みモードに入れます。
+* または、window/上位機を使用してkatapultファームウェアを再び書き込みます。<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfu燒錄模式">katapultファームウェアの書き込み</Button>
