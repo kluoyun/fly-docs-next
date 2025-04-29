@@ -1,0 +1,157 @@
+---
+sidebar_position: 2
+---
+
+
+
+# Utilisation de KPPM
+
+  Le module de mise hors tension FLY-KPPM est conçu spécialement pour les cartes de développement telles que Raspberry Pi. Il vise à prévenir la perte de données causée par une coupure de courant. En utilisant des technologies avancées, lorsque la coupure de courant se produit, il bascule automatiquement vers une alimentation par condensateur, garantissant que la carte de développement peut continuer à fonctionner de manière stable pendant 15 secondes, assurant ainsi une sauvegarde efficace des données. Compact et pratique, il est facile à installer.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.webp').default} size="60%" align="center" />
+
+
+## Avertissements
+
+  :::danger À savoir
+  L'alimentation d'entrée ne supporte que DC12-24V. Veillez à bien distinguer le polarité lors de la connexion et effectuez la connexion en état débranché. Assurez-vous que la connexion est correcte avant d'alimenter. Les pertes causées par une mauvaise connexion ne sont pas couvertes par notre entreprise.
+  :::
+
+  :::danger À savoir
+  La prise 5V OUT fournit une alimentation d'urgence, elle ne doit pas être utilisée comme source d'alimentation principale. Veuillez utiliser USB-OUT ou SIG/IO pour alimenter l'ordinateur supérieur.
+  :::
+
+  :::danger À savoir
+  Lorsque vous utilisez un module de mise hors tension sécurisé, vous devez utiliser une alimentation de 12V-24V. Pour garantir un fonctionnement normal du module, la tension de sortie 5V du module de mise hors tension sécurisé ne doit pas être inférieure à 4.9V, sinon le module de mise hors tension sécurisé prendra de l'énergie depuis son propre système interne, ce qui entraînera une charge continue du condensateur et provoquera une surchauffe du module.
+  :::
+
+
+## Explication du contenu de l'affichage
+
+
+    | Contenu de l'affichage |   Explication de gauche   | Paramètre de droite    |   Explication de droite    |
+    | :-------------------- | :-----------------------: | :--------------------: | :------------------------: |
+    | `IN:`                  | Tension d'entrée           | `OUT:`                 | Tension de sortie           |
+    | `CA:`                  | Tension totale du condensateur | `OI:`                  | Courant de charge de sortie  |
+    | `C1:`                  | Tension du condensateur C1  | `C2:`                  | Tension du condensateur C2   |
+    | `Temp:`                | Température du module de mise hors tension | `E:`                   | Indication d'état, voir ci-dessous |
+ 
+
+    | Contenu d'affichage |   Explication d'état   |
+    | :----------------- | :--------------------: |
+    | `Ready!`             | Mise sous tension normale  |
+    | `IN LOW!`            | Tension d'entrée trop basse |
+    | `IN OVR!`            | Courant de sortie trop élevé |
+    | `OV LOE!`            | Tension de sortie trop basse |
+    | `OV OVR`             | Courant de sortie trop élevé |
+    | `TP OVR!`            | Température trop élevée    |
+    | `NONE`               | Erreur inconnue           |
+    | `R: XX Sec`          | Si la mise hors tension se produit dans les 10 secondes et qu'elle est réactivée, cet indicateur apparaît avec un compte à rebours. Après le compte à rebours, redémarrez l'ordinateur supérieur |
+
+
+## Téléchargement des modèles d'emballage et d'installation
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/KPPM.zip
+    ```
+
+## Explication des broches
+
+  * OUT-RST Réinitialisation
+  * OUT-PDN Arrêt
+
+  * IN-PIN  
+
+    Par défaut activé, au moment de l'alimentation du module, il détecte automatiquement le temps de la dernière coupure de courant,
+  si le temps de coupure est inférieur à 10 secondes, attend 10 secondes puis active automatiquement la sortie 5V (assurer le bon arrêt de l'ordinateur supérieur et sa redémarrage),
+  si connecté à GND, désactive la fonction de détection automatique du temps de coupure de courant
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.webp').default} size="70%" align="center" />
+
+## Tutoriel d'utilisation du PC supérieur FLY
+
+  :::info
+  Seul applicable pour FLY-Pi FLY-Pi-V2 FLY-C8
+  :::
+
+  Le PC supérieur FLY nécessite l'exécution de la commande SSH suivante :
+
+  ```bash
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
+  ```
+
+  Redémarrer le système :
+
+  ```bash
+  sudo reboot
+  ```
+  
+### Tutoriel de câblage du PC supérieur FLY
+
+  <Tabs>
+      <TabItem value="serial" label="Tutoriel de câblage du PC supérieur FLY" default>
+
+          <Tabs>
+              <TabItem value="1" label="Utilisation de FLY-C8 avec 5V" default>
+                  * Branchement de FLY-C8 avec 5V en suivant le schéma
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/c81.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Utilisation de FLY-C8 avec USB" default>
+                  * Branchement de FLY-C8 avec USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="3" label="Utilisation de FLY-Pi(π) avec 5V" default>
+                  * Utilisation de FLY-Pi avec 5V
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="4" label="Utilisation de FLY-Pi(π) avec USB" default>
+                  * Utilisation de FLY-Pi avec USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="5" label="Utilisation de FLY-Pi-V2 avec 5V" default>
+                  * Utilisation de FLY-Pi-V2 avec 5V
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="6" label="Utilisation de FLY-Pi-V2 avec USB" default>
+                  * Utilisation de FLY-Pi-V2 avec USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="7" label="Utilisation de FLY-gemini avec USB" default>
+                  * Utilisation de FLY-gemini avec USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_gemini_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="8" label="Utilisation de FLY-lite2.1 avec USB" default>
+                  * Utilisation de FLY-lite2.1 avec USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_lite2.1_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+            
+          </Tabs>
+      </TabItem>
+  </Tabs>
+
+## Tutoriel d'utilisation du PC supérieur Raspberry Pi
+
+  Le Raspberry Pi suit une procédure similaire. Le Raspberry Pi doit insérer la carte SD contenant l'image du système dans l'ordinateur, puis ajouter la commande `dtoverlay=gpio-shutdown,gpio_pin=21` dans le fichier config.txt. Ensuite, sauvegarder et quitter.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.webp').default} size="70%" align="center" />
+
+          <Tabs>
+              <TabItem value="1" label="Utilisation de Raspberry Pi avec 5V" default>
+                  * Utilisation de Raspberry Pi avec 5V
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.webp').default} size="60%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Utilisation de Raspberry Pi avec USB" default>
+                  * Utilisation de Raspberry Pi avec USB
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.webp').default} size="60%" align="center" />
+              </TabItem>
+          </Tabs>

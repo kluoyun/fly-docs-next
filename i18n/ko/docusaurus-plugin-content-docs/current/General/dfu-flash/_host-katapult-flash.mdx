@@ -1,93 +1,99 @@
-::: 팁
-- 플래시 플러그인을 설치할 때 인터넷 연결이 필요합니다. 상위 컴퓨터가 인터넷에 정상적으로 연결되어 있는지 확인하시기 바랍니다.
-- 이미 설치된 경우 다시 설치할 필요가 없습니다.
+::: warning 주의
+    * **비-Fly 호스트 PC** 아래의 명령어를 반드시 실행하여 펌웨어 번들을 위한 종속 패키지를 설치해야 합니다! 그렇지 않으면 펌웨어를 플래시할 수 없습니다!
+    ```
+   cd && git clone https://github.com/Arksine/katapult.git
+    ```
+   <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
 :::
 
-### 플래싱 시작
+### 펌웨어 플래시 시작
 
-::: 주의
-- **비플라이 상위 컴퓨터** 의 경우 아래 코드를 반드시 실행하여 펌웨어 플래시에 필요한 종속성 패키지를 설치해야 합니다! 그렇지 않으면 펌웨어를 플래시할 수 없습니다!
-  ```
-  cd && git clone https://github.com/Arksine/katapult.git
-  ```
-  <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
+::: warning 경고
+    * 비-Fly 호스트 PC에서는 아래 명령어를 사용하여 USB 펌웨어 플래시에 필요한 종속 패키지를 설치해야 합니다! 그렇지 않으면 펌웨어를 플래시할 수 없습니다!
+    ```
+   cd && git clone https://github.com/Arksine/katapult.git
+    ```
+   <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
 :::
-- 다음 명령어를 사용하여 장치 ID를 검색합니다. 아래 그림과 같은 ID가 표시되어야 합니다 (참고: 그림에 표시된 ID는 예시이며 각 보드의 ID는 다릅니다).
+    * 다음 명령어를 사용하여 장치 ID를 검색하십시오. 아래 그림과 같은 ID가 표시되어야 합니다 (참고: 그림에 표시된 ID는 예시이며, 각 보드마다 ID는 다릅니다).
 
-  ```bash
-  ls /dev/serial/by-id/*
-  ```
-  <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
-- 펌웨어를 플래시하려면 아래 코드를 사용합니다. 펌웨어가 이미 컴파일되었는지 확인하고, `<your_board_id>`를 이전 단계에서 검색한 ID로 대체해 주세요.
 
-  ```bash
-  ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your_board_id>
-  ```
+    * 펌웨어를 플래시하기 위해 아래 명령어를 사용하십시오. 펌웨어를 정상적으로 컴파일했는지 확인하고, `<보드 ID>`를 이전 단계에서 검색한 ID로 대체하십시오.
 
-- 아래는 참고용입니다.
-  <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
+        ```bash
+        ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<보드 ID>
+        ```
 
-- 플래싱 완료 후 참고용입니다.
-  <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
+    * 참고 사항
+        <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
+
+    * 플래시 완료 후 참조 이미지
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
 
 ## 펌웨어 업데이트
 
 <Tabs>
     <TabItem value="w" label="USB 펌웨어 업데이트" default>
-- 다음 명령어를 사용하여 보드 ID를 검색합니다. 아래 그림과 같은 ID가 표시되어야 합니다 (참고: 그림에 표시된 ID는 예시이며 각 보드의 ID는 다릅니다).
+    * 다음 명령어를 사용하여 보드 ID를 검색하십시오. 아래 그림과 같은 ID가 표시되어야 합니다 (참고: 그림에 표시된 ID는 예시이며, 각 보드마다 ID는 다릅니다).
 
-  ```bash
-  ls /dev/serial/by-id/*
-  ```
-::: 팁 주의
-- 아래 그림의 `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`가 보드의 ID입니다.
-:::
-  <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+    ::: tip 주의
+        아래 그림에서 `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`이 보드의 ID입니다.
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
-- USB 펌웨어를 업데이트하려면 최신 펌웨어를 컴파일한 후 아래 명령어를 입력해야 합니다. `<your_board_id>`를 이전 단계에서 검색한 ID로 대체해 주세요.
+    * USB 펌웨어를 업데이트하기 위해서는 최신 버전의 펌웨어를 컴파일한 후, 아래 명령어를 입력하여 업데이트하십시오. `<보드 ID>`는 이전 단계에서 검색한 ID로 대체하십시오.
 
-  ```bash
-  cd ~/klipper/ && make flash FLASH_DEVICE=<your_board_id>
-  ```
-  <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
-</TabItem>
+        ```bash
+        cd ~/klipper/ && make flash FLASH_DEVICE=<보드 ID>
+        ```
+       <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
+    </TabItem>
 
-<TabItem value="l" label="CAN 버스 펌웨어 업데이트">
-- CAN 버스 펌웨어를 업데이트하려면 최신 펌웨어를 컴파일한 후 아래 명령어를 입력하여 Katapult로 재설정해야 합니다. (아래 그림 참조, 그림에 표시된 ID는 예시이며 `printer.cfg` 설정 파일에 있는 ID로 대체해 주세요)
 
-::: 팁 주의
-- `<your_canbus_uuid>`는 `printer.cfg` 설정 파일에 있는 보드의 CANBUS UUID입니다.
-:::
+    <TabItem value="l" label="CAN 브리지 펌웨어 업데이트">
+    * CAN 브리지 USB 펌웨어를 업데이트하려면 최신 버전의 펌웨어를 컴파일한 후 아래 명령어를 입력하여 Katapult로 다시 설정하십시오. (아래 그림은 예시입니다. 실제 ID는 구성 파일에 기재된 ID로 대체하십시오.)
+    ::: tip 주의
+       * `<보드 CANBUS UUID>`는 **printer.cfg** 구성 파일에서 보드의 CANBUS UUID입니다.
+    :::
+        
+        <br/>
 
-  ```bash
-  ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <your_canbus_uuid>
-  ```
-::: 팁 주의
-- 아래 그림의 `f95cee90e1f9`가 보드의 CANBUS UUID입니다.
-:::
-  <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
+        ```bash
+        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <보드 CANBUS UUID>
+        ```
+    ::: tip 주의
+       * 아래 그림에서 `f95cee90e1f9`는 보드의 CANBUS UUID입니다.
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
+    * Katapult로 다시 설정한 후, 다음 명령어를 사용하여 보드 ID를 검색하십시오. 아래 그림과 같은 ID가 표시되어야 합니다 (참고: 그림에 표시된 ID는 예시이며, 각 보드마다 ID는 다릅니다).
 
-- Katapult로 재설정한 후, 다음 명령어를 사용하여 보드 ID를 검색합니다. 아래 그림과 같은 ID가 표시되어야 합니다 (참고: 그림에 표시된 ID는 예시이며 각 보드의 ID는 다릅니다).
+        ```bash
+        ls /dev/serial/by-id/*
+        ```
+    ::: tip 주의
+        아래 그림에서 `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`이 보드의 ID입니다.
+    :::
+        <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
 
-  ```bash
-  ls /dev/serial/by-id/*
-  ```
-::: 팁 주의
-- 아래 그림의 `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`가 보드의 ID입니다.
-:::
-  <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
+    * 새로운 펌웨어를 컴파일한 후 실행하십시오. `<보드 ID>`는 이전 단계에서 검색한 ID로 대체하십시오.
 
-- 새로운 펌웨어 컴파일이 완료된 후 실행해야 합니다. `<your_board_id>`를 이전 단계에서 검색한 ID로 대체해 주세요.
+        ```bash
+        cd ~/klipper/ && make flash FLASH_DEVICE=<보드 ID>
+        ```
+       <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
+    </TabItem>
 
-  ```bash
-  cd ~/klipper/ && make flash FLASH_DEVICE=<your_board_id>
-  ```
-  <ImageView image={require('@site/docs/General/dfu-flash/img/katapult5.webp').default} size="100%" align="center" />
-</TabItem>
 </Tabs>
 
-## 펌웨어 오류 해결 방법
+## 펌웨어 플래시 오류 해결 방법
 
-- 보드 전원을 끈 후 다시 전원을 켜고, 보드 리셋을 두 번 빠르게 클릭하면 됩니다.
-- 또는 윈도우에서 펌웨어를 지운 후 BL을 다시 플래시할 수 있습니다.
+* 보드 전원을 끈 후 재가동하면, 리셋 버튼을 빠르게 두 번 클릭하여 다시 플래시 모드로 진입할 수 있습니다.
+* 또는 Windows/호스트 PC를 사용하여 katapult 펌웨어를 재플래시하십시오.<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter_dfu_flash_mode">katapult 펌웨어 플래시</Button>

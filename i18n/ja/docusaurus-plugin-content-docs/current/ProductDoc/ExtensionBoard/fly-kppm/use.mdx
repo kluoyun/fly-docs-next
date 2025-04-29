@@ -1,0 +1,156 @@
+---
+sidebar_position: 2
+---
+
+
+
+# KPPMの使用方法
+
+  FLY-KPPMインストール電源オフモジュールは、ラズベリーパイなどの開発ボード専用のセーフティモジュールで、停電によるデータ損失を防ぐことを目的としています。先進的な技術を採用しており、停電が発生した際にキャパシタ電源に自動的に切り替わり、開発ボードが停電しても安定して稼働し、データを効果的に保存できるよう15秒間保証します。コンパクトで設置も簡単です。
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.webp').default} size="60%" align="center" />
+
+
+## 注意事項
+
+  :::danger 注意
+  入力電源はDC12-24Vのみ対応です。接続時には正負極を明確に区別し、接続作業は必ず停電状態で行い、接続に誤りがないことを確認してから電源投入してください。接続ミスによる損害については弊社では責任を負いかねます。
+  :::
+
+  :::danger 注意
+  5V OUTソケットの+5Vは緊急電源出力であり、通常の電源供給には使用せず、USB-OUTまたはSIG/IOを使用して上位機器に電力を供給してください。
+  :::
+
+  :::danger 注意
+  安全シャットダウンモジュールを使用する際は、12V-24V電源で動作させる必要があります。モジュールが正常に動作するためには、安全シャットダウンモジュール基板内の5V出力電圧が4.9V以上であることが必要です。それ以外の場合、安全シャットダウンモジュールが内部で昇圧し、コンデンサが常に充電状態になり続け、モジュールが過熱する可能性があります。
+  :::
+
+
+## スクリーン表示内容の説明
+
+
+    | スクリーン内容の説明 | 左側説明 | 右側パラメータ | 右側説明 |
+    | :------------------ | :------: | :-----------: | :-------: |
+    | `IN:` | 入力電圧 | `OUT:` | 出力電圧 |
+    | `CA:` | キャパシタ全体の電圧 | `OI:` | 出力負荷電流 |
+    | `C1:` | C1キャパシタ電圧 | `C2:` | C2キャパシタ電圧 |
+    | `Temp:` | 安全シャットダウンモジュールの温度 | `E:` | 状態のヒント、下記をご覧ください |
+
+    | 表示内容 | 状態説明 |
+    | :-----: | :-----: |
+    | `Ready!` | 正常起動中 |
+    | `IN LOW!` | 入力電圧低 |
+    | `IN OVR!` | 出力電流過大 |
+    | `OV LOE!` | 出力電圧低 |
+    | `OV OVR` | 出力電流過大 |
+    | `TP OVR!` | 温度過高 |
+    | `NONE` | 不明なエラー |
+    | `R: XX Sec` | 10秒以内に電源が切れ再投入するとこのメッセージが表示され、カウントダウン後に上位機器が再起動します |
+
+
+## 外殻および設置モデルのダウンロード
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/KPPM.zip
+    ```
+
+## ピンの説明
+
+  * OUT-RST リセット
+  * OUT-PDN 電源オフ
+
+  * IN-PIN 
+
+    デフォルトではプルアップされています。モジュールが電源投入時に最後の電源落ち時間を自動検出します。
+    電源落ち時間が10秒未満の場合、10秒後に自動的に5V出力を一度オン/オフします（上位機器が正常にシャットダウンし、再起動できるように）。
+    GNDに接続すると、自動的に電源落ち時間の検出機能が無効になります。
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.webp').default} size="70%" align="center" />
+
+## FLY上位機器での使用方法
+
+  :::info
+  FLY-Pi FLY-Pi-V2 FLY-C8専用
+  :::
+
+  FLY上位機器ではSSHを使用して以下のコマンドを実行してください。
+
+  ```bash
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
+  ```
+
+  システムを再起動してください。
+
+  ```bash
+  sudo reboot
+  ```
+  
+### FLY上位機器への接線方法
+
+  <Tabs>
+      <TabItem value="serial" label="FLY上位機器への接線方法" default>
+
+          <Tabs>
+              <TabItem value="1" label="FLY-C8 5V接線を使用" default>
+                  * FLY-C8は5V接線を使用し、図を参考に接線をチェックしてください。
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/c81.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="FLY-C8 USB接線を使用" default>
+                  * FLY-C8はUSB接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="3" label="FLY-Pi(π) 5V接線を使用" default>
+                  * FLY-Piは5V接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="4" label="FLY-Pi(π) USB接線を使用" default>
+                  * FLY-PiはUSB接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="5" label="FLY-Pi-V2 5V接線を使用" default>
+                  * FLY-Pi-V2は5V接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="6" label="FLY-Pi-V2 USB接線を使用" default>
+                  * FLY-Pi-V2はUSB接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="7" label="FLY-gemini USB接線を使用" default>
+                  * FLY-Pi-V2はUSB接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_gemini_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="8" label="FLY-lite2.1 USB接線を使用" default>
+                  * FLY-Pi-V2はUSB接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_lite2.1_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+            
+          </Tabs>
+      </TabItem>
+  </Tabs>
+
+## Raspberry Pi 上位機器での使用方法
+
+  Raspberry Piの場合も上記の手順と同様です。Raspberry Piではシステムイメージが入ったSDカードをパソコンに挿し込み、config.txtファイルに`dtoverlay=gpio-shutdown,gpio_pin=21`というコマンドを追加し、保存して終了してください。
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.webp').default} size="70%" align="center" />
+
+          <Tabs>
+              <TabItem value="1" label="Raspberry Pi 5V接線を使用" default>
+                  * Raspberry Piは5V接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.webp').default} size="60%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Raspberry Pi USB接線を使用" default>
+                  * Raspberry PiはUSB接線を使用します。
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.webp').default} size="60%" align="center" />
+              </TabItem>
+          </Tabs>
