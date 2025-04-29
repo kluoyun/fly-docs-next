@@ -1,0 +1,155 @@
+---
+sidebar_position: 2
+---
+
+
+
+# KPPM 사용하기
+
+  FLY-KPPM 전원 관리 모듈은 Raspberry Pi와 같은 개발 보드를 위한 안전 모듈로, 정전으로 인해 데이터 손실이 발생하는 문제를 방지하기 위해 설계되었습니다. 선진 기술을 적용하여 정전이 발생할 경우 자동으로 커패시터 전원으로 전환되어, 개발 보드가 정전 상황에서도 안정적으로 15초 동안 작동하며 데이터를 효과적으로 저장할 수 있도록 합니다. 작고 편리하며 설치가 간단합니다.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.webp').default} size="60%" align="center" />
+
+
+## 주의사항
+
+  :::danger 주의
+  입력 전원은 DC12-24V만 지원하며, 배선 시 양극과 음극을 구분해야 하며, 배선 과정은 반드시 절전 상태에서 진행해야 하며, 배선이 올바른지 확인한 후에 전원을 공급해야 합니다. 잘못된 배선으로 인한 손실에 대해 우리 회사는 책임을 지지 않습니다.
+  :::
+
+  :::danger 주의
+  5V OUT 소켓의 +5V는 비상 전원 출력용이며, 일반적인 전원 공급용으로 사용하지 마십시오. USB-OUT 또는 SIG/IO를 사용하여 상위 기기의 전원을 공급하세요.
+  :::
+
+  :::danger 주의
+  안전 전원 관리 모듈과 함께 사용할 경우, 반드시 12V-24V 전원을 공급해야 합니다. 모듈이 정상적으로 작동하기 위해 안전 전원 관리 모듈 보드 내부의 5V 출력 전압이 4.9V 미만이 되지 않도록 해야 하며, 그렇지 않을 경우 안전 전원 관리 모듈이 내부 증식 전원을 사용하게 되어 캡aci터가 지속적으로 충전되며 모듈이 지속적으로 발열됩니다.
+  :::
+
+
+## 화면 표시 내용 설명
+
+
+    | 화면 내용 설명   |      왼쪽 설명        |      오른쪽 파라미터        |      오른쪽 설명        |
+    | :------------- | :------------------: | :----------------------: | :--------------------: |
+    | `IN:`            |  입력 전압            |  `OUT:`                  |  출력 전압              |
+    | `CA:`            |  총 커패시터 전압      |  `OI:`                   |  출력 부하 전류          |
+    | `C1:`            |  C1 커패시터 전압      |  ` C2:`                  |  C2 커패시터 전압        | 
+    | `Temp:`          |  안전 전원 관리 모듈 온도 | ` E:`                    |  상태 메시지, 아래 참조 | 
+
+
+    | 표시 내용        |      상태 설명       |
+    | :------------- | :-----------------: | 
+    | ` Ready!`          |  정상开机            |
+    | ` IN LOW!`         |  입력 전압 저하      |
+    | ` IN OVR!`         |  출력 전류 과다      |
+    | ` OV LOE!`         |  출력 전압 저하      |
+    | ` OV OVR`          |  출력 전류 과다      |
+    | ` TP OVR!`         |  온도 과다           |
+    | ` NONE `           |  알 수 없는 오류     |
+    | ` R: XX Sec `      |  만약 10초 이내에 정전 후 전원을 다시 공급하면 이 메시지가 표시됩니다. 카운트다운이 종료된 후 상위 기기를 재시작해야 합니다.            |
+
+## 외장 및 설치 모델 다운로드
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/KPPM.zip
+    ```
+
+## 핀 설명
+
+  * OUT-RST 리셋
+  * OUT-PDN 전원 끄기
+
+  * IN-PIN 
+
+    기본적으로 높게 설정되어 있으며, 모듈이 전원에 연결될 때 마지막 정전 시간을 자동으로 검출합니다.
+  만약 정전 시간이 10초 미만일 경우, 10초 후 자동으로 5V 출력을 스위치합니다 (상위 기기가 정상적으로 꺼지고 다시 시작할 수 있도록). GND에 연결할 경우 자동으로 정전 시간 검출 기능을 비활성화합니다.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.webp').default} size="70%" align="center" />
+
+## FLY 상위 기기 사용 방법
+
+  :::info
+  FLY-Pi FLY-Pi-V2 FLY-C8에만 해당됩니다.
+  :::
+
+  FLY 상위 기기에서는 SSH를 사용하여 아래 명령어를 실행해야 합니다.
+
+  ```bash
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
+  ```
+
+  시스템을 재시작합니다.
+
+  ```bash
+  sudo reboot
+  ```
+  
+### FLY 상위 기기 배선 방법
+
+  <Tabs>
+      <TabItem value="serial" label="FLY 상위 기기 배선 방법" default>
+
+          <Tabs>
+              <TabItem value="1" label="FLY-C8 5V 사용" default>
+                  * FLY-C8는 5V를 사용하며, 그림을 참조하여 배선을 확인하세요.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/c81.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="FLY-C8 USB 사용" default>
+                  * FLY-C8는 USB를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="3" label="FLY-Pi(π) 5V 사용" default>
+                  * FLY-Pi는 5V를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="4" label="FLY-Pi(π) USB 사용" default>
+                  * FLY-Pi는 USB를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="5" label="FLY-Pi-V2 5V 사용" default>
+                  * FLY-Pi-V2는 5V를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="6" label="FLY-Pi-V2 USB 사용" default>
+                  * FLY-Pi-V2는 USB를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="7" label="FLY-gemini USB 사용" default>
+                  * FLY-gemini는 USB를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_gemini_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="8" label="FLY-lite2.1 USB 사용" default>
+                  * FLY-lite2.1는 USB를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_lite2.1_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+            
+          </Tabs>
+      </TabItem>
+  </Tabs>
+
+## Raspberry Pi 상위 기기 사용 방법
+
+  Raspberry Pi의 경우 위와 유사하게 작동하며, Raspberry Pi에는 시스템 이미지를 삽입한 SD 카드를 컴퓨터에 삽입하고, config.txt 파일에 `dtoverlay=gpio-shutdown,gpio_pin=21` 명령어를 추가한 후 저장하고 종료하면 됩니다.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.webp').default} size="70%" align="center" />
+
+          <Tabs>
+              <TabItem value="1" label="Raspberry Pi 5V 사용" default>
+                  * Raspberry Pi는 5V를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.webp').default} size="60%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Raspberry Pi USB 사용" default>
+                  * Raspberry Pi는 USB를 사용합니다.
+
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.webp').default} size="60%" align="center" />
+              </TabItem>
+          </Tabs>

@@ -127,7 +127,7 @@ class Translater:
             if os.path.exists(target_file):
                 # 已存在翻译文件，跳过
                 continue
-            if file.endswith("cfg.mdx") or file.endswith("voron0.mdx"):
+            if file.endswith("cfg.mdx") or file.endswith("voron0.mdx") or file.endswith("LED_Effect.mdx"):
                 # 暂不翻译cfg，跳过
                 continue
             tr_file_list.append({"src_file": file, "target_file": target_file})
