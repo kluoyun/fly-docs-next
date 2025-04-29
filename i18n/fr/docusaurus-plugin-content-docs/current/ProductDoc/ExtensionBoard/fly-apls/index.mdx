@@ -1,0 +1,99 @@
+---
+sidebar_position: 1
+---
+
+# Introduction
+Le module de pression APLS est une solution de détection de pression basée sur ADS131M02, conçue spécialement pour l'autorégulation automatique de la tête Z et le nivellement par grille des imprimantes 3D. Grâce à une détection de pression sensible et un traitement de signal en temps réel, le module peut percevoir avec précision l'état de contact entre l'extrudeuse et la plaque d'impression, permettant une précision de nivellement au millimètre, éliminant les erreurs de calibration mécanique traditionnelles et améliorant sensiblement le taux de réussite de la première couche.
+
+## Utilisation du module de pression APLS
+
+### Recommandation d’utiliser la fonction d’essuyage
+Lors de l’utilisation du module de pression APLS, il est recommandé de l’utiliser avec la fonction d’essuyage afin de garantir la propreté de l’embout et d’améliorer ainsi la précision et la stabilité du nivellement.
+
+#### Schéma de câblage XH2.54 4Pin
+Le module peut être directement connecté à l’interface UART de la carte mère ou branché sur l’interface UART d’une carte d’extension. Si vous n’avez pas d’interface UART, vous pouvez trouver deux broches sur la carte mère, en veillant à ce que le polarité de l’alimentation soit correcte.
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-APLS/img/uart.webp').default} size="100%" align="center" />
+
+### Consignes d'installation
+1. Assurez-vous que le module est bien fixé pour éviter tout contact défectueux pendant l’impression due aux vibrations.
+2. Vérifiez que les câblages sont corrects pour éviter tout dysfonctionnement du module en raison d’un mauvais raccordement.
+3. Avant la première utilisation, il est conseillé de réaliser plusieurs tests de nivellement pour vérifier que la sensibilité et la précision du module correspondent à vos attentes.
+
+## Affichage de l’état des LED
+- **État allumé**: La LED dans une boîte verte reste allumée, indiquant que le module fonctionne normalement.
+- **État déclenché**: La LED dans une boîte rouge s’éteint, indiquant que le module est en état déclenché.
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-APLS/img/LED.webp').default} size="20%" align="center" />
+
+### Dépannage des LED
+- Si la LED ne s’allume pas, vérifiez que les connexions d'alimentation sont correctes.
+- Si la LED clignote continuellement, cela peut indiquer qu'un signal anormal a été détecté. Vérifiez si le capteur est coincé par un objet ou endommagé.
+
+## Guide de configuration
+Il est nécessaire de remplacer les sections `probe` et `home` dans le fichier de configuration existant par la configuration suivante :
+
+### Exemple de fichier de configuration
+Voici le contenu de la configuration recommandée, adaptez-le selon vos besoins :
+
+
+```cfg
+[homing_override]
+axes: xyz
+set_position_z:10
+gcode:
+       G91
+       G1 Z10 F3000
+       G90
+        SET_PIN PIN=_probe_ready VALUE=0
+        ## _LIFT_Z
+       {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+
+       {% if home_all or 'X' in params %}
+            G28 X
+       {% endif %}
+
+       {% if home_all or 'Y' in params %}
+            G28 Y
+            G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
+       {% endif %}
+
+       {% if home_all or 'Z' in params %}
+       # Si vous utilisez également eddy avec le capteur de pression, décommentez la ligne ci-dessous
+            #SET_PIN PIN=_probe_ready VALUE=1 
+            G28 Z 
+            #SET_PIN PIN=_probe_ready VALUE=0
+            G1 Z10 F3000           
+        {% endif %}
+
+[output_pin _probe_ready]
+pin: PA9
+shutdown_value: 0
+
+[probe]
+pin: PA10
+x_offset: 0                  # Décalage X - position relative du capteur par rapport à l'embout
+y_offset: 0               # Décalage Y - position relative du capteur par rapport à l'embout
+z_offset:0                # Décalage Z - position relative du capteur par rapport à l'embout
+speed: 8                 # Vitesse de nivellement
+samples: 3                   # Nombre d'échantillons
+samples_result: median       # Méthode de sélection des valeurs (par défaut : médiane)
+sample_retract_dist: 2     # Distance de retrait lors du nivellement
+samples_tolerance: 0.05      # Tolérance d'échantillonnage (remarque : une valeur trop petite peut augmenter le nombre d'échantillons)
+samples_tolerance_retries: 3 # Nombre de tentatives de reprise en cas de dépassement de tolérance
+activate_gcode:
+           G4 P500
+           SET_PIN PIN=_probe_ready VALUE=1
+deactivate_gcode:
+           SET_PIN PIN=_probe_ready VALUE=0  
+```
+
+### Référence pour ajuster la valeur Z Offset
+Utilisez cette commande pour ajuster z-offset :
+```gcode
+PROBE_CALIBRATE
+```
+
+- Avant d'ajuster la valeur `z-offset`, veuillez consulter la documentation de Klipper : [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+
+:::info Remarque
+- Si vous souhaitez utiliser le module de pression comme limiteur Z, remplacez la configuration `endstop_pin` par : `endstop_pin: probe:z_virtual_endstop`
+:::
