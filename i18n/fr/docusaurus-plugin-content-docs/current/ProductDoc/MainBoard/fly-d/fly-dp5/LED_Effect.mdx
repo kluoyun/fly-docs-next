@@ -1,0 +1,462 @@
+---
+sidebar_position: 12
+sidebar_label: Contrôle des plugins pour les DEL
+---
+
+
+* Veuillez activer la traduction automatique de la page web
+
+# Effets des DEL
+
+Les DEL adressables commencent à supplanter les DEL RGB en raison de leur flexibilité et de l'aisance relative de leur utilisation. Chaque élément individuel est capable d'afficher tout le spectre des couleurs à une vitesse très élevée, ce qui permet de créer une variété d'effets d'éclairage.
+
+# Configuration des bandes
+
+Dans votre fichier de configuration, chaque bande ou chaîne connectée à un broche IO doit avoir une définition. Chaque broche de données (et horloge si applicable) de la bande est définie ainsi que le nombre de DEL dans la chaîne. Les instances d'effets de DEL sont capables d'utiliser plusieurs bandes de types et ordres de couleur différents simultanément, mais chaque bande doit d'abord être définie par son type.
+
+```cfg
+[neopixel panel_ring]
+pin:                     ar6
+chain_count:             16
+```
+
+# Configuration des effets
+
+Les effets, dans un sens plus abstrait, sont un _état_ dans lequel se trouvent les bandes. Les effets peuvent être composés d'une seule DEL ou de 100. Il peut y avoir une couche d'effet unique ou 10. Tout est arbitraire et extensible. Cela signifie que la seule limite du nombre de couches et de DEL pouvant fonctionner simultanément est la puissance de traitement dont est capable le système d'exploitation hôte. Lors des premiers tests, plus de 100 DEL et 12 couches d'effets ont été exécutées simultanément sur un Raspberry Pi 4 à 24 images par seconde.
+
+## Définition de base des couches
+
+Pour notre imprimante exemple, il existe une seule bague de Neopixel avec 16 DEL située sur le panneau avant, et une courte section de DEL Neopixel à côté de l'embout chauffant pour éclairer l'impression.
+
+Il y a également 5 DEL Dotstar situées sous le lit. Les numéros de broche mentionnés ici sont entièrement imaginaires.
+
+```cfg
+[neopixel panel_ring]
+pin:                     ar6
+chain_count:             16
+
+[neopixel tool_lights]
+pin:                     ar15
+chain_count:             6
+
+[dotstar bed_lights]
+data_pin:                ar21
+clock_pin                ar22
+chain_count:             5
+```
+
+Nous aimerions que la bague s'allume d'une teinte légèrement bleue lorsque l'imprimante se met en ligne, et nous voulons que la luminosité fasse une respiration entrante et sortante.
+
+```cfg
+[led_effect panel_idle]
+autostart:              true
+frame_rate:             24
+leds:
+    neopixel:panel_ring
+layers:
+    breathing  10 1 top (.5,.5,1)
+```
+
+Cela a défini un effet appelé `panel_idle`.
+
+### Contrôle des effets
+Les effets peuvent être actifs ou inactifs. Les effets inactifs n'envoient aucune donnée de couleur, tandis que les effets actifs retournent des données de couleur qui sont additionnées pour chaque DEL qu'ils utilisent.
+
+#### Activation et désactivation des effets
+L'effet exemple peut être activé en exécutant la commande GCode `SET_LED_EFFECT EFFECT=panel_idle`. Pour arrêter tous les effets actuellement en cours d'exécution sur les DEL que le nouvel effet utilise, définissez le paramètre `REPLACE` à 1 : `SET_LED_EFFECT EFFECT=panel_idle REPLACE=1`
+Exécuter la commande `SET_LED_EFFECT EFFECT=panel_idle STOP=1` désactive cet effet particulier à nouveau.
+Pour désactiver tous les effets, nous pouvons utiliser la commande GCode `STOP_LED_EFFECTS`.
+Pour désactiver uniquement certains effets pour certaines DEL, nous pouvons spécifier le paramètre LEDS : `STOP_LED_EFFECTS LEDS="neopixel:panel_ring"` Vous pouvez également spécifier des indices (voir ci-dessous) : `STOP_LED_EFFECTS LEDS="neopixel:panel_ring (1-7)"`. Seul un paramètre LED peut être spécifié à la fois. Pour arrêter les effets pour plusieurs DEL, nous devons exécuter la commande plusieurs fois.
+
+#### Transition d'entrée et de sortie
+Les effets peuvent être atténués en entrée et en sortie en spécifiant le paramètre `FADETIME` :
+`SET_LED_EFFECT EFFECT=panel_idle FADETIME=1.0` atténue l'effet en entrée pendant une seconde. Exécuter `SET_LED_EFFECT EFFECT=panel_idle STOP=1 FADETIME=1.0` l'atténue en sortie en une seconde. Nous pouvons également atténuer tous les effets en exécutant `STOP_LED_EFFECTS FADETIME=1.0`. Il est également possible de faire une transition croisée entre les effets en utilisant le paramètre `REPLACE` avec `SET_LED_EFFECT` (voir ci-dessus) : `SET_LED_EFFECT EFFECT=panel_idle REPLACE=1 FADETIME=1.0`
+
+### Paramètres supplémentaires des couches d'effets
+
+autostart: true
+Démarrage de l'effet au démarrage
+
+frame_rate:
+Définit la fréquence d'images en images par seconde pour l'effet
+
+run_on_error:
+(Besoins d'un micrologiciel MCU patché. Actuellement non pris en charge.)
+
+heater:
+Spécifie le chauffage à utiliser pour un effet de chauffage. Utilisez `extruder` pour l'extrudeuse et `heater_bed` pour le lit. Pour les ventilateurs ou capteurs de température, ajoutez le type et utilisez des guillemets.
+Exemple : `heater: "temperature_fan myfan"`
+
+analog_pin:
+Spécifie la broche à utiliser pour les effets utilisant un signal analogique.
+
+stepper:
+Spécifie l'axe à utiliser pour l'effet de pas. Valeurs possibles : `x`, `y` et `z`. Exemple : `stepper: x`
+
+endstops:
+Spécifie les limites de fin que l'effet de mise à zéro déclenche. Plusieurs limites de fin peuvent être spécifiées sous forme de liste séparée par des virgules. Valeurs possibles : `x`, `y`, `z` et `probe`.
+Exemple : `endstops: x, y`
+
+## Définition des DEL
+
+La section `leds:` est une liste de bandes Neopixel ou Dotstar qui constitueront l'effet. Les deux types peuvent être utilisés pour le même effet. Chaque bande est définie sur une ligne séparée et indentée sous la section `leds:`.
+
+```cfg
+leds:
+    neopixel:panel_ring
+    neopixel:tool_lights
+    dotstar:bed_lights
+```
+
+De plus, il est possible de décider que certaines DEL affichent uniquement l'effet. Cela est accompli en fournissant l'index des DEL à utiliser après le nom de la bande. L'index peut être une liste ou une plage. La plage peut également être inversée pour inverser l'effet. Si les indices sont omis, toute la bande est utilisée.
+
+De même, si pour une raison quelconque vous en aviez besoin, la même bande peut être utilisée deux fois dans un effet avec des émetteurs différents spécifiés.
+
+```cfg
+leds:
+    neopixel:tool_lights
+    neopixel:panel_ring  (1-7)
+    neopixel:panel_ring  (16-9)
+    dotstar:bed_lights   (1,3,5)
+```
+
+## Définition des couches d'effets
+Les effets sont générés sous forme de cadres. Chaque cadre contient le nombre de pixels égal au nombre de DEL définies pour l'effet. Par conséquent, un effet avec 22 DEL spécifiées aurait 22 pixels par cadre.
+
+Chaque couche d'effet est générée sous forme de cadre. Chaque cadre de couche est mélangé avec le suivant pour générer l'effet. Le mélange est cumulatif et le mode de mélange est défini par le mode de mélange de la couche supérieure.
+Chaque couche d'effet est répertoriée sur sa propre ligne et chaque ligne a ses propres paramètres.
+
+La plupart des couches d'effets tels que breathing et gradient sont prérendues lorsqu'on démarre Klipper afin d'économiser des calculs plus tard. D'autres comme Fire et Twinkle sont rendues sur demande.
+
+Chaque couche est définie avec les paramètres suivants
+ * Nom de la couche
+ * Taux d'effet
+ * Seuil
+ * Mode de mélange
+ * Palette de couleurs
+
+Chaque couche doit être sur une seule ligne et chaque ligne doit être indentée.
+Les palettes de couleurs peuvent être de longueur illimitée mais peuvent être compressées en fonction de la taille du cadre ou du nombre de DEL sur une bande. Les couleurs sont définies sous forme de groupes de Rouge, Vert, Bleu et (optionnellement) Blanc. Le canal blanc n'est utilisé que sur les DEL RGBW et ignoré sur les DEL RGB. L'intervalle pour chaque couleur est un nombre décimal compris entre 0,0 et 1,0. Ainsi, pour le jaune, vous utiliseriez (1,0,0,0). Pour le blanc, vous utiliseriez (1,0,0) sur une DEL RGB ou (0,0,0,1) sur une DEL RGBW.
+
+Les couleurs individuelles doivent être encadrées par des parenthèses et séparées par des virgules.
+
+Quelques exemples de palettes :
+
+    Arc-en-ciel    (1.0, 0.0, 0.0),(0.0, 1.0, 0.0),(0.0, 0.0, 1.0)
+    Feu            (0.0, 0.0, 0.0),(1.0, 0.0, 0.0),(1.0, 1.0, 0.0),(1.0, 1.0, 1.0)
+    Comète bleue   (0.8, 1.0, 1.0),(0.0, 0.8, 1.0),(0.0, 0.0, 1.0)
+
+```cfg
+layers:
+   breathing  .5 0 screen (0,.1,1), (0,1,.5), (0, 1,1), (0,.1,.5)
+   static     1 0 bottom (1,.1,0), (1,.1,0), (1,.1,0), (1,1,0)
+```
+Il existe plusieurs effets à choisir.
+
+#### Statique
+    Taux d'effet : Non utilisé mais doit être fourni
+    Seuil : Non utilisé mais doit être fourni
+    Palette : Les couleurs sont mélangées uniformément sur la bande
+Une seule couleur est affichée et elle ne change pas. Si une palette de plusieurs couleurs est fournie, les couleurs seront mélangées uniformément le long des DEL en fonction de la différence de teinte.
+
+#### LinearFade
+    Taux d'effet : 3 Durée d'un cycle complet
+    Seuil : 0 Non utilisé mais doit être fourni
+    Palette : Les couleurs sont cyclées dans l'ordre spécifié
+
+Les DEL s'effacent à travers les couleurs. Si une palette de plusieurs couleurs est fournie, elle passera en boucle à travers ces couleurs dans l'ordre dans lequel elles sont spécifiées dans la palette. Le paramètre taux d'effet contrôle le temps nécessaire pour passer par toutes les couleurs.
+
+#### Respiration
+    Taux d'effet : 3 Durée d'un cycle complet
+    Seuil : 0 Non utilisé mais doit être fourni
+    Palette : Les couleurs sont cyclées dans l'ordre spécifié
+
+Les couleurs s'estompent et redeviennent visibles. Si une palette de plusieurs couleurs est fournie, elle passera en boucle à travers ces couleurs dans l'ordre dans lequel elles sont spécifiées dans la palette. Le paramètre taux d'effet contrôle le temps nécessaire pour "respirer" une fois.
+
+#### Clignotement
+    Taux d'effet : 1 Durée d'un cycle complet
+    Seuil : 0,5 Rapport du temps où les DEL sont allumées (compris entre 0 et 1)
+    Palette : Les couleurs sont cyclées dans l'ordre spécifié
+
+Les DEL sont complètement allumées et complètement éteintes en fonction du taux d'effet. Si une palette de plusieurs couleurs est fournie, elle passera en boucle à travers ces couleurs dans l'ordre.
+
+#### Stroboscope
+    Taux d'effet : 1 Nombre de fois par seconde où elles strobent
+    Seuil : 1,5 Détermine le taux de décroissance. Un nombre plus élevé donne une décroissance plus rapide
+    Palette : Les couleurs sont cyclées dans l'ordre spécifié
+
+Les DEL sont complètement allumées puis atténuées progressivement avec une décroissance. Si une palette de plusieurs couleurs est fournie, elle passera en boucle à travers ces couleurs dans l'ordre. Le paramètre taux d'effet contrôle le nombre de fois par seconde où les lumières strobent. Le paramètre seuil contrôle le taux de décroissance. Un bon taux de décroissance est 1,5.
+
+#### Scintillement
+    Taux d'effet : 1 Augmente la probabilité qu'une DEL s'allume.
+    Seuil : .25 Détermine le taux de décroissance. Un nombre plus élevé donne une décroissance plus rapide
+    Palette : Couleur choisie aléatoirement
+Éclairs de lumière avec décroissance le long d'une bande. Si une palette est spécifiée, une couleur aléatoire est choisie dans la palette.
+
+#### Gradient
+    Taux d'effet : 1 Fréquence de passage du gradient, les valeurs négatives changent la direction.
+    Seuil : 1 Nombre de gradients sur la chaîne
+    Palette : Gradient linéaire avec espacement uniforme.
+Les couleurs de la palette sont mélangées en un gradient linéaire le long de la bande. Le paramètre taux d'effet contrôle la vitesse à laquelle les couleurs passent. Une valeur négative pour le taux d'effet change la direction dans laquelle le gradient passe (droite vers gauche versus gauche vers droite). Le seuil détermine la longueur du gradient par rapport à la longueur de la chaîne. Plus la valeur est grande, plus le gradient est court (par exemple, une valeur de 2 signifie 2 gradients sur la longueur de la chaîne).
+
+#### Motif
+    Taux d'effet : 1 Temps entre les changements de motif
+    Seuil : 1 Combien de positions de DEL le motif se déplace
+    Palette : Le motif à déplacer
+La palette est appliquée sous forme de motif récurrent sur la chaîne et se déplace le long de celle-ci. Le taux d'effet détermine le temps entre les déplacements en secondes, le seuil détermine la quantité de positions de DEL que le motif se déplace.
+
+#### Comète
+    Taux d'effet : 1 Vitesse de mouvement de la comète, les valeurs négatives changent la direction
+    Seuil : 1 Longueur de la queue (quelque peu arbitraire)
+    Palette : Couleur de la "tête" et gradient de la "queue"
+Une lumière se déplace à travers les DEL avec une traînée d'atténuation. La direction peut être contrôlée en utilisant une valeur négative pour le taux d'effet. Les couleurs de la palette déterminent la couleur de la comète et de la traînée. La première couleur de la palette définit la couleur de la "tête" de la comète et les couleurs restantes sont mélangées dans la "queue".
+
+#### Chasse
+    Taux d'effet : 1 Vitesse de mouvement de la comète, les valeurs négatives changent la direction
+    Seuil : 1 Longueur de la queue (quelque peu arbitraire)
+    Palette : Couleur de la "tête" et gradient de la "queue"
+Paramètres identiques à Comète, mais avec plusieurs lumières en chasse les unes derrière les autres.
+
+#### Chauffage
+    Taux d'effet : 1 Température minimale pour activer l'effet
+    Seuil : 0 Désactive l'effet une fois atteinte la température
+    Palette : Valeurs de couleur pour mélanger de Froid à Chaud
+Cet effet devient actif lorsque le chauffage spécifié est activé ou lorsque la température est supérieure à la température minimale spécifiée. Par exemple, si un chauffage est activé et réglé sur une température cible, les DEL passeront en boucle à travers les couleurs de gradient jusqu'à ce que la température cible soit atteinte. Une fois atteinte, la dernière couleur du gradient est utilisée et l'effet est essentiellement une couleur statique jusqu'à ce que l'état du chauffage change. Si le paramètre seuil est fourni, l'effet sera désactivé une fois que la température cible est atteinte. Si le chauffage est désactivé, les couleurs suivront ce modèle en sens inverse jusqu'à ce que la température tombe en dessous de la température minimale spécifiée dans la configuration. Cela peut être utilisé pour indiquer que la buse ou le lit est dans un état sûr pour le toucher.
+
+#### Température
+    Taux d'effet : 20 Température froide
+    Seuil : 80 Température chaude
+    Palette : Valeurs de couleur pour mélanger de Froid à Chaud
+La température du chauffage configuré détermine la couleur dans un gradient sur la palette. Lorsque seul une couleur est définie dans la palette, la luminosité de cette couleur est définie par la température.
+
+#### Feu
+    Taux d'effet : 45 Probabilité de "étinceler"
+    Seuil : 40 Taux de "refroidissement"
+    Palette : Valeurs de couleur pour mélanger de "Froid" à "Chaud"
+La bibliothèque FastLED pour Arduino inclut un exemple de programme appelé Fire2012WithPalette. Cet effet est une adaptation de ce programme. Il simule une flamme en "étincellant" une DEL. La "chaleur" de cette DEL voyage le long de la longueur des DEL où elle se refroidit graduellement. Un taux plus élevé d'étincellements provoque une accumulation plus importante de chaleur à la base de la bande, ce qui produit une flamme plus intense. Modifier le taux de refroidissement entraîne des flammes plus longues ou plus courtes.
+
+#### FeuChauffage
+    Taux d'effet : 1 Température minimale pour activer l'effet
+    Seuil : 0 Désactive l'effet une fois atteinte la température
+    Palette : Valeurs de couleur pour mélanger de "Froid" à "Chaud"
+L'effet feu mais réactif à la température du chauffage spécifié. La flamme commence par un petit braise et augmente en intensité à mesure que la température cible du chauffage est atteinte. Si le paramètre seuil est fixé à 1, l'effet sera désactivé une fois que la température cible est atteinte, sinon il restera actif jusqu'à ce que le chauffage soit désactivé.
+
+#### AnalogPin
+    Taux d'effet : 10 Multiplicateur pour le signal d'entrée
+    Seuil : 40 Seuil minimal pour déclencher l'effet
+    Palette : Valeurs de couleur à mélanger
+Cet effet utilise la valeur lue sur une broche analogique pour déterminer la couleur. Si plusieurs couleurs sont spécifiées dans la palette, il en choisit une en fonction de la valeur de la broche. Si une seule couleur est spécifiée, la luminosité est proportionnelle à la valeur de la broche. Un exemple d'utilisation serait de connecter un potentiomètre analogique qui contrôle la luminosité d'une bande de DEL. De manière interne, la tension d'entrée est mesurée en pourcentage de tension par rapport à aref. Une autre utilisation pourrait être d'attacher le fil de vitesse d'un ventilateur s'il dispose d'un tachymètre. Il doit être utilisé avec prudence car trop de courant ou une tension trop élevée peut endommager une broche ou détruire une carte de contrôle.
+
+#### Pas
+    Taux d'effet : 4 Nombre de DEL traînantes
+    Seuil : 4 Nombre de DEL menantes
+    Palette : Valeurs de couleur à mélanger
+La position du moteur pas à pas spécifié est représentée par la première couleur de la palette. Les autres couleurs du gradient sont mélangées et miroirées de part et d'autre. À mesure que la position du pas change par rapport à la longueur de l'axe, les lumières montent et descendent le long de la bande. Il convient de noter que l'effet lui-même met à jour la position du pas toutes les demi-secondes en se basant sur la position signalée du pas, de manière similaire à la commande GCODE GET_POSITION. Ce n'est pas en temps réel. Une valeur négative dans le taux d'effet remplira toute la bande menant jusqu'à la position du pas, une valeur négative dans le seuil remplira toute la bande après la position du pas.
+
+#### PasCouleur
+    Taux d'effet : 1 Échelle de la position
+    Seuil : 0 Décalage de la position
+    Palette : Valeurs de couleur à mélanger
+La couleur des DEL est déterminée par la position du moteur pas à pas. La position est déterminée entre 0 et 100 et multipliée par le taux d'effet et le seuil est ajouté en tant qu'offset. Cela détermine alors la valeur dans la palette, qui est calculée comme un gradient sur les valeurs de couleur spécifiées.
+
+#### Barre de progression
+    Taux d'effet : 4 Nombre de DEL traînantes
+    Seuil : 4 Nombre de DEL menantes
+    Palette : Valeurs de couleur à mélanger
+Configuration exactement identique à Pas mais au lieu de signaler la position du pas, cette couche signale la progression de l'impression.
+
+#### Mise à zéro
+    Taux d'effet : 1 Détermine le taux de décroissance. Un nombre plus élevé donne une décroissance plus lente
+    Seuil : 0 Non utilisé, mais doit être fourni
+    Palette : Les couleurs sont cyclées dans l'ordre
+
+Les DEL s'allument pendant le processus de mise à zéro lorsque la limite de fin est activée et s'éteignent à nouveau. Le taux d'effet détermine le temps de la décroissance. Si une palette de plusieurs couleurs est fournie, elle passera en boucle à travers ces couleurs dans l'ordre.
+
+## Mélange des couches d'effet
+Si vous avez déjà utilisé des logiciels de retouche d'image, vous connaissez peut-être le mélange de couleurs entre les calques d'image. Plusieurs techniques de mélange de couleurs courantes ont été ajoutées pour mélanger ensemble les calques de DEL. Les calques définis dans la configuration sont classés du haut vers le bas.
+
+Si trois calques sont définis, le calque inférieur est d'abord mélangé avec le calque du milieu. La couche résultante est ensuite mélangée avec le calque supérieur. Le calque inférieur ne sera jamais mélangé avec quoi que ce soit même si un mode de mélange est spécifié.
+
+Le mélange des calques est toujours évalué du bas vers le haut.
+
+Comme les valeurs ne peuvent pas dépasser 100 % de luminosité et 0 % d'obscurité, elles sont limitées à cette plage sous forme de nombre à virgule flottante (0,0 à 1,0).
+
+#### fond
+Pas de mélange, la valeur du canal de couleur du calque inférieur est utilisée.
+
+#### haut
+Pas de mélange, la valeur du canal de couleur du calque supérieur est utilisée.
+
+#### add
+```cfg
+    ( t + b )
+```
+Les canaux de couleur (Rouge, Vert, Bleu) sont ajoutés les uns aux autres. Cela rend les canaux plus lumineux.
+
+#### soustraire
+```cfg
+    ( b - t )
+```
+Le calque supérieur est soustrait du calque inférieur. Cela entraîne un assombrissement des couleurs similaires.
+
+#### soustraire_b
+```cfg
+    ( t - b )
+```
+Le calque inférieur est soustrait du calque supérieur. Cela entraîne un assombrissement des couleurs similaires.
+
+#### différence
+```cfg
+    ( t - b ) ou ( b - t )
+```
+La couche plus sombre est soustraite de la plus claire des deux.
+
+#### moyen
+```cfg
+    ( t + b ) / 2
+```
+La moyenne des canaux est prise.
+
+#### multiplier
+```cfg
+    ( t * b )
+```
+Les canaux sont multipliés ensemble, ce qui est utile pour assombrir les couleurs.
+
+#### diviser
+```cfg
+    ( t / b )
+```
+Les canaux sont divisés, cela donne des couleurs plus brillantes, souvent vers le blanc.
+
+#### diviser_inv
+```cfg
+    ( b / t )
+```
+Comme diviser, mais le bas divisé par le haut.
+
+#### écran
+```cfg
+    1 - ( 1 - t ) * ( 1 - b )
+```
+Les valeurs sont inversées, multipliées, puis inversées à nouveau. Similaire à diviser, cela donne des couleurs plus brillantes.
+
+#### éclaircir
+```cfg
+    ( t if t > b else b )
+```
+La plus claire des valeurs de canal de couleur est utilisée.
+
+#### assombrir
+```cfg
+    ( t if t < b else b )
+```
+L'opposé de éclaircir, la plus sombre des valeurs de canal de couleur est utilisée.
+
+#### superposer
+```cfg
+    ( 2ab if a > .5 else 1 - 2( 1 - a )( 1 - b ) )
+```
+Superposer est une combinaison de multiplier et écran. Cela a un effet similaire à augmenter le contraste.
+
+# Configurations d'exemple
+
+## das Blinkenlights
+En cas d'erreur critique, toutes les bandes de DEL respirent en rouge simultanément pour fournir un indicateur visible d'une condition d'erreur avec l'imprimante. Cet effet est désactivé pendant les opérations normales et ne démarre que lorsque le MCU entre dans un état d'arrêt (actuellement non pris en charge).
+
+```cfg
+[led_effect critical_error]
+leds:
+    neopixel:tool_lights
+    neopixel:bed_lights
+layers:
+    strobe         1  1.5   add        (1.0,  1.0, 1.0)
+    breathing      2  0     difference (0.95, 0.0, 0.0)
+    static         1  0     top        (1.0,  0.0, 0.0)
+autostart:                             false
+frame_rate:                            24
+run_on_error:                          true
+```
+
+## Lit en veille avec température
+```cfg
+[led_effect bed_effects]
+leds:
+    neopixel:bed_lights
+autostart:                          true
+frame_rate:                         24
+heater:                             heater_bed
+layers:
+    heater  50 0 add    (1,1,0),(1,0,0)
+    static  0  0 top    (1,0,0)
+```
+
+## Luminosité contrôlée par potentiomètre
+Ceci est un exemple de la façon de combiner l'effet AnalogPin avec le mélange de calques afin de contrôler la luminosité des lumières. On pourrait connecter un potentiomètre à un port thermistor et utiliser la lecture de tension de cette broche pour déterminer la quantité de couleur à soustraire des calques de base. Le potentiomètre devrait être câblé de manière à ce que lorsqu'il est tourné "vers le bas", la tension sur la broche analogique soit pleine sortie, et lorsqu'il est tourné "vers le haut", elle soit en sortie minimale. Ainsi, lorsque le potentiomètre est "vers le bas", la couleur (1.0, 1.0, 1.0) (Blanc complet) est soustraite des couleurs du calque, ce qui donne (0.0, 0.0, 0.0) (Noir complet). Le taux d'effet et le seuil devraient être ajustés pour le combiné spécifique du potentiomètre et de la carte.
+```cfg
+[led_effect bed_effects]
+leds:
+    neopixel:bed_lights
+autostart:                          true
+frame_rate:                         24
+analog_pin:                         ar52
+layers:
+    analogpin 10 0 subtract    (1,1,1)
+    static    0  0 top         (1,1,1)
+```
+
+## Barre de progression
+À l'aide d'une simple bande de DEL, la progression de l'impression est affichée sous forme d'une ligne bleu clair sur un fond bleu foncé.
+
+```cfg
+[led_effect progress_bar]
+leds:
+    neopixel:progress_lights
+autostart:                          true
+frame_rate:                         24
+layers:
+    progress  -1  0 add         ( 0, 0,   1),( 0, 0.1, 0.6)
+    static     0  0 top         ( 0, 0, 0.1)
+```
+
+# Questions fréquemment posées
+
+## Mes DEL clignotent de manière aléatoire
+
+Cela est généralement dû à un problème de signal. La plupart des DEL adressables utilisent un protocole spécifique pour la communication. Il implique généralement l'envoi de bits de données à un intervalle spécifique suivi d'un verrouillage de relecture pour leur signaler de s'allumer. Elles resteront à la dernière couleur assignée jusqu'à ce qu'on leur dise de faire quelque chose de différent.
+
+Dans la plupart des implémentations des DEL adressables dans le micrologiciel d'imprimante, les données de couleur sont envoyées une seule fois lorsque la commande GCode est exécutée et ne sont pas renvoyées. Tant que ce signal initial est lu, elles resteront à cette couleur.
+
+Dans cette implémentation particulière, les données de couleur sont mises à jour à des intervalles réguliers déterminés par la fréquence d'images de l'effet. Ainsi, 10 images par seconde résultera en 10 mises à jour de couleur par seconde pour les DEL.
+
+Les lignes de données sont sensibles aux interférences électromagnétiques provenant d'autres appareils électroniques sur l'imprimante. Lorsque ces interférences sont présentes, cela peut entraîner des données malformées allant aux DEL.
+
+Pour atténuer cela, on peut essayer d'isoler ou d'isoler électriquement la ligne de données des autres fils. Essayez de garder les lignes de données aussi courtes que possible. Cela pose un problème particulier pour les cartes à 32 bits qui sortent habituellement le signal de données à 3,3V.
+
+L'intégrité du signal peut également être détériorée par des oscillations et des réflexions sur la ligne de données. En particulier, lorsque le câble vers la première DEL est plutôt long. Cela peut être réduit en ajoutant une résistance de 700 ohms en série directement devant la première DEL sur la ligne de données.
+
+Une autre source de clignotement est la chute de tension. Les DEL adressables consomment entre 20 et 60 mA de puissance chacune, en fonction de la luminosité à laquelle elles sont réglées. Si elles sont alimentées par une source qui ne peut pas fournir assez de puissance, comme le régulateur de tension interne d'une carte d'imprimante, cela pourrait se manifester par un clignotement ou une faible luminosité générale des bandes.
+
+## Mes DEL à la fin des bandes ne sont pas aussi lumineuses que les autres
+
+Cela a généralement trait aux DEL à la fin de la bande qui ne reçoivent pas autant de puissance que celles au début de la bande. La solution consiste à souder une ligne VCC et GND à la fin de la bande. Ces lignes de puissance supplémentaires permettront aux DEL à la fin de tirer la puissance dont elles ont besoin. Cela arrive généralement sur des bandes très longues ou si l'alimentation est déjà à sa limite. Il est toujours recommandé de alimenter les DEL de cette manière à partir d'une source 5V séparée de la carte.
+
+## Mes couleurs ne sont pas correctes
+
+Différents fabricants de puces et styles de puces utilisent légèrement des protocoles de couleur légèrement différents. Certains spécifient que l'ordre des couleurs soit Rouge, Vert, puis Bleu, d'autres spécifient Vert, Rouge, Bleu. La configuration de la bande de DEL a un paramètre optionnel qui peut être défini dans la section 'neopixel' pour changer l'ordre des couleurs.
+
+`color_order: GRB`
+
+Si vous n'êtes pas sûr de l'ordre des couleurs de vos DEL et que vous voulez tester cela, vous pouvez commenter ou désactiver tous les effets que vous avez configurés et utiliser une commande GCode pour définir directement la couleur des bandes de DEL.
+
+`SET_LED LED=<config_name> RED=1 GREEN=0 BLUE=0 TRANSMIT=1`
+
+Cette commande devrait rendre toute la bande rouge. Si la bande devient verte, elle utilise un ordre de couleur GRB.
+
+Certaines DEL, comme le SK6812, ont également un canal blanc. Pour cela, l'ordre des couleurs peut être défini sur :
+
+`color_order: GRBW`
+
+* Le pilote TP de FLY doit être configuré en tant que `colorreorder: GRB`
+
+* Le pilote TP de FLY doit être configuré en tant que `colorreorder: GRB`

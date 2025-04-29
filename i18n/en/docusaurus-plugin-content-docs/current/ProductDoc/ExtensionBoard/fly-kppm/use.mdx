@@ -1,0 +1,148 @@
+---
+sidebar_position: 2
+---
+
+
+
+# Using KPPM
+
+  The FLY-KPPM power-off module is specially designed for development boards like Raspberry Pi to ensure data integrity in case of a power failure. Utilizing advanced technology, it automatically switches to capacitor power when a power outage occurs, ensuring the development board can still operate stably for 15 seconds and effectively save data. Compact and easy to install.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/kppm.webp').default} size="60%" align="center" />
+
+
+## Precautions
+
+  :::danger Note
+  The input power only supports DC12-24V. Ensure correct positive and negative polarity during wiring, and perform wiring under power-off conditions. Only proceed with power-on after confirming the wiring is correct. We will not be liable for any losses caused by incorrect wiring.
+  :::
+
+  :::danger Note
+  The +5V at the 5V OUT socket is an emergency power output and should not be used as a regular power supply. Please use USB-OUT or SIG/IO to power the host machine.
+  :::
+
+  :::danger Note
+  When using the safety shutdown module, a 12V-24V power supply must be used. To ensure normal operation of the module, the internal 5V output voltage of the safety shutdown module must not be lower than 4.9V; otherwise, the safety shutdown module will draw power from the internal boost circuit, keeping the capacitor continuously charged, which may cause the module to overheat.
+  :::
+
+
+## Screen Display Content Explanation
+
+
+    | Screen Content Explanation | Left Side Explanation | Right Side Parameters | Right Side Explanation |
+    | :------------------------ | :-------------------: | :-------------------: | :--------------------: |
+    | `IN:`                     | Input Voltage         | `OUT:`                | Output Voltage         |
+    | `CA:`                     | Total Capacitor Voltage | `OI:`                | Output Load Current    |
+    | `C1:`                     | C1 Capacitor Voltage  | `C2:`                 | C2 Capacitor Voltage   |
+    | `Temp:`                   | Safety Shutdown Module Temperature | `E:`                 | Status Prompt, see Below |
+ 
+
+    | Display Content | Status Explanation |
+    | :------------- | :-----------------: |
+    | `Ready!`       | Normal Bootup      |
+    | `IN LOW!`      | Low Input Voltage  |
+    | `IN OVR!`      | High Output Current|
+    | `OV LOE!`      | Low Output Voltage |
+    | `OV OVR`       | High Output Current|
+    | `TP OVR!`      | High Temperature   |
+    | `NONE`         | Unknown Error      |
+    | `R: XX Sec`    | If power is cut off within 10 seconds and then powered on again, this prompt will appear, showing a countdown before restarting the host machine. |
+
+
+## Download Shell and Installation Model
+
+    ```bash
+    https://cdn.mellow.klipper.cn/STEP/KPPM.zip
+    ```
+
+## Pin Description
+
+  * OUT-RST Reset
+  * OUT-PDN Power Down
+
+  * IN-PIN 
+
+    Pull-up by default. When powered on, the module automatically detects the last power-off time. 
+  If the power-off time is less than 10 seconds, it will wait for 10 seconds and then automatically switch the 5V output once (to ensure the host machine completes shutdown and can restart). 
+  If connected to GND, the automatic detection of power-off time function will be disabled.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pins.webp').default} size="70%" align="center" />
+
+## FLY Host Machine Usage Tutorial
+
+  :::info
+  Applicable only to FLY-Pi, FLY-Pi-V2, FLY-C8
+  :::
+
+  FLY host machine requires SSH execution of the following command
+
+  ```bash
+  sudo curl -kfSL --progress-bar https://cdn.mellow.klipper.cn/firmware/sun50i-h5-power-key.dtbo -o /boot/dtb/allwinner/overlay/sun50i-h5-power-key.dtbo
+  sudo grep -q "^overlays=.*power-key" /boot/FlyOS-Env.txt || sudo sed -i '/^overlays=/ s/$/ power-key/' /boot/FlyOS-Env.txt
+  ```
+
+  Restart the system
+
+  ```bash
+  sudo reboot
+  ```
+  
+### FLY Host Machine Wiring Tutorial
+
+  <Tabs>
+      <TabItem value="serial" label="FLY Host Machine Wiring Tutorial" default>
+
+          <Tabs>
+              <TabItem value="1" label="FLY-C8 Use 5V Wiring" default>
+                  * Connect FLY-C8 using 5V wiring as shown in the diagram.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/c81.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="FLY-C8 Use USB Wiring" default>
+                  * Connect FLY-C8 using USB wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_c8_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="3" label="FLY-Pi(π) Use 5V Wiring" default>
+                  * Connect FLY-Pi using 5V wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="4" label="FLY-Pi(π) Use USB Wiring" default>
+                  * Connect FLY-Pi using USB wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="5" label="FLY-Pi-V2 Use 5V Wiring" default>
+                  * Connect FLY-Pi-V2 using 5V wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_5v.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="6" label="FLY-Pi-V2 Use USB Wiring" default>
+                  * Connect FLY-Pi-V2 using USB wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_pi_v2_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="7" label="FLY-gemini Use USB Wiring" default>
+                  * Connect FLY-gemini using USB wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_gemini_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+              <TabItem value="8" label="FLY-lite2.1 Use USB Wiring" default>
+                  * Connect FLY-lite2.1 using USB wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/fly_lite2.1_usb.webp').default} size="70%" align="center" />
+              </TabItem>
+            
+          </Tabs>
+      </TabItem>
+  </Tabs>
+
+## Raspberry Pi Host Machine Usage Tutorial
+
+  Similar to the above operations, insert the SD card with the system image into the computer, and add the following line of code to the config.txt file: `dtoverlay=gpio-shutdown,gpio_pin=21`. Then save and exit.
+
+  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/rpi-config.webp').default} size="70%" align="center" />
+
+          <Tabs>
+              <TabItem value="1" label="Raspberry Pi Use 5V Wiring" default>
+                  * Connect Raspberry Pi using 5V wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_5v.webp').default} size="60%" align="center" />
+              </TabItem>
+              <TabItem value="2" label="Raspberry Pi Use USB Wiring" default>
+                  * Connect Raspberry Pi using USB wiring.
+                  <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-kppm/img/pi_usb.webp').default} size="60%" align="center" />
+              </TabItem>
+          </Tabs>

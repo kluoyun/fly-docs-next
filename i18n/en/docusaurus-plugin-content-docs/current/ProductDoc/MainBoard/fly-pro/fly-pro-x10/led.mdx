@@ -1,0 +1,65 @@
+---
+sidebar_position: 12
+sidebar_label: Configure LED
+---
+
+
+# Extending the Driver for LEDs via Plugin
+
+You need to connect to the host machine via SSH and follow the link below for installation and configuration.
+
+```cfg
+https://github.com/julianschill/klipper-led_effect
+```
+
+## Installation
+
+Please connect via an **SSH tool** such as **MobaXterm_Personal** through **WiFi** to your host machine, and ensure the following points:
+
+1. **Ensure that the Klipper firmware is installed on the host machine.**
+2. **Ensure that the logged-in user is the one who has installed Klipper.**
+3. **Ensure that your input method is English.**
+4. **Ensure that your host machine can normally search for devices.**
+5. **Ensure that all the above precautions are followed; otherwise, you cannot proceed to the next step.**
+
+This module can be installed into an existing Klipper installation using the installation script.
+
+```cfg
+cd ~
+git clone https://github.com/julianschill/klipper-led_effect.git
+cd klipper-led_effect
+./install-led_effect.sh
+```
+
+## Reference Configuration
+
+```cfg
+[neopixel TP_led]
+pin: PA8
+chain_count: 50
+# Number of LEDs
+# Number of LEDs
+color_order: GRB
+initial_RED: 0.4    
+initial_GREEN: 0.8
+initial_BLUE: 1
+initial_WHITE: 0.0
+#66CCFF 
+
+[led_effect sb_nozzle_cooling]
+autostart:              false
+frame_rate:             24
+leds:
+    neopixel:TP_led (9,10)
+layers:
+        breathing  3 1 top (0.0, 0.0, 1.0, 0.1)
+
+[led_effect rainbow]
+leds:
+    neopixel:TP_led
+autostart:                          true
+frame_rate:                         24
+layers:
+    gradient  0.3  1 add (0.3, 0.0, 0.0),(0.0, 0.3, 0.0),(0.0, 0.0, 0.3)
+
+```

@@ -1,0 +1,65 @@
+---
+sidebar_position: 12
+sidebar_label: Настройка светодиодов
+---
+
+
+# Расширение функционала управления светодиодами через плагин
+
+Для установки и настройки необходимо подключиться по SSH к хост-компьютеру в соответствии с приведенной ниже ссылкой
+
+```cfg
+https://github.com/julianschill/klipper-led_effect
+```
+
+## Установка
+
+Подключитесь через **MobaXterm_Personal** или любое другое **SSH-средство** к вашему хост-компьютеру через **Wi-Fi**, убедившись в следующем:
+
+1. **Убедитесь, что на хост-компьютере установленыfirmware Klipper**
+2. **Убедитесь, что залогинены под пользователем, который установил Klipper**
+3. **Убедитесь, что ваша раскладка клавиатуры находится в английском режиме**
+4. **Убедитесь, что ваш хост-компьютер может нормально обнаруживать устройство**
+5. **Убедитесь, что все вышеперечисленные注意事项 выполнены, иначе дальнейшие шаги невозможны**
+
+Модуль можно установить в существующую установку Klipper с помощью установочного скрипта.
+
+```cfg
+cd ~
+git clone https://github.com/julianschill/klipper-led_effect.git
+cd klipper-led_effect
+./install-led_effect.sh
+```
+
+## Пример конфигурации
+
+```cfg
+[neopixel TP_led]
+pin: PA8
+chain_count: 50
+# Количество светодиодов
+# Число лампочек
+color_order: GRB
+initial_RED: 0.4    
+initial_GREEN: 0.8
+initial_BLUE: 1
+initial_WHITE: 0.0
+#66CCFF 
+
+[led_effect sb_nozzle_cooling]
+autostart:              false
+frame_rate:             24
+leds:
+    neopixel:TP_led (9,10)
+layers:
+        breathing  3 1 top (0.0, 0.0, 1.0, 0.1)
+
+[led_effect rainbow]
+leds:
+    neopixel:TP_led
+autostart:                          true
+frame_rate:                         24
+layers:
+    gradient  0.3  1 add (0.3, 0.0, 0.0),(0.0, 0.3, 0.0),(0.0, 0.0, 0.3)
+
+```

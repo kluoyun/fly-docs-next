@@ -1,0 +1,64 @@
+---
+sidebar_position: 12
+sidebar_label: LED 구성
+---
+
+
+# 플러그인을 통한 LED 구동 확장
+
+상위 컴퓨터에 SSH로 연결한 후 아래 링크를 따라 설치 및 구성하십시오.
+
+```cfg
+https://github.com/julianschill/klipper-led_effect
+```
+
+## 설치
+
+**MobaXterm_Personal**과 같은 **SSH 도구**를 사용하여 **Wi-Fi**를 통해 상위 컴퓨터에 연결하고 다음 사항들을 확인해야 합니다.
+
+1. **상위 컴퓨터에 Klipper 펌웨어가 올바르게 설치되어 있는지 확인**
+2. **Klipper를 설치한 사용자로 로그인했는지 확인**
+3. **입력 방식이 영문인지 확인**
+4. **상위 컴퓨터에서 장치를 정상적으로 검색할 수 있는지 확인**
+5. **위의 모든 주의사항을 준수하지 않으면 다음 단계로 진행할 수 없습니다**
+
+이 모듈은 기존 Klipper 설치에 설치 스크립트를 사용하여 설치할 수 있습니다.
+
+```cfg
+cd ~
+git clone https://github.com/julianschill/klipper-led_effect.git
+cd klipper-led_effect
+./install-led_effect.sh
+```
+
+## 참고 구성
+
+```cfg
+[neopixel TP_led]
+pin: PA8
+chain_count: 50
+# LED 개수
+color_order: GRB
+initial_RED: 0.4    
+initial_GREEN: 0.8
+initial_BLUE: 1
+initial_WHITE: 0.0
+#66CCFF 
+
+[led_effect sb_nozzle_cooling]
+autostart:              false
+frame_rate:             24
+leds:
+    neopixel:TP_led (9,10)
+layers:
+        breathing  3 1 top (0.0, 0.0, 1.0, 0.1)
+
+[led_effect rainbow]
+leds:
+    neopixel:TP_led
+autostart:                          true
+frame_rate:                         24
+layers:
+    gradient  0.3  1 add (0.3, 0.0, 0.0),(0.0, 0.3, 0.0),(0.0, 0.0, 0.3)
+
+```
