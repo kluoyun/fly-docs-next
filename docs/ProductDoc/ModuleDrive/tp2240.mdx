@@ -1,0 +1,85 @@
+---
+sidebar_position: 10
+---
+
+
+import DIAG from '@site/docs/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 2240
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.webp').default} size="60%" align="center" />
+
+## TMC-2240
+
+    * 输入电压 ：12V-36V
+    * 最大电流 ：3.0A
+    * 适用于 ： Marli   n/Klipper/RRF 固件
+    * 驱动模式支持：TMC：SPI
+    * 带微步插值 microPlyer 的步进/方向接口
+    * 最高分辨率为256细分
+    * 支持stealthChop2静音工作和流畅动作
+    * 支持中频共振的共振抑制
+    * 支持spreadCycle高动态电机控制斩波器
+    * 支持dcStep负载相关的速度控制
+    * 支持stallGuard2高精度无传感器电机负载检测
+    * 支持coolStep电流控制，最高可节能75%
+
+
+
+## TP2240参考配置
+
+    :::danger
+
+    * 驱动采样电阻是`rref: 12300`请不要设置错误
+    * spi_bus和spi_software只能二选一
+    
+    :::
+
+### SPI模式参考配置
+
+    ```cfg
+    [tmc2240 stepper_x]
+    cs_pin: 
+    spi_bus: 
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 0.65                   # 电机运行电流值
+    interpolate: False                  # 是否开启256微步插值（不建议开启）
+    rref: 12300
+    stealthchop_threshold: 0           # 静音阀值（如果不需要静音，请将数值改为0）
+    ```
+
+## 无限位使用说明
+
+    <DIAG />
+
+    :::tip 无限位使用提示
+    
+    * 使用TP2240的无限位需要将主板的DIAG跳线接上
+    * 原来的`endstop_pin:`需要屏蔽或者删除，在添加`endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * 配置`diag1_pin:`后刷新限位状态是未触发
+    * 配置`driver_SGT: :`需要自行测试一个合适的值
+
+    :::
+
+    * 参考配置
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2240_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # 回退不改0可能会导致归位失败
+
+    [tmc2240 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   配置好后请确保限位状态是未触发
+    #   这个引脚通常使用"^"前缀来开启内部上拉
+    #   灵敏度和皮带松紧有关需要自行调节
+    #  （确保同时设置了driver_SGTHRS为一个合适的灵敏度）
+
+    ```
+
+   
