@@ -1,0 +1,523 @@
+---
+sidebar_position: 5
+sidebar_label: Klipper Config Reference
+---
+
+# Klipper Reference Configuration
+
+```cfg
+
+####################################################################################
+#                         3D MELLOW /FLY-D7                                       #
+####################################################################################
+## FLY-D7 Documentation: https://mellow.klipper.cn/#/board/fly_d7/README
+## FLY-D7 Schematic: https://mellow.klipper.cn/#/board/fly_d7/schematic
+## FLY Official Taobao Store: https://item.taobao.com/item.htm?abbucket=8&id=760788458714&ns=1&spm=a21n57.1.0.0.632e523cCKBdRJ
+## For after-sales service, please contact Taobao customer service
+## FLY After-sales Technical Support Group: 621032883
+## FLY-RRF Firmware Group: 786561979
+
+#####################################################################
+#                               Notes                               #
+#####################################################################
+## ***Items to Change/Check:***
+## MCU Path                               [mcu] 
+## Printer movement range                  xyz position      
+## Thermistor type                         [extruder] and [heater_bed]
+## Z endstop position                      [homing_override] 
+## Z endstop offset                        [stepper_z] 
+## PID tuning                              [extruder] and [heater_bed] 
+## Extruder stepper fine-tuning            [extruder] 
+
+#####################################################################
+#                               File Includes                       #
+#####################################################################
+[include fluidd.cfg]          # FLUIDD include file.
+[include mainsail.cfg]        # MAINSAIL include file.
+# Choose the file you need to use
+
+#####################################################################
+#                               Mainboard Configuration             #
+#####################################################################
+[mcu]                           # FLY board ID
+serial: /dev/serial/by-id/usb-Klipper_stm32f072xx_XXXXXXXXXXXXXXXXXXXXX
+### To find the USB firmware ID: ls -l /dev/serial/by-id/
+### Replace /dev/serial/by-id/usb-Klipper_stm32f407xx_XXXXXXXXXXXXXXXXXXXXX with your ID
+#canbus_uuid: e51d5c71a901
+### To find the CAN firmware ID: ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+### For CAN, replace serial with canbus_uuid: and add the ID
+
+#####################################################################
+#                            Printer and Acceleration               #
+#####################################################################
+[printer]                       # Printer settings
+kinematics: corexy              # Kinematics: cartesian or corexy, etc.
+max_velocity: 300               # Max printer speed   
+max_accel: 3000                 # Max acceleration, up to 3000
+max_z_velocity: 15              # Max Z speed
+max_z_accel: 100                # Max Z acceleration
+square_corner_velocity: 5.0     # Square corner velocity, lower to reduce inertia
+
+#####################################################################
+#                             Temperature Monitoring                #
+#####################################################################
+[temperature_sensor Fly-D7]     # FLY board temperature (rename as needed)
+sensor_type: temperature_mcu     # Linked to MCU (default)
+#--------------------------------------------------------------------
+[temperature_sensor FLY-π]        # Host temperature
+sensor_type: temperature_host     # Linked to host
+#--------------------------------------------------------------------
+# [temperature_sensor Box]          # Enclosure temperature (add sensor as needed)
+# sensor_type: ATC Semitec 104GT-2  # Sensor type
+# sensor_pin: PA4                   # Signal pin
+
+#####################################################################
+#             X/Y Stepper Motor Settings                            # 
+#####################################################################
+#   B Motor ---- Motor A 
+#   |                  |
+#   |------Extruder-----|
+#   |                  |
+#   |                  |
+#          Front   
+#####################################################################
+#                  X Axis Stepper Motor (B Motor)                   #
+#####################################################################
+[stepper_x]
+step_pin: PC14                       # X step pin
+dir_pin: PC13                        # X direction pin, add ! to reverse
+enable_pin: !PC15                   # X enable pin, add ! or motor won't work
+rotation_distance: 40               # Pulley circumference mm (2GT-20T: 40, 2GT-16T: 32)
+microsteps: 16                      # Microsteps, higher = better quality, more load
+full_steps_per_rotation: 200        # Steps per rotation (1.8°: 200, 0.9°: 400)
+endstop_pin: !PB3                   # Endstop pin, normally closed with ! to invert, io-3
+position_min: 0                     # X min travel
+position_endstop: 300               # Endstop position (250mm-300mm-350mm)
+position_max: 300                   # X max travel (250mm-300mm-350mm)
+homing_speed: 50                    # Homing speed, max 100
+homing_retract_dist: 5              # Retract after first endstop trigger
+step_pulse_duration: 0.000004       # Step pulse duration (4us)
+#--------------------------------------------------------------------
+##  Ensure correct driver type (2208 or 2209)
+[tmc2209 stepper_x]                 # X driver config - TMC2209
+uart_pin: PB7                       # UART pin
+interpolate: False                  # 256 microstep interpolation, recommended off
+run_current: 0.8                    # Motor run current (A)
+sense_resistor: 0.110               # Do not change
+stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+#[tmc5160 stepper_x]                 # X driver config - TMC5160
+#cs_pin: PB7                         # SPI CS pin
+#spi_bus: spi2
+#run_current: 0.800                  # Motor run current
+#interpolate: False                  # 256 microstep interpolation, recommended off
+#sense_resistor: 0.075               # Do not change (0.033 for 5160 Pro)
+#stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+#####################################################################
+#                  Y Axis Stepper Motor (A Motor)                   #
+#####################################################################
+[stepper_y]
+step_pin: PA1                       # Y step pin
+dir_pin: PA0                        # Y direction pin, add ! to reverse
+enable_pin: !PA2                    # Y enable pin, add ! or motor won't work
+rotation_distance: 40               # Pulley circumference mm (2GT-20T: 40, 2GT-16T: 32)
+microsteps: 16                      # Microsteps
+full_steps_per_rotation: 200        # Steps per rotation (1.8°: 200, 0.9°: 400)
+endstop_pin: !PD2                   # Endstop pin, normally closed with ! to invert, io-0
+position_min: 0                     # Y min travel
+position_endstop: 300               # Endstop position (250mm-300mm-350mm)
+position_max: 300                   # Y max travel (250mm-300mm-350mm)
+homing_speed: 50                    # Homing speed, max 100
+homing_retract_dist: 5              # Retract after first endstop trigger
+
+#--------------------------------------------------------------------
+##  Ensure correct driver type (2208 or 2209)
+[tmc2209 stepper_y]                 # Y driver config - TMC2209
+uart_pin: PC3                       # UART pin
+interpolate: False                  # 256 microstep interpolation, recommended off
+run_current: 0.8                    # Motor run current (A)
+sense_resistor: 0.110               # Do not change
+stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+#[tmc5160 stepper_y]                 # Y driver config - TMC5160
+#cs_pin: PC3                         # SPI CS pin
+#spi_bus: spi2
+#run_current: 0.800                  # Motor run current
+#interpolate: False                  # 256 microstep interpolation, recommended off
+#sense_resistor: 0.075               # Do not change (0.033 for 5160 Pro)
+#stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+
+#####################################################################
+#                     Z Stepper Motor Settings                      #
+#####################################################################
+#   |----- Z1 -----|
+#   |              |
+#   |              |
+#   |              |
+#   Z0----Screen----Z2
+
+#####################################################################
+#                           Z Stepper Motor                         #
+#####################################################################
+##    Z Stepper - Front Left
+[stepper_z]
+step_pin: PA5                 # Z step pin
+dir_pin:  !PA4                # Z direction pin, add ! to reverse
+enable_pin: !PA6              # Z enable pin, add ! or motor won't work
+### T8x4 leadscrew. One turn moves bed 4mm 
+## Adjust according to your leadscrew
+rotation_distance: 8          # Leadscrew pitch 8
+full_steps_per_rotation: 200  # Steps per rotation (1.8°: 200, 0.9°: 400)
+microsteps: 16                # Microsteps
+endstop_pin: !PA9             # Endstop pin, normally closed with ! to invert, io-1
+## position_endstop is the nozzle's position relative to the bed (Z0) at endstop trigger (mm)
+position_endstop: -0.5
+## Positive = above bed, negative = below bed
+## Increase position_endstop to move nozzle closer to bed
+## After running Z_ENDSTOP_CALIBRATE, position_endstop will be stored at the end of the config
+position_min: -15             # Z min travel (for nozzle cleaning, set to around -5)
+position_max: 300             # Z max travel (250mm-300mm-350mm)
+homing_speed: 5               # Homing speed, max 20
+second_homing_speed: 3        # Second homing speed, max 10
+homing_retract_dist: 0        # Retract distance
+step_pulse_duration: 0.000004 # Step pulse duration (4us)
+#--------------------------------------------------------------------
+[tmc2209 stepper_z]
+uart_pin: PA3                 # UART pin
+interpolate: false            # 256 microstep interpolation
+run_current: 0.8              # Run current (A)
+sense_resistor: 0.110         # Do not change
+stealthchop_threshold: 500    # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+#[tmc5160 stepper_z]                 # Z driver config - TMC5160
+#cs_pin: PA3                         # SPI CS pin
+#spi_bus: spi2
+#run_current: 0.800                  # Motor run current
+#interpolate: False                  # 256 microstep interpolation, recommended off
+#sense_resistor: 0.075               # Do not change (0.033 for 5160 Pro)
+#stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+
+##    Z1 Stepper - Rear
+[stepper_z1]
+step_pin: PB10                # Z1 step pin
+dir_pin:  !PB2                # Z1 direction pin, add ! to reverse
+enable_pin: !PB11             # Z1 enable pin, add ! or motor won't work
+### T8x4 leadscrew. One turn moves bed 4mm 
+## Adjust according to your leadscrew
+rotation_distance: 8          # Leadscrew pitch 8
+full_steps_per_rotation: 200  # Steps per rotation (1.8°: 200, 0.9°: 400)
+microsteps: 16                # Microsteps
+step_pulse_duration: 0.000004 # Step pulse duration (4us)
+#--------------------------------------------------------------------
+[tmc2209 stepper_z1]
+uart_pin: PB1                 # UART pin
+interpolate: false            # 256 microstep interpolation
+run_current: 0.8              # Run current (A)
+sense_resistor: 0.110         # Do not change
+stealthchop_threshold: 500    # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+#[tmc5160 stepper_z1]                 # Z1 driver config - TMC5160
+#cs_pin: PB1                         # SPI CS pin
+#spi_bus: spi2
+#run_current: 0.800                  # Motor run current
+#interpolate: False                  # 256 microstep interpolation, recommended off
+#sense_resistor: 0.075               # Do not change (0.033 for 5160 Pro)
+#stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+
+##    Z2 Stepper - Front Right
+[stepper_z2]
+step_pin: PC12                 # Z2 step pin
+dir_pin: !PB5                  # Z2 direction pin, add ! to reverse
+enable_pin: !PC11              # Z2 enable pin, add ! or motor won't work
+### T8x4 leadscrew. One turn moves bed 4mm 
+## Adjust according to your leadscrew
+rotation_distance: 8           # Leadscrew pitch 8
+full_steps_per_rotation: 200   # Steps per rotation (1.8°: 200, 0.9°: 400)
+microsteps: 16                 # Microsteps
+step_pulse_duration: 0.000004  # Step pulse duration (4us)
+#--------------------------------------------------------------------
+[tmc2209 stepper_z2]
+uart_pin: PB6                 # UART pin
+interpolate: false            # 256 microstep interpolation
+run_current: 0.8              # Run current (A)
+sense_resistor: 0.110         # Do not change
+stealthchop_threshold: 500    # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+#[tmc5160 stepper_z2]                 # Z2 driver config - TMC5160
+#cs_pin: PB6                         # SPI CS pin
+#spi_bus: spi2
+#run_current: 0.800                  # Motor run current
+#interpolate: False                  # 256 microstep interpolation, recommended off
+#sense_resistor: 0.075               # Do not change (0.033 for 5160 Pro)
+#stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+#--------------------------------------------------------------------
+
+#####################################################################
+#                     E0 Extruder Settings                          # 
+#####################################################################
+[extruder]                          # Extruder
+step_pin: PC5                       # Step pin
+dir_pin: !PC4                       # Direction pin
+enable_pin: !PB0                    # Enable pin
+## Update the following values after extruder calibration
+## For example, if you request 100mm but get 102mm:
+## rotation_distance = <old_rotation_distance> * <actual_extrude_length> / <requested_extrude_length>
+## Example: 22.44 = old value 22 * actual 102 / target 100
+rotation_distance: 22.44            # Step value
+gear_ratio: 50:17                   # Gear ratio (Galileo 7.5:1, comment out; BMG is 50:17)
+microsteps: 16                      # Microsteps
+full_steps_per_rotation: 200        # Steps per rotation (200 for 1.8°, 400 for 0.9°)
+nozzle_diameter: 0.400              # Nozzle diameter
+filament_diameter: 1.75             # Filament diameter
+heater_pin: PB12                    # Heater pin
+sensor_type: ATC Semitec 104GT-2    # Sensor type (#Generic 3950, ATC Semitec 104GT-2, PT1000)
+sensor_pin: PC2                     # Sensor pin, connect to ADC_0   
+min_temp: 10                        # Min temp (exceeding triggers emergency stop)
+max_temp: 350                       # Max temp (exceeding triggers emergency stop)
+max_power: 1.0                      # Max power
+min_extrude_temp: 170               # Min extrude temp
+pressure_advance: 0.05              # Pressure advance (keep below 1.0)
+# Pressure advance tuning: https://www.klipper3d.org/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040 # Smooth time, default 0.040
+#max_extrude_only_distance: 200.0   # Comment out to disable extrude flow error, but re-slice recommended
+# Nozzle PID tuning: "PID_CALIBRATE HEATER=extruder TARGET=245"
+control = pid                       # PID control (commented after tuning)
+pid_kp = 26.213                     # PID Kp (commented after tuning)
+pid_ki = 1.304                      # PID Ki (commented after tuning)
+pid_kd = 131.721                    # PID Kd (commented after tuning)
+step_pulse_duration: 0.000004
+#--------------------------------------------------------------------
+[tmc2209 extruder]                  # Extruder driver config - TMC2209
+uart_pin: PA7                       # UART pin
+interpolate: False                  # 256 microstep interpolation, recommended off
+run_current: 0.5                    # Run current (A)
+sense_resistor: 0.110               # Do not change
+#stealthchop_threshold: 500         # StealthChop threshold, not recommended for extruder
+#--------------------------------------------------------------------
+#[tmc5160 extruder]                  # Extruder driver config - TMC5160
+#cs_pin: PA7                         # SPI CS pin
+#spi_bus: spi2
+#run_current: 0.800                  # Motor run current
+#interpolate: False                  # 256 microstep interpolation, recommended off
+#sense_resistor: 0.075               # Do not change (0.033 for 5160 Pro)
+#stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+
+#####################################################################
+#                            Heated Bed                             # 
+#####################################################################
+[heater_bed]
+heater_pin: PC7              # Bed heater pin
+sensor_type: Generic 3950    # Bed sensor type
+sensor_pin:  PC0             # Bed sensor pin
+max_power: 0.5               # Bed power
+min_temp: 0                  # Min temp (exceeding triggers emergency stop)
+max_temp: 120                # Max temp (exceeding triggers emergency stop)
+# Bed PID tuning: "PID_CALIBRATE HEATER=heater_bed TARGET=100"
+control: pid                 # PID control (commented after tuning)
+pid_kp: 58.437               # PID Kp (commented after tuning)
+pid_ki: 2.347                # PID Ki (commented after tuning)
+pid_kd: 363.769              # PID Kd (commented after tuning)
+
+#####################################################################
+#                            Fan Configuration                      # 
+#####################################################################
+[fan]                        # Model cooling fan
+pin: PC9                     # Signal pin
+kick_start_time: 0.5         # Startup time
+off_below: 0.10              # Do not change
+#--------------------------------------------------------------------
+[heater_fan hotend_fan]      # Hotend cooling fan
+pin: PC8                     # Signal pin
+max_power: 1.0               # Max speed
+kick_start_time: 0.5         # Startup time
+heater: extruder             # Linked device: extruder
+heater_temp: 50              # Fan turns on at this extruder temp
+fan_speed: 1.0               # Fan speed
+#--------------------------------------------------------------------
+
+#####################################################################
+#                           Bed Leveling Probe                      #
+#####################################################################
+# Default PL08N probe should not be lower than nozzle, only for leveling.
+# If your PL08N is NO (normally open), add ! to the pin.
+[probe]
+pin: ^PB4
+x_offset: 0                  # X offset from nozzle
+y_offset: 25.0               # Y offset from nozzle
+z_offset: 0                  # Z offset from nozzle
+speed: 10.0                  # Probing speed
+samples: 3                   # Number of samples
+samples_result: median       # Result method (default median)
+sample_retract_dist: 4.0     # Probe retract distance
+samples_tolerance: 0.006     # Sample tolerance (too small may increase retries)
+samples_tolerance_retries: 3 # Retries on tolerance exceed
+
+#####################################################################
+#                               Homing                              #
+#####################################################################
+# [safe_z_home]                # Z endstop coordinates
+# home_xy_position:206,300     # Z endstop position (adjust as needed)
+# speed:100                    # Homing speed
+# z_hop:10                     # Z lift before homing
+#--------------------------------------------------------------------
+[homing_override]                   # Z homing macro (comment out if using Klicky)
+axes: z
+set_position_z: 0
+gcode:
+    G90
+    G0 Z5 F600
+    G28 X Y
+    ## Z endstop position
+    ## After testing, update X and Y to your values (e.g., X157, Y305)
+    G0 X-10 Y-10 F3600               # Update X and Y here
+    
+    G28 Z
+    G0 Z10 F1800
+    
+     ##  Delete "#" to enable for your printer size:
+     ##  Roughly the center of your bed.
+#--------------------------------------------------------------------
+     ##  For 250mm printers, delete "#" below to enable
+     #G0 X125 Y125 Z30 F3600
+#--------------------------------------------------------------------   
+     ##  For 300mm printers, delete "#" below to enable
+     #G0 X150 Y150 Z30 F3600
+#--------------------------------------------------------------------
+     ##  For 350mm printers, delete "#" below to enable
+     #G0 X175 Y175 Z30 F3600
+#--------------------------------------------------------------------
+
+#####################################################################
+#   3Z Bed Tilt Adjustment
+#####################################################################
+[z_tilt]
+##  Use Z_TILT_ADJUST command to level the bed 
+##  z_positions: printhead positions
+
+##--------------------------------------------------------------------
+##  For 250mm printers, delete "#" below to enable
+#z_positions:
+#   -50, 18
+#   125, 298
+#   300, 18
+#points:
+#   30, 5
+#   125, 195
+#   220, 5
+##--------------------------------------------------------------------
+##  For 300mm printers, delete "#" below to enable
+#z_positions:
+#   -50, 18
+#   150, 348
+#   350, 18
+#points:
+#   30, 5
+#   150, 245
+#   270, 5
+##--------------------------------------------------------------------
+##  For 350mm printers, delete "#" below to enable
+#z_positions:
+#   -50, 18
+#   175, 398
+#   400, 18
+#points:
+#   30, 5
+#   175, 295
+#   320, 5
+#--------------------------------------------------------------------
+speed: 100                   # Leveling speed
+horizontal_move_z: 10        # Z start height
+retry_tolerance: 0.0075      # Sample tolerance
+retries: 5                   # Retries on tolerance exceed
+
+#####################################################################
+#                              Bed Mesh Calibration
+#####################################################################
+[bed_mesh]
+speed: 50                    # Calibration speed
+horizontal_move_z: 5         # Z lift before next probe point
+mesh_min: 30,30              # Min mesh point (x, y)
+mesh_max: 270, 270           # Max mesh point (x, y)
+probe_count: 4,4             # Probe points (4x4 = 16 points)
+mesh_pps: 2,2                # Additional probe points
+algorithm: bicubic           # Algorithm
+bicubic_tension: 0.2         # Do not change
+
+#####################################################################
+#                          Idle Bed Shutdown
+#####################################################################
+[idle_timeout]
+timeout: 1800                # Idle for 30min shuts down bed
+
+#####################################################################
+#                           Custom G-code Macros                    #
+#####################################################################
+[gcode_macro PRINT_START]          # Macro for print start, customize pre-print actions
+gcode:
+     G92 E0                         # Reset extruder
+     BED_MESH_CLEAR                 # Unload mesh
+     G28                            # Home all axes
+     Z_TILT_ADJUST                  # Gantry leveling
+     G28                            # Home all axes
+     G1 Z20 F3000                   # Move nozzle away from bed
+     BED_MESH_PROFILE LOAD=default  # Load mesh
+#--------------------------------------------------------------------
+[gcode_macro PRINT_HUAXIAN]        # Macro for PRINT_HUAXIAN, customize pre-print actions
+gcode:
+     G1 Z5 F3000 
+     G92 E0;              # Reset extruder
+     G90                  # Absolute positioning
+     G0 X5 Y1 F6000       # Move to x5 y1 at 100mm/s
+     G0 Z0.4              # Move Z to 0.4
+     G91                  # Relative positioning
+     G1 X100 E20 F1200;   # Move X 100mm and extrude
+     G1 Y1                # Move Y 1mm
+     G1 X-100 E20 F1200;  # Move X -100mm and extrude
+     G0 z5                # Raise Z 5mm
+     G1 E-5.0 F3600       # Retract filament
+     G92 E0;              # Reset extruder
+     G90                  # Absolute positioning 
+
+#--------------------------------------------------------------------
+[gcode_macro PRINT_END]            # Macro for print end, customize post-print actions
+gcode:
+     #   Get Boundaries
+     {% set max_x = printer.configfile.config["stepper_x"]["position_max"]|float %}
+     {% set max_y = printer.configfile.config["stepper_y"]["position_max"]|float %}
+     {% set max_z = printer.configfile.config["stepper_z"]["position_max"]|float %}
+     
+     #   Check end position to determine safe directions to move
+     {% if printer.toolhead.position.x < (max_x - 20) %}
+          {% set x_safe = 20.0 %}
+     {% else %}
+          {% set x_safe = -20.0 %}
+     {% endif %}
+
+     {% if printer.toolhead.position.y < (max_y - 20) %}
+          {% set y_safe = 20.0 %}
+     {% else %}
+          {% set y_safe = -20.0 %}
+     {% endif %}
+
+     {% if printer.toolhead.position.z < (max_z - 2) %}
+          {% set z_safe = 2.0 %}
+     {% else %}
+          {% set z_safe = max_z - printer.toolhead.position.z %}
+     {% endif %}
+ 
+     M400                              # Wait for buffer to clear
+     G92 E0                            # Reset extruder
+     G1 E-10.0 F3600                   # Retract filament
+     G91                               # Relative positioning
+     G0 Z{z_safe} F3600                # Raise gantry
+     G0 X{x_safe} Y{y_safe} F20000     # Move nozzle to remove stringing
+     M104 S0                           # Turn off hotend
+     M140 S0                           # Turn off bed
+     M106 S0                           # Turn off fan
+     G90                               # Absolute positioning
+     G0 X{max_x / 2} Y{max_y} F3600    # Move nozzle to rear
+     BED_MESH_CLEAR                    # Unload mesh
+
+```

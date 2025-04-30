@@ -1,0 +1,195 @@
+---
+sidebar_position: 5
+sidebar_label: Configuration Reference
+---
+
+# Reference Configuration
+
+```cfg
+#####################################################################
+#      Notes
+#####################################################################
+## Please add [include SHT36PRO.cfg] under printer.cfg
+## The tool board will use the following configurations,
+## and if the following configurations are used in other configurations, conflicts may occur.
+## [resonance_tester] && [extruder] && [tmc2209 extruder] && [fan] && [heater_fan my_hotend_fan]
+## [probe] && [bltouch] && [stepper_x]
+
+#####################################################################
+#      Master ID Configuration
+#####################################################################
+[mcu SHT36PRO]
+canbus_uuid:
+### To query the CAN firmware id: ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Replace serial with canbus_uuid: and add the id after it
+
+#####################################################################
+#      Temperature monitoring
+#####################################################################
+[temperature_sensor SHT36-PRO]
+sensor_type: temperature_mcu
+sensor_mcu: SHT36PRO
+#--------------------------------------------------------------------
+[temperature_sensor Box]
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: SHT36PRO:gpio27
+#####################################################################
+#      Accelerometer
+#####################################################################
+## https://www.klipper3d.org/Measuring_Resonances.html?h=adxl#adxl345
+[adxl345]
+cs_pin: SHT36PRO:gpio9
+spi_software_sclk_pin: SHT36PRO:gpio10
+spi_software_mosi_pin: SHT36PRO:gpio11
+spi_software_miso_pin: SHT36PRO:gpio12
+#--------------------------------------------------------------------
+[resonance_tester]
+accel_chip: adxl345
+probe_points: 150, 150, 20
+# Somewhere slightly above the middle of your print bed
+min_freq: 5
+max_freq: 133
+accel_per_hz: 75
+hz_per_sec: 1
+
+#####################################################################
+#      Extruder thermal sensitivity
+#####################################################################
+## Please select the type of thermistor you want to use.
+[extruder]
+## Type of sensor - common thermistors are (Generic 3950, ATC Semitec 104GT-2)
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: SHT36PRO:gpio26
+###------------------------------------------------------------------
+## If using PT1000, please connect the jumper next to the thermistor.
+# sensor_type:PT1000
+#pullup_resistor: 1000
+#sensor_pin: SHT36PRO:gpio26
+###------------------------------------------------------------------
+## Using MAX31865 to connect PT100
+#sensor_type: MAX31865
+#sensor_pin: SHT36PRO:gpio1
+#spi_software_sclk_pin: SHT36PRO:gpio10
+#spi_software_mosi_pin: SHT36PRO:gpio11
+#spi_software_miso_pin: SHT36PRO:gpio12
+#rtd_reference_r: 430
+
+#####################################################################
+#      extruder
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html#extruder
+[extruder]
+step_pin: SHT36PRO:gpio23
+dir_pin: SHT36PRO:gpio24               # Extruder motor direction pin
+enable_pin: !SHT36PRO:gpio25
+rotation_distance: 21.84
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## Calibration: 22.44 = old value 22 * actual value 102 / target value 100
+gear_ratio:50:10
+## Gear ratio (Galileo gear ratio 7.5:1, comment this line; BMG is 50:17, output shaft in front, input shaft in back)
+microsteps:16
+full_steps_per_rotation: 200
+nozzle_diameter:0.400
+filament_diameter:1.75
+heater_pin: SHT36PRO:gpio8
+min_temp: -230
+max_temp: 500
+max_power: 1.0
+min_extrude_temp: 150
+pressure_advance: 0.05
+## Pressure advance
+## https://www.klipper3d.org/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040
+#max_extrude_only_distance: 200.0   # If extrusion flow error, comment this, but it's recommended to re-slice
+# Nozzle temperature PID calibration command: "PID_CALIBRATE HEATER=extruder TARGET=245"
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+step_pulse_duration: 0.000004
+#--------------------------------------------------------------------
+[tmc5160 extruder]
+cs_pin: SHT36PRO:gpio20
+spi_software_sclk_pin: SHT36PRO:gpio10
+spi_software_mosi_pin: SHT36PRO:gpio11
+spi_software_miso_pin: SHT36PRO:gpio12
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.075
+stealthchop_threshold: 0
+
+#####################################################################
+#      FAN
+#####################################################################
+[fan]
+pin: SHT36PRO:gpio15
+#--------------------------------------------------------------------
+[heater_fan hotend_fan]
+pin: SHT36PRO:gpio14
+heater: extruder
+heater_temp: 50.0
+
+#####################################################################
+#      X STOP
+#####################################################################
+# [stepper_x]
+# endstop_pin: !SHT36PRO:gpio21
+## The SHT V2 board has PA1, PA2 two limit pins available, modify configuration according to actual wiring
+## PA1 pin supports high voltage input by default, can be used for 12v proximity sensors, etc. Can be configured as a normal limit pin via jumper
+
+#####################################################################
+#      Stealthburner LED
+#####################################################################
+## https://github.com/VoronDesign/Voron-Stealthburner/tree/main
+[neopixel sb_leds]
+pin: SHT36PRO:gpio6
+chain_count: 3
+# Number of LEDs
+color_order: GRB
+initial_RED: 0.4
+initial_GREEN: 0.8
+initial_BLUE: 1
+initial_WHITE: 0.0
+#66CCFF
+
+#####################################################################
+#      TAP && PL08N && BLTOUCH
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html?h=probe#probe
+# [probe]
+# pin: ^SHT36PRO:gpio3
+# x_offset: 0
+# y_offset: 25.0
+# z_offset: 0
+# speed: 10.0
+# samples: 3
+# samples_result: median
+# sample_retract_dist: 4.0
+# samples_tolerance: 0.010
+# samples_tolerance_retries: 3
+
+#--------------------------------------------------------------------
+## https://www.klipper3d.org/Config_Reference.html?h=probe#bltouch
+#[bltouch]
+#sensor_pin: ^SHT36PRO:gpio3
+#control_pin: SHT36PRO:gpio7
+#x_offset: -26.1
+#y_offset: -15.3
+#z_offset: 2.1
+
+#####################################################################
+#                          Magnetic Angle Sensor
+#####################################################################
+## Magnetic angle sensor
+## For details, see https://www.klipper3d.org/API_Server.html#angledump_angle
+## https://www.klipper3d.org/Debugging.html#motion-analysis-and-data-logging
+# [angle my_angle_sensor]
+# sensor_type: as5047d
+# #sample_period: 0.000400
+# stepper: stepper_x
+# cs_pin: SHT36PRO:gpio17
+# spi_software_sclk_pin: SHT36PRO:gpio18
+# spi_software_mosi_pin: SHT36PRO:gpio19
+# spi_software_miso_pin: SHT36PRO:gpio16
+
+```
