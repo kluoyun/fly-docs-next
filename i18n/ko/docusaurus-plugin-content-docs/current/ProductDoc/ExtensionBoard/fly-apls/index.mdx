@@ -1,0 +1,99 @@
+---
+sidebar_position: 1
+---
+
+# 소개
+apls 압력 모듈은 ADS131M02 기반의 압력 측정 솔루션으로, 3D 프린터 자동 Z 축 홈(Home) 및 메쉬 베드 레벨링을 위해 개발되었습니다. 고민감도 압력 감지와 실시간 신호 처리를 통해 모듈은 프린팅 헤드와 메쉬 베드의 접촉 상태를 정확히 인식하여 밀리미터 단위의 레벨링 정확성을 제공하며, 전통적인 기계식 리미트 칼리브레이션의 오차를 제거하고, 첫 번째 층 프린팅 성공률을 크게 향상시킵니다.
+
+## apls 압력 모듈 사용법
+
+### 추천 클리닝 기능 조합
+apls 압력 모듈을 사용할 때는 클리닝 기능과 함께 사용하는 것을 권장합니다. 이를 통해 노즐의 청결 상태를 유지하고 레벨링의 정확성과 안정성을 향상시킬 수 있습니다.
+
+#### XH2.54 4핀 연결도
+모듈은 메인보드의 UART 포트에 직접 연결하거나 확장 보드의 UART 포트에 연결할 수 있습니다. UART 포트가 없을 경우 메인보드에서 두 개의 핀을 찾고, 전원선의 양극과 음극을 주의해야 합니다.
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-apls/img/uart.webp').default} size="100%" align="center" />
+
+### 설치 시 유의사항
+1. 모듈이 견고하게 설치되었는지 확인하고, 프린팅 중 발생할 수 있는 진동으로 인해 접촉이 불량되지 않도록 합니다.
+2. 연결선이 올바른지 확인하고 잘못된 연결로 인해 모듈이 정상적으로 작동하지 않는 문제가 발생하지 않도록 합니다.
+3. 최초 사용 전 다수의 레벨링 테스트를 수행하여 모듈의 민감도와 정확성이 예상치에 부합하는지 확인하세요.
+
+## 상태 LED 표시
+- **전원 상태**: 녹색 LED가 점등하면 모듈이 정상적으로 작동 중임을 나타냅니다.
+- **트리거 상태**: 빨간색 LED가 꺼지면 모듈이 트리거 상태임을 나타냅니다.
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-apls/img/LED.webp').default} size="20%" align="center" />
+
+### 상태 LED 문제 해결
+- LED가 점등하지 않는 경우 전원 연결이 올바른지 확인하세요.
+- LED가 지속적으로 깜빡이는 경우 모듈에서 비정상 신호를 감지했을 가능성이 있으므로, 프로브가 이물질에 갇히거나 손상되었는지 확인하세요.
+
+## 설정 가이드
+기존 구성 파일의 `probe` 및 `홈` 부분을 대체하고 아래와 같은 설정을 추가해야 합니다:
+
+### 예제 구성 파일
+다음은 권장하는 구성 파일 내용이며, 필요에 따라 조정하십시오:
+
+
+```cfg
+[homing_override]
+axes: xyz
+set_position_z:10
+gcode:
+       G91
+       G1 Z10 F3000
+       G90
+        SET_PIN PIN=_probe_ready VALUE=0
+        ## _LIFT_Z
+       {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+
+       {% if home_all or 'X' in params %}
+            G28 X
+       {% endif %}
+
+       {% if home_all or 'Y' in params %}
+            G28 Y
+            G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
+       {% endif %}
+
+       {% if home_all or 'Z' in params %}
+       # 만약 eddy와 압력 센서를 동시에 사용할 경우 아래 주석 해제
+            #SET_PIN PIN=_probe_ready VALUE=1 
+            G28 Z 
+            #SET_PIN PIN=_probe_ready VALUE=0
+            G1 Z10 F3000           
+        {% endif %}
+
+[output_pin _probe_ready]
+pin: PA9
+shutdown_value: 0
+
+[probe]
+pin: PA10
+x_offset: 0                  # X축 - 센서의 노즐 상대적 오프셋
+y_offset: 0               # Y축 - 센서의 노즐 상대적 오프셋
+z_offset:0                # Z축 - 센서의 노즐 상대적 오프셋
+speed: 8                 # 레벨링 속도
+samples: 3                   # 샘플링 횟수
+samples_result: median       # 결과값 선택 방법 (기본값: 중앙값)
+sample_retract_dist: 2     # 레벨링 후퇴 거리
+samples_tolerance: 0.05      # 샘플링 공차 (작은 값이 너무 많은 샘플링을 유발할 수 있음)
+samples_tolerance_retries: 3 # 공차 초과 재시도 횟수
+activate_gcode:
+           G4 P500
+           SET_PIN PIN=_probe_ready VALUE=1
+deactivate_gcode:
+           SET_PIN PIN=_probe_ready VALUE=0  
+```
+
+### Z 오프셋 값 조정 참고
+아래 명령어를 사용하여 z-offset을 조정할 수 있습니다:
+```gcode
+PROBE_CALIBRATE
+```
+
+- `z-offset` 값을 조정하기 전에 Klipper 문서의 [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test) 튜토리얼을 참조하시기 바랍니다.
+
+:::info 주의
+- 압력 모듈을 Z 축 리미트로 사용하려면 기존 `endstop_pin` 설정을 다음으로 덮어쓰세요: `endstop_pin: probe:z_virtual_endstop`
+:::
