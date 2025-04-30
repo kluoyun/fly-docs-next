@@ -1,0 +1,83 @@
+---
+sidebar_position: 10
+---
+
+
+import DIAG from '@site/i18n/en/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 2240
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.webp').default} size="60%" align="center" />
+
+## TMC-2240
+
+    * Input Voltage: 12V-36V
+    * Maximum Current: 3.0A
+    * Suitable for: Marlin/Klipper/RRF firmware
+    * Drive Mode Support: TMC: SPI
+    * Step/Direction interface with microPlyer support
+    * Maximum resolution: 256 microsteps
+    * Supports stealthChop2 silent operation and smooth motion
+    * Supports resonance suppression at medium frequencies
+    * Supports spreadCycle high dynamic motor control chopper
+    * Supports dcStep load-related speed control
+    * Supports stallGuard2 high precision sensorless motor load detection
+    * Supports coolStep current control, up to 75% energy saving
+
+
+
+## TP2240 Reference Configuration
+
+    :::danger
+
+    * The driver sampling resistor is `rref: 12300`, please do not set it incorrectly
+    * Only one of spi_bus and spi_software can be selected
+    
+    :::
+
+### SPI Mode Reference Configuration
+
+    ```cfg
+    [tmc2240 stepper_x]
+    cs_pin: 
+    spi_bus: 
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 0.65                   # Motor running current value
+    interpolate: False                  # Whether to enable 256 microstep interpolation (not recommended to enable)
+    rref: 12300
+    stealthchop_threshold: 0           # Silence threshold (if silence is not needed, change the value to 0)
+    ```
+
+## Infinite Endstop Usage Instructions
+
+    <DIAG />
+
+    :::tip Infinite Endstop Usage Tips
+    
+    * To use the infinite endstop of TP2240, the motherboard's DIAG jumper must be connected
+    * The original `endstop_pin:` needs to be disabled or deleted, and add `endstop_pin: tmc5160_stepper_x:virtual_endstop`
+    * After configuring `diag1_pin:`, the limit status should be untriggered
+    * For `driver_SGT:`, a suitable value needs to be tested manually
+
+    :::
+
+    * Reference configuration
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2240_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Retract distance cannot be changed to 0, otherwise homing may fail
+
+    [tmc2240 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    #   After configuration, ensure that the limit status is untriggered
+    #   This pin usually uses "^" prefix to enable internal pull-up
+    #   Sensitivity is related to belt tension and needs to be adjusted manually
+    #  (Make sure to set driver_SGTHRS to a suitable sensitivity at the same time)
+
+    ```

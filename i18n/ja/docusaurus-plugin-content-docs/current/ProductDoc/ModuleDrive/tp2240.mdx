@@ -1,0 +1,81 @@
+---
+sidebar_position: 10
+---
+
+
+import DIAG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 2240
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.webp').default} size="60%" align="center" />
+
+## TMC-2240
+
+    * 入力電圧 ：12V-36V
+    * 最大電流 ：3.0A
+    * 対応するファームウェア ：Marlin/Klipper/RRF
+    * ドライバモードサポート：TMC：SPI
+    * ステップ/ディレクションインターフェースにマイクロポリャー付き
+    * 最高分解能は256マイクロステップ
+    * stealthChop2による静かな動作とスムーズな動きをサポート
+    * 中周波数の共振に対する共振抑制機能をサポート
+    * spreadCycleによる高動的なモータ制御チャープをサポート
+    * dcStepによる負荷に関連する速度制御をサポート
+    * stallGuard2による高精度な無センサーモータ負荷検出をサポート
+    * coolStepによる電流制御をサポート、最大で75％の省エネが可能
+
+## TP2240リファレンス設定
+
+    :::danger
+
+    * ドライバのサンプル抵抗は`rref: 12300`です。誤って設定しないでください
+    * spi_busとspi_softwareはどちらか一方を選択してください
+    
+    :::
+
+### SPIモードリファレンス設定
+
+    ```cfg
+    [tmc2240 stepper_x]
+    cs_pin: 
+    spi_bus: 
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 0.65                   # モーター運転電流値
+    interpolate: False                  # 256マイクロステップ補間を有効にするかどうか（推奨しません）
+    rref: 12300
+    stealthchop_threshold: 0           # 静音閾値（静音が必要ない場合、数値を0に変更してください）
+    ```
+
+## 無限位使用説明
+
+    <DIAG />
+
+    :::tip 無限位使用のヒント
+    
+    * TP2240を使用して無限位を使用するには、マザーボードのDIAGジャンパーを接続する必要があります
+    * 元の`endstop_pin:`は遮蔽または削除する必要があり、`endstop_pin: tmc5160_stepper_x:virtual_endstop`を追加します
+    * `diag1_pin:`を設定した後、リミットスイッチ状態は未トリガーになります
+    * `driver_SGT:`の値は自分でテストする必要があります
+
+    :::
+
+    * 参考設定
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2240_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # リターン距離を0にしないと、ホームが失敗する可能性があります
+
+    [tmc2240 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    # 設定が完了したら、リミットスイッチの状態が未トリガーであることを確認してください
+    # このピンは通常、「^」プレフィックスを使用して内部プルアップを有効にします
+    # 灵敏度はベルトの緩みに依存するため、適切な値に調整する必要があります
+    # （driver_SGTHRSも適切な感度に設定することを忘れずに）
+
+    ```

@@ -1,0 +1,81 @@
+---
+sidebar_position: 10
+---
+
+
+import DIAG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/ProductDoc/ModuleDrive/_diag.mdx';
+
+# TP 2240
+
+    <ImageView image={require('@site/docs/ProductDoc/ModuleDrive/img/tp5160.webp').default} size="60%" align="center" />
+
+## TMC-2240
+
+    * Tension d'entrée : 12V-36V
+    * Cour maximum : 3.0A
+    * Compatible avec : Firmware Marlin/Klipper/RRF
+    * Modes de pilotage pris en charge : TMC : SPI
+    * Interface de pas/sens avec interpolation microPlyer
+    * Résolution maximale : 256 subdivisions
+    * Prise en charge du fonctionnement silencieux stealthChop2 et des mouvements fluides
+    * Réduction des résonances à fréquences intermédiaires
+    * Prise en charge du contrôleur de découpage spreadCycle pour un contrôle moteur dynamique élevé
+    * Prise en charge du contrôle de vitesse lié à la charge dcStep
+    * Prise en charge de la détection de charge sans capteur stallGuard2 avec précision
+    * Prise en charge du contrôle de courant coolStep, économisant jusqu'à 75%
+
+## Configuration de référence TP2240
+
+    :::danger
+
+    * La résistance d'échantillonnage du pilote est `rref: 12300`. Veuillez ne pas la configurer incorrectement.
+    * `spi_bus` et `spi_software` ne peuvent être choisis qu'un seul.
+
+    :::
+
+### Configuration de référence en mode SPI
+
+    ```cfg
+    [tmc2240 stepper_x]
+    cs_pin: 
+    spi_bus: 
+    # spi_software_mosi_pin:
+    # spi_software_miso_pin:
+    # spi_software_sclk_pin: 
+    run_current: 0.65                   # Valeur de courant pour le fonctionnement du moteur
+    interpolate: False                  # Activer/Désactiver l'interpolation de 256 micro-pas (non recommandé d'activer)
+    rref: 12300
+    stealthchop_threshold: 0           # Seuil silencieux (si silence non requis, définissez la valeur sur 0)
+    ```
+
+## Instructions d'utilisation sans fin de course
+
+    <DIAG />
+
+    :::tip Indications d'utilisation sans fin de course
+    
+    * Pour utiliser le TP2240 sans fin de course, il est nécessaire de connecter le saut DIAGONAL de la carte mère.
+    * L'ancienne configuration `endstop_pin:` doit être masquée ou supprimée, puis ajouter `endstop_pin: tmc5160_stepper_x:virtual_endstop`.
+    * Après avoir configuré `diag1_pin:`, l'état de la fin de course doit être non déclenché.
+    * La configuration `driver_SGT:` nécessite un réglage manuel d'une valeur appropriée.
+
+    :::
+
+    * Configuration de référence
+
+    ```cfg
+    [stepper_x]
+    # endstop_pin:PF3
+    endstop_pin: tmc2240_stepper_x:virtual_endstop
+    homing_retract_dist: 0        # Aucun retrait lors du retour, sinon cela peut provoquer un échec de positionnement
+
+    [tmc2240 stepper_x]
+    diag1_pin: ^!
+    driver_SGT: 1
+
+    # Après la configuration, assurez-vous que l'état de la fin de course est non déclenché
+    # Ce fil est généralement activé avec "^" pour activer une résistance de tirage interne
+    # La sensibilité est liée à la tension de la courroie et doit être ajustée manuellement
+    # (Assurez-vous également de configurer driver_SGTHRS avec une valeur appropriée de sensibilité)
+
+    ```
