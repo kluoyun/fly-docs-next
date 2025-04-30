@@ -1,0 +1,158 @@
+---
+sidebar_position: 5
+sidebar_label: Reference Configuration
+---
+
+# Reference Configuration
+
+```cfg
+#####################################################################
+#                               Mainboard Configuration
+#####################################################################
+[mcu SHT36] # Tool mainboard serial number
+canbus_uuid: eeb4f40a0b9b
+### To query CAN firmware id: ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Replace serial with canbus_uuid: and add the id
+
+#####################################################################
+#                             Temperature Monitoring
+#####################################################################
+[temperature_sensor SHT36]        # Toolboard mainboard temperature
+sensor_type: temperature_mcu      # Associated MCU
+sensor_mcu: SHT36                 # Associated MCU is SHT36
+#--------------------------------------------------------------------
+[temperature_sensor Box]          # Toolboard thermistor temperature
+sensor_type: ATC Semitec 104GT-2  # Sensor model
+sensor_pin: SHT36:gpio27          # Signal interface
+
+#####################################################################
+#                            Extruder Settings
+#####################################################################
+# Note: Test running direction after wiring
+[extruder]                          # Extruder
+step_pin: SHT36:gpio24              # Extruder step pulse pin
+dir_pin: SHT36:gpio23               # Extruder direction pin
+enable_pin: !SHT36:gpio25           # Extruder enable pin
+## Update the following values when calibrating the extruder
+## For example, if you request 100mm feed but actually get 102:
+## rotation_distance = <old_rotation_distance> * <actual_extrude_length> / <requested_extrude_length>
+## Calibration example: 22.44 = old value 22 * actual 102 / target 100
+rotation_distance: 22.44            # Step value
+gear_ratio: 50:17                   # Gear ratio (Galileo 7.5:1, comment out this line; BMG is 50:17, output shaft front, input shaft rear)
+microsteps: 16                      # Motor microsteps, higher = better quality, more load
+full_steps_per_rotation: 200        # Steps per revolution (200 for 1.8°, 400 for 0.9°)
+nozzle_diameter: 0.400              # Nozzle diameter
+filament_diameter: 1.75             # Filament diameter
+heater_pin: SHT36:gpio8             # Heater pin, connect to HETA0
+#--------------------------------------------------------------------
+## Standard thermistor config
+sensor_type: ATC Semitec 104GT-2    # Sensor model (Generic 3950, ATC Semitec 104GT-2, PT1000)
+sensor_pin: SHT36:gpio26            # Sensor pin
+#--------------------------------------------------------------------
+## PT1000 config
+#sensor_type: PT1000                 # Sensor model (Generic 3950, ATC Semitec 104GT-2, PT1000)
+#pullup_resistor: 1000               # Pull-up resistor 1000, if temp is -180, change jumper
+#sensor_pin: SHT36:gpio26            # Sensor pin
+#--------------------------------------------------------------------
+min_temp: -200                      # Minimum temperature (exceeding triggers emergency stop)
+max_temp: 350                       # Maximum temperature (exceeding triggers emergency stop)
+max_power: 1.0                      # Maximum power
+min_extrude_temp: 170               # Minimum extrusion temp (must reach this to extrude)
+pressure_advance: 0.05              # Pressure advance - keep below 1.0
+pressure_advance_smooth_time: 0.040 # Smoothing time, default 0.040
+# Pressure advance tuning: https://www.klipper3d.org/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040 # Smoothing time, default 0.040
+#max_extrude_only_distance: 200.0   # Comment out if extrusion error, but re-slice recommended
+# Nozzle PID tuning command: "PID_CALIBRATE HEATER=extruder TARGET=245"
+control = pid                # PID nozzle temp auto-tuning (will be commented after tuning)
+pid_kp = 26.213              # PID Kp (auto-tuned)
+pid_ki = 1.304               # PID Ki (auto-tuned)
+pid_kd = 131.721             # PID Kd (auto-tuned)
+step_pulse_duration: 0.000004
+#--------------------------------------------------------------------
+[tmc2209 extruder]                  # Extruder driver config - TMC2209
+uart_pin: SHT36:gpio1               # UART pin
+tx_pin: SHT36:gpio0
+interpolate: False                  # 256 microstep interpolation (True=on, False=off)
+run_current: 0.8                    # Motor run current
+sense_resistor: 0.110               # Do not change
+stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+
+#####################################################################
+#                             Fan Configuration
+#####################################################################
+[fan]                        # Model cooling fan
+pin: SHT36:gpio15            # Signal interface
+kick_start_time: 0.5         # Startup time (do not change)
+off_below: 0.10              # Do not change
+#--------------------------------------------------------------------
+[heater_fan hotend_fan]      # Throat cooling fan
+pin: SHT36:gpio14            # Signal interface
+max_power: 1.0               # Max speed
+kick_start_time: 0.5         # Startup time (do not change)
+heater: extruder             # Associated device: extruder
+heater_temp: 50              # Fan turns on when extruder reaches this temp
+fan_speed: 1.0               # Fan speed
+
+#####################################################################
+#                            X Endstop Configuration
+#####################################################################
+[stepper_x]
+endstop_pin: !SHT36:gpio21
+## SHT36 board has gpio2, gpio21 endstop pins, modify as needed
+## gpio21 supports high voltage input by default, for 12V proximity sensors, etc. Can be set to normal by jumper
+
+#####################################################################
+#                           SB Head LED Configuration
+#####################################################################
+[neopixel sb_leds]
+pin: SHT36:gpio6            # Signal interface
+chain_count: 3              # Number of LEDs
+color_order: GRBW           # LED type
+initial_RED: 0.4
+initial_GREEN: 0.8
+initial_BLUE: 1
+initial_WHITE: 0.0          # Will light up after connection
+
+#####################################################################
+#                           PL08N Probe
+#####################################################################
+# PL08N probe should not be lower than nozzle, only for leveling. If your PL08N is NO (normally open), add ! to pin.
+[probe]
+pin: ^SHT36:gpio3            # Signal interface
+x_offset: 0                  # X offset relative to nozzle
+y_offset: 25.0               # Y offset relative to nozzle
+z_offset: 0                  # Z offset relative to nozzle
+speed: 10.0                  # Leveling speed
+samples: 3                   # Number of samples
+samples_result: median       # Value method (default median)
+sample_retract_dist: 4.0     # Retract distance
+samples_tolerance: 0.006     # Sampling tolerance (too small may increase retries)
+samples_tolerance_retries: 3 # Retries on tolerance exceeded
+
+#--------------------------------------------------------------------
+#[bltouch]
+#sensor_pin: ^SHT36:gpio3     # Signal interface
+#control_pin: SHT36:gpio7     # Servo control
+#x_offset: -26.1              # X offset, determine yourself
+#y_offset: -15.3              # Y offset, determine yourself
+#z_offset: 2.1                # Z offset, determine yourself
+
+#####################################################################
+#                          Magnetic Angle Sensor
+#####################################################################
+## Magnetic angle sensor
+## See https://www.klipper3d.org/API_Server.html#angledump_angle
+## https://www.klipper3d.org/Debugging.html#motion-analysis-and-data-logging
+# [angle my_angle_sensor]
+# sensor_type: as5047d
+# #sample_period: 0.000400
+# stepper: stepper_x
+# cs_pin: SHT36:gpio17
+# spi_bus: spi1
+# # spi_software_sclk_pin: SHT36:PA5
+# # spi_software_mosi_pin: SHT36:PA7
+# # spi_software_miso_pin: SHT36:PA6
+
+
+```

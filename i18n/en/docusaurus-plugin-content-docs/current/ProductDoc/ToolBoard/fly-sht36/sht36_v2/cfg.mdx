@@ -1,0 +1,202 @@
+---
+sidebar_position: 5
+sidebar_label: Configuration Reference
+---
+
+:::tip
+
+Please do not modify the configuration while web page translation is enabled.
+
+:::
+
+:::warning Note
+
+Please do not modify the configuration while web page translation is enabled.
+
+:::
+
+:::danger Notice
+
+Please do not modify the configuration while web page translation is enabled.
+
+:::
+
+# Reference Configuration
+
+```cfg
+#####################################################################
+#      Notes
+#####################################################################
+## Please add [include sht36v2.cfg] under printer.cfg
+## The tool board will use the following configurations,
+## and if the following configurations are used in other configurations, conflicts may occur.
+## [resonance_tester] && [extruder] && [tmc2209 extruder] && [fan] && [heater_fan my_hotend_fan]
+## [probe] && [bltouch] && [stepper_x]
+
+#####################################################################
+#      Master ID Configuration
+#####################################################################
+[mcu sht36v2]
+canbus_uuid:
+### To query the CAN firmware id: ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+### Replace serial with canbus_uuid: and add the id after it
+
+#####################################################################
+#      Temperature monitoring
+#####################################################################
+[temperature_sensor SHT36-V2]
+sensor_type: temperature_mcu
+sensor_mcu: sht36v2
+#--------------------------------------------------------------------
+[temperature_sensor Box]
+sensor_type: ATC Semitec 104GT-2
+sensor_pin = sht36v2:PA4
+#####################################################################
+#      Accelerometer
+#####################################################################
+## https://www.klipper3d.org/Measuring_Resonances.html?h=adxl#adxl345
+[adxl345]
+cs_pin: sht36v2:PA9
+spi_bus: spi2
+#--------------------------------------------------------------------
+[resonance_tester]
+accel_chip: adxl345
+probe_points: 150, 150, 20
+# Somewhere slightly above the middle of your print bed
+min_freq: 5
+max_freq: 133
+accel_per_hz: 75
+hz_per_sec: 1
+
+#####################################################################
+#      Extruder thermal sensitivity
+#####################################################################
+## Please select the type of thermistor you want to use.
+[extruder]
+## Type of sensor - common thermistors are (Generic 3950, ATC Semitec 104GT-2)
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: sht36v2:PA3
+###------------------------------------------------------------------
+## If using PT1000, please connect the jumper next to the thermistor.
+# sensor_type: PT1000
+# pullup_resistor: 1100
+# sensor_pin: sht36v2:PA3
+###------------------------------------------------------------------
+## Using MAX31865 to connect PT100
+# sensor_type: MAX31865
+# sensor_pin: sht36v2:PB12
+# spi_bus: spi2
+# rtd_reference_r: 430
+# rtd_nominal_r: 100  ## Set to 100 for PT100, 1000 for PT1000
+#####################################################################
+#      Extruder
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html#extruder
+[extruder]
+step_pin: sht36v2:PB4
+dir_pin: sht36v2:PB3               # Extruder motor direction pin
+enable_pin: !sht36v2:PA15
+rotation_distance: 21.84
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## Calibration: 22.44 = old value 22 * actual value 102 / target value 100
+gear_ratio: 50:10
+## Gear ratio (Galileo 7.5:1, comment this line; BMG is 50:17, output shaft in front, input shaft in back)
+microsteps: 16
+full_steps_per_rotation: 200
+nozzle_diameter: 0.400
+filament_diameter: 1.75
+heater_pin: sht36v2:PA8
+min_temp: -230
+max_temp: 350
+max_power: 1.0
+min_extrude_temp: 150
+pressure_advance: 0.05
+## https://www.klipper3d.org/Pressure_Advance.html
+pressure_advance_smooth_time: 0.040
+# max_extrude_only_distance: 200.0   # Comment this if you get extrusion flow errors, but it's recommended to re-slice
+# Nozzle temperature PID calibration command: "PID_CALIBRATE HEATER=extruder TARGET=245"
+control: pid
+pid_kp: 26.213
+pid_ki: 1.304
+pid_kd: 131.721
+step_pulse_duration: 0.000004
+#--------------------------------------------------------------------
+[tmc2209 extruder]
+uart_pin: sht36v2:PB5
+interpolate: False
+run_current: 0.8
+sense_resistor: 0.110
+stealthchop_threshold: 500
+
+#####################################################################
+#      FAN
+#####################################################################
+[fan]
+pin: sht36v2:PB11
+#--------------------------------------------------------------------
+[heater_fan hotend_fan]
+pin: sht36v2:PB10
+heater: extruder
+heater_temp: 50.0
+
+#####################################################################
+#      X STOP
+#####################################################################
+# [stepper_x]
+# endstop_pin: !sht36v2:PA2
+## SHT V2 board has PA1 and PA2 endstop pins available, modify according to actual wiring
+## PA1 pin supports high voltage input by default, can be used for 12v proximity sensors, etc. You can configure PA1 as a regular endstop pin with a jumper
+
+#####################################################################
+#      Stealthburner LED
+#####################################################################
+## https://github.com/VoronDesign/Voron-Stealthburner/tree/main
+[neopixel sb_leds]
+pin: sht36v2:PB0
+chain_count: 3
+# Number of LEDs
+color_order: GRB
+initial_RED: 0.4
+initial_GREEN: 0.8
+initial_BLUE: 1
+initial_WHITE: 0.0
+# 66CCFF
+
+#####################################################################
+#      TAP && PL08N && BLTOUCH
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html?h=probe#probe
+# [probe]
+# pin: ^sht36v2:PA1
+# x_offset: 0
+# y_offset: 25.0
+# z_offset: 0
+# speed: 10.0
+# samples: 3
+# samples_result: median
+# sample_retract_dist: 4.0
+# samples_tolerance: 0.010
+# samples_tolerance_retries: 3
+
+#--------------------------------------------------------------------
+## https://www.klipper3d.org/Config_Reference.html?h=probe#bltouch
+# [bltouch]
+# sensor_pin: ^sht36v2:PC15
+# control_pin: sht36v2:PB1
+# x_offset: -26.1
+# y_offset: -15.3
+# z_offset: 2.1
+
+#####################################################################
+#      Magnetic Angle Sensor
+#####################################################################
+## For more information, see https://www.klipper3d.org/API_Server.html#angledump_angle
+## https://www.klipper3d.org/Debugging.html#motion-analysis-and-data-logging
+[angle my_angle_sensor]
+sensor_type: as5047d
+# sample_period: 0.000400
+# stepper: stepper_x
+cs_pin: sht36v2:PC14
+spi_bus: spi1
+
+```

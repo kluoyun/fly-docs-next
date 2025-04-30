@@ -1,0 +1,28 @@
+---
+sidebar_position: 4
+sidebar_label: Reference Configuration
+---
+
+# Klipper Reference Configuration
+
+* Reference configuration
+    ```cfg
+    [mcu LIS]
+    serial: /dev/serial/by-id/usb-Klipper_rp2040_XXXXXXXXXXXXXXXXXXXXX
+    ### To find the USB firmware id, run: ls -l /dev/serial/by-id/
+    ### Replace /dev/serial/by-id/usb-Klipper_rp2040_XXXXXXXXXXXXXXXXXXXXX with the id you find
+
+    [lis2dw]
+    cs_pin: LIS:gpio9
+    spi_software_sclk_pin: LIS:gpio10
+    spi_software_mosi_pin: LIS:gpio11
+    spi_software_miso_pin: LIS:gpio12
+
+    [resonance_tester]
+    accel_chip: lis2dw
+    probe_points: 150, 150, 20        # Coordinates for resonance testing
+    min_freq: 5                       # Minimum frequency for resonance test
+    max_freq: 133                     # Maximum frequency for resonance test
+    accel_per_hz: 75                  # Acceleration per Hz (mm/sec). Acceleration = accel_per_hz * frequency. Reduce this value if resonance is too strong. Default is 75.
+    hz_per_sec: 1                     # Test speed. Lower values increase test time, higher values reduce accuracy. (Hz/sec == sec^-2), default is 1
+    ```

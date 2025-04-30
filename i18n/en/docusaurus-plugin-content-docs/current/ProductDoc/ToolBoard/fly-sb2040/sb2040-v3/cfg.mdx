@@ -1,0 +1,179 @@
+---
+sidebar_position: 5
+sidebar_label: Reference Configuration
+---
+
+# Reference Configuration
+
+```cfg
+
+#####################################################################
+#      Notes
+#####################################################################
+## Please add [include SB2040.cfg] under printer.cfg
+## The tool board will use the following configurations,
+## and if the following configurations are used in other configurations, conflicts may occur.
+## [resonance_tester] && [extruder] && [tmc2209 extruder] && [fan] && [heater_fan my_hotend_fan]
+## [probe] && [bltouch] && [stepper_x]
+
+#####################################################################
+#      Master ID Configuration
+#####################################################################
+[mcu SB2040]  # Tool board serial number
+## CAN ID
+## ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+canbus_uuid:
+#--------------------------------------------------------------------
+# # RS232 ID
+## Please fill in the baud rate according to the firmware configuration.
+# serial: /dev/serial/by-path/platform-1c1c000.usb-usb-0:1.2:1.0-port0
+# baud: 250000
+# restart_method:command
+
+#####################################################################
+#      Temperature monitoring
+#####################################################################
+[temperature_sensor SB2040]
+sensor_type: temperature_mcu
+sensor_mcu: SB2040
+
+#####################################################################
+#      Accelerometer
+#####################################################################
+## https://www.klipper3d.org/Measuring_Resonances.html?h=adxl#adxl345
+[lis2dw]
+cs_pin: SB2040:gpio12
+spi_bus:spi0_gpio4_gpio3_gpio2
+#--------------------------------------------------------------------
+[resonance_tester]
+accel_chip: lis2dw
+probe_points: 150, 150, 20
+# Somewhere slightly above the middle of your print bed
+min_freq: 5
+max_freq: 133
+accel_per_hz: 75
+hz_per_sec: 1
+
+#####################################################################
+#      Stealthburner LED
+#####################################################################
+## https://github.com/VoronDesign/Voron-Stealthburner/tree/main
+[neopixel sb_leds]
+pin: SB2040:gpio26
+chain_count: 16
+# Number of LEDs
+color_order: GRB
+initial_RED: 0.4    #66CCFF
+initial_GREEN: 0.8
+initial_BLUE: 1
+initial_WHITE: 0.0
+
+#####################################################################
+#      Extruder thermal sensitivity
+#####################################################################
+## Please select the type of thermocouple you want to use.
+[extruder]
+## Type of sensor - common thermistors are (Generic 3950, ATC Semitec 104GT-2)
+sensor_type:ATC Semitec 104GT-2
+sensor_pin:SB2040:gpio27
+###------------------------------------------------------------------
+## If using PT1000, please connect the jumper next to the thermal sensitivity.
+# sensor_type:PT1000
+# sensor_pin:SB2040:gpio27
+# pullup_resistor: 1000
+###------------------------------------------------------------------
+## Using MAX31865 to connect PT100 or PT1000
+# sensor_type: MAX31865
+# sensor_pin: SB2040:gpio17
+# spi_bus:spi0_gpio4_gpio3_gpio2
+# rtd_reference_r: 430  ## Set to 430 for PT100, 4300 for PT1000
+#rtd_nominal_r: 100  ## Set to 100 for PT100, 1000 for PT1000
+
+#####################################################################
+#      extruder
+#####################################################################
+## https://www.klipper3d.org/Config_Reference.html#extruder
+[extruder]
+step_pin:SB2040:gpio14
+dir_pin:SB2040:gpio13
+enable_pin: !SB2040:gpio16
+rotation_distance: 21.84
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## Calibration: 22.44 = old value 22 * actual value 102 / target value 100
+gear_ratio:50:10
+## Gear ratio (Galileo 7.5:1 and comment this line; BMG is 50:17, output shaft in front, input shaft in back)
+microsteps:16
+full_steps_per_rotation: 200
+nozzle_diameter:0.400
+filament_diameter:1.75
+heater_pin:SB2040:gpio23
+min_temp:-200
+max_temp:350
+max_power:1.0
+min_extrude_temp:10
+pressure_advance: 0.05
+pressure_advance_smooth_time: 0.040
+#max_extrude_only_distance: 200.0   # If extrusion flow error occurs, comment this, but it's recommended to re-slice
+# Nozzle temperature PID calibration command:  "PID_CALIBRATE HEATER=extruder TARGET=245
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+step_pulse_duration: 0.000004
+###------------------------------------------------------------------
+[tmc2209 extruder]
+uart_pin:SB2040:gpio15
+interpolate:False
+run_current: 0.8
+sense_resistor:0.110
+stealthchop_threshold:0
+##------------------------------------------------------------------
+# [tmc2240 extruder]
+# uart_pin:SB2040:gpio15
+# interpolate:False
+# run_current: 0.65
+# interpolate: False
+# rref: 12300
+# stealthchop_threshold: 0
+
+###------------------------------------------------------------------
+[verify_heater extruder]
+max_error: 20
+check_gain_time:120
+hysteresis: 50
+heating_gain: 2
+
+#####################################################################
+#      FAN
+#####################################################################
+[fan]
+pin:SB2040:gpio24
+###------------------------------------------------------------------
+[heater_fan my_hotend_fan]
+pin: SB2040:gpio19
+heater: extruder
+heater_temp: 50.0
+
+#####################################################################
+#      TAP && PL08N && BLTOUCH
+#####################################################################
+# [stepper_x]
+# endstop_pin: ^!SB2040:gpio18
+
+# #####################################################################
+# #      TAP && PL08N && BLTOUCH
+# #####################################################################
+# ## https://www.klipper3d.org/Config_Reference.html?h=probe#probe
+# [probe]
+# pin: ^SB2040:gpio22          #gpio22
+# x_offset: 0
+# y_offset: 25.0
+# z_offset: 0
+# speed: 10.0
+# samples: 3
+# samples_result: median
+# sample_retract_dist: 4.0
+# samples_tolerance: 0.010
+# samples_tolerance_retries: 3
+
+```

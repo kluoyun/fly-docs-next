@@ -1,0 +1,197 @@
+---
+sidebar_position: 5
+sidebar_label: Reference Configuration
+---
+
+:::tip
+
+Please do not modify the configuration while web page translation is enabled.
+
+:::
+
+:::warning Note
+
+Please do not modify the configuration while web page translation is enabled.
+
+:::
+
+:::danger Notice
+
+Please do not modify the configuration while web page translation is enabled.
+
+:::
+
+# Reference Configuration
+
+```cfg
+#####################################################################
+#      Notes
+#####################################################################
+## The tool board will use the following configurations. 
+## If the following configurations are used in other configurations, conflicts may occur.
+## [resonance_tester] && [extruder] && [tmc2209 extruder] && [fan] && [heater_fan my_hotend_fan]
+## [probe] && [bltouch] && [stepper_x]
+
+#####################################################################
+#      Master ID Configuration
+#####################################################################
+# TOOL-LITE configuration
+# [mcu TOOL-LITE]
+# TOOL-LITEbus_uuid: 
+# Search ID command
+# ~/klippy-env/bin/python ~/klipper/scripts/TOOL-LITEbus_query.py can0
+# ~/klippy-env/bin/python ~/klipper/scripts/TOOL-LITEbus_query.py can1
+
+# 232 configuration
+[mcu TOOL-LITE]
+serial: /dev/serial/by-path/*
+baud: 250000   # Please fill in the baud rate according to the firmware configuration
+restart_method:command
+# Search ID command
+# ls /dev/serial/by-path/*
+
+[temperature_sensor TOOL-LITE]     # TOOL-LITE board temperature (can be renamed)
+sensor_type: temperature_mcu     # Associated mcu (default)
+
+[force_move]
+enable_force_move: true
+
+[extruder]
+step_pin:TOOL-LITE:gpio24
+dir_pin:TOOL-LITE:gpio23  # For ORBTER V2.5 with ldo36 motor, add ! before pin (uppercase !)
+enable_pin:!TOOL-LITE:gpio29
+## Extruder step value settings
+rotation_distance: 32.7
+# rotation_distance step value
+#---------------T8 gear motor--------------    
+# VZ-Hextrudort-Low plus with moons/LDO 36 motor 17mm/20MM T8 step value: 29.7 
+# VZ-Hextrudort-Low with moons motor T8 step value: 22.5  
+# VZ-Hextrudort-Low with LDO36 20MM/17M motor T8 step value: 23.37 
+# Sherpa Micro with LDO36 20MM/17MM motor T8 step value: 23.37
+# Sherpa Micro with moons motor T8 step value: 22.5
+#---------------T10 gear motor--------------             
+# Sherpa Micro with moons motor T10 step value: 23.8425
+# VZ-Hextrudort-Low with moons motor T10 step value: 23.8425
+# VZ-Hextrudort-Low with LDO36 17MM/20MM motor T10 step value:
+# VZ-Hextrudort-Low plus T10 step value: 29.11 
+# ORBITER V2.5 step value: 35.5
+
+## rotation_distance = The original rotation_distance multiplied by the actual extrusion length divided by the requested extrusion length.
+## Calibrate step value: 22.44 = old value 22 * actual value 102 / target value 100
+# gear_ratio:50:8 # VZ-Hextrudort-Low plus reduction ratio 50:8 (10-tooth motor, change 8 to 10)
+## Reduction ratio (Galileo gear ratio 7.5:1 and comment this line; BMG is 50:17, output shaft in front, input shaft in back)
+microsteps:16
+full_steps_per_rotation: 200   
+nozzle_diameter:0.400
+filament_diameter:1.75
+sensor_type:NTC 100K MGB18-104F39050L32
+## Type of sensor - common thermistors are (Generic 3950, ATC Semitec 104GT-2)
+###------------------------------------------------------------------
+## If using PT1000, please connect the jumper next to the thermal sensitivity.
+# sensor_type:PT1000
+# sensor_pin:SHT36:gpio27
+# pullup_resistor: 1000
+sensor_pin:TOOL-LITE:gpio28
+heater_pin:TOOL-LITE:gpio6
+min_temp:-200
+max_temp:350
+max_power:1.0
+min_extrude_temp:-200
+pressure_advance: 0.05
+pressure_advance_smooth_time: 0.040
+max_extrude_only_distance: 200.0   # If extrusion flow error occurs, you can comment this, but it is recommended to re-slice
+max_extrude_cross_section:200
+# Nozzle temperature PID calibration command:  "PID_CALIBRATE HEATER=extruder TARGET=245
+control: pid
+pid_kp: 26.213
+pid_ki:1.304
+pid_kd: 131.721
+
+[tmc2209 extruder]
+uart_pin:TOOL-LITE:gpio25
+interpolate:False
+run_current: 0.5
+sense_resistor:0.110
+stealthchop_threshold:0
+
+[lis2dw]
+cs_pin:TOOL-LITE:gpio9
+spi_software_sclk_pin:TOOL-LITE: gpio10
+spi_software_mosi_pin:TOOL-LITE: gpio11
+spi_software_miso_pin:TOOL-LITE:gpio8
+
+[resonance_tester]
+accel_chip: lis2dw
+probe_points: 150, 150, 20
+# Somewhere slightly above the middle of your print bed
+min_freq: 5
+max_freq: 133
+accel_per_hz: 75
+hz_per_sec: 1 
+
+[fan]   # Model fan
+pin:TOOL-LITE:gpio13
+max_power:0.6
+###------------------------------------------------------------------
+[heater_fan my_hotend_fan]  # Throat fan
+pin:TOOL-LITE:gpio14
+heater: extruder
+heater_temp: 50.0
+fan_speed: 0.2
+
+## https://www.klipper3d.org/Config_Reference.html?h=probe#probe
+# [probe]
+# pin: TOOL-LITE:gpio19 # High voltage pin
+# x_offset: 0
+# y_offset: 25.0
+# z_offset: 0
+# speed: 10.0
+# samples: 3
+# samples_result: median
+# sample_retract_dist: 4.0
+# samples_tolerance: 0.010
+# samples_tolerance_retries: 3
+
+## https://www.klipper3d.org/Config_Reference.html?h=probe#probe
+# [probe]
+# pin: ^TOOL-LITE:gpio22
+# x_offset: 0
+# y_offset: 25.0
+# z_offset: 0
+# speed: 10.0
+# samples: 3
+# samples_result: median
+# sample_retract_dist: 4.0
+# samples_tolerance: 0.010
+# samples_tolerance_retries: 3
+
+## https://www.klipper3d.org/Config_Reference.html?h=probe#bltouch
+# [bltouch]
+# sensor_pin: ^TOOL-LITE:gpio22    # Signal interface
+# control_pin: TOOL-LITE:gpio7    # Servo control
+# x_offset: -26.1              # X-axis - sensor offset relative to nozzle, determine offset yourself
+# y_offset: -15.3              # Y-axis - sensor offset relative to nozzle, determine offset yourself
+# z_offset: 2.1                # Z-axis - sensor offset relative to nozzle, determine offset yourself
+
+# # Custom servo configuration
+# [servo my_servo]
+# pin:TOOL-LITE:gpio7
+# #   PWM output pin to control the servo.
+# #   This parameter must be provided.
+# maximum_servo_angle: 180
+# #   The maximum angle this servo can be set to (in degrees).
+# #   Default is 180 degrees.
+# minimum_pulse_width: 0.0005
+# #   Minimum pulse width time (in seconds). This should correspond to 0 degrees.
+# #   Default is 0.001 seconds.
+# maximum_pulse_width: 0.0025
+# #   Maximum pulse width time (in seconds). This should correspond to maximum_servo_angle.
+# #   Default is 0.002 seconds.
+# initial_angle:0 
+# #   Initial servo angle (in degrees).
+# #   By default, no signal is sent at startup.
+# #initial_pulse_width:
+# #   Initial pulse width time (in seconds). (Only effective if initial_angle is not set.)
+# #   By default, no signal is sent at startup.
+
+```

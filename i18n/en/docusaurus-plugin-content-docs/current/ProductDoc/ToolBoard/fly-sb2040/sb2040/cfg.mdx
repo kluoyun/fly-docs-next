@@ -1,0 +1,162 @@
+---
+sidebar_position: 5
+sidebar_label: Configuration Reference
+---
+
+# Reference Configuration
+
+    ```cfg
+    #####################################################################
+    #                               Mainboard Configuration
+    #####################################################################
+    [mcu sb2040]  # Toolboard serial number
+    canbus_uuid: e51d5c71a901
+    ### To query CAN firmware id: ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ### Replace serial with canbus_uuid: and add the id
+
+    #####################################################################
+    #                       adxl345 Accelerometer Configuration (Enable if needed)
+    #####################################################################
+    ## ADXL345 Accelerometer
+    [adxl345]
+    cs_pin: sb2040:gpio1
+    spi_software_sclk_pin: sb2040:gpio0
+    spi_software_mosi_pin: sb2040:gpio3
+    spi_software_miso_pin: sb2040:gpio2
+    #--------------------------------------------------------------------
+    [resonance_tester]
+    accel_chip: adxl345         # Accelerometer chip model
+    probe_points: 150,150,10    # Coordinates set to the center of the heated bed
+
+    #####################################################################
+    #                             Temperature Monitoring
+    #####################################################################
+    [temperature_sensor FLY-SB2040]   # Toolboard MCU temperature
+    sensor_type: temperature_mcu      # Associated MCU
+    sensor_mcu: sb2040                # Associated MCU is sb2040
+    #--------------------------------------------------------------------
+    [temperature_sensor Warehouse]    # Toolboard thermistor temperature
+    sensor_type: ATC Semitec 104GT-2  # Sensor model
+    sensor_pin = sb2040:gpio26        # Signal interface
+
+    #####################################################################
+    #                            E Extruder Settings
+    #####################################################################
+    # Note: Test running direction after wiring
+    [extruder]                          # Extruder
+    step_pin: sb2040:gpio9              # Step pulse pin for extruder motor
+    dir_pin: sb2040:gpio10              # Direction pin for extruder motor
+    enable_pin: !sb2040:gpio7           # Enable pin for extruder motor
+    ## Update the following values when calibrating the extruder
+    ## For example, if you request 100mm of filament but actually get 102:
+    ## rotation_distance = <old_rotation_distance> * <actual_extrude_length> / <requested_extrude_length>
+    ## Calibration example: 22.44 = old value 22 * actual 102 / target 100
+    rotation_distance: 22.44            # Step value
+    gear_ratio: 50:17                   # Gear ratio (Galileo 7.5:1, comment out this line; BMG is 50:17, output shaft front, input shaft rear)
+    microsteps: 16                      # Motor microstepping, higher value = higher quality, but more load on MCU
+    full_steps_per_rotation: 200        # Steps per revolution (200 for 1.8°, 400 for 0.9°)
+    nozzle_diameter: 0.400              # Nozzle diameter
+    filament_diameter: 1.75             # Filament diameter
+    heater_pin: sb2040:gpio6            # Heater pin, connected to HETA0
+    #--------------------------------------------------------------------
+    ## Standard thermistor configuration
+    sensor_type: ATC Semitec 104GT-2    # Sensor model (Generic 3950, ATC Semitec 104GT-2, PT1000)
+    sensor_pin: sb2040:gpio27           # Sensor pin
+    #--------------------------------------------------------------------
+    ## PT1000 configuration
+    #sensor_type: PT1000                 # Sensor model (Generic 3950, ATC Semitec 104GT-2, PT1000)
+    #pullup_resistor: 1000               # Pull-up resistor 1000, change jumper if temp is -180
+    #sensor_pin: sb2040:gpio27           # Sensor pin
+    #--------------------------------------------------------------------
+    ## PT100 configuration (V2 only)
+    #sensor_type: MAX31865                # Sensor model, PT100 version
+    #sensor_pin: sb2040:gpio22            # Sensor pin, PT100 version
+    # spi_software_sclk_pin: sb2040:gpio18
+    # spi_software_mosi_pin: sb2040:gpio19
+    # spi_software_miso_pin: sb2040:gpio23
+    #rtd_reference_r: 430                 # Remove # when using 31865
+    #rtd_nominal_r: 100  ## Set to 100 for PT100, 1000 for PT1000
+    #--------------------------------------------------------------------
+    min_temp: 10                        # Minimum temperature (exceeding triggers emergency stop)
+    max_temp: 350                       # Maximum temperature (exceeding triggers emergency stop)
+    max_power: 1.0                      # Maximum power
+    min_extrude_temp: 170               # Minimum extrusion temperature
+    pressure_advance: 0.05              # Pressure advance (keep below 1.0)
+    # Pressure advance tuning: https://www.klipper3d.org/Pressure_Advance.html
+    pressure_advance_smooth_time: 0.040 # Smoothing time, default 0.040
+    #max_extrude_only_distance: 200.0   # Comment out to disable extrusion flow error, but re-slice recommended
+    # Nozzle PID calibration command: "PID_CALIBRATE HEATER=extruder TARGET=245"
+    control = pid                # PID nozzle temperature auto-calibration (commented after calibration)
+    pid_kp = 26.213              # PID auto-calibration (commented after calibration)
+    pid_ki = 1.304               # PID auto-calibration (commented after calibration)
+    pid_kd = 131.721             # PID auto-calibration (commented after calibration)
+    step_pulse_duration: 0.000004
+    #--------------------------------------------------------------------
+    [tmc2209 extruder]                  # Extruder driver config - TMC2209
+    uart_pin: sb2040:gpio8              # UART pin definition
+    interpolate: False                  # Enable 256 microstep interpolation (True/False)
+    run_current: 0.6                    # Motor run current
+    sense_resistor: 0.110               # Do not change driver sense resistor
+    stealthchop_threshold: 500          # StealthChop threshold (set to 0 to disable)
+
+    #####################################################################
+    #                             Fan Configuration
+    #####################################################################
+    [fan]                        # Model cooling fan
+    pin: sb2040:gpio13           # Signal interface
+    kick_start_time: 0.5         # Startup time (do not change)
+    off_below: 0.10              # Do not change
+    #--------------------------------------------------------------------
+    [heater_fan Heatbreak]         # Heatbreak cooling fan
+    pin: sb2040:gpio14           # Signal interface
+    max_power: 1.0               # Max speed
+    kick_start_time: 0.5         # Startup time (do not change)
+    heater: extruder             # Associated device: extruder
+    heater_temp: 50              # Fan starts when extruder reaches this temp
+    fan_speed: 1.0               # Fan speed
+
+    #####################################################################
+    #                            X Endstop Configuration
+    #####################################################################
+    [stepper_x]
+    endstop_pin: !sb2040:gpio29
+    ## SB2040 has gpio25, gpio28, gpio29 available for endstops; gpio25 supports high voltage input. Modify as needed.
+
+    #####################################################################
+    #                           SB Head LED Configuration
+    #####################################################################
+    [neopixel sb_leds]
+    pin: sb2040:gpio12          # Signal interface
+    chain_count: 3              # Number of LEDs
+    color_order: GRBW           # LED type
+    initial_RED: 0.4
+    initial_GREEN: 0.8
+    initial_BLUE: 1
+    initial_WHITE: 0.0          # LEDs will light up after connection
+
+    #####################################################################
+    #                           PL08N Probe
+    #####################################################################
+    # PL08N probe should not be lower than nozzle height, only for leveling.
+    # If your PL08N is NO (normally open), add ! to the pin.
+    #[probe]
+    #pin: ^sb2040:gpio25          # Signal interface
+    #x_offset: 0                  # X offset from nozzle, determine yourself
+    #y_offset: 25.0               # Y offset from nozzle, determine yourself
+    #z_offset: 0                  # Z offset from nozzle, determine yourself
+    #speed: 10.0                  # Leveling speed
+    #samples: 3                   # Number of samples
+    #samples_result: median       # Value method (default median)
+    #sample_retract_dist: 4.0     # Probe retract distance
+    #samples_tolerance: 0.010     # Sampling tolerance (too small may increase samples)
+    #samples_tolerance_retries: 3 # Retry count for tolerance
+
+    #--------------------------------------------------------------------
+    #[bltouch]
+    #sensor_pin: ^sb2040:gpio29   # Signal interface
+    #control_pin: sb2040:gpio28   # Servo control
+    #x_offset: -26.1              # X offset from nozzle, determine yourself
+    #y_offset: -15.3              # Y offset from nozzle, determine yourself
+    #z_offset: 2.1                # Z offset from nozzle, determine yourself
+
+    ```
