@@ -1,0 +1,464 @@
+---
+sidebar_position: 6
+sidebar_label: Klipper参考設定
+---
+
+# Klipper参考設定
+
+
+```cfg
+####################################################################################
+#                         3D MELLOW /（ご自身で追加してください）                   #
+####################################################################################
+## Fly-PRO_X10資料URL：https://mellow.klipper.cn/#/board/fly_pro/README
+## Fly-PRO_X10回路図URL：https://mellow.klipper.cn/#/board/fly_pro/schematic
+## FLY公式淘宝店：https://shop126791347.taobao.com/shop/view_shop.htm?spm=a230r.1.14.4.1a4840a8hyvpPJ&user_number_id=2464680006
+## アフターサービスが必要な場合は淘宝カスタマーサービスにご連絡ください
+## FLYアフター技術サポートグループ：621032883
+## FLY-RRFファームウェア交流グループ：786561979
+
+#####################################################################
+#                               注意事項                             #
+#####################################################################
+##***変更/確認が必要な項目：*** 
+## MCUパス                                [mcu] 
+## プリンタの可動範囲                      xyzのposition   
+## サーミスタタイプ                        [extruder] と [heater_bed]
+## Z軸リミットスイッチ停止位置             [safe_z_home] 
+## Z軸リミットスイッチオフセット位置        [stepper_z] 
+## PIDチューニング                         [extruder] と [heater_bed] 
+## エクストルーダーモーターのステップ値微調整 [extruder] 
+
+#####################################################################
+#                               ファイル呼び出し                     #
+#####################################################################
+#[include fluidd.cfg]          # FLUIDD呼び出しファイル。
+#[include mainsail.cfg]        # MAINSDIL呼び出しファイル。
+#どちらのファイルを使うかご自身でご確認ください
+
+#####################################################################
+#                               メインボード設定                     #
+#####################################################################
+[mcu]                           # FLYボードID
+serial: /dev/serial/by-id/usb-Klipper_stm32h723xx_MELLOW-if00
+### USBファームウェアIDの確認方法：ls /dev/serial/by-id/
+### /dev/serial/by-id/usb-Klipper_stm32f407xx_XXXXXXXXXXXXXXXXXXXXXを確認したIDに置き換えてください
+# canbus_uuid: 87ecc744787b
+### CANファームウェアIDの確認方法：~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+### CANのIDはserialをcanbus_uuid:に置き換え、IDを追加してください
+
+#####################################################################
+#                            機種と加速度                            #
+#####################################################################
+[printer]                       # プリンタ設定
+kinematics: corexy              # 運動学構造：デカルト(cartesian)またはcorexyなど
+max_velocity: 300               # 最大速度   
+max_accel: 10000                # 最大加速度 最大3000
+max_z_velocity: 10              # Z軸最大速度
+max_z_accel: 1000               # Z軸最大加速度
+square_corner_velocity: 5.0     # 角速度。小さくするとプラットフォームの慣性を抑えられます
+
+#####################################################################
+#                             温度モニタリング                       #
+#####################################################################
+[temperature_sensor Fly-C8]    # FLYボード温度
+sensor_type: temperature_mcu      # MCUに関連（デフォルト）
+#####################################################################
+# [temperature_sensor RPI]        # 上位機温度
+# sensor_type: temperature_host     # 上位機に関連
+
+#####################################################################
+#                              ヒートベッドメッシュキャリブレーション
+#####################################################################
+[bed_mesh]
+speed: 50                    # キャリブレーション速度
+horizontal_move_z: 5         # 次のポイントに移動する前にZを上げる高さ
+mesh_min: 30,30              # 最小キャリブレーションポイント座標x, y
+mesh_max: 270, 270           # 最大キャリブレーションポイント座標x, y
+probe_count: 4,4             # サンプリングポイント数（4X4で16点）
+mesh_pps: 2,2                # 補間サンプリングポイント数
+algorithm: bicubic           # アルゴリズムモデル
+bicubic_tension: 0.2         # アルゴリズム補間値は変更しないでください
+
+#####################################################################
+#             X/Yステッピングモーター設定 (X/Y Stepper Settings)     # 
+#####################################################################
+#                   z1                 z2
+#                       B__________A
+#                     
+# 
+# 
+# 
+#                   Z0     12864      Z3
+
+#####################################################################
+#                  X軸ステッピングモーター (DRIVER0)                 #
+#####################################################################
+## DRIVER0モーター位置
+[stepper_x]
+step_pin: PE7                       # X軸モーターパルスピン
+dir_pin: !PG11                        # X軸モーター方向ピン。!で方向反転
+enable_pin: !PG10                   # X軸モーターイネーブルピン。!が必要
+rotation_distance: 40               # プーリー周長mm（2GT-20Tは40、2GT-16Tは32）
+microsteps: 16                      # マイクロステップ数
+full_steps_per_rotation: 200        # 1回転あたりのパルス数（1.8度:200、0.9度:400）
+endstop_pin: PD9                    # リミットスイッチピン。通常はNC
+# endstop_pin: tmc2209_stepper_x:virtual_endstop
+# endstop_pin: tmc5160_stepper_x:virtual_endstop
+###NC接続時はトリガー状態。!で反転。断線時のクラッシュ防止
+position_min: 0                     # ソフトリミット最小
+position_endstop: 300               # ソフトリミット最大 (250mm-300mm-350mm)
+position_max: 300                   # 機械リミット最大 (250mm-300mm-350mm)
+homing_speed: 200                    # ホーミング速度
+homing_retract_dist: 0              # ホーミング後のリトラクト距離
+#####################################################################
+## ドライバモデルが正しいかご確認ください (2208 or 2209)
+# [tmc2209 stepper_x]
+# uart_pin: PG12
+# interpolate: False
+# run_current: 0.8
+# sense_resistor: 0.110
+# stealthchop_threshold: 0
+#####################################################################
+[tmc5160 stepper_x]
+cs_pin: PG12
+spi_bus: spi1
+run_current: 1.3
+interpolate: False
+sense_resistor: 0.075
+stealthchop_threshold: 0
+# diag0_pin: ^!PG8
+# driver_SGT: 1
+#####################################################################
+#                  Y軸ステッピングモーター (DRIVER1)                 #
+#####################################################################
+## DRIVER1モーター位置
+[stepper_y]
+step_pin: PE8
+dir_pin: !PE14
+enable_pin: !PE13
+rotation_distance: 40
+microsteps: 16
+full_steps_per_rotation: 200
+endstop_pin: !PG7
+# endstop_pin: tmc2209_stepper_y:virtual_endstop
+# endstop_pin: tmc5160_stepper_y:virtual_endstop
+###NC接続時はトリガー状態。!で反転。断線時のクラッシュ防止
+position_min: 0
+position_endstop: 300
+position_max: 300
+homing_speed: 150
+homing_retract_dist: 0
+#####################################################################
+## ドライバモデルが正しいかご確認ください (2209 or 5160)
+# [tmc2209 stepper_y]
+# uart_pin: PE15
+# interpolate: False
+# run_current: 0.8
+# sense_resistor: 0.110
+# stealthchop_threshold: 0
+#####################################################################
+[tmc5160 stepper_y]
+cs_pin: PE15
+spi_bus: spi1
+run_current: 1.0
+interpolate: False
+sense_resistor: 0.075
+stealthchop_threshold: 0
+# diag0_pin: ^!PG7
+# driver_SGT: 1
+#####################################################################
+#                     Z軸ステッピングモーター（Z Stepper Settings）  #
+#####################################################################
+## DRIVER2モーター位置
+[stepper_z]
+step_pin: PE9
+dir_pin: !PG1
+enable_pin: !PG0
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 32
+endstop_pin: !PG6
+# endstop_pin: probe:z_virtual_endstop 
+position_max: 290
+position_endstop:0
+position_min: -5
+homing_speed: 50
+second_homing_speed: 10
+homing_retract_dist: 0
+[tmc5160 stepper_z]
+cs_pin: PE12
+spi_bus: spi1
+run_current: 0.8
+interpolate: False
+sense_resistor: 0.075
+stealthchop_threshold: 0
+######################################################################
+## DRIVER4モーター位置
+[stepper_z1]
+step_pin: PE10
+dir_pin: PF14
+enable_pin: !PF13
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 32
+[tmc5160 stepper_z1]
+cs_pin: PF15
+spi_bus: spi1
+run_current: 0.8
+interpolate: False
+sense_resistor: 0.075
+stealthchop_threshold: 0
+#####################################################################
+## DRIVER5モーター位置
+[stepper_z2]
+step_pin: PE11
+dir_pin: !PF11
+enable_pin: !PB2
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 32
+[tmc5160 stepper_z2]
+cs_pin: PF12
+spi_bus: spi1
+run_current: 0.8
+interpolate: False
+sense_resistor: 0.075
+stealthchop_threshold: 0
+######################################################################
+## DRIVER6モーター位置
+######################################################################
+[stepper_z3]
+step_pin: PE2
+dir_pin: PF10
+enable_pin: !PC0
+rotation_distance: 40
+gear_ratio: 80:16
+microsteps: 32
+[tmc5160 stepper_z3]
+cs_pin: PF5
+spi_bus: spi1
+run_current: 0.8
+interpolate: False
+sense_resistor: 0.075
+stealthchop_threshold: 0
+
+#####################################################################
+#                             エクストルーダー設定
+#####################################################################
+[extruder]
+step_pin:PE3
+dir_pin:PF2
+enable_pin: !PF4
+microsteps: 16
+full_steps_per_rotation: 200
+rotation_distance: 22.52245
+# ステップ値のキャリブレーション: rotation_distance : <旧rotation_distance> * <実際の押出長> / <要求した押出長>
+gear_ratio: 50:10
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+heater_pin: PF8
+sensor_type: Generic 3950
+sensor_pin: PB0
+max_power: 1.0
+min_temp: -235
+max_temp: 350
+min_extrude_temp: 150
+pressure_advance: 0.04
+pressure_advance_smooth_time:0.040
+#ノズル温度PIDキャリブレーションコマンド:  "PID_CALIBRATE HEATER:extruder TARGET:245
+control : pid
+pid_kp : 26.213
+pid_ki : 1.304
+pid_kd : 131.721
+[tmc2209 extruder]
+uart_pin:PF1
+interpolate: False
+run_current: 0.6
+sense_resistor: 0.110
+stealthchop_threshold: 0
+#######################################################################
+[verify_heater extruder]
+max_error: 20
+check_gain_time:120
+hysteresis: 50
+heating_gain: 2
+
+#####################################################################
+#      FAN
+#####################################################################
+####4線ファン参考設定
+[fan]
+pin:PB10
+max_power: 1.0
+tachometer_pin: ^PD15
+#####################################################################
+# [fan]
+# pin:PA3
+# max_power: 1.0
+# tachometer_pin: ^PD14
+#####################################################################
+[heater_fan 喉管冷却]         # ヒートブレイク冷却ファン
+pin:PA1
+max_power: 1.0
+kick_start_time: 0.5
+heater: extruder
+heater_temp: 50
+fan_speed: 1.0
+#####################################################################
+[heater_fan ヒートベッドファン]         # 電装ボックスファン
+pin: PA15
+max_power: 1.0
+shutdown_speed: 0.0
+kick_start_time: 5.0
+heater: heater_bed
+heater_temp: 50
+fan_speed: 1.0
+
+#####################################################################
+#                           アイドル時ヒートベッドOFF                #
+#####################################################################
+[idle_timeout]
+timeout: 1800
+
+#####################################################################
+#                           オートレベリングセンサー                #
+#####################################################################
+#デフォルトPL08Nセンサーはノズルより高く設置し、レベリング専用。PL08NがNO（常開）の場合は!を追加
+[probe]
+pin: ^PD10
+x_offset: 0
+y_offset: 25.0
+z_offset: 0
+speed: 10.0
+samples: 3
+samples_result: median
+sample_retract_dist: 4.0
+samples_tolerance: 0.007
+samples_tolerance_retries: 3
+#####################################################################
+#[bltouch]
+#sensor_pin: ^PC3
+#control_pin: PC6
+#x_offset: 0
+#y_offset: 25.0
+#z_offset: 0
+
+#####################################################################
+#                               ホーミング                           #
+#####################################################################
+[safe_z_home]
+home_xy_position:150,150
+speed:100
+z_hop:10
+#####################################################################
+#[homing_override]
+#axes: z
+#set_position_z: 0
+#gcode:
+#   G90
+#   G0 Z15 F600
+#   G28 X Y
+#    ## ZリミットスイッチのXY位置
+#    ##X0とY0をあなたの値に更新（例:X157、Y305）
+#    ## Z軸リミット位置定義
+#   G0 X185 Y250 F3600    #250mm   
+#   G28 Z
+#   G0 Z10 F1800
+
+#####################################################################
+#                           4Zレベリング 
+#####################################################################
+[quad_gantry_level]          # 300mm機種レベリングパラメータ
+#gantry_corners:
+#    -60,-10
+#    310,320
+#points:
+#    50,25
+#    50,175
+#    200,175
+#    200,25
+#####################################################################
+gantry_corners:
+    -60,-10
+    360,370
+points:
+    50,25
+    50,225
+    250,225
+    250,25
+#####################################################################
+#gantry_corners:
+#    -60,-10
+#    410,420
+#points:
+#    50,25
+#    50,275
+#    300,275
+#    300,25
+#####################################################################
+speed: 100
+horizontal_move_z: 10
+retry_tolerance: 0.0075
+retries: 5
+max_adjust: 10
+[force_move]
+enable_force_move: true
+
+#####################################################################
+#      LED制御
+#####################################################################
+[neopixel TP_led]
+pin: PA8
+chain_count: 50
+color_order: GRB
+initial_RED: 0
+initial_GREEN: 0
+initial_BLUE: 0
+initial_WHITE: 0.0
+
+#####################################################################
+#                           カスタムgcodeマクロ
+#####################################################################
+[gcode_macro PRINT_START]
+gcode:
+     G92 E0
+     BED_MESH_CLEAR
+     G28
+     clean_nozzle
+     QUAD_GANTRY_LEVEL
+     G28
+     G1 Z20 F3000
+     clean_nozzle
+     BED_MESH_PROFILE LOAD:default
+
+[gcode_macro PRINT_huaxian]
+gcode:
+     G1 Z5 F3000 
+     G92 E0
+     G90
+     G0 X5 Y1 F6000
+     G0 Z0.4
+     G91
+     G1 X100 E20 F1200
+     G1 Y1
+     G1 X-100 E20 F1200
+     G0 z5
+     G92 E0
+     G90
+#####################################################################
+[gcode_macro PRINT_END]
+gcode:
+     M400
+     G92 E0
+     G1 E-10.0 F3600
+     G91
+     G0 Z1.00 X20.0 Y20.0 F6000
+     TURN_OFF_HEATERS
+     M107
+     G1 Z2 F3000
+     G90
+     G0  X150 Y280 F3600
+     BED_MESH_CLEAR
+
+```
