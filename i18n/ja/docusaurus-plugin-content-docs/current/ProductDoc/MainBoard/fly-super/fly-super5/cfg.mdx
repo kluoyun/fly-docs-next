@@ -1,0 +1,447 @@
+---
+sidebar_position: 5
+sidebar_label: Klipper参考設定
+---
+
+# Klipper参考設定
+
+## サンプル設定
+    ```cfg
+    ####################################################################################
+    #                         3D MELLOW /Fly-Super5                                    #
+    ####################################################################################
+    ## Fly-Super5-PRO資料ウェブサイト：
+    ## Fly-Super5-PRO回路図ウェブサイト：
+    ## FLY 公式淘宝店：https://shop126791347.taobao.com/shop/view_shop.htm?spm=a230r.1.14.4.1a4840a8hyvpPJ&user_number_id=2464680006
+    ## アフターサービスが必要な場合は淘宝カスタマーサービスにご連絡ください
+    ## FLY アフターサービス技術サポートグループ：621032883
+    ## FLY-RRFファームウェア交流グループ：786561979
+
+    #####################################################################
+    #                               注意事項                              #
+    #####################################################################
+    ##***変更/確認が必要な項目：***
+    ## MCU パス                                [mcu] 
+    ## プリンタの可動範囲                       xyzのposition   
+    ## サーミスタタイプ                         [extruder] と [heater_bed]
+    ## Z軸リミットスイッチ停止位置              [safe_z_home] 
+    ## Z軸リミットスイッチオフセット位置         [stepper_z] 
+    ## PID キャリブレーション                    [extruder] と [heater_bed] 
+    ## エクストルーダーモーターステップ微調整     [extruder] 
+
+    #####################################################################
+    #                               ファイル呼び出し                      #
+    #####################################################################
+    #[include fluidd.cfg]          # FLUIDD呼び出しファイル。
+    #[include mainsail.cfg]        # MAINSDIL呼び出しファイル。
+    #どちらのファイルを使うかはご自身でご確認ください
+
+    #####################################################################
+    #                               メインボード設定                      #
+    #####################################################################
+    [mcu]                           # FLYボードID
+    serial: /dev/serial/by-id/usb-Klipper_stm32f407xx_XXXXXXXXXXXXXXXXXXXXX
+    ### usbファームウェアIDの確認方法：ls -l /dev/serial/by-id/
+    ### /dev/serial/by-id/usb-Klipper_stm32f407xx_XXXXXXXXXXXXXXXXXXXXXを確認したIDに置き換えてください
+    #canbus_uuid: e51d5c71a901
+    ### canファームウェアIDの確認方法：~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ### canのIDはserialをcanbus_uuid: に置き換えてIDを追加
+
+    #####################################################################
+    #                            機種と加速度                            #
+    #####################################################################
+    [printer]                       # プリンタ設定
+    kinematics: corexy              # 運動学構造：デカルト(cartesian)またはcorexyなど
+    max_velocity: 300               # プリンタ最大速度   
+    max_accel: 3000                 # 最大加速度 最大3000
+    max_z_velocity: 15              # z軸最大速度
+    max_z_accel: 100                # z軸最大加速度
+    square_corner_velocity: 5.0     # 角速度（小さくするとプラットフォームの慣性を抑えられる）
+
+    #####################################################################
+    #                             温度モニタリング                       #
+    #####################################################################
+    [temperature_sensor Fly-Super5-PRO]    # FLYボード温度
+    sensor_type: temperature_mcu      # mcuに関連（デフォルト）
+    #--------------------------------------------------------------------
+    [temperature_sensor FLY-π]        # 上位機温度
+    sensor_type: temperature_host     # 上位機に関連
+    #--------------------------------------------------------------------
+    # [temperature_sensor Box]          # ボックス内温度（センサー追加が必要、参考設定）
+    # sensor_type: ATC Semitec 104GT-2  # センサー型番
+    # sensor_pin: PA4                   # 信号ピン
+
+    #####################################################################
+    #                              ヒートベッドメッシュキャリブレーション
+    #####################################################################
+    [bed_mesh]
+    speed: 50                    # キャリブレーション速度
+    horizontal_move_z: 5         # 次のポイントに移動する前にZを持ち上げる高さ
+    mesh_min: 30,30              # 最小キャリブレーションポイント座標x，y
+    mesh_max: 270, 270           # 最大キャリブレーションポイント座標x，y
+    probe_count: 4,4             # サンプリングポイント数（4X4で16点）
+    mesh_pps: 2,2                # 補間サンプリングポイント数
+    algorithm: bicubic           # アルゴリズムモデル
+    bicubic_tension: 0.2         # アルゴリズム補間は変更しないでください
+
+    #####################################################################
+    #             X/Yステッピングモーター設定 (X/Y Stepper Settings)      # 
+    #####################################################################
+    #   B Motor ---- Motor A 
+    #   |                  |
+    #   |------エクストルーダ------|
+    #   |                  |
+    #   |                  |
+    #          正面   
+    #####################################################################
+    #                  X軸ステッピングモーター   DRIVER0  (B Motor)      #
+    #####################################################################
+    #注：配線後は動作方向をテストしてください
+    [stepper_x]
+    step_pin: PE14                      # X軸モーターパルスピン設定
+    dir_pin: PE15                       # X軸モーター方向ピン設定、方向は実際に応じて判断、!で反転
+    enable_pin: !PB11                   # X軸モーターイネーブルピン設定、!を付けないと動作しません
+    rotation_distance: 40               # ドライブプーリー周長mm（2GT-20Tは40，2GT-16Tは32）
+    microsteps: 16                      # マイクロステップ設定
+    full_steps_per_rotation: 200        # 1回転あたりのパルス数（1.8度：200，0.9度：400）
+    endstop_pin: PB7                    # リミットスイッチピン、ノーマルクローズ推奨
+    ###ノーマルクローズはトリガー状態、!で反転、断線時のクラッシュ防止
+    position_min: 0                     # ソフトリミット最小移動量
+    position_endstop: 120               # ソフトリミット最大移動量 (例：voron0.1は120)
+    position_max: 120                   # 機械リミット最大移動量
+    homing_speed: 50                    # ホーミング速度、最大100
+    homing_retract_dist: 5              # 最初のトリガー後のリトラクト距離
+    step_pulse_duration: 0.000004
+    #--------------------------------------------------------------------
+    ##  ドライバ型番が正しいか確認 (2208 or 2209)
+    [tmc2209 stepper_x]                 # Xドライバ設定 -TMC2209
+    uart_pin: PB10                      # 通信ピン
+    #interpolate: False                 # 256マイクロステップ補間（Trueで有効、Falseで無効）
+    run_current: 0.8                    # モーター動作電流（単位：mA）
+    sense_resistor: 0.110               # ドライバ検出抵抗は変更しないでください
+    stealthchop_threshold: 500          # 静音閾値（不要なら0に）
+    #--------------------------------------------------------------------
+    #[tmc5160 stepper_x]                 # TMC5160用設定
+    #cs_pin: PB10                        # SPIチップセレクト
+    #spi_bus: spi1                       # SPIバス
+    #run_current: 1.0                    # 動作電流
+    #interpolate: False                  # 256マイクロステップ補間
+    #sense_resistor: 0.075               # 検出抵抗（5160 Proは0.033に）
+    #stealthchop_threshold: 500          # 静音閾値
+
+    #####################################################################
+    #                 Y軸ステッピングモーター     DRIVER01   (B Motor)    #
+    #####################################################################
+    #注：配線後は動作方向をテストしてください
+    [stepper_y]
+    step_pin: PE11                      # Y軸モーターパルスピン設定
+    dir_pin: PE12                       # Y軸モーター方向ピン設定、!で反転
+    enable_pin: !PE13                   # Y軸モーターイネーブルピン設定、!を付けないと動作しません
+    rotation_distance: 40               # ドライブプーリー周長mm
+    microsteps: 16                      # マイクロステップ設定
+    full_steps_per_rotation: 200        # 1回転あたりのパルス数
+    endstop_pin: PC7                    # リミットスイッチピン、ノーマルクローズ＋!で反転
+    ###ノーマルクローズはトリガー状態、!で反転、断線時のクラッシュ防止
+    position_min: 0                     # ソフトリミット最小移動量
+    position_endstop: 120               # ソフトリミット最大移動量
+    position_max: 120                   # 機械リミット最大移動量
+    homing_speed: 50                    # ホーミング速度、最大100
+    homing_retract_dist: 5              # 最初のトリガー後のリトラクト距離
+    step_pulse_duration: 0.000004
+    #--------------------------------------------------------------------
+    ##  ドライバ型番が正しいか確認 (2208 or 2209)
+    [tmc2209 stepper_y]                 # Yドライバ設定 -TMC2209
+    uart_pin: PE10                      # 通信ピン
+    #interpolate: False                 # 256マイクロステップ補間
+    run_current: 0.8                    # モーター動作電流
+    sense_resistor: 0.110               # ドライバ検出抵抗
+    stealthchop_threshold: 500          # 静音閾値
+    #--------------------------------------------------------------------
+    #[tmc5160 stepper_y]                 # TMC5160用設定
+    #cs_pin: PE10                        # SPIチップセレクト
+    #spi_bus: spi1                       # SPIバス
+    #run_current: 1.0                    # 動作電流
+    #interpolate: False                  # 256マイクロステップ補間
+    #sense_resistor: 0.075               # 検出抵抗（5160 Proは0.033に）
+    #stealthchop_threshold: 500          # 静音閾値
+
+    #####################################################################
+    #                     Z軸ステッピングモーター設定                     #
+    #####################################################################
+    #   |------Z1------|
+    #   |              |
+    #   |              |
+    #   |              |
+    #   |-----ディスプレイ----|
+
+    #####################################################################
+    #                           Z軸ステッピングモーター  DRIVER02         #
+    #####################################################################
+    #注：配線後は動作方向をテストしてください
+    [stepper_z]
+    step_pin: PE7                 # z軸モーターパルスピン
+    dir_pin: !PE8                 # z軸モーター方向ピン、!で反転
+    enable_pin: !PE9              # z軸モーターイネーブルピン、!を付けないと動作しません
+    ### T8x4リードスクリュー。1回転で4mm移動
+    ### 購入したスクリューに合わせて修正してください
+    rotation_distance: 4          # リードスクリューリード
+    full_steps_per_rotation: 200  # 1回転あたりのパルス数
+    microsteps: 16                # マイクロステップ設定
+    endstop_pin: PC6              # リミットスイッチピン、ノーマルクローズ＋!で反転
+    ## position_endstopはノズルがベッド表面(Z0)からZリミット停止点までの距離(mm)
+    ## 正の値=ベッドより高い、負の値=ベッドより低い
+    ## position_endstopを増やすとノズルがベッドに近づきます
+    ## Z_ENDSTOP_CALIBRATE実行後、position_endstopがCFGに保存されます
+    position_min: -15             # ノズルクリーニング用に-5程度
+    position_endstop: 120         # ソフトリミット最大移動量
+    position_max: 120             # 機械リミット最大移動量
+    homing_speed: 5               # ホーミング速度-最大20
+    second_homing_speed: 3        # 2回目のホーミング速度-最大10
+    homing_retract_dist: 0        # リトラクト距離
+    step_pulse_duration: 0.000004
+    #--------------------------------------------------------------------
+    [tmc2209 stepper_z]
+    uart_pin: PA4                 # 通信ピン
+    interpolate: false            # 256マイクロステップ補間
+    run_current: 0.8              # 動作電流mA
+    sense_resistor: 0.110         # ドライバ検出抵抗
+    stealthchop_threshold: 500    # 静音閾値
+    #--------------------------------------------------------------------
+    #[tmc5160 stepper_z]            # TMC5160用設定
+    #cs_pin: PA4                    # SPIチップセレクト
+    #spi_bus: spi3                  # SPIバス
+    #run_current: 1.0               # 動作電流
+    #interpolate: False             # 256マイクロステップ補間（非推奨）
+    #sense_resistor: 0.075          # 検出抵抗（5160 Proは0.033に）
+    #stealthchop_threshold: 500     # 静音閾値
+
+    #####################################################################
+    #                     E0 エクストルーダー設定                        # 
+    #####################################################################
+    #DRIVER03
+    [extruder]                          # エクストルーダー
+    step_pin: PE4                       # エクストルーダーパルスピン
+    dir_pin: PE5                        # エクストルーダー方向ピン
+    enable_pin: !PC1                    # エクストルーダーイネーブルピン
+    ## キャリブレーション時は以下の値を更新
+    ## 例：100mm送りたいが実際は98mmの場合：
+    ## 新値=旧値 x（実際の押出長/目標長）
+    ## キャリブレーション例: 23.1325301 = 旧値22.6789511*（実値102/目標100）
+    rotation_distance: 22.6789511       # ステップ値-Bondtech 5mmギア
+    gear_ratio: 50:17                   # 減速比（Galileoは7.5:1でコメントアウト、BMGは50:17）
+    microsteps: 16                      # マイクロステップ設定
+    full_steps_per_rotation: 200        # 1回転あたりのパルス数
+    nozzle_diameter: 0.400              # ノズル径
+    filament_diameter: 1.75             # フィラメント径
+    heater_pin: PD12                    # ヒーターピン（HETA0）
+    sensor_type: ATC Semitec 104GT-2    # サーミスタ型番
+    pullup_resistor:2200                # プルアップ抵抗
+    sensor_pin: PC4                     # サーミスタピン（ADC-1）
+    min_temp: 10                        # 最低温度（超過時は緊急停止）
+    max_temp: 350                       # 最高温度（超過時は緊急停止）
+    max_power: 1.0                      # 最大出力
+    min_extrude_temp: 170               # 最低押出温度
+    pressure_advance: 0.05              # プレッシャーアドバンス（1.0以下推奨）
+    #調整方法:https://www.klipper3d.org/ja/Pressure_Advance.html
+    pressure_advance_smooth_time: 0.040 # 平滑化時間（デフォルト0.040）
+    #max_extrude_only_distance: 200.0   # エクストルードエラー時はコメントアウト推奨
+    #ノズルPIDキャリブレーションコマンド："PID_CALIBRATE HEATER=extruder TARGET=245"
+    control = pid                # PIDノズル温度自動調整（完了後はコメントアウト）
+    pid_kp = 26.213              # PIDノズル温度自動調整
+    pid_ki = 1.304               # PIDノズル温度自動調整
+    pid_kd = 131.721             # PIDノズル温度自動調整
+    step_pulse_duration: 0.000004
+    #--------------------------------------------------------------------
+    [tmc2209 extruder]                  # エクストルーダードライバ設定-TMC2209
+    uart_pin: PC0                       # 通信ピン
+    #interpolate: False                 # 256マイクロステップ補間
+    run_current: 0.8                    # 動作電流
+    sense_resistor: 0.110               # ドライバ検出抵抗
+    stealthchop_threshold: 500          # 静音閾値
+    #--------------------------------------------------------------------
+    #[tmc5160 extruder]                  # TMC5160用設定
+    #cs_pin: PC0                         # SPIチップセレクト
+    #spi_bus: spi1                       # SPIバス
+    #run_current: 1.0                    # 動作電流
+    #interpolate: False                  # 256マイクロステップ補間
+    #sense_resistor: 0.075               # 検出抵抗（5160 Proは0.033に）
+    #stealthchop_threshold: 500          # 静音閾値
+
+    #####################################################################
+    #                            ヒートベッド設定                         # 
+    #####################################################################
+    [heater_bed]
+    heater_pin: PB0              # ヒートベッドピン（HETA1）
+    sensor_type: Generic 3950    # サーミスタ型番
+    sensor_pin: PB1              # ヒートベッドサーミスタピン
+    pullup_resistor:2200
+    max_power: 1.0               # ヒートベッド出力
+    min_temp: 0                  # 最低温度（超過時は緊急停止）
+    max_temp: 120                # 最高温度（超過時は緊急停止）
+    # PIDキャリブレーションコマンド："PID_CALIBRATE HEATER=heater_bed TARGET=100"
+    control: pid                # PIDヒートベッド温度自動調整
+    pid_kp: 58.437              # PIDヒートベッド温度自動調整
+    pid_ki: 2.347               # PIDヒートベッド温度自動調整
+    pid_kd: 363.769             # PIDヒートベッド温度自動調整
+
+    #####################################################################
+    #                            ファン設定                               # 
+    #####################################################################
+    [fan]                        # モデル冷却ファン 
+    pin: PA0                     # 信号ピン
+    kick_start_time: 0.5         # 起動時間
+    off_below: 0.10              # 
+    #--------------------------------------------------------------------
+    [heater_fan hotend_fan]      # ホットエンドファン
+    pin: PA1                     # 信号ピン
+    max_power: 1.0               # 最大回転数
+    kick_start_time: 0.5         # 起動時間
+    heater: extruder             # 関連デバイス：エクストルーダー
+    heater_temp: 50              # エクストルーダーが50度でファン起動
+    fan_speed: 1.0               # ファン回転数
+    #--------------------------------------------------------------------
+    [heater_fan controller_fan]  # コントローラーファン
+    pin: PA2                     # 信号ピン
+    max_power: 1.0               # 最大回転数
+    kick_start_time: 0.5         # 起動時間
+    heater: heater_bed           # 関連デバイス：ヒートベッド
+    heater_temp: 50              # ヒートベッドが50度でファン起動
+    fan_speed: 1.0               # ファン回転数
+    #--------------------------------------------------------------------
+    [heater_fan exhaust_fan]     # 排気ファン
+    pin: PA3                     # 信号ピン
+    max_power: 1.0               # 最大回転数
+    kick_start_time: 0.5         # 起動時間
+    heater: heater_bed           # 関連デバイス：ヒートベッド
+    heater_temp: 70              # ヒートベッドが70度でファン起動
+    fan_speed: 1.0               # ファン回転数
+
+    #####################################################################
+    #                           アイドル時ヒートベッドオフ                #
+    #####################################################################
+    [idle_timeout]
+    timeout: 1800                # 30分アイドルでヒートベッドオフ
+
+    #####################################################################
+    #                           PL08Nセンサー
+    #####################################################################
+    # PL08Nセンサーはノズルより低くしないでください。調整用のみ。NO（ノーマルオープン）の場合は!を追加
+    #[probe]
+    #pin:                         # 信号ピン
+    #x_offset: 0                  # X軸-ノズルからのオフセット
+    #y_offset: 25.0               # Y軸-ノズルからのオフセット
+    #z_offset: 0                  # Z軸-ノズルからのオフセット
+    #speed: 10.0                  # 調整速度
+    #samples: 3                   # サンプリング回数
+    #samples_result: median       # 取得方法（デフォルトmedian）
+    #sample_retract_dist: 4.0     # リトラクト距離
+    #samples_tolerance: 0.006     # サンプリング許容値（小さすぎると回数増加）
+    #samples_tolerance_retries: 3 # 許容超過時の再試行回数
+    #--------------------------------------------------------------------
+    #[bltoch]
+    #sensor_pin: ^PC2             # 信号ピン
+    #control_pin：PE6             # サーボピン
+    #x_offset: 0                  # X軸-ノズルからのオフセット
+    #y_offset: 25.0               # Y軸-ノズルからのオフセット
+    #z_offset: 0                  # Z軸-ノズルからのオフセット
+
+    #####################################################################
+    #                      FLY-Mini 12864 LCD                           #
+    #####################################################################
+    [board_pins]
+    aliases:
+        # EXP1 header
+        EXP1_1=PA8, EXP1_3=PA15, EXP1_5=PD0, EXP1_7=PD4, EXP1_9=<GND>,
+        EXP1_2=PA13, EXP1_4=PA14,EXP1_6=PD1, EXP1_8=PD3, EXP1_10=<5V>,
+        # EXP2 header
+        EXP2_1=PB4, EXP2_3=PD7, EXP2_5=PD6, EXP2_7=PD5,  EXP2_9=<GND>,
+        EXP2_2=PB3, EXP2_4=PB6, EXP2_6=PB5, EXP2_8=<RST>, EXP2_10=<5V>
+    #--------------------------------------------------------------------
+    #[display]
+    #lcd_type: uc1701                # LCDドライバタイプ
+    #cs_pin: EXP1_3                  # CSピン
+    #a0_pin: EXP1_4                  # A0ピン
+    #rst_pin: EXP1_5                 # RSTピン
+    #contrast: 63                    # コントラスト
+    #encoder_pins: ^EXP2_5, ^!EXP2_3 # エンコーダピン
+    #click_pin: ^!EXP1_2             # エンコーダクリックピン
+    #spi_bus: spi1a                   # SPIバス指定必須
+    #--------------------------------------------------------------------
+    #####FLY Mini12864用
+    #[neopixel fly_mini12864]
+    #pin: EXP1_6                     # バックライト制御ピン
+    #chain_count: 3
+    #initial_RED: 0.5                # 赤LED輝度（0-1）
+    #initial_GREEN: 0.5              # 緑LED輝度（0-1）
+    #initial_BLUE: 0.5               # 青LED輝度（0-1）
+    #color_order: RGB                # カラー順
+
+    #####################################################################
+    #                           カスタムgcodeマクロ                      #
+    #####################################################################
+    [gcode_macro PRINT_START]          # PRINT_STARTを印刷開始時のマクロに設定
+    gcode:
+        G92 E0                         # エクストルーダーリセット
+        G28                            # 全軸ホーム
+        G1 Z20 F3000                   # ガントリー上昇
+        #SET_LED LED=LEDlight RED=0.2 GREEN=0.2 BLUE=0.5   # LED制御
+        #M117 Printing                 # LCDにテキスト表示
+        
+    #--------------------------------------------------------------------
+    [gcode_macro PRINT_HUAXIAN]        # PRINT_HUAXIANをPRINT_START後のマクロに設定
+    gcode:
+        G1 Z5 F3000 
+        G92 E0;              # エクストルーダーリセット
+        G90                  # 絶対座標系
+        G0 X5 Y1 F6000       # x5 y1に移動、速度100mm/s
+        G0 Z0.4              # z軸0.4に移動
+        G91                  # 相対座標系
+        G1 X100 E20 F1200;   # x軸100mm移動＋押出
+        G1 Y1                # y軸1mm移動
+        G1 X-100 E20 F1200;  # x軸-100mm移動＋押出
+        G0 z5                # z軸5mm上昇
+        G1 E-5.0 F3600       # フィラメントリトラクト
+        G92 E0;              # エクストルーダーリセット
+        G90                  # 絶対座標系 
+
+    #--------------------------------------------------------------------
+    [gcode_macro PRINT_END]            # PRINT_ENDを印刷終了時のマクロに設定
+    gcode:
+        #   境界取得
+        {% set max_x = printer.configfile.config["stepper_x"]["position_max"]|float %}
+        {% set max_y = printer.configfile.config["stepper_y"]["position_max"]|float %}
+        {% set max_z = printer.configfile.config["stepper_z"]["position_max"]|float %}
+        
+        #   終了位置で安全な移動方向を判定
+        {% if printer.toolhead.position.x < (max_x - 20) %}
+            {% set x_safe = 20.0 %}
+        {% else %}
+            {% set x_safe = -20.0 %}
+        {% endif %}
+
+        {% if printer.toolhead.position.y < (max_y - 20) %}
+            {% set y_safe = 20.0 %}
+        {% else %}
+            {% set y_safe = -20.0 %}
+        {% endif %}
+
+        {% if printer.toolhead.position.z < (max_z - 2) %}
+            {% set z_safe = 2.0 %}
+        {% else %}
+            {% set z_safe = max_z - printer.toolhead.position.z %}
+        {% endif %}
+        
+        M400                              # バッファクリア待機
+        G92 E0                            # エクストルーダーリセット
+        G1 E-10.0 F3600                   # フィラメントリトラクト
+        G91                               # 相対座標
+        G0 Z{z_safe} F3600                # ガントリー上昇
+        G0 X{x_safe} Y{y_safe} F20000     # ノズル移動
+        M104 S0                           # ホットエンドオフ
+        M140 S0                           # ヒートベッドオフ
+        M106 S0                           # モデルファンオフ
+        G90                               # 絶対座標
+        G0 X{max_x / 2} Y{max_y} F3600    # ノズルを後方に移動
+        BED_MESH_CLEAR                    # ベッドメッシュ解除
+
+    ```
