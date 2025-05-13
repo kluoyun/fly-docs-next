@@ -4,7 +4,7 @@ sidebar_label: USB Firmware Burning
 ---
 
 import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from "@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_usb.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -22,32 +22,46 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Press the `Q` key, when **Save configuration** appears, press the `Y` key again
+    * Press the `Q` key, and when the **Save configuration** prompt appears, press `Y` again.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Now the configuration should be saved and you should have exited to the command line interface
-    * Enter `make -j4` to start compiling, it will take some time
+    * Now the configuration should be saved and you should have returned to the command line interface.
+    * Enter `make -j4` to start compiling, it will take some time.
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following content is output at the end, then the compilation is successful
+    * If the output below is displayed, the compilation is successful.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Enter Burning Mode
+    - Below is the record of the firmware compilation operation process.
+
+    <AsciiNema url="https://asciinema.org/a/ERsEjBy6CA69ewjDCduXZtTMe.cast" width="60%" options={{theme: "monokai", speed:0.85}} />
+
+## Entering Burning Mode
 
     :::tip Tip
-        After September 1, 2024, D5 units that are manufactured have already been flashed with the Katapult firmware
+        The Katapult firmware has been pre-installed on D5 units produced after September 1, 2024.
     :::
-    * Connect the main board to the host machine using a Type-C data cable, and **double-click the reset button**, at this point there should be an LED light flashing on the main board.
+    * Connect the main board to the host machine using a Type-C data cable, then **double-click the reset button**, at which point the LED on the main board will flash.
     :::warning Warning
-       * If the LED light does not flash, please re-flash the Katapult firmware: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter-dfu-burning-mode">Flash Katapult Firmware</Button>
-       * If the LED light does not flash, please perform the next step after flashing the Katapult firmware
+       * If there is no flashing LED, please re-burn the Katapult firmware: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#entering-dfu-burning-mode">Burn Katapult Firmware</Button>
+       * If there is no flashing LED, please execute the next step after burning the Katapult firmware.
     :::
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
+## Confirm Whether Burning Mode is Entered
 
-    <LS />
+    * Ensure that the host machine can connect to the internet normally and that the data cable connecting the host machine and the device has data transfer functionality.
+    * After SSH connection to the host machine, enter `lsusb` and press Enter. If the information circled in the image below is displayed, you can proceed to the next step.
+        * If there is no feedback at all, this indicates an issue with the host system, and we cannot help. You need to replace with a confirmed normal system or change the host machine.
+        * If the `lsusb` command is not recognized, you can run this command to install it:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * The ID displayed in the red box can serve as a reference but is not fixed; the suffix `stm32f072xx` after `OpenMoko, Inc.` has a judgment basis where `XX` is variable.
+        * Some host machines may display incomplete or no information due to system issues.
 
-## Burn Firmware
+## Burning Firmware
     
     <CANBOOT />

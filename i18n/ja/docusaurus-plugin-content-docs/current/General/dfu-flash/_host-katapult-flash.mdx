@@ -1,18 +1,22 @@
 ::: tip
-    * プラグインの書き込み時にインターネットに接続されていることを確認してください。上位機が正常にインターネットに接続されていることを確認してください。
-    * すでにインストール済みの場合は再度インストールする必要はありません。
+    * プラグインのフラッシュ中にインターネットに接続する必要があります。上位機が正常にインターネットに接続されていることを確認してください。
+    * もしすでにインストール済みの場合、再度インストールする必要はありません。
 :::
 
-### 書き込み開始
+### フラッシュ開始
 
-    ::: warning 警告
-       * **非fly上位機** は以下のコードを実行して、ファームウェア書き込みの依存パッケージをインストールしてください。そうでないとファームウェアが書き込めません！
-       ```
+::: warning 警告
+* **非fly上位機** は、以下のコードを実行して、ファームウェアフラッシュの依存パッケージをインストールすることをお勧めします！それ以外の場合、ファームウェアをフラッシュできません！
+    ```
       cd && git clone https://github.com/Arksine/katapult.git
-       ```
+    ```
+* 国内ではこのコマンドを使用してインストールできます。
+```
+  cd && git clone https://gitee.com/MrCakeFuck/katapult.git
+```
       <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
-    :::
-    * 次のコマンドを使用してデバイスIDを検索し、下図に示すIDが表示されることを確認してください。（注：図中のIDは例であり、各ボードには異なるIDがあります）
+:::
+    * 下記のコマンドを使用してデバイスIDを検索し、下図のようなIDが表示されることを確認してください。（図中のIDは例示であり、各ボードのIDは異なります）
 
         ```bash
         ls /dev/serial/by-id/*
@@ -20,37 +24,39 @@
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
 
-    * ファームウェアの書き込みには次のコードを使用してください。ファームウェアが正常にコンパイルされていることを確認し、`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
+    * ファームウェアをフラッシュするには、下記のコードを使用してください。ファームウェアが正常にコンパイルされていることを確認し、`<あなたのボードID>`を前ステップで取得したIDに置き換えてください。
 
         ```bash
         ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<あなたのボードID>
         ```
-    `fast`システムではこのコマンドを使用してファームウェアを書き込みます。`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
+    `fast`システムではこのコマンドを使用してフラッシュします。`<あなたのボードID>`を前ステップで取得したIDに置き換えてください。
     
-            ```bash
-            python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<あなたのボードID>
-            ```
-    * 参考情報
+     ```bash
+    python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<あなたのボードID>
+
+     ```
+
+    * 参考画像
         <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
 
-    * 書き込み完了の参考
+    * フラッシュ完了時の参考
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
 
 ## ファームウェアの更新
 
 <Tabs>
     <TabItem value="w" label="USBファームウェアの更新" default>
-    * ボードのIDを検索するために次のコマンドを使用してください。下図に示すIDが表示されることを確認してください。（注：図中のIDは例であり、各ボードには異なるIDがあります）
+    * ボードIDを検索するために以下のコマンドを使用し、下図のようなIDが表示されることを確認してください。（図中のIDは例示であり、各ボードのIDは異なります）
 
         ```bash
         ls /dev/serial/by-id/*
         ```
     ::: tip 注意
-        下図の`/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`がボードのIDです。
+        下図中の`/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`がボードのIDです。
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
-    * USBファームウェアの更新には、最新のファームウェアがコンパイルされた後、次のコマンドを使用して更新してください。`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
+    * USBファームウェアを更新するには、最新のファームウェアをコンパイルした後、以下のコマンドを使用して更新します。`<あなたのボードID>`を前ステップで取得したIDに置き換えてください。
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<あなたのボードID>
@@ -60,31 +66,36 @@
 
 
     <TabItem value="l" label="CANブリッジファームウェアの更新">
-    * CANブリッジファームウェアを更新するには、最新のファームウェアがコンパイルされた後、次のコマンドを使用してKatapultにリセットします。（下図は例であり、IDは実際の構成ファイル内のIDに従ってください）
+    * CANブリッジファームウェアを更新する場合、最新のファームウェアをコンパイルした後、以下のコマンドを使用してKatapultにリセットします。（下図は例示であり、図中のIDは参考としてください。実際は設定ファイル内のIDを使用してください）
     ::: tip 注意
-       * `<あなたの CANBUS UUID>`は**printer.cfg**構成ファイル内のマザーボードのCANBUS UUIDです。
+       * `<あなたの CANBUS UUID>`は**printer.cfg**設定ファイル内のボードのCANBUS UUIDです。
     :::
         
         <br/>
 
-        ```bash
-        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <あなたの CANBUS UUID>
-        ```
+    ```bash
+    ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <あなたの CANBUS UUID>
+    ```
+    `fast`システムではこのコマンドを使用してフラッシュします。`<あなたのボードID>`を前ステップで取得したIDに置き換えてください。
+    
+     ```bash
+    python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <あなたの CANBUS UUID>
+     ```
     ::: tip 注意
-       * 下図の`f95cee90e1f9`がマザーボードのCANBUS UUIDです。
+       * 下図中の`f95cee90e1f9`がボードのCANBUS UUIDです。
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
-    * Katapultにリセット後、次のコマンドを使用してボードのIDを検索し、下図に示すIDが表示されることを確認してください。（注：図中のIDは例であり、各ボードには異なるIDがあります）
+    * Katapultにリセットした後、以下のコマンドを使用してボードIDを検索し、下図のようなIDが表示されることを確認してください。（図中のIDは例示であり、各ボードのIDは異なります）
 
         ```bash
         ls /dev/serial/by-id/*
         ```
     ::: tip 注意
-        下図の`/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`がボードのIDです。
+        下図中の`/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`がボードのIDです。
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
 
-    * 新しいファームウェアがコンパイルされた後に実行することを確認し、`<あなたのボードID>`を先ほど取得したIDに置き換えてください。
+    * 新しいファームウェアをコンパイルした後に実行することを確認し、`<あなたのボードID>`を前ステップで取得したIDに置き換えてください。
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<あなたのボードID>
@@ -94,7 +105,7 @@
 
 </Tabs>
 
-## 間違ったファームウェアの解決方法
+## ファームウェアの誤刷解決方法
 
-* ボードを電源オフにして、再起動後にresetボタンを素早くダブルクリックすると、再び書き込みモードに入れます。
-* または、window/上位機を使用してkatapultファームウェアを再び書き込みます。<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfu燒錄模式">katapultファームウェアの書き込み</Button>
+* ボードを電源から切り、再度電源を入れ直し、リセットボタンを素早くダブルクリックすることで、再びフラッシュモードに入ることができます。
+* または、Window/上位機を使用してkatapultファームウェアを再びフラッシュできます。<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfuフラッシュモード">katapultファームウェアのフラッシュ</Button>

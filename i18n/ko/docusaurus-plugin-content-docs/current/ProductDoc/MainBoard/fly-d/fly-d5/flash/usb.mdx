@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USB 펌웨어 프래싱
+sidebar_label: USB 플래시 프로그래밍
 ---
 
 import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -22,32 +22,46 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q` 키를 누르면 **Save configuration**이 나타나므로 그때 `Y` 키를 누릅니다.
+    * `Q` 키를 누르면 **Save configuration**이 나타나고 이때 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아왔습니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 꽤 걸립니다.
+    * 이제 설정이 저장되었으며 명령행으로 돌아왔습니다.
+    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 다소 걸립니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래의 내용이 출력되면 컴파일 성공입니다.
+    * 아래의 내용이 출력되면 컴파일 성공입니다.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 플래싱 모드 진입
+    - 아래는 펌웨어 컴파일 작업 기록입니다.
+
+    <AsciiNema url="https://asciinema.org/a/ERsEjBy6CA69ewjDCduXZtTMe.cast" width="60%" options={{theme: "monokai", speed:0.85}} />
+
+## 플래시 모드 진입
 
     :::tip 팁
-        2024년 9월 1일 이후에 출시된 D5는 이미 Katapult 펌웨어로 업데이트되었습니다.
+        2024년 9월 1일 이후 출廠된 D5는 이미 Katapult 펌웨어가 설치되어 있습니다.
     :::
-    * Type-C 데이터 케이블로 메인보드를 호스트 컴퓨터에 연결한 후, **리셋 버튼을 두 번 클릭**합니다. 이때 메인보드에는 LED가 깜빡입니다.
+    * 메인보드를 상위기기로 연결한 후 **리셋 버튼을 두 번 클릭**하면 메인보드에 LED가 깜빡입니다.
     :::warning 경고
-       * LED가 깜빡이지 않는 경우 Katapult 펌웨어를 다시 플래싱하세요: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfu燒錄模式">Katapult 펌웨어 플래싱</Button>
-       * LED가 깜빡이지 않는 경우 Katapult 펌웨어를 플래싱한 후 다음 단계를 진행하세요
+       * LED가 깜빡이지 않으면 Katapult 펌웨어를 다시 플래시해야 합니다: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfu燒錄模式">Katapult 펌웨어 플래시</Button>
+       * LED가 깜빡이지 않으면 Katapult 펌웨어 플래시 후 다음 단계를 수행해야 합니다.
     :::
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
+## 플래시 모드 확인
 
-    <LS />
+    * 상위기기가 정상적으로 연결되었는지 확인하고 하위기기가 상위기기와 데이터 전송이 가능한지 확인하세요.
+    * SSH를 통해 상위기기에 연결한 후 `lsusb`를 입력하고 Enter를 누릅니다. 아래 그림에서 동그라미 표시된 정보가 나타나면 다음 단계로 진행할 수 있습니다.
+        * 아무런 정보도 반응이 없으면 상위기기의 시스템 문제이며 해결 방법이 없습니다. 정상적인 시스템으로 교체하거나 상위기를 교체해야 합니다.
+        * `lsusb` 명령어가 없다고 한다면 다음 명령어를 실행하여 설치할 수 있습니다.
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * 빨간 박스 내부에 표시된 ID는 참고용이며 고정되지 않고 변동 가능합니다. `OpenMoko, Inc. stm32f072xx`의 후缀은 `XX`로 가변적입니다.
+        * 일부 상위기기는 시스템 문제로 인해 정보가 완전히 표시되지 않거나 표시되지 않을 수 있습니다.
 
-## 펌웨어 플래싱
+## 펌웨어 플래시
     
     <CANBOOT />

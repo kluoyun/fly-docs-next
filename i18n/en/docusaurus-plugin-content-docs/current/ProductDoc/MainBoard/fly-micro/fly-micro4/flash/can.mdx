@@ -1,17 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: USB Bridge CAN Firmware Flashing
+sidebar_label: USB Bridge CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from "@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx";
-import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_utoc.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB Bridge CAN Firmware Flashing
+# USB Bridge CAN Firmware Burning
 
 ## Start Compilation
 
@@ -23,24 +23,31 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     * Select GPIO pins to set at micro-controller startup, input: gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/can.webp').default} size="100%" align="center" />
-    * Press `Q` key, appear **Save configuration**, press `Y` key again
+    * Press `Q` key, a **Save configuration** prompt will appear, then press `Y` key
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and you should be back to the command line interface
-    * Input `make -j4` to start compilation, it takes some time
+    * Now the configuration should be saved and you are back to the command line interface
+    * Enter `make -j4` to start compiling, it may take some time
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following output is displayed, the compilation is successful
+    * If the following content is output at the end, compilation is successful
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Confirm if Entered Flash Mode
+## Confirm if in Burning Mode
+    * Ensure that the host machine can connect to the internet normally and that the data cable connecting the lower-level device to the host machine has data transfer capability.
+    * After SSH connecting to the host machine, enter `lsusb` and press Enter. If the information circled in the image below appears, you can proceed to the next step.
+        * If there is no feedback at all, this indicates an issue with the host system; we cannot help. You need to replace it with a confirmed normal system or change the host machine.
+        * If the instruction `lsusb` is not found, you can execute this command to install it:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * The IDs displayed in the red box can be used as a reference but they are **not fixed** and can vary. The suffix `OpenMoko, Inc. rp2040` has a judgment basis where `XX` means it can vary.
+        * Some host machines may display incomplete or no information due to system issues.
 
-
-    <LS />
-
-## Flash Firmware
+## Burn Firmware
 
 
     <CANBOOT />

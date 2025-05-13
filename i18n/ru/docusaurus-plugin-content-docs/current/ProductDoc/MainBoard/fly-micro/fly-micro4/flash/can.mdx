@@ -1,17 +1,18 @@
 ---
 sidebar_position: 3
-sidebar_label: Загрузка прошивки USB-CAN моста
+sidebar_label: Прошивка CAN-моста через USB
+
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
-import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_utoc.mdx';
+import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Загрузка прошивки USB-CAN моста
+# Прошивка CAN-моста через USB
 
 ## Начало компиляции
 
@@ -25,22 +26,28 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/can.webp').default} size="100%" align="center" />
     * Нажмите `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь должна быть сохранена конфигурация и вы вернулись к командной строке
+    * Теперь конфигурация должна быть сохранена и вы вернетесь в командную строку
     * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * В конце вывода следующего содержимого, компиляция успешно завершена
+    * Если последний вывод содержит следующее, компиляция успешно завершена
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Проверка перехода в режим загрузки
-
-
-    <LS />
+## Проверка режима прошивки
+    * Убедитесь, что хостовая система подключена к сети и шнур данных между хостом и устройством подключен и функционирует правильно.
+    * Подключитесь по SSH к хостовой системе и введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в красном круге на изображении ниже, можно переходить к следующему шагу.
+        * Если нет никакого ответа, это проблема системы хоста, мы не можем помочь. Вам нужно заменить рабочую систему или заменить хостовую систему.
+        * Если появляется сообщение об отсутствии команды `lsusb`, выполните эту команду для установки:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * ID, показанный в красном кадре, можно использовать как ссылку, но он **не является фиксированным** и может меняться. Суффикс `OpenMoko, Inc. rp2040` с постфиксом `XX` имеет определенное значение, где `XX` является переменной.
+        * На некоторых хостовых системах из-за системных проблем информация может отображаться неполностью или не отображаться вовсе.
 
 ## Загрузка прошивки
-
 
     <CANBOOT />

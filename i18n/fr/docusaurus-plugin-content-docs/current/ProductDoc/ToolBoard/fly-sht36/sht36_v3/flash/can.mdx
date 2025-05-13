@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Compilation et flash du firmware CAN
+sidebar_label: Compilation et écriture du firmware CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -22,53 +22,52 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     * Sélectionnez **GPIO pins to set at micro-controller startup**, entrez : **!gpio5**
     :::warning
-        Veuillez entrer `!gpio5` en mode d'entrée anglaise.
+        Veuillez entrer `!gpio5` en mode de saisie anglaise.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/can.webp').default} size="100%" align="center" />
-    * **Vérifiez l'image ci-dessus pour vous assurer qu'elle correspond, puis passez à l'étape suivante**
-    * Appuyez sur la touche `Q`, puis apparaîtra **Save configuration**, appuyez ensuite sur `Y`
+    * **Vérifiez que cela correspond à l'image ci-dessus pour être sûr d'être cohérent, puis passez à l'étape suivante**
+    * Appuyez sur `Q`, puis apparaîtra **Save configuration**, appuyez alors sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous êtes revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale contient le texte suivant, la compilation a réussi :
+    * Si la sortie finale ressemble au texte suivant, la compilation a réussi :
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-
 ---
 
-## Configuration de l'hôte
+## Configuration de la station de travail
     :::warning
-        Si votre hôte est un hôte **FLY**, vous n'avez pas besoin d'exécuter l'étape de **Configuration de l'hôte**.
+        Si votre station de travail est une **station FLY**, vous n'avez pas besoin d'exécuter cette étape de "configuration de la station de travail".
     :::
 
     :::warning
-       Si votre hôte est un hôte **non-FLY**, veuillez exécuter les étapes suivantes.
+       Si votre station de travail n'est pas une **station FLY**, veuillez suivre les étapes suivantes :
     :::
 
-    ### Vérification de la prise en charge CAN de l'hôte
+    ### Vérifier si la station de travail supporte CAN
 
-    * Si votre hôte est un **hôte FLY**, vous n'avez pas besoin d'exécuter cette opération
-    * Si votre système est `Ubuntu`, vous devez configurer `Ubuntu CAN0`, ce document n'a pas encore été mis à jour
-    * Entrez la commande ci-dessous pour vérifier si le système prend en charge CAN
+    * Si vous utilisez une **station FLY**, ignorez cette opération
+    * Si votre système est `Ubuntu`, consultez la documentation pour configurer CAN0 (ce document n'a pas encore été mis à jour)
+    * Entrez la commande ci-dessous pour vérifier si le noyau du système prend en charge CAN :
     ```bash
     sudo modprobe can && echo "Votre noyau supporte CAN" || echo "Votre noyau ne supporte pas CAN"
     ```
-    * Après avoir exécuté la commande ci-dessus, si votre noyau supporte CAN, vous obtiendrez la réponse : `Votre noyau supporte CAN`. Sinon, vous obtiendrez : `Votre noyau ne supporte pas CAN`.
+    * Après avoir exécuté cette commande, si votre noyau supporte CAN, il renverra : `Votre noyau supporte CAN` ; sinon, il renverra : `Votre noyau ne supporte pas CAN`.
     :::tip
-        Si vous obtenez `Votre noyau supporte CAN`, vous pouvez passer à l'étape de configuration CAN0. Si vous obtenez `Votre noyau ne supporte pas CAN`, veuillez changer le système de votre hôte ou changer l'hôte !
+        Si le message retourné est `Votre noyau supporte CAN`, vous pouvez passer à la configuration de CAN0. Si le message est `Votre noyau ne supporte pas CAN`, veuillez changer de système ou de station de travail !
     :::
    
    ### Configuration de CAN0
 
-    * Cette commande remplace la configuration système CAN0 précédente et nécessite un redémarrage après son exécution
-    * Choisissez l'une des options suivantes selon vos besoins (Le taux de CAN par défaut de Klipper est de 1M, il est recommandé d'utiliser le taux de 1M)
+    * Cette commande remplace la configuration précédente de CAN0, après exécution, il sera nécessaire de redémarrer le système
+    * Choisissez l'une des options ci-dessous en fonction de vos besoins (**Le taux par défaut de Klipper est de 1M, il est recommandé d'utiliser le taux de 1M**)
 
     :::warning
-        Pour un taux de 1M, entrez la commande suivante
+        Pour un taux de 1M, entrez la commande suivante :
     :::
 
     ```bash
@@ -78,12 +77,12 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
             bitrate 1000000
             up ifconfig $IFACE txqueuelen 1024
             pre-up ip link set can0 type can bitrate 1000000
-            pre-up ip link set can0 txqueuelen 1000000
+            pre-up ip link set can0 txqueuelen 1024
     EOF
     ```
 
     :::warning
-        Pour un taux de 500K, entrez la commande suivante
+        Pour un taux de 500K, entrez la commande suivante :
     :::
 
     ```bash
@@ -103,17 +102,15 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
     sudo reboot
     ```
 
-## Recherche d'appareils
-
     <LS />
 
 
-## Flashage du firmware
-         
-    * Avant de flasher le firmware, connectez le tableau d'outils au UTOC ou à une carte mère avec un firmware de pont, ci-dessous se trouve un schéma de câblage de référence
-    * Assurez-vous que les commutateurs sont positionnés correctement
+## Écriture du firmware
+
+    * Avant d'écrire le firmware, connectez le panneau de contrôle à UTOC ou à une carte mère flashée avec le firmware bridge via un câble XT30. Ci-dessous se trouve un schéma de câblage de référence
+    * Vérifiez que les commutateurs sont positionnés correctement
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/sht36v3_utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant le courant, si c'est `120Ω`, connectez un saut de `120Ω`, si c'est `40Ω` environ, retirez le saut
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant l'alimentation. Si elle est d'environ `120Ω`, branchez une résistance de `120Ω`. Si elle est d'environ `40Ω`, retirez la résistance
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
@@ -122,3 +119,5 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     * Si le firmware démarre correctement, la LED s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />
+
+---

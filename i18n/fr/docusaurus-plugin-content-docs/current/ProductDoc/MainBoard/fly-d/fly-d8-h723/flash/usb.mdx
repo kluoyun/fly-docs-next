@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
-sidebar_label: USB固件烧录
+sidebar_label: Programmeur USB
+
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -11,10 +12,10 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB 固件编译
+# Compilation du firmware USB
 
 
-## Début de la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -22,21 +23,32 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Appuyez sur `Q` pour afficher **Enregistrer la configuration**, puis appuyez sur `Y`
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
-    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale contient le contenu suivant, la compilation a réussi
+    * Si la sortie finale ressemble au contenu suivant, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Création du fichier hex out/klipper.bin
+        Creating hex file out/klipper.bin
         ```
-## Vérification de l'entrée en mode de programmation
 
-    <LS />
 
-## Programmation de la mise à jour du firmware
-    
+## Vérifier si le mode de programmation est activé
+
+    * Assurez-vous que l'ordinateur hôte est correctement connecté à Internet et que le câble de communication entre l'ordinateur hôte et l'appareil cible possède une fonction de transmission de données.
+    * Connectez-vous via SSH à l'ordinateur hôte puis tapez `lsusb` et appuyez sur Entrée. Si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est retournée, il s'agit d'un problème du système de l'ordinateur hôte, nous ne pouvons rien faire. Vous devez changer de système confirmé comme étant fonctionnel ou remplacer l'ordinateur hôte.
+        * Si la commande `lsusb` n'est pas trouvée, vous pouvez installer cette commande en exécutant :
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * Les ID affichés dans les cadres rouges peuvent servir de référence mais ils ne sont pas fixes, `OpenMoko, Inc. stm32h723xx` le suffixe `XX` indique qu'il peut varier.
+        * Certains ordinateurs hôtes peuvent ne pas afficher les informations complètes ou ne rien afficher du tout en raison de problèmes systèmes.
+
+## Programmation du firmware
+
     <CANBOOT />

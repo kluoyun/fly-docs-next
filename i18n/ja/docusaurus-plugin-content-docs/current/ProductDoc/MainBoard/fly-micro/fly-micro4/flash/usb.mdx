@@ -1,25 +1,25 @@
 ---
 sidebar_position: 2
-sidebar_label: USBファームウェアの焼付け
+sidebar_label: USBファームウェアの書き込み
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
-import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBファームウェアのビルド
+# USBファームウェアのコンパイル
 
     :::tip
 
-    * Micro4は出荷時にUSB接続のKatapultファームウェアが事前に焼付けられているため、自分自身で焼付ける必要はありません。
+    * Micro4は出荷時にUSB接続のKatapultファームウェアがプリフラッシュされているため、再度フラッシュする必要はありません。
 
     :::
 
-## ビルド開始
+## コンパイル開始
 
     <SSH />
 
@@ -27,37 +27,33 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * microコントローラー起動時に設定するGPIOピンを選択します。入力：gpio8
+    * マイクロコントローラー起動時に設定するGPIOピンを選択します。「gpio8」を入力してください。
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/usb.webp').default} size="100%" align="center" />
-    * `Q` キーを押すと、**Save configuration** が表示され、その後 `Y` キーを押します
+    * 「Q」キーを押すと「Save configuration」が表示され、その後「Y」キーを押します。
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻ったはずです
-    * `make -j4` を入力してビルドを開始します。時間がかかる場合があります
+    * 現在、設定が保存され、コマンドラインに戻っているはずです。
+    * コンパイルを開始するには「make -j4」を入力します。時間がかかります。
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が表示されたらビルド成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です。
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 焼付けモードへの確認
-    * 上位機器が正常にネットワークに接続でき、下位機器と上位機器を接続するデータ線にデータ転送機能があることを確認してください。
-    * SSHで上位機器に接続し、`lsusb` と入力してエンターを押します。もし以下の画像で囲まれた情報が表示されたら、次のステップに進むことができます。
-        * 何も情報が返されない場合は、上位機器のシステムに問題があります。この問題については対処できませんので、正常なシステムに切り替えるか、上位機器を交換してください。
-        * `lsusb` コマンドが見つからない場合、このコマンドを実行してインストールできます
+## フラッシュモードに入っているか確認
+
+    * 上位機が正常にネットワークに接続できていることを確認し、下位機と接続されているデータ線がデータ転送機能を持っていることを確認してください。
+    * 上位機にSSH接続して、「lsusb」と入力してEnterを押します。もし下の画像で囲まれた情報が表示されたら、次のステップに進んでください。
+        * 何も情報が返ってこない場合、これは上位機のシステムの問題であり、解決できません。正常なシステムに切り替えるか、上位機を交換してください。
+        * 「lsusb」コマンドがないという場合は、次のコマンドを実行してインストールできます。
             ```bash
             sudo apt-get install usbutils
             ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * `2e8a:6177` は今回使用するデバイスです。`OpenMoko, Inc. rp2040` の後ろのサフィックスは参考程度ですが、判断基準ではありません。
-        * 一部の上位機器はシステムの問題により、完全に表示されないか表示されないかもしれません。
-        * `lsusb` コマンドがデバイスを表示できるが、`2e8a:6177` がない場合、データ線を交換してマザーボードを上位機器の他のUSBポートに接続してみてください。
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" />
+    * 赤枠内に表示されるIDは参考として使用できますが、固定ではありません。「OpenMoko, Inc. rp2040」の後ろにあるサフィックス「XX」は変数です。
+        * 一部の上位機はシステムの問題により、完全に表示されないか、全く表示されない場合があります。
 
-    :::warning 注意点
-        `2e8a:6177` が表示されるまで次のステップには進めません
-    :::
+## ファームウェアの書き込み
 
-## ファームウェアの焼付け
-    
     <CANBOOT />
