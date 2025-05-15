@@ -1,6 +1,7 @@
 ---
-position-sidebar: 2
-étiquette-sidebar: USB de chargement du firmware
+sidebar_position: 2
+sidebar_label: Programmeur USB
+
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -22,22 +23,31 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, appuyez ensuite sur `Y`
+    * Appuyez sur `Q`, puis apparaît **Save configuration**, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
-    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * La configuration doit maintenant être sauvegardée et vous êtes revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour démarrer la compilation, cela peut prendre un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au contenu suivant, la compilation a réussi
+    * Si la sortie finale est similaire au texte ci-dessous, la compilation a réussi :
 
         ```bash
         Linking out/klipper.elf
-        Création du fichier hex out/klipper.bin
+        Creating hex file out/klipper.bin
         ```
 
-## Vérifier si le mode de chargement est activé
+## Vérifier si le mode de programmation est activé
 
-    <LS />
+    * Assurez-vous que l'ordinateur hôte est connecté correctement à Internet et que le câble de connexion entre l'ordinateur hôte et l'hôte distant possède une fonctionnalité de transmission de données.
+    * Connectez-vous via SSH à l'ordinateur hôte et entrez `lsusb` puis appuyez sur Entrée. Si vous voyez les informations encerclées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est retournée, il s'agit d'un problème du système de l'ordinateur hôte, nous ne pouvons rien faire. Vous devez changer pour un système fonctionnel ou remplacer l'ordinateur hôte.
+        * Si l'instruction `lsusb` n'existe pas, vous pouvez installer cette commande en exécutant :
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * L'ID affiché dans la zone rouge peut être utilisé comme référence mais il n'est pas fixe (`XX` est variable).
+        * Certains ordinateurs hôtes peuvent ne pas afficher correctement ou ne pas afficher du tout en raison de problèmes systèmes.
 
-## Charger le firmware
-    
+## Programmation du firmware
+
     <CANBOOT />

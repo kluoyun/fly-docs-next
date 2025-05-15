@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USB bridge CAN firmware flash
+sidebar_label: Programme de la carte CAN via un pont USB
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -12,9 +12,9 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB bridge CAN firmware flash
+# Programme de la carte CAN via un pont USB
 
-## Start compilation
+## Début de la compilation
 
     <SSH />
 
@@ -22,12 +22,12 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Press the `Q` key, a **Save configuration** prompt appears, then press the `Y` key
+    * Appuyez sur la touche `Q`, une fois que le message **Save configuration** apparaît, appuyez à nouveau sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and you should have exited to the command line interface
-    * Enter `make -j4` to start compiling, it takes some time
+    * La configuration doit maintenant être sauvegardée et vous devez être revenu à l'interface de ligne de commande
+    * Tapez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following output is shown, the compilation is successful
+    * Si la sortie finale ressemble au texte suivant, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
@@ -35,11 +35,19 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
         ```
 
 
-## Confirm if in flashing mode
+## Vérification du mode de programmation
 
-    <LS />
+    * Assurez-vous que l'ordinateur principal est correctement connecté à Internet et que le câble de connexion entre l'ordinateur principal et le périphérique inférieur possède la fonctionnalité de transmission de données.
+    * Connectez-vous via SSH à l'ordinateur principal puis tapez `lsusb` et appuyez sur Entrée. Si l'information entourée par les cercles dans l'image ci-dessous apparaît, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est retournée, il s'agit d'un problème système de l'ordinateur principal. Nous ne pouvons rien faire à ce sujet. Vous devez soit changer vers un système fonctionnel, soit remplacer l'ordinateur principal.
+        * Si la commande `lsusb` n'est pas reconnue, vous pouvez l'installer en exécutant cette commande :
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * L'ID affiché dans la zone rouge peut être utilisé comme référence mais il n'est pas fixe ; le suffixe `stm32h723xx` après `OpenMoko, Inc.` sert de critère de jugement, où `XX` est variable.
+        * Certains ordinateurs principaux peuvent ne pas afficher ou ne pas afficher correctement en raison de problèmes système.
+## Programmation du firmware
 
-
-## Flash firmware
-    
     <CANBOOT />
+

@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USBブリッジCANファームウェアの焼込
+sidebar_label: USBブリッジCANファームウェア焼付
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +11,7 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBブリッジCANファームウェアの焼込
+# USBブリッジCANファームウェア焼付
 
 ## コンパイル開始
 
@@ -21,24 +21,31 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後 `Y` キーを押します
+    * `Q` キーを押して **Save configuration** が表示されると、その後に `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 現在、設定が保存され、コマンドラインに戻っているはずです
+    * `make -j4` を入力してコンパイルを開始します（時間がかかります）
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+## 焼付モード確認
 
-## フラッシュモード確認
+    * 上位機が正常にネットワークに接続できており、上位機と接続されているデータ線がデータ転送機能を持っていることを確認してください。
+    * 上位機にSSH接続し、`lsusb` を入力してエンターキーを押します。もし下の画像で囲まれた情報が表示されたら、次のステップに進んでください。
+        * 何も情報が返ってこない場合、これは上位機のシステムの問題であり、こちらでは対処できません。正常なシステムに切り替えるか、上位機を交換してください。
+        * `lsusb` コマンドがないという場合は、このコマンドでインストールできます
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * 赤い枠内に表示されているIDは参考程度ですが、`固定IDではなく可変`です。`OpenMoko, Inc. stm32f072xx` の後ろにあるサフィックス `XX` は可変です。
+        * 一部の上位機はシステムの問題により、完全に表示されなかったり、表示されなかったりする場合があります。
 
-
-    <LS />
-
-## ファームウェアの焼込
+## ファームウェア焼付
 
 
     <CANBOOT />

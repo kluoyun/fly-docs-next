@@ -1,23 +1,29 @@
 ---
 sidebar_position: 2
-sidebar_label: モジュールのトリガ値の調整方法
+sidebar_label: モジュールトリガ値の調整方法
 ---
 
-<Button variant="contained" disableElevation href="https://apps.microsoft.com/detail/9nblggh43hdm?launch=true&mode=full&hl=en&gl=hk&ocid=bingwebsearch">シリアルツールアシスタント</Button>
 
-# モジュールのトリガ値の調整方法
+# モジュールトリガ値の調整方法
+<Button variant="contained" disableElevation href="https://apps.microsoft.com/detail/9nblggh43hdm?launch=true&mode=full&hl=en&gl=hk&ocid=bingwebsearch">シリアルツールアシスタントの取得</Button>
+
 シリアルツールを使用して、以下のコマンドが利用可能です：
-Klipperコンソールに「SET_PIN PIN=_probe_ready VALUE=1」と送信し、トリガインジケーターを観察しながら、インジケーターが点灯しなくなるまで閾値を小さなものから大きく調整します。次のコマンドを入力してください：
+`Klipper`コンソールで「SET_PIN PIN=_probe_ready VALUE=1」を送信し、トリガインジケーターを観察しながら、インジケーターが点灯しなくなるまでしきい値を小さくから大きく調整します。次のコマンドを入力してください：
 ```cfg
 SET_PIN PIN=_probe_ready VALUE=1
 ```
+* USBデータ線でモジュールとパソコンを接続し、シリアルツールアシスタントを開き、対応するポート番号を選択し、ボーレートを115200に設定して「接続」をクリックします。
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-usb.webp').default} size="10%" align="left" />
+<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-1.webp').default} size="100%" align="left" />
 シリアルツールで以下のコマンドを入力してトリガ値を調整します：
 ```cfg
-set 触发值
+set 触発値
 ```
-デフォルトのトリガ値：20000
-* シリアルツールで使用可能なコマンド：
+デフォルトトリガ値：20000
+数値が小さいほど感度が高くなり、数値が大きいほど感度が低くなります。
+* 例：`set 20000`、トリガ値を20000に設定します。数値が小さいほど感度が高くなり、数値が大きいほど感度が低くなります。
+* シリアルツールでのコマンド使用：
 
-* `v`をシリアルに送信すると、adc値がリアルタイムで出力されます。（a:フィルタ前；b:フィルタ後）
-* `uv`をシリアルに送信すると、出力を停止します。
-* `rt`をシリアルに送信すると、現在の閾値を確認できます。
+* シリアル送信`v`で、実時間でabc値を出力します。a:フィルタ前；b:フィルタ後。
+* シリアル送信`uv`で、出力を停止します。
+* シリアル送信 `rt`で、現在のしきい値を確認します。

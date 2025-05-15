@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Загрузка прошивки USB-моста для CAN
+sidebar_label: Запись прошивки USB-CAN моста
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +11,7 @@ import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Загрузка прошивки USB-моста для CAN
+# Запись прошивки USB-CAN моста
 
 ## Начало компиляции
 
@@ -21,33 +21,44 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите клавишу `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее, компиляция успешно завершена
+    * Если вывод содержит следующее содержимое, то компиляция успешно завершена
 
         ```bash
-        Сборка out/klipper.elf
-        Создание hex файла out/klipper.bin
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
         ```
     
-## Перевод в режим загрузки
+## Переход в режим записи
 
     :::tip Подсказка
-        После 1 сентября 2024 года出厂ные D5 уже имеют прошивку Katapult
+        После 1 сентября 2024 года出厂的所有 D5 уже имеют записанную прошивку Katapult
     :::
-    * Подключите основную плату к хост-компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на плате должны моргать светодиоды.
+    * Подключите основную плату к хост-компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на плате должен моргать светодиод.
     :::warning Предупреждение
-       * Если светодиоды не моргают, повторно загрузите прошивку Katapult: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#вход_в_режим_dfu_загрузки">Загрузить прошивку Katapult</Button>
-       * Если светодиоды не моргают, после загрузки прошивки Katapult выполните следующий шаг
+       * Если светодиод не мигает, повторите запись прошивки Katapult: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter-dfu-flashing-mode">Записать прошивку Katapult</Button>
+       * Если светодиод не мигает, после записи прошивки Katapult выполните следующий шаг
     :::
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
 
-    <LS />
+## Проверка входа в режим записи
 
-## Загрузка прошивки
+    * Убедитесь, что хост-компьютер подключен к сети и что соединяющий кабель между хост-компьютером и устройством имеет функцию передачи данных.
+    * После SSH-подключения к хост-компьютеру введите команду `lsusb` и нажмите Enter. Если появляется информация, выделенная красным框ом на приведенном ниже изображении, можно переходить к следующему шагу.
+        * Если нет никакого вывода, это проблема системы хост-компьютера, мы не можем помочь вам, вам нужно заменить рабочую систему или заменить хост-компьютер.
+        * Если нет команды `lsusb`, выполните следующую команду для установки
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * ID, показанный в красном框е, может служить ориентиром, но он **не является фиксированным, может изменяться**. Последовательность `OpenMoko, Inc. stm32f072xx` имеет смысловое значение для `XX`, где означает переменные.
+        * На некоторых хост-компьютерах может отсутствовать или не отображаться информация из-за системных проблем.
+
+## Запись прошивки
 
 
     <CANBOOT />

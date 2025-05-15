@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
-sidebar_label: Прошивка CAN через USB-мост
+sidebar_label: Прошивка CAN-моста через USB
+
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +12,7 @@ import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Прошивка CAN через USB-мост
+# Прошивка CAN-моста через USB
 
 ## Начало компиляции
 
@@ -21,32 +22,41 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
+    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее, компиляция успешно завершена:
+    * Если выводится следующее содержимое, компиляция успешна
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-
-## Переключение в режим прошивки
+## Переход в режим прошивки
 
     :::tip Подсказка
-        После 1 сентября 2024 года出厂ные D7 уже имеют прошивку Katapult
+        После 1 сентября 2024 года D7 уже прошит Katapult-прошивкой
     :::
-    * Подключите материнскую плату к компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на материнской плате загорятся светодиоды.
+    * Подключите материнскую плату к хост-компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на материнской плате загорится мигающий светодиод.
     :::warning Предупреждение
-       * Если светодиоды не мигают, повторно выполните прошивку прошивки Katapult:<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#enter-dfu-flash-mode">Прошить Katapult</Button>
-       * Если светодиоды не мигают, после прошивки Katapult выполните следующий шаг
+       * Если светодиод не мигает, повторите прошивку katapult-прошивки: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#enter-dfu-flash-mode">Прошить katapult-прошивку</Button>
+       * Если светодиод не мигает, после прошивки katapult-прошивки выполните следующий шаг
     :::
 
     <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
+## Проверка входа в режим прошивки
 
-    <LS />
+    * Убедитесь, что хост-компьютер подключен к сети и что кабель данных между хост-компьютером и целевым устройством функционирует корректно.
+    * Подключитесь к хост-компьютеру через SSH и введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в красном круге на изображении ниже, можно переходить к следующему шагу.
+        * Если нет никакого ответа, это проблема системы хост-компьютера, и мы не можем помочь. Вам необходимо заменить рабочую систему или заменить хост-компьютер.
+        * Если отсутствует команда `lsusb`, установите ее с помощью следующей команды:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * ID, показанный в красном прямоугольнике, может служить ориентиром, но он **не является фиксированным**, а изменяемым. Следующая часть `OpenMoko, Inc. stm32f072xx` имеет переменный суффикс `XX`.
+        * На некоторых хост-компьютерах из-за системных проблем может отсутствовать отображение или частичное отображение.
 
 ## Загрузка прошивки
 
