@@ -32,7 +32,7 @@ import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-    
+
 ## 进入烧录模式
 
     :::tip 提示
@@ -57,6 +57,78 @@ import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
             <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
     * 红色框内显示的id可以做参考`但id不是固定的id是可变的`，`OpenMoko, Inc. stm32f072xx`后缀具有判断依据`XX`的意思是可变的。
         * 部分上位机可能因为系统问题，显示不全或者不显示。
+
+## 演示视频
+
+import React, { useState } from 'react';
+
+export function VideoTabs() {
+    const videos = [
+        {
+            label: '中文安装视频',
+            icon: '📺',
+            content: (
+                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', marginBottom: '2em' }}>
+                    <iframe
+                        src="//player.bilibili.com/player.html?isOutside=true&aid=114471632703606&bvid=BV1Ae5Tz5EiX&cid=29851322356&p=1"
+                        title="D5 CAN固件烧录"
+                        allow="autoplay; fullscreen; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                    />
+                </div>
+            ),
+        },
+        {
+            label: 'Installation video in English',
+            icon: '📺',
+            content: (
+                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+                    <iframe
+                        width="560"
+                        height="315"
+                        src="https://www.youtube.com/embed/KS4iRlSnync?si=7_PtrExfBY-9uFO_"
+                        title="D5 CAN firmware burning"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                    />
+                </div>
+            ),
+        },
+    ];
+    const [selected, setSelected] = useState(0);
+    return (
+        <div>
+            <div style={{ marginBottom: '1em' }}>
+                {videos.map((v, i) => (
+                    <button
+                        key={v.label}
+                        onClick={() => setSelected(i)}
+                        style={{
+                            fontWeight: selected === i ? 'bold' : 'normal',
+                            fontSize: '1em',
+                            marginRight: 12,
+                            padding: '0.5em 1em',
+                            border: selected === i ? '2px solid #1976d2' : '1px solid #ccc',
+                            background: selected === i ? '#e3f2fd' : '#fff',
+                            borderRadius: 4,
+                            cursor: 'pointer',
+                        }}
+                    >
+                        {v.icon} {v.label}
+                    </button>
+                ))}
+            </div>
+            {videos[selected].content}
+        </div>
+    );
+}
+
+<VideoTabs />
+
 
 ## 烧录固件
 
