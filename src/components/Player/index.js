@@ -4,8 +4,8 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 import ReactPlayer from 'react-player'
 
 const Player = (props) => {
-    const { url, width = '100%', height = 'auto', align = 'center' } = props;
-    const [collapsed, setCollapsed] = useState(false);
+    const { url, fold: defaultCollapsed = false, width = '100%', height = 'auto', align = 'center' } = props;
+    const [collapsed, setCollapsed] = useState(defaultCollapsed);
     const [maxHeight, setMaxHeight] = useState('none');
     const bodyRef = useRef(null);
 
@@ -162,15 +162,15 @@ const Player = (props) => {
 const AutoPlayer = (props) => {
     const { i18n } = useDocusaurusContext();
     const currentLocale = i18n.currentLocale;  // 当前语言代码，例如 "en"、"zh" 等
-    const { url_zh, url_other, width = '100%', height = 'auto', align = 'center' } = props;
+    const { url_zh, url_other, ...restProps } = props;
     let video_url = url_zh;
-    
+
     if (currentLocale != 'zh-Hans') {
         video_url = url_other;
     }
     return (
         <div>
-            <Player url={video_url} width={width} height={height} align={align}></Player>
+            <Player url={video_url}  {...restProps}></Player>
         </div>
     );
 };
