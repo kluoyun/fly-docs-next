@@ -4,7 +4,7 @@ sidebar_label: USB Bridge to CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from "@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -21,21 +21,29 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Press the `Q` key, showing **Save configuration**, then press the `Y` key
+    * Press the `Q` key, and when **Save configuration** appears, press `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Now the configuration should be saved and you should have exited to the command line interface
-    * Enter `make -j4` to start compiling, it will take some time
+    * Enter `make -j4` to start compiling, this process may take some time
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the output is as follows, compilation is successful
+    * If the output below is displayed, compilation has been successful
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Confirm if in Burning Mode
+## Confirm Entering Burning Mode
 
-
-    <LS />
+    * Ensure that the host machine can connect to the network normally, and make sure that the data cable connecting the lower-level machine to the host machine has data transmission capability.
+    * After connecting via SSH to the host machine, enter `lsusb` and press Enter. If the information circled in the image below is displayed, you can proceed to the next step.
+        * If there is no feedback at all, this indicates a system problem with the host machine, and we are unable to assist. You need to replace it with a confirmed normal system or change the host machine.
+        * If there is a prompt saying the `lsusb` command does not exist, you can execute the following command to install it:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * The ID displayed in the red box can be used as a reference but is not fixed; the suffix `stm32f407xx` after `OpenMoko, Inc.` has a variable meaning.
+        * Some host machines may display incomplete or no information due to system issues.
 
 ## Burn Firmware
 

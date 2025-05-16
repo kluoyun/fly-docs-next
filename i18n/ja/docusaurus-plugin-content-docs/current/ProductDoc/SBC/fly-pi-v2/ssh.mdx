@@ -1,91 +1,194 @@
 ---
 sidebar_position: 3
-sidebar_label: SSH接続で上位機に接続
+sidebar_label: SSH接続による上位機へのアクセス
 ---
 
 
 
+# 上位機SSHへの接続
 
+* **シリアルポート**または**WiFi**を使用してデバイスに接続できます
+* **MobaXterm_Personal**または他の**SSHターミナルツール**を事前に準備してください
+* SDカードまたはM2WEが、上位機と一致するシステムで焼成されていることを確認してください
+* **もし上位機が正常に起動しない場合は、ドライバーやリミッター、ファンなどの外部機器を外してください！！**
 
-# 上位機SSH接続
-
-
-* シリアルポートまたはWiFiを使用してデバイスに接続することができます
-* 事前に**MobaXterm_Personal**または他の**SSHターミナルツール**を準備してください
-* SDカードまたはM2WEに**対応する上位機のシステム**が焼込まれていることを確認してください
-* **もし上位機が正常に起動しない場合はドライバ、リミッタ、ファンなどの外部機器を取り外してください！！**
-* 最後にネットワーク経由でSSHに接続し、ファームウェアのコンパイルを行ってください！！
-* ファームウェアのコンパイル方法は、WiFiまたはイーサネットケーブルを使用して上位機に接続するチュートリアルをご覧ください
+:::warning 注意
+- 最初に上位機を起動する場合、必ず**シリアルポートで上位機のSSHに接続してください**
+- ファームウェアをコンパイルする際は、便利なため、**WiFiで上位機のSSHに接続してください**！
+:::
 
 <Tabs>
-    <TabItem value="serial" label="シリアルポート接続" default>
-        ## シリアルポートを使用して上位機SSHに接続
+    <TabItem value="serial" label="FLYOS-Armbian シリアルポート接続" default>
+        ## FLYOS-Armbian シリアルポートで上位機SSHに接続
 
-        * USB Type-Cケーブルを使用してFLYの上位機とパソコンを接続します
-        * 他の上位機の場合、接続方法を各自で確認してください！！
+        * USB Type-Cケーブルを使用して、FLYの上位機をパソコンに接続します
+        * 他の上位機については、接続方法を各自で確認してください！！
 
         * FLY-Pi v2 ポート
                 <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
-        * マザーボードが正常にパソコンに接続されると、デバイスマネージャーでCH340のポートが表示されます
+        * ボードが正常にパソコンに接続されたら、デバイスマネージャーを開き、CH340ポートが表示されるのを確認できます
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        * `MobaXterm`を開き、設定を行い、ポートはデバイスマネージャーで見たポートを選択してください
+        * `MobaXterm`を開き、設定を行い、ポートはデバイスマネージャーで確認したポートを選択してください
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        * 問題なければ起動画面が表示されます
+        * 問題なければ、起動画面が表示されます
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.webp').default} size="60%" align="center" />
 
-        * 数分待つとこの画面が出れば起動完了です
+        * 少し待つと、これが表示されれば起動完了です
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.webp').default} size="60%" align="center" />
 
-        **数分間待っても画面に何も表示がない場合、数回Enterキーを押してください**
+        * 3分ほど待ちますが、下図のようにインターフェースに何も表示がない場合は、Enterキーを何度か押してください
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.webp').default} size="60%" align="center" />
 
-        **Enterキーを押すと下図のような内容が表示されます**
+        * Enterキーを押すと、下図のような内容が表示されます
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.webp').default} size="60%" align="center" />
 
-        * IPアドレスを確認するには、SSHで`ip a | grep inet`と入力してEnterを押します。返ってきた内容からルーターと同じセグメントのIPを見つけ、アクセスしてください
+        :::warning
+        - この時点ではrootアカウントにログインしています。`su fly`と入力して通常ユーザーに切り替え、その後の操作を行ってください！！！
+        :::
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-13.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.webp').default} size="40%" align="center" />
+        * IPアドレスを確認するには、SSHで`ip a | grep inet`と入力してEnterを押します。返答内容から、自身のルーターと同じセグメントのIPを見つけ、アクセスしてください
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.webp').default} size="70%" align="center" />
 
     </TabItem>
-    <TabItem value="net" label="ネットワーク接続" default>
-        ## ネットワークIPを使用して上位機SSHに接続
+    <TabItem value="fast-serial" label="FLYOS-FAST シリアルポート接続" default>
+        ## FLYOS-FAST シリアルポートで上位機SSHに接続
 
-        * 上位機が接続された**ルーターバックエンド**にログインしてください
-        * システムが**正常に起動している**ことを確認してください
-        * 自分で**上位機のユーザー名とパスワード**を知っている必要があります。FLYシステムのデフォルトのユーザー名は`fly`、デフォルトのパスワードは`mellow`です
-        * マザーボードが正常に起動しており、ネットワークに接続されている場合、IPを使用してSSHに接続できます
-        * MobaXtermを開き、設定を行い、入力したIPは先ほど確認したものです。ルーターバックエンドでも確認できます
+        * USB Type-Cケーブルを使用して、FLYの上位機をパソコンに接続します
+        * 他の上位機については、接続方法を各自で確認してください！！
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
+        * FLY-Pi v2 ポート
+                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
+        * ボードが正常にパソコンに接続されたら、デバイスマネージャーを開き、CH340ポートが表示されるのを確認できます
 
-        **注意：ここでのステップ4で入力するのは上位機のユーザー名です**
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.webp').default} size="40%" align="center" />
+        * `MobaXterm`を開き、設定を行い、ポートはデバイスマネージャーで確認したポートを選択してください
 
-        * 初めて接続するとこのウィンドウが表示されるので、`Accept`をクリックしてください
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="40%" align="center" />
+        * 問題なければ、起動画面が表示されます
 
-        * パスワードを入力するように促されるので、上位機のパスワードを入力してEnterを押してください
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial1.webp').default} size="60%" align="center" />  
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
 
-        **注意：パスワード入力中は文字が見えません。入力後直接Enterを押してください**
 
-        FLYシステムのデフォルトでは、ユーザー名は`fly`、パスワードは`mellow`です
+        * FLYOS-FASTは高速起動のため、大概の場合、以下のような乱文字が表示されます。これは正常現象ですので、心配しないでください。**Enterキーを数回押してください**
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.webp').default} size="40%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.webp').default} size="40%" align="center" />
+        * Enterキーを押すと、下図のような内容が表示されます
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
 
-        * 接続が成功しました
+        * アカウントを入力：`root`、Enterキーを押して、パスワードを入力：`mellow`、Enterキーを押してください。パスワード入力時には表示されませんが、正常な動作です  
+
+        :::warning 注意 
+        - FLYOS-FASTのシステムアカウントは`root`、パスワードは`mellow`です
+        - FLYOS-FASTのシステムには`root`アカウントのみ存在します！！！
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
+
+        * IPアドレスを確認するには、SSHで`ip a | grep inet`と入力してEnterを押します。返答内容から、自身のルーターと同じセグメントのIPを見つけ、アクセスしてください
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
+
+    </TabItem>
+    <TabItem value="net" label="FLYOS-Armbian WiFi接続" default>
+        ## FLYOS-Armbian WiFiで上位機SSHに接続
+
+        * 上位機システムが正常に起動していることを確認してください
+        * 上位機のユーザー名とパスワードを明確にしてください。FLYシステムのデフォルトユーザー名は`fly`、デフォルトパスワードは`mellow`です
+        * WiFiで上位機SSHに接続するための前提条件は、上位機がルーターに接続されており、上位機のIPが分かっていることです  
+
+        * MobaXtermを開き、下図のように設定を行い、`Remote host`には、シリアルポート接続時に取得した上位機のIPを記入してください。また、ルーターバックグラウンドから上位機のIPも確認できます
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+
+        **注意：ここでは第4ステップで上位機のユーザー名を入力します**
+        :::tip
+        - 第4ステップでは上位機のユーザー名を入力します。FLYOS-Armbianを使用しているfly上位機では`fly`を入力してください。他の上位機は実際の状況に応じて正しいユーザー名を入力してください
+        :::
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.webp').default} size="60%" align="center" />
+
+        * 初回接続時はこのウィンドウがポップアップします。`Accept`をクリックしてください
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
+
+        * パスワードの入力を求められますので、上位機のパスワードを入力後Enterを押してください
+        :::tip
+        - パスワード入力時には表示されませんが、完了後Enterを押してください
+        :::
+        
+        FLYOS-Armbianのデフォルトユーザー名は：`fly`、デフォルトパスワードは：`mellow`です
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.webp').default} size="60%" align="center" />
+
+        * 下図のようなウィンドウがポップアップした場合、このポップアップはユーザーのパスワードを保存するかどうかの質問です。`No`をクリックしてください
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
+
+        * 下図のようなインターフェースが表示された場合、ログインに成功しました！
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.webp').default} size="60%" align="center" />
+
+
+    </TabItem>
+    <TabItem value="FAST-net" label="FLYOS-FAST WiFi接続" default>
+        ## FLYOS-FAST WiFiで上位機SSHに接続
+
+        * 上位機システムが正常に起動していることを確認してください
+        * 上位機のユーザー名とパスワードを明確にしてください。FLYシステムのデフォルトユーザー名は`fly`、デフォルトパスワードは`mellow`です
+        * WiFiで上位機SSHに接続するための前提条件は、上位機がルーターに接続されており、上位機のIPが分かっていることです  
+
+        * MobaXtermを開き、下図のように設定を行い、`Remote host`には、シリアルポート接続時に取得した上位機のIPを記入してください。また、ルーターバックグラウンドから上位機のIPも確認できます
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+
+        **注意：ここでは第4ステップで上位機のユーザー名を入力します**
+        :::tip
+        - 第4ステップでは上位機のユーザー名を入力します。FLYOS-FASTを使用しているfly上位機では`root`を入力してください。他の上位機は実際の状況に応じて正しいユーザー名を入力してください
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
+
+        * 初回接続時はこのウィンドウがポップアップします。`Accept`をクリックしてください
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
+
+        * パスワードの入力を求められますので、上位機のパスワードを入力後Enterを押してください
+        :::tip
+        - パスワード入力時には表示されませんが、完了後Enterを押してください
+        :::
+        
+        FLYOS-FASTのデフォルトユーザー名は：`root`、デフォルトパスワードは：`mellow`です
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
+
+        * 下図のようなウィンドウがポップアップした場合、このポップアップはユーザーのパスワードを保存するかどうかの質問です。`No`をクリックしてください
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
+
+        * 下図のようなインターフェースが表示された場合、ログインに成功しました！
+
+        :::warning 注意 
+        - FLYOS-FASTのシステムアカウントは`root`、パスワードは`mellow`です
+        - FLYOS-FASTのシステムには`root`アカウントのみ存在します！！！
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />
+
+
 
     </TabItem>
 </Tabs>

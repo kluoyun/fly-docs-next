@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USBブリッジCANファームウェア焼込
+sidebar_label: USBブリッジCANファームウェア焼付け
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +11,7 @@ import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBブリッジCANファームウェア焼込
+# USBブリッジCANファームウェア焼付け
 
 ## コンパイル開始
 
@@ -21,23 +21,31 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Q キーを押して **Save configuration** が表示されたら、その後 Y キーを押す
+    * `Q` キーを押して、**Save configuration** が表示されたら、その後 `Y` キーを押す
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * これで設定が保存され、コマンドラインに戻ったはずです
+    * `make -j4` を入力してコンパイルを開始します、時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に次の内容が出力されればコンパイル成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## フラッシュモード確認
+## 焼付けモード確認
 
+    * 上位機が正常にネットワーク接続できていることを確認し、下位機と接続するデータ線がデータ転送機能を持っていることを確認してください。
+    * SSHで上位機に接続して `lsusb` を入力してエンターを押します、もし下の画像で囲まれた情報が表示されたら次のステップに進んでください。
+        * 何も情報が返ってこない場合、これは上位機のシステムの問題です、こちらでは解決できません。正常なシステムに変更するか、上位機を交換してください。
+        * `lsusb` コマンドがないというメッセージが出る場合は、このコマンドでインストールできます
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * 赤枠内に表示されるIDは参考値ですが、**固定ではなく可変**です。`OpenMoko, Inc. stm32f407xx` の後ろの `XX` は可変を意味します。
+        * 一部の上位機はシステムの問題により、完全に表示されなかったり、全く表示されない場合があります。
 
-    <LS />
-
-## ファームウェア焼込
+## ファームウェア焼付け
 
 
     <CANBOOT />

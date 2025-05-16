@@ -1,7 +1,6 @@
 ---
 sidebar_position: 4
-sidebar_label: Compilation et flash du firmware CAN 103
-
+sidebar_label: Compilation et flashage du firmware CAN version 103
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +10,7 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# Compilation du firmware CAN 103
+# Compilation du firmware CAN version 103
 
 ## Démarrer la compilation
 
@@ -21,36 +20,33 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Sélectionnez **GPIO pins to set at micro-controller startup**, entrez : !PC13, veuillez noter que c'est en majuscules
+    * Sélectionnez **GPIO pins to set at micro-controller startup**, entrez : !PC13 (remarque : en majuscules)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/103.webp').default} size="100%" align="center" />
-    * Appuyez sur `Q`, apparaît **Save configuration**, appuyez ensuite sur `Y`
+    * Appuyez sur `Q`, une fenêtre **Save configuration** apparaît, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
     * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale contient les lignes suivantes, la compilation a réussi
+    * Si la sortie finale est la suivante, la compilation a réussi :
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Rechercher le périphérique
-
     <LS />
 
+## Flashage du firmware
 
-## Flasher le firmware
-
-    * Avant de flasher le firmware, connectez la carte de la boîte à outils au UTOC ou à la carte mère avec une image de firmware bridge, voici un schéma de câblage de référence
-    * Vérifiez que les commutateurs sont bien positionnés
+    * Avant de flasher le firmware, connectez la carte outil à UTOC ou à une carte mère flashed avec le firmware bridge via un câble XT30. Voici un schéma de raccordement de référence
+    * Vérifiez que les sélecteurs sont positionnés correctement
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant l'alimentation, si elle est de `120Ω`, branchez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en utilisant un multimètre en position hors tension. Si elle est de `120Ω`, branchez un saut de `120Ω`. Si elle est d'environ `40Ω`, retirez le saut.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## Vérifier si le firmware a démarré correctement
+## Vérification du démarrage du firmware
 
-    * Si le firmware démarre correctement, la LED s'allumera
+    * Si le firmware démarre normalement, la LED s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.webp').default} size="70%" align="center" />

@@ -1,18 +1,22 @@
 :::tip
-    * When installing the flashing plugin, please ensure that your host machine is connected to the internet.
+    * When installing the programming plugin, you need to be connected to the internet. Please ensure that your host computer is already properly connected to the Internet.
     * If it has been installed, there is no need to install it again.
 :::
 
-### Start Flashing
+### Start Programming
 
-    :::warning Warning
-       * For **non-fly host machines**, please execute the following code to install the dependencies required for firmware flashing! Otherwise, the firmware cannot be flashed!
-       ```
+:::warning Warning
+* For **non-fly host computers**, please make sure to execute the following code to install the dependency package for firmware programming! Otherwise, the firmware cannot be programmed!
+    ```
       cd && git clone https://github.com/Arksine/katapult.git
-       ```
+    ```
+* Use this command to install in China
+```
+  cd && git clone https://gitee.com/MrCakeFuck/katapult.git
+```
       <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
-    :::
-    * Use the following command to search for your device ID, and the ID shown in the image below should appear (note: the ID in the figure is for reference only, each motherboard has a different ID):
+:::
+    * Use the following instruction to search for your device ID, and the ID shown in the figure below should appear (note: the ID shown in the figure is for reference only, and each motherboard has a different ID):
 
         ```bash
         ls /dev/serial/by-id/*
@@ -20,37 +24,39 @@
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
 
-    * To flash the firmware, use the following command, and make sure the firmware has been compiled. *Replace `<your motherboard ID>` with the ID queried in the previous step.*
+    * To program the firmware, use the following code, and make sure the firmware has been compiled successfully. *Please replace `<your motherboard ID>` with the ID queried in the previous step.*
 
         ```bash
         ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your motherboard ID>
         ```
-    The `fast` system uses this command to flash, *replace `<your motherboard ID>` with the ID queried in the previous step.*
+    For the `fast` system, use this command to program, *please replace `<your motherboard ID>` with the ID queried in the previous step.*
     
-            ```bash
-            python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your motherboard ID>
-            ```
+     ```bash
+    python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your motherboard ID>
+
+     ```
+
     * Below is a reference:
         <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
 
-    * Reference after flashing is complete:
+    * After programming is complete, refer to the following:
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
 
 ## Firmware Update
 
 <Tabs>
     <TabItem value="w" label="USB Firmware Update" default>
-    * Use the following command to search for your motherboard ID, and the ID shown in the image below should appear (note: the ID in the figure is for reference only, each motherboard has a different ID).
+    * Use the following instruction to search for your motherboard ID, and the ID shown in the figure below should appear (note: the ID shown in the figure is for reference only, and each motherboard has a different ID).
 
         ```bash
         ls /dev/serial/by-id/*
         ```
     :::tip Note
-        In the figure below, `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00` is the motherboard ID.
+        In the figure below, `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00` is the motherboard's ID.
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
-    * To update the USB firmware, you need to input the following command after compiling the latest firmware. *Replace `<your motherboard ID>` with the ID queried in the previous step.*
+    * To update the USB firmware, after compiling the latest firmware, enter the following command to update, *please replace `<your motherboard ID>` with the ID queried in the previous step.*
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<your motherboard ID>
@@ -60,31 +66,36 @@
 
 
     <TabItem value="l" label="Bridge CAN Firmware Update">
-    * To update the USB bridge CAN firmware, you need to input the following command to reset into Katapult after compiling the latest firmware. (As shown in the figure below, the ID in the figure is for reference only, please use the ID in your configuration file.)
+    * To update the USB bridge CAN firmware, you need to enter the Katapult after compiling the latest firmware. Enter the following command (the ID in the figure below is for reference only, please use the ID in your configuration file).
     :::tip Note
        * `<your CANBUS UUID>` is the CANBUS UUID of the motherboard in your **printer.cfg** configuration file.
     :::
         
         <br/>
 
-        ```bash
-        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <your CANBUS UUID>
-        ```
+    ```bash
+    ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <your CANBUS UUID>
+    ```
+    For the `fast` system, use this command to burn, *please replace `<your motherboard ID>` with the ID queried in the previous step.*
+    
+     ```bash
+    python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <your CANBUS UUID>
+     ```
     :::tip Note
-       * In the figure below, `f95cee90e1f9` is the CANBUS UUID of the motherboard.
+       * In the figure below, `f95cee90e1f9` is the motherboard's CANBUS UUID.
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
-    * After resetting into Katapult, use the following command to search for your motherboard ID, and the ID shown in the image below should appear (note: the ID in the figure is for reference only, each motherboard has a different ID).
+    * After resetting into Katapult, use the following command to search for your motherboard ID, and the ID shown in the figure below should appear (note: the ID shown in the figure is for reference only, and each motherboard has a different ID).
 
         ```bash
         ls /dev/serial/by-id/*
         ```
     :::tip Note
-        In the figure below, `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00` is the motherboard ID.
+        In the figure below, `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00` is the motherboard's ID.
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
 
-    * Make sure to execute the burn-in after the new firmware is compiled. *Replace `<your motherboard ID>` with the ID queried in the previous step.*
+    * Make sure to execute the programming after the new firmware is compiled successfully. *Please replace `<your motherboard ID>` with the ID queried in the previous step.*
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<your motherboard ID>
@@ -94,7 +105,7 @@
 
 </Tabs>
 
-## Solution for Wrong Firmware Flashing
+## Solution for Incorrect Firmware Burning
 
-* Power off the motherboard, power it on again, and quickly double-click the reset button to re-enter the flashing mode.
-* Or re-flash the Katapult firmware using the window/host machine. <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter_dfu_flashing_mode">Flash Katapult firmware</Button>
+* Power off the motherboard, power on again, and quickly double-click the reset button to re-enter programming mode.
+* Or use the window/host machine to re-burn the katapult firmware <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter_dfu_programming_mode">burn katapult firmware</Button>

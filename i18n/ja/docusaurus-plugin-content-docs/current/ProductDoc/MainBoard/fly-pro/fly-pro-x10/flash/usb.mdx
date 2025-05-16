@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USBファームウェアの焼込
+sidebar_label: USBファームウェア書き込み
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -12,9 +12,9 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBファームウェアのコンパイル
+# USB ファームウェアのコンパイル
 
-## コンパイル開始
+## コンパイルの開始
 
     <SSH />
 
@@ -24,20 +24,29 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * これで設定が保存され、コマンドラインに戻ります
+    * `make -j4` を入力してコンパイルを開始します（時間がかかります）
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 焼込モードに入ったかどうか確認
+## 書き込みモードへの確認
 
-    <LS />
+    * 上位機が正常にネットワーク接続でき、下位機と接続されているデータ線がデータ転送機能を持っていることを確認してください。
+    * SSH で上位機に接続後、`lsusb` を入力して Enter キーを押します。以下の画像で囲まれた情報が表示された場合、次のステップに進めます。
+        * 何も情報が返ってこない場合、これは上位機のシステム問題であり、解決できません。正常なシステムに切り替えるか、上位機を交換してください。
+        * `lsusb` コマンドがないというメッセージが表示された場合は、以下を実行してインストールできます
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * 赤枠内に表示されている ID は参考値ですが、**固定ではありません（変更可能）**です。「OpenMoko, Inc. stm32h723xx」の後ろの「XX」は可変部分です。
+        * 一部の上位機はシステムの問題により、すべての情報を正しく表示できないことがあります。
 
-## ファームウェアの焼込
+## ファームウェアの書き込み
     
     <CANBOOT />

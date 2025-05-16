@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USB bridge vers le firmware CAN
+sidebar_label: Programme de la mise à jour du firmware CAN via un pont USB
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +11,7 @@ import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB bridge vers le firmware CAN
+# Programme de la mise à jour du firmware CAN via un pont USB
 
 ## Démarrer la compilation
 
@@ -21,24 +21,31 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Appuyez sur la touche `Q`, une fenêtre **Save configuration** apparaît, appuyez ensuite sur `Y`
+    * Appuyez sur `Q`, apparaît **Enregistrer la configuration**, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous êtes revenu à l'interface de ligne de commande
+    * La configuration devrait maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
     * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale contient les lignes suivantes, la compilation a réussi
+    * Si la sortie finale ressemble au texte suivant, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Création du fichier hex out/klipper.bin
         ```
+## Vérifier si le mode de mise à jour est activé
 
-## Vérifier si le mode de flash est activé
+    * Assurez-vous que l'ordinateur principal peut se connecter normalement à Internet et que le câble de connexion entre l'ordinateur principal et l'ordinateur secondaire possède une fonction de transmission de données.
+    * Connectez-vous via SSH à l'ordinateur principal puis tapez `lsusb` et appuyez sur Entrée, si l'information entourée dans l'image ci-dessous apparaît, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est renvoyée, il s'agit d'un problème du système de l'ordinateur principal, nous ne pouvons rien faire, vous devez changer de système confirmé comme normal ou remplacer l'ordinateur principal.
+        * Si l'instruction `lsusb` n'existe pas, vous pouvez exécuter cette commande pour l'installer
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * L'ID affiché dans le cadre rouge peut servir de référence mais il n'est pas **fixe** et peut varier. Le suffixe `stm32h723xx` après `OpenMoko, Inc.` est une indication importante, `XX` signifie qu'il est variable.
+        * Certains ordinateurs principaux peuvent ne pas afficher correctement ou ne pas afficher du tout en raison de problèmes système.
 
-
-    <LS />
-
-## Flasher le firmware
+## Mise à jour du firmware
 
 
     <CANBOOT />
