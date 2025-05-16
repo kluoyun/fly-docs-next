@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: USB 플래시 프로그래밍
+sidebar_label: USB 펌웨어 프래싱
 ---
 
 import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -22,21 +22,30 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q` 키를 누르면 **Save configuration**이 나타나고, 그 다음에 `Y` 키를 누릅니다.
+    * `Q` 키를 누르고 **Save configuration**이 나타나면 그때 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아왔습니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다.
+    * 이제 설정이 저장되었으며 명령줄 화면으로 돌아왔습니다.
+    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 다소 걸립니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래의 내용이 출력되면 컴파일이 성공했습니다.
+    * 아래 내용이 출력되면 컴파일 성공입니다.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## 플래시 모드 확인
+## 프래밍 모드 진입 확인
 
-    <LS />
+    * 상위 컴퓨터가 정상적으로 연결되어 있는지 확인하고, 하위 컴퓨터와 연결된 데이터선이 데이터 전송 기능을 가지고 있는지 확인하세요.
+    * 상위 컴퓨터에 SSH로 연결한 후 `lsusb`를 입력하고 Enter를 누릅니다. 아래 이미지에서 빨간색으로 표시된 정보가 나타나면 다음 단계로 진행할 수 있습니다.
+        * 아무런 정보도 표시되지 않으면 상위 컴퓨터의 시스템 문제가 있을 수 있으며, 해결 방법은 없으므로 정상적인 시스템으로 교체하거나 상위 컴퓨터를 교체해야 합니다.
+        * `lsusb` 명령이 없다고 나온다면 다음 명령어를 실행하여 설치할 수 있습니다.
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * 빨간색 박스 안에 표시된 ID는 참고용이며 고정된 값은 아닙니다. `OpenMoko, Inc. stm32h723xx` 이후의 접미사 `XX`는 가변적입니다.
+        * 일부 상위 컴퓨터는 시스템 문제로 인해 완전히 표시되지 않을 수 있습니다.
 
-## 펌웨어 플래시
+## 펌웨어 프래싱
     
     <CANBOOT />

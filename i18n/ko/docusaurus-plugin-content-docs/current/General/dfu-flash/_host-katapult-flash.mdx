@@ -1,19 +1,22 @@
 :::팁
-    * 플러그인 설치 시 인터넷 연결이 필요하므로, 상위 컴퓨터가 정상적으로 인터넷에 연결되어 있는지 확인하시기 바랍니다.
+    * 플러그인 설치 시 인터넷 연결이 필요합니다. 상위 컴퓨터가 정상적으로 인터넷에 연결되어 있는지 확인하시기 바랍니다.
     * 이미 설치된 경우 다시 설치할 필요가 없습니다.
 :::
 
+### 번영 시작하기
 
-### 번역
-
-    :::주의 경고
-       * **비-fly 상위 컴퓨터** 아래의 코드를 반드시 실행하여 펌웨어 번들을 위한 의존 패키지를 설치해야 합니다! 그렇지 않으면 펌웨어를 번갈 수 없습니다!
-       ```
+:::주의
+* **비-Fly 상위 컴퓨터**는 아래의 코드를 반드시 실행하여 펌웨어 번영 의존 패키지를 설치해야 합니다! 그렇지 않으면 펌웨어를 번영할 수 없습니다!
+    ```
       cd && git clone https://github.com/Arksine/katapult.git
-       ```
+    ```
+* 국내 사용자는 다음 명령어로 설치
+```
+  cd && git clone https://gitee.com/MrCakeFuck/katapult.git
+```
       <ImageView image={require('@site/docs/General/dfu-flash/img/get_katapult.webp').default} size="80%" align="center" />
-    :::
-    * 장치 ID를 검색하기 위해 다음 명령을 사용하며, 아래와 같은 ID가 나타나야 합니다 (참고: 도표에서 보여지는 ID는 예시이며, 각 보드마다 ID는 다릅니다).
+:::
+    * 아래 명령어를 사용하여 장치 ID를 검색하고, 아래 그림과 같은 ID가 나타나야 합니다 (참고: 그림에 표시된 ID는 예시이며, 각 보드의 ID는 다릅니다)
 
         ```bash
         ls /dev/serial/by-id/*
@@ -21,37 +24,39 @@
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
 
-    * 펌웨어를 번역하기 위해 아래 명령을 사용하며, 펌웨어가 정상적으로 컴파일되었는지 확인하고, `<your_board_id>`를 이전 단계에서 찾은 ID로 대체하시기 바랍니다.
+    * 펌웨어를 번영하기 위해 아래 코드를 사용하십시오. 컴파일된 펌웨어가 준비되었는지 확인한 후, `<your_board_id>`를 이전 단계에서 검색한 ID로 대체하십시오.
 
         ```bash
         ~/klippy-env/bin/python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your_board_id>
         ```
-    'fast' 시스템은 이 명령을 사용하여 펌웨어를 번역합니다, * `<your_board_id>`를 이전 단계에서 찾은 ID로 대체하시기 바랍니다.*
+    `fast` 시스템은 이 명령어를 사용하여 번영, `<your_board_id>`를 이전 단계에서 검색한 ID로 대체하십시오.
+    
+     ```bash
+    python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your_board_id>
 
-            ```bash
-            python ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/<your_board_id>
-            ```
-    * 참고사항
+     ```
+
+    * 참고 자료
         <ImageView image={require('@site/docs/General/dfu-flash/img/kaulut7.webp').default} size="100%" align="center" />
 
-    * 펌웨어 번역 완료
+    * 번영 완료 후 참고
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult3.webp').default} size="100%" align="center" />
 
 ## 펌웨어 업데이트
 
 <Tabs>
     <TabItem value="w" label="USB 펌웨어 업데이트" default>
-    * 아래 명령어를 사용하여 주변기기 ID를 검색하세요. 아래 도표에 나와 있는 ID가 나타나야 합니다 (참고: 도표에서 보여지는 ID는 예시이며, 각 보드마다 ID는 다릅니다).
+    * 아래 명령어를 사용하여 보드 ID를 검색하고, 아래 그림과 같은 ID가 나타나야 합니다 (참고: 그림에 표시된 ID는 예시이며, 각 보드의 ID는 다릅니다)
 
         ```bash
         ls /dev/serial/by-id/*
         ```
-    :::팁 주의
-        아래 도표에서 `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`가 주변기기의 ID입니다.
+    :::팁
+        아래 그림에서 `/dev/serial/by-id/usb-katapult_rp2040_E662549553642032-if00`가 보드의 ID입니다
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/2040.webp').default} size="80%" align="center" />
 
-    * USB 펌웨어 업데이트는 최신 펌웨어를 컴파일한 후 아래 명령어를 입력하여 업데이트해야 합니다, * `<your_board_id>`를 이전 단계에서 찾은 ID로 대체하시기 바랍니다.*
+    * USB 펌웨어를 업데이트하려면 최신 펌웨어를 컴파일한 후 아래 명령어를 입력하여 업데이트하십시오, `<your_board_id>`를 이전 단계에서 검색한 ID로 대체하십시오
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<your_board_id>
@@ -60,32 +65,37 @@
     </TabItem>
 
 
-    <TabItem value="l" label="CAN 브리지 펌웨어 업데이트">
-    * CAN 브리지 펌웨어를 업데이트하려면 최신 펌웨어를 컴파일한 후 아래 명령어를 입력하여 Katapult로 재설정해야 합니다. (아래 도표 참조, 도표의 ID는 예시이며, 실제 설정 파일의 ID를 사용하시기 바랍니다.)
-    :::팁 주의
-       * `<your_CANBUS_UUID>`는 **printer.cfg** 설정 파일에 있는 주변기기의 CANBUS UUID입니다.
+    <TabItem value="l" label="CAN 버스 브리지 펌웨어 업데이트">
+    * CAN 버스 브리지 펌웨어를 업데이트하려면 최신 펌웨어를 컴파일한 후 아래 명령어를 입력하여 Katapult로 재설정하십시오. (아래 그림 참조, 그림의 ID는 예시이며, 실제로는 구성 파일의 ID를 사용하십시오)
+    :::팁
+       * `<your_CANBUS_UUID>`는 **printer.cfg** 구성 파일에서 보드의 CANBUS UUID입니다
     :::
         
         <br/>
 
-        ```bash
-        ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <your_CANBUS_UUID>
-        ```
-    :::팁 주의
-       * 아래 도표에서 `f95cee90e1f9`가 주변기기의 CANBUS UUID입니다.
+    ```bash
+    ~/klippy-env/bin/python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <your_CANBUS_UUID>
+    ```
+    `fast` 시스템은 이 명령어를 사용하여 번영, `<your_board_id>`를 이전 단계에서 검색한 ID로 대체하십시오.
+    
+     ```bash
+    python3 ~/katapult/scripts/flashtool.py -i can0 -r -u <your_CANBUS_UUID>
+     ```
+    :::팁
+       * 아래 그림에서 `f95cee90e1f9`가 보드의 CANBUS UUID입니다
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult6.webp').default} size="100%" align="center" />
-    * Katapult으로 재설정한 후, 아래 명령어를 사용하여 주변기기 ID를 검색하세요. 아래 도표에 나와 있는 ID가 나타나야 합니다 (참고: 도표에서 보여지는 ID는 예시이며, 각 보드마다 ID는 다릅니다).
+    * Katapult로 재설정한 후, 아래 명령어를 사용하여 보드 ID를 검색하고, 아래 그림과 같은 ID가 나타나야 합니다 (참고: 그림에 표시된 ID는 예시이며, 각 보드의 ID는 다릅니다)
 
         ```bash
         ls /dev/serial/by-id/*
         ```
-    :::팁 주의
-        아래 도표에서 `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`가 주변기기의 ID입니다.
+    :::팁
+        아래 그림에서 `/dev/serial/by-id/usb-Klipper_stm32f072xb_43002C000951324757373520-if00`가 보드의 ID입니다
     :::
         <ImageView image={require('@site/docs/General/dfu-flash/img/katapult4.webp').default} size="80%" align="center" />
 
-    * 새로운 펌웨어를 컴파일한 후, 아래 명령어를 실행하여 펌웨어를 번역해야 합니다. * `<your_board_id>`를 이전 단계에서 찾은 ID로 대체하시기 바랍니다.*
+    * 새 펌웨어를 컴파일한 후 실행하여 번영을 수행하십시오. `<your_board_id>`를 이전 단계에서 검색한 ID로 대체하십시오.
 
         ```bash
         cd ~/klipper/ && make flash FLASH_DEVICE=<your_board_id>
@@ -95,7 +105,7 @@
 
 </Tabs>
 
-## 잘못된 펌웨어 번역 해결 방법
+## 잘못된 펌웨어 번영 해결 방법
 
-* 주변기기가 전원이 꺼져 있다면, 전원을 다시 켠 후 리셋 버튼을 빠르게 두 번 클릭하면 다시 번역 모드로 들어갈 수 있습니다.
-* 또는 Windows/상위 컴퓨터를 사용하여 katapult 펌웨어를 다시 번역하세요. <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter_dfu_burning_mode">katapult 펌웨어 번역</Button>
+* 보드가 전원을 끈 후 다시 전원을 켜고, 리셋 버튼을 빠르게 두 번 클릭하면 다시 번영 모드로 들어갈 수 있습니다.
+* 또는 Windows/상위 컴퓨터를 사용하여 katapult 펌웨어를 다시 번영하십시오.<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter_dfu_burning_mode">katapult 펌웨어 번영</Button>

@@ -1,11 +1,12 @@
 ---
 sidebar_position: 2
-sidebar_label: USB 플래시 프로그래밍
+sidebar_label: USB 펌웨어 프래싱
+
 ---
 
 import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
-import USB from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import USB from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
@@ -13,9 +14,9 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
 # USB 펌웨어 컴파일
 
-    :::tip
+    :::팁
 
-    * Micro4 출하 시 USB 연결된 Katapult 펌웨어가 미리 프로그래밍되어 있으므로 다시 한 번 프로그래밍할 필요가 없습니다.
+    * Micro4는 미리 USB 연결된 Katapult 펌웨어가 써져 있으므로 다시 한번 프래싱할 필요가 없습니다.
 
     :::
 
@@ -27,37 +28,33 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * 마이크로 컨트롤러 시작 시 GPIO 핀을 설정하려면 다음을 입력합니다: gpio8
+    * 마이크로 컨트롤러 시작 시 설정할 GPIO 핀 선택, 입력: gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/usb.webp').default} size="100%" align="center" />
     * `Q` 키를 누르면 **Save configuration**이 나타나고, 그 후에 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아왔습니다.
+    * 이제 설정이 저장되었고 명령줄 인터페이스로 돌아왔습니다.
     * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 꽤 걸립니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 아래의 내용이 출력되면 컴파일이 성공했습니다.
+    * 마지막에 아래 내용이 출력되면 컴파일 성공입니다.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 플래시 모드 확인
-    * 호스트 머신이 정상적으로 네트워크에 연결되었는지 확인하고, 호스트 머신과 연결된 데이터선이 데이터 전송 기능을 가지고 있는지 확인하세요.
-    * SSH로 호스트 머신에 연결한 후에 `lsusb`를 입력하고 Enter를 누릅니다. 만약 아래 이미지에서 강조된 정보가 표시된다면 다음 단계로 진행할 수 있습니다.
-        * 아무런 정보도 반환되지 않는다면 호스트 머신의 시스템에 문제가 있을 수 있으므로, 이 문제를 해결할 수 없습니다. 호스트 머신의 시스템을 변경하거나 호스트 머신을 교체해야 합니다.
-        * `lsusb` 명령을 실행하는 데 문제가 있다면 다음 명령어로 설치할 수 있습니다:
+## 프래싱 모드 진입 확인
+
+    * 호스트 컴퓨터가 정상적으로 네트워크에 연결되어 있는지 확인하고, 호스트 컴퓨터와 연결된 데이터선이 데이터 전송 기능을 가지고 있는지 확인하십시오.
+    * SSH를 통해 호스트 컴퓨터에 연결한 후 `lsusb`를 입력하고 Enter를 누릅니다. 아래 이미지에서 빨간색으로 표시된 정보가 나타나면 다음 단계로 진행할 수 있습니다.
+        * 아무런 정보도 반응이 없으면 호스트 컴퓨터의 시스템 문제입니다. 해결 방법은 없으니 정상적인 시스템으로 교체하거나 호스트 컴퓨터를 교체해야 합니다.
+        * `lsusb` 명령이 없다고 표시되면 다음 명령어로 설치할 수 있습니다.
             ```bash
             sudo apt-get install usbutils
             ```
             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * `2e8a:6177`는 이번에 사용할 장치입니다. `OpenMoko, Inc. rp2040`는 참고용으로 사용될 수 있지만, 판단 기준은 아닙니다.
-        * 일부 호스트 머신은 시스템 문제로 인해 장치가 완전히 표시되지 않을 수 있습니다.
-        * `lsusb` 명령을 입력하여 장치가 표시되지만 `2e8a:6177`가 나타나지 않으면 데이터선을 바꿔보거나 메인보드를 호스트 머신의 다른 USB 포트에 연결해 보세요.
+    * 빨간색 박스 안에 표시된 ID는 참고용이며 고정 ID는 아닙니다. `OpenMoko, Inc. rp2040` 이후의 접미사 `XX`는 가변적입니다.
+        * 일부 호스트 컴퓨터는 시스템 문제로 인해 완전히 표시되지 않거나 전혀 표시되지 않을 수 있습니다.
 
-    :::warning 주의사항
-        `2e8a:6177`가 표시될 때까지 다음 단계로 진행할 수 없습니다.
-    :::
-
-## 펌웨어 플래싱
+## 펌웨어 프래싱
 
     <CANBOOT />

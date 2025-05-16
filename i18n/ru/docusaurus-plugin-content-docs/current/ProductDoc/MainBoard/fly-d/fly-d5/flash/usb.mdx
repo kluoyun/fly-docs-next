@@ -22,31 +22,45 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Нажмите клавишу `Q`, появится запрос **Save configuration**, затем нажмите клавишу `Y`
+    * Нажмите `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Сейчас конфигурация должна быть сохранена и вы должны вернуться в командную строку
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
+    * Введите `make -j4`, чтобы начать компиляцию (время может занять немного)
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее содержимое, компиляция успешно завершена
+    * Если вывод последующих строк выглядит так, то компиляция успешна
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
+    - Ниже приведен процесс записи прошивки
+
+    <AsciiNema url="https://asciinema.org/a/ERsEjBy6CA69ewjDCduXZtTMe.cast" width="60%" options={{theme: "monokai", speed:0.85}} />
+
 ## Переключение в режим записи
 
-    :::tip Совет
-        После 1 сентября 2024 года выпущенные D5 уже имеют прошивку Katapult
+    :::tip Подсказка
+        После 1 сентября 2024 года出厂的所有 D5 уже имеют прошивку Katapult
     :::
-    * Подключите основную плату к компьютеру с помощью USB Type-C, затем **дважды нажмите кнопку reset**, при этом на плате загорится мигающий индикатор.
+    * Подключите основную плату к хост-компьютеру с помощью Type-C кабеля и дважды нажмите кнопку reset. На плате загорится мигающий светодиод.
     :::warning Предупреждение
-       * Если индикатор не мигает, пожалуйста, перепишите прошивку Katapult: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter-dfu-flash-mode">Записать прошивку Katapult</Button>
-       * Если индикатор не мигает, после записи прошивки Katapult выполните следующий шаг
+       * Если светодиод не мигает, перепрошлите прошивку Katapult: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter-dfu-flash-mode">Перепрошить Katapult</Button>
+       * Если светодиод не мигает, после завершения перепрошивки Katapult выполните следующий шаг
     :::
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
+## Проверка перехода в режим записи
 
-    <LS />
+    * Убедитесь, что хост-компьютер подключен к сети и данные кабеля между хост-компьютером и целевым устройством работают корректно.
+    * Подключитесь по SSH к хост-компьютеру и введите `lsusb` и нажмите Enter. Если появляется информация, заключенная в красные рамки на изображении ниже, можно переходить к следующему шагу.
+        * Если никакой информации нет, это проблема системы хост-компьютера, и мы не можем помочь. Вам нужно заменить систему или хост-компьютер.
+        * Если отсутствует команда `lsusb`, выполните эту команду для установки
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * ID, показанный в красной рамке, является только для справки, он может изменяться. Следующая часть `OpenMoko, Inc. stm32f072xx` имеет диагностическую важность, где `XX` может меняться.
+        * На некоторых хост-компьютерах может возникнуть проблема с отображением из-за системы.
 
 ## Запись прошивки
     

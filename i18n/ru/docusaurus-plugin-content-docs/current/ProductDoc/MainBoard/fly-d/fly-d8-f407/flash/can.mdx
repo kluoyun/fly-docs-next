@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: Прошивка CAN через USB-мост
+sidebar_label: Запись прошивки CAN через USB-мост
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -11,7 +11,7 @@ import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/df
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Прошивка CAN через USB-мост
+# Запись прошивки CAN через USB-мост
 
 ## Начало компиляции
 
@@ -21,23 +21,32 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции (время займет немного)
+    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
+    * Введите `make -j4` для начала компиляции, это займет некоторое время
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее содержимое, то компиляция завершена успешно
+    * Если последний вывод содержит следующее, компиляция успешно завершена:
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Проверка режима прошивки
 
+## Проверка режима записи
 
-    <LS />
+    * Убедитесь, что компьютер верхнего уровня подключен к сети и шнур данных, соединяющий компьютер верхнего уровня с нижним уровнем, имеет функцию передачи данных.
+    * Подключитесь к компьютеру верхнего уровня через SSH и введите команду `lsusb` и нажмите Enter. Если появляется информация, выделенная на рисунке ниже, можно переходить к следующему шагу.
+        * Если никакой информации не отображается, это может быть проблема системы компьютера верхнего уровня, мы бессильны. Вам нужно заменить рабочую систему или компьютер верхнего уровня.
+        * Если появляется сообщение об отсутствии команды `lsusb`, выполните эту команду для установки:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * ID, выделенный красным框ом, может служить ориентиром, но он **не является фиксированным** (ID может изменяться). Следующая часть `OpenMoko, Inc. stm32f407xx` указывает на то, что суффикс имеет переменную природу.
+        * Некоторые компьютеры верхнего уровня могут из-за системной проблемы отображать информацию неполностью или вообще не отображать.
 
-## Прошивка прошивки
+## Запись прошивки
 
 
     <CANBOOT />

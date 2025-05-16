@@ -1,11 +1,12 @@
 ---
 sidebar_position: 2
-sidebar_label: Flashage du firmware USB
+sidebar_label: Programmeur USB
+
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
-import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
@@ -13,13 +14,13 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
 # Compilation du firmware USB
 
-    :::tip
+    :::astuce
 
-    * Le Micro4 est pré-étalonné avec le firmware Katapult connecté via USB, pas besoin de le réétalonner.
+    * La carte Micro4 est préchargée avec le firmware Katapult via USB, pas besoin de la reprogrammer.
 
     :::
 
-## Démarrer la compilation
+## Démarrage de la compilation
 
     <SSH />
 
@@ -27,37 +28,33 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Sélectionnez les GPIO pins à configurer au démarrage du micro-controleur, entrez : gpio8
+    * Sélectionnez les broches GPIO à configurer au démarrage du micro-contrôleur, entrez : gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/usb.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, apparaît **Save configuration**, appuyez ensuite sur `Y`
+    * Appuyez sur `Q`, apparaît **Enregistrer la configuration**, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Vous devriez maintenant avoir enregistré la configuration et être revenu à l'interface de commande
     * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au contenu ci-dessous, la compilation a réussi
+    * Si la sortie finale ressemble au texte suivant, la compilation a réussi :
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Création du fichier hex out/klipper.bin
         ```
 
-## Vérifier si le mode de flashage est activé
-    * Assurez-vous que l'hôte peut se connecter correctement à Internet et que le câble de connexion entre l'hôte et le périphérique inférieur possède une fonction de transmission de données.
-    * Connectez-vous via SSH à l'hôte et tapez `lsusb` puis appuyez sur Entrée, si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucun message n'est retourné, c'est un problème du système de l'hôte, nous ne pouvons rien faire de plus, vous devez changer de système ou d'hôte confirmé comme étant normal.
-        * Si le message indique qu'il n'y a pas de commande `lsusb`, exécutez cette commande pour l'installer
+## Vérification du mode de programmation
+
+    * Assurez-vous que l'ordinateur hôte est correctement connecté à Internet et que le câble de connexion du périphérique inférieur à l'ordinateur supérieur possède une fonctionnalité de transmission de données.
+    * Connectez-vous via SSH à l'ordinateur hôte, puis entrez `lsusb` et appuyez sur Entrée. Si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est renvoyée, il s'agit d'un problème du système de l'ordinateur hôte. Nous ne pouvons rien faire à ce sujet, vous devez changer pour un système confirmé comme fonctionnel ou remplacer l'ordinateur hôte.
+        * Si l'instruction `lsusb` n'existe pas, vous pouvez exécuter cette commande pour l'installer :
             ```bash
             sudo apt-get install usbutils
             ```
             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * `2e8a:6177` correspond au périphérique que vous allez utiliser cette fois-ci. `OpenMoko, Inc. rp2040` peut servir de référence, mais n'est pas un critère de jugement.
-        * Certains hôtes peuvent afficher des informations incomplètes ou aucune information en raison de problèmes de système.
-        * Si vous pouvez voir le périphérique en entrant la commande `lsusb`, mais sans `2e8a:6177`, essayez de changer le câble et de connecter la carte mère à un autre port USB de l'hôte.
+    * Les IDs affichés dans le cadre rouge peuvent être utilisés comme référence mais ne sont pas fixes ; le suffixe `OpenMoko, Inc. rp2040` est significatif et le `XX` signifie qu'il peut varier.
+        * Certains ordinateurs hôtes peuvent afficher des informations incomplètes ou ne rien afficher en raison de problèmes de système.
 
-    :::warning Remarques importantes
-        Vous ne pouvez pas passer à l'étape suivante tant que vous n'avez pas `2e8a:6177`.
-    :::
+## Programmation du firmware
 
-## Flashage du firmware
-    
     <CANBOOT />

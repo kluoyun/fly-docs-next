@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: ファームウェア焼付け
+sidebar_label: ファームウェア書き込み
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash1.mdx';
@@ -14,13 +14,13 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     :::tip
 
-    * USB加速度計は出荷時にUSB接続のKlipperファームウェアがプリインストールされています
-    * 既存のファームウェアを更新するだけです
-    * USBケーブルでパソコンとUSB加速度計を接続できます
+    * USB加速度計は出荷時にUSB接続のKlipperファームウェアがプリロードされています
+    * ここではファームウェアの更新を行います
+    * USBケーブルを使用してコンピューターとUSB加速度計を接続できます
 
     :::
 
-## コンパイル開始
+## コンパイルの開始
 
     <SSH />
 
@@ -28,22 +28,23 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q` キーを押すと **Save configuration** が表示されるので、その後に `Y` キーを押します
+    * `Q` キーを押すと **Save configuration** が表示され、その後に `Y` キーを押します
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
-    * コンパイルを開始するには `make -j4` を入力します、時間がかかります
+    * これで設定が保存され、コマンドラインに戻ります
+    * `make -j4` を入力してコンパイルを開始します。時間がかかります
     <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下のような内容が出力されたらコンパイル成功です
+    * 最後に以下のような出力が出ればコンパイル成功です
 
-        ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
-        ```
+```bash
+  Linking out/klipper.elf
+  Building out/lib/elf2uf2/elf2uf2
+  Creating uf2 file out/klipper.uf2
+```
 
 ## デバイスの検索
 
     <LS />
 
 
-## ファームウェアの焼付け
+## ファームウェアの書き込み
     <Katapult />

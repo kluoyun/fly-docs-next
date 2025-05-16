@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: USBブリッジCANファームウェアの焼込
+sidebar_label: USBブリッジCANファームウェアの書き込み
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
@@ -8,10 +8,10 @@ import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBブリッジCANファームウェアの焼込
+# USBブリッジCANファームウェアの書き込み
 
 ## コンパイル開始
 
@@ -21,9 +21,9 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後 `Y` キーを押します
+    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * これで設定が保存され、コマンドラインに戻ります
     * `make -j4` を入力してコンパイルを開始します。時間がかかります
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * 最後に以下の内容が出力されたらコンパイル成功です
@@ -32,22 +32,33 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+    
+## ファームウェア書き込みモードに入る
 
-## フラッシュモードに入る
-
-    :::tip ヒント
-        2024年9月1日以降に出荷されたD5には既にKatapultファームウェアが焼込まれています
+    :::tip 注意 ::
+        2024年9月1日以降に出荷されたD5には既にKatapultファームウェアが焼かれています
     :::
-    * USB Type-Cケーブルを使用してマザーボードをホストコンピュータに接続し、**resetボタンをダブルクリック**します。このときマザーボード上のLEDが点滅します。
-    :::warning 警告
-       * LEDが点滅しない場合、Katapultファームウェアを再焼込みしてください:<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfu燒錄模式">Katapultファームウェアを焼込む</Button>
-       * LEDが点滅しない場合は、Katapultファームウェアの焼込み後、再度実行してください
+    * 主基板を上位機器にType-Cデータケーブルで接続し、**resetボタンをダブルクリック**すると、主基板のLEDが点滅します。
+    :::warning 警告 ::
+       * LEDが点滅しない場合、Katapultファームウェアの再焼付けを行ってください：<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#進入dfu燒錄模式">Katapultファームウェアの焼付け</Button>
+       * LEDが点滅しない場合は、Katapultファームウェアの焼付け後に再度この手順を実行してください
     :::
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
 
-    <LS />
+## 書き込みモードに入ったかどうか確認
 
-## ファームウェアを焼込む
+    * 上位機器が正常にネットワークに接続できており、下位機器と上位機器を接続するデータケーブルがデータ転送機能を持っていることを確認してください。
+    * 上位機器にSSH接続し、コマンド `lsusb` を入力してエンターキーを押します。下図に囲まれた情報が表示される場合、次のステップに進んでください。
+        * 何も情報が返ってこない場合、これは上位機器のシステムの問題であり、こちらでは対応できません。正常なシステムに変更するか、上位機器を交換してください。
+        * `lsusb` コマンドがないという場合は、以下のコマンドを実行してインストールできます
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * 赤枠内に表示されているIDは参考値ですが、**固定IDではなく可変**です。`OpenMoko, Inc. stm32f072xx` の後ろの `XX` は可変を意味します。
+        * 部分的な上位機器はシステムの問題により、すべて表示されない場合があります。
+
+## ファームウェアの書き込み
 
 
     <CANBOOT />
