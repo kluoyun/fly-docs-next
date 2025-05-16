@@ -1,40 +1,50 @@
-:::danger Notice
+import NMTUI_OPERATE from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/flyos-fast/_nmtui_operate.mdx';
 
-* The FLY host computer needs to use the M2WE module or the 2.4G WiFi module, otherwise WiFi cannot be used.
-* Please note that Chinese name Wi-Fi and 2.4G and 5G dual-band combined Wi-Fi are not supported.
-* If it is mini pad or lite2, please ignore this warning.
-
-::
-
-## Connect Host Computer
-
-* If configuring Wi-Fi fails under the BOOT disk, you can refer to this configuration for Wi-Fi connection. Note that a serial port connection to the host computer is required.
-* First, use the serial port to [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Click to jump").
-* Execute the following command. You may be prompted to enter a password. Enter the password `mellow` and press Enter. Note that the password is invisible.
-
-```cfg
-sudo nmtui
-```
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui1.webp').default} size="80%" align="left" />
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui2.webp').default} size="80%" align="left" />
-
-* Select `Activate a connection` and press Enter.
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui3.webp').default} size="80%" align="left" />
-
-* Enter the following interface. Use the arrow keys (`↑ ↓`) on the keyboard to select the Wi-Fi to connect to, then press Enter, input the password, and wait for the connection to succeed.
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui4.webp').default} size="80%" align="left" />
+## Connect to Host Computer
 
 
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui5.webp').default} size="80%" align="left" />
+    1. Please first connect to the host computer via serial port: <Button variant="contained" disableElevation href="/docs/ProductDoc/SBC/fly-pi-v2/ssh#flyos-fast-serial-port-connection-to-host-computer-ssh">FLYOS-FAST Serial Port Connection to Host Computer SSH</Button>
 
-* After the connection is successful, as shown in the figure below.
+    2. Enter the command `sudo nmtui`, you may be prompted to enter a password, enter the password `mellow`, and press the `Enter` key, a dialog box as shown in the figure below will pop up (please note: the entered password is invisible)  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi1.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi2.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi3.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui6.webp').default} size="80%" align="left" />
+    3. Select the `Activate a connection` option, press the `Enter` key to enter the next level menu
+    <NMTUI_OPERATE />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi4.webp').default} size="60%" align="center" />
 
-* Press the ESC key to exit and return to the command line interface. Enter `ip a`. The IP address `192.168.2.126` in the figure is the IP address of the host computer. 
+    4. If your router's WiFi is working properly, you will see the WiFi list as shown in the figure below. The `*` after the WiFi name indicates signal strength
+    :::tip
+    - **Chinese WiFi names are NOT supported!!!**
+    - 2.4G WiFi is supported, but whether 5G WiFi is supported depends on whether the purchased WiFi module supports 5G WiFi
+    - `M2WE` supports 5G WiFi
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi5.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui7.webp').default} size="80%" align="left" />
+    5. Select the `WiFi` you need to connect to, press the `Enter` key to enter the next level menu
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi6.webp').default} size="60%" align="center" />
+
+    6. Next, the following interface will pop up, please correctly enter your WiFi password, press the `Enter` key, and connect to WiFi
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi7.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi8.webp').default} size="60%" align="center" />
+
+    7. If the password is correct, a symbol `*` will appear before the corresponding `WiFi`, indicating that the WiFi connection is successful
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi9.webp').default} size="60%" align="center" />
+
+    8. Then press the `Esc` key twice to return to the command line interface
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi10.webp').default} size="60%" align="center" />
+    
+    9. In SSH, enter `ip a | grep inet`, press the `Enter` key, find the IP segment that matches your router in the returned content, and access it
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi11.webp').default} size="90%" align="center" />
+
+    10. Open the browser, enter the `IP` of the host computer queried just now in the search bar, press the `Enter` key, and you can enter the WEB control console of fluidd/mainsail
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi12.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi13.webp').default} size="90%" align="center" />
+
+    11. In the browser's search bar, enter `IP:9999`, press the `Enter` key, and you can enter the `fly tools` interface, through which you can enable a series of functions of the host computer
+    :::tip
+    - `fly tools` is only available in the `FLYOS-Armbian` system!!! There is no `fly tools` in `FLYOS-FAST`!!!
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi14.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi15.webp').default} size="90%" align="center" />

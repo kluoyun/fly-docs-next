@@ -1,40 +1,50 @@
-:::danger Avertissement
+import NMTUI_OPERATE from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/flyos-fast/_nmtui_operate.mdx';
 
-* L'ordinateur de bord FLY nécessite l'utilisation du module M2WE ou de la connectivité WiFi en 2,4 GHz, sinon la connexion WiFi ne fonctionnera pas.
-* Veuillez noter que les réseaux WiFi avec un nom en chinois et les réseaux WiFi dual-band (2,4 GHz et 5 GHz) ne sont pas pris en charge.
-* Si vous utilisez un mini pad ou un lite2, ignorez cet avertissement.
-
----
-
-## Connexion à l'ordinateur de bord
-
-* Si la configuration WiFi échoue dans le mode BOOT, vous pouvez suivre cette procédure pour configurer la connexion WiFi. Veuillez noter qu'une connexion série est nécessaire pour l'ordinateur de bord.
-* Connectez-vous d'abord à SSH via une connexion série en cliquant [ici](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder").
-* Exécutez la commande suivante, il se peut que vous soyez invité à entrer un mot de passe ; entrez `mellow` puis appuyez sur Entrée. Veuillez noter que le mot de passe n'est pas visible.
-
-```cfg
-sudo nmtui
-```
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui1.webp').default} size="80%" align="left" />
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui2.webp').default} size="80%" align="left" />
-
-* Sélectionnez `Activer une connexion` puis appuyez sur Entrée.
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui3.webp').default} size="80%" align="left" />
-
-* Une fois dans l'écran suivant, utilisez les touches fléchées du clavier (`↑ ↓`) pour sélectionner le réseau WiFi auquel vous souhaitez vous connecter, puis appuyez sur Entrée. Entrez ensuite le mot de passe et attendez la connexion réussie.
-
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui4.webp').default} size="80%" align="left" />
+## Se connecter à la station supérieure
 
 
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui5.webp').default} size="80%" align="left" />
+    1. Veuillez d'abord vous connecter à la station supérieure via le port série :<Button variant="contained" disableElevation href="/docs/ProductDoc/SBC/fly-pi-v2/ssh#flyos-fast-serial-connect-to-host-ssh">FLYOS-FAST Connexion en série à la station supérieure ssh</Button>
 
-* Une fois la connexion réussie, vous verrez l'image suivante :
+    2. Entrez la commande `sudo nmtui`, cela peut demander de saisir un mot de passe, entrez le mot de passe `mellow`, puis appuyez sur la touche `Entrée`. Une interface comme celle illustrée ci-dessous apparaîtra (remarque : le mot de passe saisi ne sera pas visible)  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi1.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi2.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi3.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui6.webp').default} size="80%" align="left" />
+    3. Sélectionnez l'option `Activer une connexion`, puis appuyez sur la touche `Entrée` pour accéder au menu suivant
+    <NMTUI_OPERATE />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi4.webp').default} size="60%" align="center" />
 
-* Appuyez sur la touche Echap (ESC) pour sortir, revenez à l'interface de ligne de commande, puis tapez `ip a`. L'adresse IP de l'ordinateur de bord, `192.168.2.126`, sera indiquée dans l'image suivante.
+    4. Si votre routeur WiFi fonctionne correctement, vous verrez alors la liste des réseaux Wi-Fi telle que montrée ci-dessous. Le symbole `*` après le nom du réseau indique la force du signal
+    :::tip
+    - **Les réseaux Wi-Fi avec un nom en chinois ne sont pas pris en charge !!!**
+    - Les réseaux Wi-Fi 2,4 GHz sont pris en charge, mais la compatibilité avec les réseaux Wi-Fi 5 GHz dépend de la compatibilité du module Wi-Fi que vous avez acheté.
+    - Le module `M2WE` supporte les réseaux Wi-Fi 5 GHz.
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi5.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui7.webp').default} size="80%" align="left" />
+    5. Sélectionnez le réseau Wi-Fi auquel vous souhaitez vous connecter, puis appuyez sur la touche `Entrée` pour accéder au menu suivant
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi6.webp').default} size="60%" align="center" />
+
+    6. Une interface similaire à celle ci-dessous apparaîtra, entrez correctement le mot de passe de votre réseau Wi-Fi, puis appuyez sur la touche `Entrée` pour vous connecter au Wi-Fi
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi7.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi8.webp').default} size="60%" align="center" />
+
+    7. Si le mot de passe est correct, un symbole `*` apparaîtra devant le réseau Wi-Fi correspondant, ce qui signifie que la connexion Wi-Fi a réussi
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi9.webp').default} size="60%" align="center" />
+
+    8. Appuyez deux fois sur la touche `Esc` pour retourner à l'interface de ligne de commande
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi10.webp').default} size="60%" align="center" />
+    
+    9. Dans SSH, tapez la commande `ip a | grep inet`, puis appuyez sur la touche `Entrée`. Dans le contenu retourné, trouvez l'adresse IP dans la même plage que celle de votre routeur pour y accéder
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi11.webp').default} size="90%" align="center" />
+
+    10. Ouvrez le navigateur, dans la barre de recherche, entrez l'adresse IP de la station supérieure que vous venez de rechercher, puis appuyez sur la touche `Entrée`, vous pourrez ainsi accéder au tableau de bord WEB fluidd/mainsail
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi12.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi13.webp').default} size="90%" align="center" />
+
+    11. Dans la barre de recherche du navigateur, entrez `IP:9999`, puis appuyez sur la touche `Entrée`, vous pourrez accéder à l'interface `fly tools`. À travers cette interface, vous pouvez activer diverses fonctions de la station supérieure
+    :::tip
+    - L'interface `fly tools` n'est disponible que dans le système `FLYOS-Armbian` !!! Il n'y a pas d'interface `fly tools` dans `FLYOS-FAST` !!!
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi14.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi15.webp').default} size="90%" align="center" />
