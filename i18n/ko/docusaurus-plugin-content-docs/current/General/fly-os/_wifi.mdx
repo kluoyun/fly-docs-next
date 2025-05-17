@@ -1,39 +1,50 @@
-::: danger 주의사항
+import NMTUI_OPERATE from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/flyos-fast/_nmtui_operate.mdx';
 
-* FLY 상위기기에서는 M2WE 또는 2.4G WiFi 모듈을 사용해야 하며, 그렇지 않으면 WiFi를 사용할 수 없습니다.
-* 한글 네트워크 이름의 WiFi 및 2.4G와 5G 병합 WiFi는 지원되지 않습니다.
-* mini pad 또는 lite2 사용자는 이 경고를 무시하십시오.
+## 상위 컴퓨터와 연결하기
 
-:::
 
-## 상위기기 연결
+    1. 먼저 시리얼 포트를 사용하여 상위 컴퓨터에 연결하십시오: <Button variant="contained" disableElevation href="/docs/ProductDoc/SBC/fly-pi-v2/ssh#flyos-fast-시리얼 포트로 상위 컴퓨터에 SSH 연결하기">FLYOS-FAST 시리얼 포트로 상위 컴퓨터에 SSH 연결하기</Button>
 
-* BOOT 디스크에서 WiFi 구성에 실패한 경우, 이 설정을 참조하여 WiFi 연결을 시도하십시오. 단, 상위기기를 시리얼 포트로 연결해야 합니다.
-* 먼저 시리얼 포트를 통해 [SSH 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하여 이동")로 접속하십시오.
-* 아래 명령어를 실행하면 비밀번호 입력이 요청될 수 있습니다. 비밀번호는 `mellow`이며, 입력 시 비밀번호가 표시되지 않습니다.
+    2. 명령어 `sudo nmtui`를 입력하면 비밀번호를 입력하라는 메시지가 표시될 수 있습니다. 비밀번호 `mellow`를 입력하고 `Enter` 키를 누르면 아래 그림과 같은 화면이 나타납니다 (참고: 입력한 비밀번호는 보이지 않습니다)  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi1.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi2.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi3.webp').default} size="60%" align="center" />
 
-```cfg
-sudo nmtui
-```
+    3. `Activate a connection` 옵션을 선택한 후 `Enter` 키를 누르면 다음 단계의 메뉴로 이동합니다
+    <NMTUI_OPERATE />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi4.webp').default} size="60%" align="center" />
 
-<ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui1.webp').default} size="80%" align="left" />
+    4. 라우터 WiFi가 정상 작동하는 경우 아래 그림과 같은 WiFi 목록을 볼 수 있습니다. WiFi 이름 뒤의 `*`는 신호 강도를 나타냅니다
+    :::tip
+    - **한국어 네트워크 이름을 지원하지 않습니다!!**
+    - 2.4GHz WiFi는 지원되지만, 5GHz WiFi를 지원하는지는 구입하신 WiFi 모듈이 5GHz WiFi를 지원하는지 여부에 따라 다릅니다.
+    - `M2WE`는 5GHz WiFi를 지원합니다
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi5.webp').default} size="60%" align="center" />
 
-<ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui2.webp').default} size="80%" align="left" />
+    5. 연결할 `WiFi`를 선택한 후 `Enter` 키를 누르면 다음 단계의 메뉴로 이동합니다
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi6.webp').default} size="60%" align="center" />
 
-* `Activate a connection`을 선택하고 Enter 키를 누릅니다.
+    6. 다음 화면이 나타나면 올바른 WiFi 비밀번호를 입력하고 `Enter` 키를 누르면 WiFi에 연결됩니다
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi7.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi8.webp').default} size="60%" align="center" />
 
-<ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui3.webp').default} size="80%" align="left" />
+    7. 비밀번호가 맞으면 해당 `WiFi` 앞에 기호 `*`가 표시되고, 이는 WiFi 연결 성공을 의미합니다
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi9.webp').default} size="60%" align="center" />
 
-* 다음 화면으로 진입한 후, 키보드의 `↑ ↓` 키를 사용하여 연결할 WiFi를 선택하고 Enter 키를 누릅니다. 비밀번호를 입력한 후 연결 성공을 기다립니다.
+    8. 이후 두 번의 `Esc` 키를 눌러 명령줄 화면으로 돌아갑니다
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi10.webp').default} size="60%" align="center" />
+    
+    9. SSH에서 `ip a | grep inet`를 입력하고 `Enter` 키를 누르면 반환된 내용 중 라우터와 동일한 세그먼트의 IP를 찾을 수 있으며 이를 통해 접근할 수 있습니다
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi11.webp').default} size="90%" align="center" />
 
-<ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui4.webp').default} size="80%" align="left" />
+    10. 브라우저에서 검색창에 위에서 찾은 상위 컴퓨터의 `IP`를 입력하고 `Enter` 키를 누르면 fluidd/mainsail의 웹 컨트롤 패널에 접속할 수 있습니다
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi12.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi13.webp').default} size="90%" align="center" />
 
-<ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui5.webp').default} size="80%" align="left" />
-
-* 연결이 성공했으면 다음과 같이 표시됩니다.
-
-<ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui6.webp').default} size="80%" align="left" />
-
-* ESC 키를 눌러 나가고 명령행 인터페이스로 돌아갑니다. `ip a`를 입력하면 그림에서 보이는 `192.168.2.126`이 상위기기의 IP 주소입니다.
-
-<ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui7.webp').default} size="80%" align="left" />
+    11. 브라우저의 검색창에 `IP:9999`를 입력하고 `Enter` 키를 누르면 `fly tools` 화면에 접속할 수 있으며, `fly tools` 화면을 통해 상위 컴퓨터의 다양한 기능을 활성화할 수 있습니다
+    :::tip
+    - `fly tools`는 `FLYOS-Armbian` 시스템만 제공됩니다. `FLYOS-FAST`에는 `fly tools`가 없습니다!!
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi14.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi15.webp').default} size="90%" align="center" />
