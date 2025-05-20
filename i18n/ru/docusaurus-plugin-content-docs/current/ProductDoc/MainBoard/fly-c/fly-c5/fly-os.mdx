@@ -1,0 +1,92 @@
+---
+sidebar_position: 2
+sidebar_label: Прошивка системы
+---
+
+import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# Прошивка системы
+
+:::tip Информация о системе
+FlyOS-Fast — это облегченная система Linux, специально адаптированная для глубокой интеграции с 3D-принтерами и поддерживающая все платформы управления Fly. Основные особенности:
+
+- Быстрый старт, оптимизированный ядром для обеспечения реальности работы Klipper
+- Оптимизированная файловая система для снижения риска неработоспособности при отключении питания
+- 30-секундный быстрый запуск KlipperScreen
+- Предустановлены службы Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen
+- Возможность переключения между системами Klipper и RRF
+- Одноударное переключение между Mainsail и Fluidd в онлайн-режиме
+- Поддержка печати с USB-накопителя, возобновления печати после отключения питания и экрана на основе последовательного порта
+- Автоматическая прошивка устройств при старте (fly-c8, fly-geminiv3)
+- Возможность предварительной настройки параметров пользовательского интерфейса Fluidd, таких как язык и имя принтера
+
+Для получения дополнительных функций OEM-профиля (например, логотип при старте, предустановленные конфигурационные файлы, скрытие вкладок Mainsail), свяжитесь с нами.
+:::
+
+## Руководство для новичков по работе с контроллером
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">Руководство для новичков по работе с контроллером</Button>
+
+## Подготовка к прошивке системы
+
+- Чтение карты
+- Карта памяти TF объемом 16 ГБ–128 ГБ, скорость записи не менее Class10
+- Скачать <Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">Изображение системы H618</Button>
+
+Логин по умолчанию: `root`  
+Пароль по умолчанию: `mellow`
+
+:::tip Важно
+Эта система является облегченной и полностью настроенной. Компоненты, такие как klipper, не являются официальной версией и не поддерживают самостоятельную модификацию или обновление.
+:::
+
+## Процесс скачивания образа системы
+
+1. Посетите репозиторий制品 FlyOS-Fast
+2. Выберите формат сжатия и перейдите на страницу файла  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down1.webp').default} size="50%" align="center" />
+3. Выберите версию (по умолчанию последнюю)  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down2.webp').default} size="50%" align="center" />
+4. Если кнопка скачивания недоступна, переместите курсор над списком файлов, удерживайте Shift и прокрутите колесико мыши влево или вправо
+5. Или щелкните левую кнопку мыши на полосе прокрутки и протяните ее вправо, чтобы показать кнопку скачивания  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down3.webp').default} size="50%" align="center" />
+6. Нажмите кнопку скачивания, чтобы получить файл системы
+
+# Прошивка образа системы
+
+## Подготовительные действия
+
+1. Завершите [скачивание системы](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages)
+2. Скачайте инструмент для прошивки (например, Rufus; также можно использовать Etcher или Win32 Disk Imager)
+    - [Rufus на русском](https://rufus.ie/zh/#download) / [English](https://rufus.ie/en/#download) (Windows)
+    - [Etcher](https://etcher.balena.io/#download-etcher) (Windows/MacOS/Linux)
+    - [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/) (Windows)
+3. Скачайте файл образа системы (например, `FlyOS-Fast-H5.exe`)
+4. Распакуйте файл образа, чтобы получить `.img`
+    - Дважды щелкните или откройте правой кнопкой мыши `FlyOS-Fast-H5.exe`, выберите каталог для распаковки, нажмите «Извлечь»
+    - После распаковки создастся файл `FlyOS-Fast-H5-vx.x.x.img`  
+      <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+5. Подготовьте карточку для прошивки (рекомендуется SD-карта SanDisk объемом 32 ГБ Class10 и выше), вставьте ее в картридер и подключите к компьютеру
+
+## Процесс прошивки системы
+
+1. Откройте Rufus, выберите устройство (емкость должна соответствовать карте для прошивки)  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+2. Выберите тип загрузки «Файловый образ»
+3. Нажмите кнопку «Выбрать», чтобы выбрать файл `.img`, распакованный ранее
+4. После выбора тип загрузки отобразит имя файла образа  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+5. Нажмите «Начать». При появлении запроса очистить диск нажмите «ОК»  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+6. После завершения прошивки компьютер подаст звуковой сигнал, а прогресс-полоса покажет «Готово»  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+7. После завершения прошивки не вынимайте карту для прошивки
+8. Откройте проводник Windows, проверьте наличие флешки или съемного устройства с именем `FlyOS-Conf`  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+9. Откройте `FlyOS-Conf`. Если есть два файла, как на следующем изображении, прошивка успешна  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. Файл `config.txt` — это файл конфигурации системы. Пожалуйста, просмотрите следующую страницу для его изменения

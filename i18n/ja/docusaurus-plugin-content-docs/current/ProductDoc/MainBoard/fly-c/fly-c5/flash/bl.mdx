@@ -1,0 +1,67 @@
+---
+sidebar_position: 6
+sidebar_label: BLファームウェア、無視してください
+---
+
+
+
+
+
+
+import WIN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BLファームウェア
+
+    :::tip
+
+    * 注意：出荷時に`bootloader`が事前に書き込まれているため、再び書き込む必要はありません。
+
+    :::
+
+## フラッシュモードに入る
+
+
+    * フラッシュモードには2つの方法があります
+    * 方法1：マザーボードが完全に電源を切れている状態で、BOOTボタンを長押ししながら、データ転送用のケーブルを一方をマザーボード、もう一方をあなたのデバイスに接続（Windowsの場合適しています）
+    * 方法2：データ転送用のケーブルを一方をマザーボード、もう一方をあなたのデバイスに接続した後、BOOTボタンを長押ししながらコマンドを入力（上位機の場合適しています）
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="100%" align="center" />
+
+## ファームウェアのフラッシュ
+    <Tabs>
+        <TabItem value="win" label="Windowsでのフラッシュチュートリアル" default>
+
+            * C8のbootloaderファームウェア <Button variant="contained" disableElevation href="http://cdn.mellow.klipper.cn/BL/c5.bin">ファームウェアを自動ダウンロードするにはこちらをクリック</Button>
+
+
+            * ディップスイッチ `3`, `4` を右側に倒し、下位機と上位機を内蔵USBで接続します
+            * ディップスイッチ `1`, `2` を左側に倒し、そうでないと下位機と上位機の接続に影響が出ます
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.webp').default} size="100%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="上位機でのフラッシュチュートリアル">
+
+            * ディップスイッチ `1`, `2` を右側に倒し、下位機と上位機を内蔵USBで接続します
+            * ディップスイッチ `3`, `4` を左側に倒し、そうでないと下位機と上位機の接続に影響が出ます
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.webp').default} size="100%" align="center" />
+            * この方法でディップスイッチを操作した後、下位機が下位機専用ポートを使用するため、他のデバイスは接続しないでください
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
+
+            * 上位機が正常にインターネットに接続できることを確認してください
+
+
+                ```bash
+                sudo wget http://cdn.mellow.klipper.cn/BL/c5.bin -O ~/c5.bin && sudo fly-flash -d c5 -u -f ~/c5.bin
+                ```
+            * 下位機のBOOTボタンを長押ししながらEnterキーを押すと、以下のメッセージが表示されます
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="80%" align="center" />
+
+            * 以下のような画像が表示されたら、フラッシュが成功し、BOOTボタンを放してください
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="80%" align="center" />
+
+
+        </TabItem>
+    </Tabs>

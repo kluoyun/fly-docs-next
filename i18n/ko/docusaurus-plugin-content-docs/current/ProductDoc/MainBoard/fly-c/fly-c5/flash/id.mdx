@@ -1,0 +1,109 @@
+---
+sidebar_position: 5
+sidebar_label: ID 검색 가이드
+
+---
+
+import GetUsbID from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/get-id/_get-usb-id.mdx';
+import GetRS232ID from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/get-id/_get-rs232-id.mdx';
+import GetCanbusUUID from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
+
+# 메인보드 ID 읽기 및 확인
+
+:::tip
+웹 페이지 번역 시 구성 요소를 수정하지 마십시오.
+:::
+
+:::warning 주의사항
+웹 페이지 번역 시 구성 요소를 수정하지 마십시오.
+:::
+
+:::danger 필수 사항
+웹 페이지 번역 시 구성 요소를 수정하지 마십시오.
+:::
+
+<Tabs>
+<TabItem value="usb" label="USB ID 가져오기" default>
+* 데이터 전송 기능을 가진 데이터 케이블을 준비하십시오. 길이가 매우 길 경우 자석 랜선을 사용하는 것이 좋습니다.
+
+<GetUsbID />
+</TabItem>
+
+<TabItem value="can" label="USB 브리지 CAN ID 가져오기">
+* 데이터 전송 기능을 가진 데이터 케이블을 준비하십시오. 길이가 매우 길 경우 자석 랜선을 사용하는 것이 좋습니다.
+* CAN 도구 보드를 XT30 케이블로 CAN 브리지 펌웨어가 설치된 Gemini 메인보드와 연결합니다.
+* CAN 도구 보드 연결 참조:
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/canbridge.webp').default} size="80%" align="left" />
+* 120Ω 점퍼는 연결해야 합니다:
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/120.webp').default} size="80%" align="left" />
+
+## CAN 설정 및 ID 검색
+
+* CAN을 사용하려면 호스트 컴퓨터가 CAN 설정을 완료했는지 확인하십시오.
+
+---
+
+:::danger 필수 사항
+아래 작업을 수행하기 전에 호스트 컴퓨터와 메인보드가 올바르게 연결되었는지 확인하십시오.
+:::
+
+:::warning
+호스트 컴퓨터의 CAN 네트워크, CAN 브리지 보드의 CAN 속도, CAN 도구 보드의 속도가 완전히 일치해야 합니다.
+:::
+
+### 장치 검색 전 주의사항
+
+* CAN ID를 검색하기 전에 [SSH 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하여 이동")로 이동하십시오.
+* 네트워크 로그인으로 SSH에 접근하는 것을 권장하며, 시리얼 포트 로그인은 사용하지 마십시오.
+* UTOC 또는 CAN 브리지 펌웨어가 설치된 메인보드를 제대로 연결하고 데이터 전송 기능을 가진 데이터 케이블을 사용해야 합니다.
+
+### 장치 검색
+
+* 호스트 컴퓨터에 로그인한 후 다음 명령어를 입력하여 장치를 검색할 수 있습니다:
+    * `ls` 명령어가 없을 경우 아래 명령어를 입력하여 설치할 수 있습니다:
+        ```bash
+        sudo apt-get install usbutils
+        ```
+    * 만약 `lsusb`가 반응하지 않으면 시스템 문제입니다. 다른 시스템을 사용하거나 정상적인 시스템으로 교체하십시오.
+    * 아래 이미지의 정보가 나타날 경우 `1d50:606f`를 확인해야 합니다:
+        <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
+* `1d50:606f`는 이번에 사용할 장치입니다. 여러 개의 `1d50:606f`가 있는 경우 하나를 제외하면 이후 작업에 영향을 미칠 수 있습니다.
+* 없다면 데이터 케이블 연결 상태를 확인하고 펌웨어가 올바르게 설치되었는지 확인하십시오.
+
+:::warning 주의사항
+`1d50:606f`가 있을 때만 CAN ID를 검색할 수 있습니다.
+:::
+
+### CAN ID 검색
+
+* 아래 명령어를 입력하여 ID를 검색합니다:
+    ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+    ```
+* ID가 표시되고 `Application:`이 `Klipper`로 표시되면 해당 ID를 바로 사용할 수 있습니다.
+* 만약 `Application:`이 `CANBOOT` 또는 `Katapult`로 표시되면 펌웨어를 다시 설치해야 합니다:
+    <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+### CAN 문제집
+
+:::danger 필수 사항
+* CAN ID를 찾을 수 없는 경우 다음 문서를 참조하십시오:  
+    <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN 문제집</Button>
+:::
+
+### CAN ID를 구성 파일에 입력
+
+* 프린터 웹 인터페이스에 들어가 좌측 탭의 구성 옵션에서 찾아보세요:
+    * fluidd: `{…}`
+    * mainsail: `기계`
+* 들어간 후 `printer.cfg`를 찾고 검색한 UUID를 복사하여 `[mcu]` 노드의 `canbus_uuid:`에 입력하고 저장한 후 재부팅하면 메인보드에 연결됩니다.
+    <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+* Klipper가 펌웨어 업데이트를 요청하거나 ADC 오류가 발생하면 Klipper가 메인보드에 연결되었다는 의미입니다.
+    <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+:::danger
+주의: 문서 내 모든 ID는 예시이며 각 메인보드의 ID는 모두 다릅니다. 실제로 얻은 ID를 기반으로 수정하여 입력하십시오.
+:::
+
+</TabItem>
+</Tabs>

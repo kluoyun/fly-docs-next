@@ -1,0 +1,92 @@
+---
+sidebar_position: 2
+sidebar_label: システム焼込
+---
+
+import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# システム焼込
+
+:::tip システム紹介
+FlyOS-Fast は、3D プリントに特化した軽量な Linux システムで、Fly 全シリーズの上位機プラットフォームをサポートしています。その主な特徴は以下の通りです。
+
+- 高速起動、カーネル最適化により Klipper のリアルタイム性を保証
+- ファイルシステムの最適化により、停電による起動不可のリスクを低減
+- 30 秒で KlipperScreen を高速起動
+- Klipper、RRF、Mainsail、Fluidd、Moonraker、KlipperScreen などのサービスが事前インストール済み
+- Klipper と RRF システムの切り替えに対応
+- Mainsail と Fluidd のオンラインでのワンクリック切り替えに対応
+- USB メモリ印刷、停電時の継続印刷、シリアルポートスクリーンに対応
+- fly-c8、fly-geminiv3 での自動ファームウェア焼込に対応
+- Fluidd などのフロントエンド UI のデフォルト言語やプリンタ名を事前に設定可能
+
+OEM カスタマイズ機能（起動ロゴ、プリセット設定ファイル、Mainsail タブの非表示など）をご希望の場合は、お問い合わせください。
+:::
+
+## 上位機初心者ガイド
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">上位機初心者ガイド</Button>
+
+## システム焼込前の準備
+
+- SDカードリーダー
+- TFカード 1枚（容量は 16GB～128GB、転送速度は Class10 またはそれ以上）
+- <Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618 システムイメージのダウンロード</Button>
+
+初期パスワード：`root`  
+初期パスワード：`mellow`
+
+:::tip 注意事項
+このシステムは軽量化されたカスタムシステムであり、組み込まれた klipper などのコンポーネントやサービスは公式バージョンではありません。ユーザーによる変更やアップグレードはサポートされません。
+:::
+
+## システムイメージのダウンロード手順
+
+1. FlyOS-Fast の製品ライブラリにアクセス
+2. 圧縮形式を選択し、ファイルページに進む  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down1.webp').default} size="50%" align="center" />
+3. バージョンを選択（デフォルトは最新）  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down2.webp').default} size="50%" align="center" />
+4. ダウンロードボタンが表示されない場合、マウスをファイルリストに移動し、Shift キーを押しながらマウスホイールを左右にスクロールする
+5. または、下部のスクロールバーを左クリックして長押しして右にドラッグすることで、ダウンロードボタンを表示させる  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down3.webp').default} size="50%" align="center" />
+6. ダウンロードボタンをクリックしてシステムファイルを取得する
+
+# システムイメージ焼込
+
+## 前準備
+
+1. [システムダウンロード](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages)を完了
+2. 焼込ツールをダウンロード（例として Rufus を使用しますが、Etcher、Win32 Disk Imager も利用可能です）
+    - [Rufus 日本語版](https://rufus.ie/zh/#download) / [英語版](https://rufus.ie/en/#download)（Windows）
+    - [Etcher](https://etcher.balena.io/#download-etcher)（Windows/MacOS/Linux）
+    - [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/)（Windows）
+3. システムイメージファイルをダウンロード（例として `FlyOS-Fast-H5.exe`）
+4. イメージファイルを解凍して `.img` を得る
+    - `FlyOS-Fast-H5.exe` をダブルクリックまたは右クリックして「展開」を選択し、展開先ディレクトリを指定して「Extract」をクリック
+    - 解凍後に `FlyOS-Fast-H5-vx.x.x.img` ファイルが生成されます  
+      <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+5. 焼込用カードを準備（推奨は SanDisk 32GB C10 以上の TFカード）、読込器に挿入してパソコンに接続
+
+## システム焼込
+
+1. Rufus を開き、デバイスを選択（容量は焼込カードと同じである必要があります）  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+2. ガイドタイプを「イメージファイル」に選択
+3. 「選択」ボタンをクリックし、解凍後の `.img` ファイルを選択
+4. 選択後、ガイドタイプにイメージファイル名が表示されます  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+5. 「開始」ボタンをクリックし、ディスクデータの消去が求められた場合、「OK」をクリック  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+6. 焼込が完了すると、パソコンからのピューピュー音が鳴り、進行状況バーが「準備完了」に表示されます  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+7. 焼込が完了したら、焼込カードを暫く抜かないでください
+8. ファイルエクスプローラを開き、名前が `FlyOS-Conf` のUSBドライブまたはリムovableディスクがあるか確認します  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+9. `FlyOS-Conf` を開き、次の画像のような2つのファイルがあれば焼込成功です  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. そのうちの `config.txt` はシステム設定ファイルです。詳細は次のページの内容を参照して修正してください
