@@ -1,0 +1,81 @@
+---
+sidebar_position: 8
+---
+
+# Static IP Configuration
+
+## Purpose and Function of Static IP
+
+
+1. **Ensures Fixed Reachability for Devices**  
+   A static IP keeps the device with the same IP address at all times, making it easier to access, communicate, and control remotely (such as for Web servers, MQTT, PLCs, etc.).
+
+2. **Facilitates Network Configuration and Management**  
+   In LAN or industrial networks, devices such as cameras, sensors, controllers, etc., must have fixed IPs to ensure other systems can connect correctly.
+
+3. **Avoids Dependency on DHCP Server**  
+   Some embedded systems deployed in environments without DHCP services (such as industrial control, edge computing) must use static IPs to enable normal communication.
+
+4. **Simplifies Debugging and Testing Processes**  
+   During development and debugging, fixed IPs make it easier to locate devices and facilitate repeated connections.
+
+5. **Supports Device Discovery Mechanisms**  
+   Some systems access devices through preset IP ranges; static IPs ensure they respond as needed.
+
+    | Advantages | Description |
+    |------------|-------------|
+    | ✅ **Stable and Reliable** | The IP does not change, ensuring more stable communication, suitable for long-term running devices. |
+    | ✅ **Suitable for Environments Without Graphical Interfaces** | Embedded devices typically lack desktop environments; after configuring static IPs, manual connection and search are unnecessary. |
+    | ✅ **Easier Remote Control and Maintenance** | Connecting to devices via SSH, Web, APIs, etc., is more efficient with a fixed IP. |
+    | ✅ **Convenient for Deployment in Closed Networks** | Industrial or dedicated networks often lack DHCP, so static IPs must be used. |
+    | ✅ **Adaptable for Automation Scripts** | Various automatic deployment, monitoring, or update scripts can rely on consistent IP addresses to run. |
+
+## System Settings
+
+:::tip
+
+- Please note that when assigning an IP address, both the motherboard and the opposite PC should avoid using `0`, `1`, `254`, `255`, etc., which are close to the maximum and minimum values. For example, using `192.168.1.254` may cause conflicts with other system applications, leading to intermittent connectivity issues.
+
+:::
+
+1. Connect to the system SSH terminal.
+2. Execute the command `ip link show` to view the current network card name, such as `eth0`, `end0`.
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip1.webp').default} size="60%" align="center" />
+
+3. Execute the command `nano /etc/systemd/network/end0.network` to edit the configuration file; the file name is the network card name.
+4. After opening, the default is to enable the DHCP service, which needs to be changed to static IP.
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip2.webp').default} size="60%" align="center" />
+
+5. Modify it as shown below, where the IP address and gateway address should be filled in according to actual circumstances.
+
+    ```ini
+    [Match]
+    # Matches the network card named end0
+    Name=end0
+
+    [Network]
+    # Set static IP address, /24 indicates a subnet mask of 255.255.255.0
+    Address=192.168.1.100/24
+    # Set the default gateway address
+    Gateway=192.168.1.1
+    # Set the DNS server
+    DNS=8.8.8.8
+    ```
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip3.webp').default} size="60%" align="center" />
+
+6. Press `CTRL + S` to save, `CTRL + X` to exit the file, and execute the command `systemctl restart systemd-networkd` to restart the network service.
+
+7. Verify success by confirming the connection after plugging in the Ethernet cable and executing the command `ip a`. If it displays as shown below, then the setting is successful.
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip4.webp').default} size="60%" align="center" />
+
+## PC Settings
+
+- If the computer needs to connect to the motherboard with a static IP, please use the following parameters:
+- Local IP: `192.168.1.xxx`, only needs to be in the same segment as the motherboard IP.
+- Gateway: `192.168.1.1`, must match the motherboard settings.
+- Subnet Mask: `255.255.255.0`, since the motherboard IP is set to /24, the subnet mask is fixed, which is also the default value in common systems.
+- DNS Server: `8.8.8.8`, `114.114.114.144`, etc., which are commonly used.

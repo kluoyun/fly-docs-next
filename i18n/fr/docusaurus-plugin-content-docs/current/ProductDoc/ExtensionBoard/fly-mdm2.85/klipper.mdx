@@ -1,0 +1,68 @@
+---
+sidebar_position: 4
+sidebar_label: Configuration de Klipper
+---
+
+# Configuration de Klipper
+
+## Configuration de la fonction de rupture de filament
+
+<div style={{
+    border: '3px solid #d32f2f',
+    borderRadius: '8px',
+    background: '#fffbe6',
+    padding: '20px',
+    margin: '20px 0',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '1.4em',
+    color: '#d32f2f',
+    boxShadow: '0 2px 8px rgba(211,47,47,0.08)'
+}}>
+⚠️ La diameter du filament dans le fichier de configuration doit être modifié en <strong>2,85 mm</strong><br/>
+et également modifié en <strong>2,85 mm</strong> dans le profil de configuration d'imprimante du slicer.
+</div>
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # Remplacez par le connecteur que vous utilisez, connecté au détecteur de rupture de filament
+pause_on_runout: True
+# Lorsque cela est défini sur "True", l'imprimante sera mise en pause immédiatement après la détection d'une rupture.
+# Notez que si pause_on_runout est à False et que runout_gcode n'est pas défini,
+# la détection de rupture sera désactivée.
+# Par défaut : True.
+
+runout_gcode:
+    PAUSE
+    M118 Rupture de filament
+# insert_gcode:
+event_delay: 1.0
+# Temps minimal (en secondes) entre les événements pour éviter qu'ils ne soient ignorés.
+# Par défaut : 3 secondes.
+
+pause_delay: 0.5
+# Délai (en secondes) entre l'instruction de pause et l'exécution de runout_gcode.
+# Si OctoPrint présente des comportements étranges lors de la mise en pause, augmenter ce délai pourrait améliorer la fiabilité.
+# Par défaut : 0,5 seconde.
+
+```
+
+## Configuration de la fonction de bouchage de filament
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # Remplacez par le connecteur que vous utilisez, connecté au détecteur de bouchage
+detection_length: 3.7 # Longueur minimale (en mm) pour déclencher un changement d'état du connecteur switch_pin.
+extruder: extruder
+# Le ou les extrudeurs associés à ce capteur.
+# Ce paramètre doit être spécifié.
+
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 Bouchage de filament
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```

@@ -1,0 +1,70 @@
+---
+sidebar_position: 4
+sidebar_label: Klipper 설정
+---
+
+# Klipper 설정
+
+## 소재 소진 기능 설정
+
+<div style={{
+    border: '3px solid #d32f2f',
+    borderRadius: '8px',
+    background: '#fffbe6',
+    padding: '20px',
+    margin: '20px 0',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '1.4em',
+    color: '#d32f2f',
+    boxShadow: '0 2px 8px rgba(211,47,47,0.08)'
+}}>
+⚠️ 설정 파일의 소재 지름은 반드시 <strong>2.85mm</strong>로 수정해야 합니다.<br/>
+또한 슬라이서의 프린터 설정 파일에서도 <strong>2.85mm</strong>로 수정해야 합니다.
+</div>
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # 사용 중인 핀으로 교체,斷料 감지 핀에 연결
+pause_on_runout: True
+# 설정이 "True"일 경우, 소재 소진이 감지되면 즉시 프린터를 일시 중지합니다.
+# 주의: pause_on_runout이 False이고 runout_gcode가 정의되지 않은 경우,
+# 소진 감지가 비활성화됩니다.
+# 기본값은 True입니다.
+
+runout_gcode:
+    PAUSE
+    M118 断料
+# insert_gcode:
+event_delay: 1.0
+# 이벤트 간 최소 지연 시간(초).
+# 이 시간 내에 발생하는 이벤트는 무시될 수 있습니다.
+# 기본값은 3초입니다.
+
+pause_delay: 0.5
+# 일시 중지 명령과 runout_gcode 실행 사이의 지연 시간(초).
+# OctoPrint의 경우, 이 지연 시간을 늘리면 일시 중지 신뢰성이 향상될 수 있습니다.
+# OctoPrint에서 이상한 일시 중지 동작이 나타나는 경우, 이 지연 시간을 늘려보세요.
+# 기본값은 0.5초입니다.
+
+```
+
+## 막힘 기능 설정
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # 사용 중인 핀으로 교체, 막힘 감지 핀에 연결
+detection_length: 3.7 # switch_pin 핀 상태 변화를 유발하는 최소 거리.
+extruder: extruder
+# 해당 센서와 연관된 엑스트루더.
+# 반드시 제공되어야 합니다.
+    
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 堵料
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```
