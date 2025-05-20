@@ -1,0 +1,81 @@
+---
+sidebar_position: 8
+---
+
+# Configuration d'une adresse IP statique
+
+## Utilités et fonctionnalités de l'adresse IP statique
+
+
+1. **Assurer une connectivité fixe pour les appareils**  
+   L'adresse IP statique permet à un appareil de conserver la même adresse IP en permanence, ce qui facilite l'accès à distance, la communication et le contrôle (comme les serveurs Web, MQTT, PLC, etc.).
+
+2. **Faciliter la configuration et la gestion du réseau**  
+   Dans un réseau local ou industriel, les appareils tels que les caméras, capteurs et contrôleurs doivent avoir une adresse IP fixe pour que d'autres systèmes puissent se connecter correctement.
+
+3. **Éviter la dépendance vis-à-vis du serveur DHCP**  
+   Certains systèmes embarqués déployés dans des environnements sans service DHCP (comme l'automatisation industrielle ou le calcul au bord) doivent utiliser une adresse IP statique pour communiquer normalement.
+
+4. **Simplifier les processus de débogage et de test**  
+   Pendant le développement et le débogage, une adresse IP fixe rend plus facile la localisation des appareils et simplifie les connexions répétées.
+
+5. **Supporter les mécanismes de découverte des appareils**  
+   Certains systèmes accèdent aux appareils via un segment d'adresses IP prédéfini ; une adresse IP statique garantit qu'ils répondent sur demande.
+
+    | Avantages | Description |
+    |-----------|-------------|
+    | ✅ **Stable et fiable** | L'adresse IP ne change pas, ce qui rend la communication plus stable, idéale pour les appareils en longue durée. |
+    | ✅ **Adaptée aux environnements sans interface graphique** | Les appareils embarqués n'ayant généralement pas d'environnement de bureau, configurer une adresse IP statique évite de devoir se connecter et rechercher manuellement. |
+    | ✅ **Facilite le contrôle et la maintenance à distance** | Lorsque vous vous connectez à un appareil via SSH, Web, API, etc., une adresse IP fixe est plus efficace. |
+    | ✅ **Convenable pour le déploiement dans des réseaux fermés** | Les réseaux industriels ou spécifiques n'utilisent souvent pas de DHCP, il faut donc une adresse IP statique. |
+    | ✅ **Adaptable aux scripts automatisés** | Divers scripts d'automatisation, de surveillance ou de mise à jour peuvent compter sur la constance de l'adresse IP. |
+
+## Paramétrages du système
+
+:::tip
+
+- Attention à l'adresse IP : ni la carte mère ni le PC de l'autre côté ne doivent utiliser les adresses proches des limites maximales et minimales telles que `0`, `1`, `254`, `255`. Par exemple, si vous utilisez `192.168.1.254`, cela pourrait être pris par d'autres applications système, entraînant des connexions interrompues.
+
+:::
+
+1. Connectez-vous à l'interface SSH du système.
+2. Exécutez la commande `ip link show` pour afficher le nom de la carte réseau actuelle, comme `eth0` ou `end0`.
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip1.webp').default} size="60%" align="center" />
+
+3. Exécutez la commande `nano /etc/systemd/network/end0.network` pour éditer le fichier de configuration, où le nom du fichier correspond au nom de la carte réseau.
+4. Une fois ouvert, comme indiqué ci-dessous, le service DHCP par défaut doit être modifié en mode statique IP.
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip2.webp').default} size="60%" align="center" />
+
+5. Modifiez-le comme illustré ci-dessous, en remplaçant l'adresse IP et l'adresse du routeur par vos informations réelles.
+
+    ```ini
+    [Match]
+    # Correspond à la carte réseau nommée end0
+    Name=end0
+
+    [Network]
+    # Configure l'adresse IP statique, /24 signifie un masque de sous-réseau de 255.255.255.0
+    Address=192.168.1.100/24
+    # Configure l'adresse de passerelle par défaut
+    Gateway=192.168.1.1
+    # Configure le serveur DNS
+    DNS=8.8.8.8
+    ```
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip3.webp').default} size="60%" align="center" />
+
+6. Appuyez sur `CTRL + S` pour sauvegarder, puis sur `CTRL + X` pour quitter le fichier, et exécutez la commande `systemctl restart systemd-networkd` pour redémarrer le service réseau.
+
+7. Vérifiez que la configuration a réussi : après avoir branché le câble réseau, exécutez la commande `ip a` pour obtenir un affichage semblable à celui ci-dessous, ce qui indique que la configuration a bien été effectuée.
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip4.webp').default} size="60%" align="center" />
+
+## Configuration de l'ordinateur
+
+- Si votre ordinateur doit se connecter à une carte mère configurée avec une adresse IP statique, utilisez les paramètres suivants :
+- Adresse IP locale : `192.168.1.xxx`, elle doit être dans le même segment que celle de la carte mère.
+- Passerelle : `192.168.1.1`, elle doit être identique à celle de la carte mère.
+- Masque de sous-réseau : `255.255.255.0`, car la carte mère est configurée avec /24, le masque de sous-réseau est fixe et correspond à la valeur par défaut du système.
+- Serveurs DNS : `8.8.8.8`, `114.114.114.144`, ou d'autres DNS couramment utilisés.

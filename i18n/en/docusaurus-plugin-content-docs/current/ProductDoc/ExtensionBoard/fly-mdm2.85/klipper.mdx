@@ -1,0 +1,70 @@
+---
+sidebar_position: 4
+sidebar_label: Klipper Configuration
+---
+
+# Klipper Configuration
+
+## Filament Runout Function Configuration
+
+<div style={{
+    border: '3px solid #d32f2f',
+    borderRadius: '8px',
+    background: '#fffbe6',
+    padding: '20px',
+    margin: '20px 0',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '1.4em',
+    color: '#d32f2f',
+    boxShadow: '0 2px 8px rgba(211,47,47,0.08)'
+}}>
+⚠️ The filament diameter in the configuration file <strong>must be changed to 2.85mm</strong><br/>
+and also <strong>changed to 2.85mm</strong> in the printer configuration profile of the slicer.
+</div>
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # Replace with the pin being used, connected to the runout detection pin
+pause_on_runout: True
+# When set to "True", the printer will pause immediately after detecting exhaustion.
+# Note that if pause_on_runout is False and no runout_gcode is defined,
+# the runout detection will be disabled.
+# Default is True.
+
+runout_gcode:
+    PAUSE
+    M118 Filament Out
+# insert_gcode:
+event_delay: 1.0
+# Minimum time delay (in seconds) between events.
+# Events triggered within this timeframe will be ignored by default.
+# Default is 3 seconds.
+
+pause_delay: 0.5
+# Delay time (in seconds) between the pause command and executing runout_gcode.
+# If using OctoPrint, increasing this delay may improve the reliability of the pause.
+# If OctoPrint exhibits strange pause behavior, consider increasing this delay.
+# Default is 0.5 seconds.
+
+```
+
+## Filament Jam Function Configuration
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # Replace with the pin being used, connected to the jam detection pin
+detection_length: 3.7 # Minimum distance for triggering a change in the state of the switch_pin
+extruder: extruder
+# The extruder associated with this sensor.
+# This parameter must be provided.
+    
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 Jammed
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```

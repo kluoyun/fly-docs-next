@@ -1,0 +1,70 @@
+---
+sidebar_position: 4
+sidebar_label: Klipper設定
+---
+
+# Klipper設定
+
+## 料尽機能の設定
+
+<div style={{
+    border: '3px solid #d32f2f',
+    borderRadius: '8px',
+    background: '#fffbe6',
+    padding: '20px',
+    margin: '20px 0',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '1.4em',
+    color: '#d32f2f',
+    boxShadow: '0 2px 8px rgba(211,47,47,0.08)'
+}}>
+⚠️ 設定ファイルのフィラメント径は<strong>必ず2.85mmに変更してください</strong><br/>
+またスライサーのプリンタ設定ファイルでも<strong>2.85mmに変更してください</strong>
+</div>
+
+```cfg
+[filament_switch_sensor mdm_switch_sensor]
+switch_pin: ^PG12 # 使用しているピンに置き換えてください (断料検出に接続されているピン)
+pause_on_runout: True
+# Trueに設定すると、消費が検出された後にプリンターが即座に一時停止します。
+# 注意: pause_on_runout が False で、runout_gcode が未定義の場合、
+# 消費検出機能は無効になります。
+# デフォルトは True。
+
+runout_gcode:
+    PAUSE
+    M118 断料
+# insert_gcode:
+event_delay: 1.0
+# イベント間の最小遅延時間 (秒)。
+# この時間内にトリガーされたイベントは無視されます。
+# デフォルトは3秒。
+
+pause_delay: 0.5
+# 一時停止コマンドと runout_gcode 実行間の遅延時間 (秒)。
+# OctoPrintを使用している場合、この遅延時間を増やすことで一時停止の信頼性が向上する可能性があります。
+# OctoPrintが奇妙な挙動を示す場合、この遅延を増やしてみてください。
+# デフォルトは0.5秒。
+
+```
+
+## ブロック機能の設定
+
+```cfg
+[filament_motion_sensor mdm_motion_sensor]
+switch_pin: PD6       # 使用しているピンに置き換えてください (ブロック検出に接続されているピン)
+detection_length: 3.7 # switch_pin 引きが状態変化する最小距離。
+extruder: extruder
+# そのセンサに関連付けられているエクストルーダー。
+# このパラメータは必須です。
+
+# pause_on_runout:
+runout_gcode:
+    PAUSE
+    M118 堵料
+# insert_gcode:
+event_delay: 3.0
+pause_delay: 1.0
+
+```
