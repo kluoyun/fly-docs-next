@@ -3,7 +3,7 @@ sidebar_position: 2
 sidebar_label: FLYOS-Armbian システム焼込
 ---
 
-不推薦！！！通常のPCシステムで、比較的オープンですが、安定性が低いです！
+不推薦！！！通常のPCシステムで、比較的オープンですが、安定性が悪いです。
 
 
 
@@ -18,44 +18,48 @@ import CONFIG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General
 
 ## 上位機器初心者ガイド
 
+```html
 <Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">上位機器初心者ガイド</Button>
+```
 
 ## システム焼込前の準備
 
+```html
 * リーダー
-* TFカード1枚、容量は16GB以上または128GB以下のもので、TFカードの転送速度はクラス10またはそれ以上である必要があります
-* 対応するシステムイメージをダウンロードする <Button variant="contained" disableElevation href="/docs/ResDownload/system-img/fly-c8">システムイメージ</Button>
-* 必要なツールをダウンロードする <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">焼込ツール</Button>
+* TFカード1枚、容量は16GB以上または128GB以下のもので、TFカードの転送速度はClass10以上である必要があります
+* 対応する <Button variant="contained" disableElevation href="/docs/ResDownload/system-img/fly-c8">システムイメージ</Button> をダウンロード
+* 必要な <Button variant="contained" disableElevation href="/docs/ResDownload/auxiliary_software/">焼込ツール</Button> をダウンロード
+```
 
 ## システム焼込
 
 :::info
-TFカード焼込とTFカードからM2WEへの焼込はどちらか一方を使用すれば十分です
+TFカード焼込とTFカードからM2WEへの焼込はどちらか一方を使用してください
 :::
 
 :::info
 * マシンにM2WEとメモリカードがインストールされている場合、システムはデフォルトでメモリカードから起動します
-* M2WEはTFカードでシステムを焼込むことを推奨します。USB経由でM2WEに焼込むと、ドライバの互換性などの理由で焼込に失敗することがあります。直接[メモリカードからM2WEに焼込む](https://mellow-next.klipper.cn/docs/ProductDoc/SBC/fly-pi-v2/fly-os)ことをお勧めします
-* 使用しているシステムイメージが正しいかどうか注意してください。正しくない場合は起動できません
+* M2WEはTFカードでシステムを焼込むことを推奨します。USB経由での焼込みはドライバーの互換性の問題などで失敗する可能性があるため、直接[M2WEへのメモリカード焼込](https://mellow-next.klipper.cn/docs/ProductDoc/SBC/fly-pi-v2/fly-os)をお勧めします
+* 適切に対応するシステムイメージをダウンロードしていることを確認してください。対応しない場合は起動できません
 :::
 
 <Tabs>
-    <TabItem value="TF" label="TFカードに焼込む" default>
+    <TabItem value="TF" label="TFカードに焼込" default>
         
         <TF />
         
     </TabItem>
-    <TabItem value="TF_M2WE" label="TFカードからM2WEへ焼込む">
+    <TabItem value="TF_M2WE" label="TFカードからM2WEへ焼込">
         
         <TF_EMMC />
 
     </TabItem>
-    <TabItem value="M2WE" label="USB経由でM2WEに焼込む">
+    <TabItem value="M2WE" label="USB経由でM2WEへ焼込">
         
         <M2WE />
 
     </TabItem>
-    <TabItem value="M2SD" label="M2SD Burnerを用いてM2WEまたはTFカードに焼込む">
+    <TabItem value="M2SD" label="M2SD BurnerでM2WEまたはTFカードへ焼込">
         
         <M2SD />
 
@@ -63,22 +67,31 @@ TFカード焼込とTFカードからM2WEへの焼込はどちらか一方を使
 </Tabs>
 
 
-## システム構成
 
-<CONFIG />
-
-## TFカードまたはM2WEをPI V2に取り付ける
+## PI V2にTFカードまたはM2WEを設置
 
 <Tabs>
-    <TabItem value="TF" label="TFカードをPI V2に取り付ける" default>
-        * システムをTFカードに焼込んだ後、この場所にTFカードを取り付けなければなりません。そうしないとシステムが起動しません
+    <TabItem value="TF" label="PI V2にTFカードを設置" default>
+        * システムをTFカードに焼込んだ後、PI V2にTFカードを接続する必要があります。それがないとシステムが起動しません
         <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="80%" align="left" />  
 
     </TabItem>
-    <TabItem value="M2WE" label="M2WEカードをPI V2に取り付ける">
+    <TabItem value="M2WE" label="PI V2にM2WEカードを設置">
         * 注意：TFカードがある場合、システムはデフォルトでTFカードから起動します
-        * 注意：固定するためには1.27角スクリューを使う必要があります
+        * 注意：固定には1.27角スクリュードライバーを使用して固定してください
         <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="80%" align="left" />  
 
     </TabItem>
 </Tabs>
+
+## アンテナの設置
+
+1. `M2WE`または`2.4G Wi-Fi`モジュールのアンテナを設置してください
+:::warning
+* FLY上位機器では`M2WE`または`2.4G Wi-Fi`モジュールを使用する必要があります。Wi-Fiを利用できない場合があります
+* 注意：上位機器は中国語名前のWi-Fiをサポートしていません。2.4Gと5Gの同時対応Wi-Fiもサポートしていません
+:::
+* 赤い矢印が示す場所がWi-Fiアンテナインターフェースです
+* Wi-Fiアンテナポートは`ipex1`です
+* PI V2にアンテナを設置しないと、信号が弱いためルーターに接続できない可能性があります
+<ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/wifi.webp').default} size="80%" align="left" />  
