@@ -1,28 +1,30 @@
 ---
 sidebar_position: 8
-sidebar_label: Port USB 5V ventilateur intégré
+sidebar_label: Port USB 5V pour ventilateur
 ---
 
 
 
 
-# Port USB 5V ventilateur intégré
+# Port USB 5V pour ventilateur intégré
 
-## La carte Pi-V2 intègre une interface contrôlable de 5V, destinée au refroidissement principal, avec la méthode de câblage comme indiqué ci-dessous
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.webp').default} size="80%" align="left" />
+## Branchement du port USB 5V pour ventilateur intégré
+    * La carte Pi-V2 intègre une interface de sortie USB 5V contrôlable, destinée au refroidissement du contrôleur principal. Le mode de branchement est illustré ci-dessous :
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_fan.webp').default} size="60%" align="center" />
 
-## Avant d'ajouter la configuration, exécutez la commande suivante via SSH
+## Commandes à exécuter via SSH avant d'ajouter la configuration
 ```cfg
 wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+sudo reboot
 ```
 
 ## Configuration de référence
 
     ```cfg
-    [mcu host]                      # Le système FlyOS a généré automatiquement le MCU Linux pour vous, définissez-le pour l'utiliser            
+    [mcu host]                      # L'OS FlyOS a généré automatiquement le MCU Linux pour vous, il suffit de le définir pour l'utiliser           
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Température du contrôleur supérieur
+    [temperature_sensor FLY-Pi]      # Température du contrôleur supérieur
     sensor_type: temperature_host
 
 
@@ -31,11 +33,11 @@ wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3
     max_power: 1.0
     sensor_type: temperature_host   # Défini comme température du contrôleur principal
     control:watermark               # Mode de contrôle
-    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement du contrôleur supérieur
-    min_temp: 0                     # Température minimale, une erreur sera signalée en dessous de cette valeur
-    max_temp: 90                    # Température maximale, une erreur sera signalée au-delà de cette valeur
+    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement (en °C)
+    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
+    max_temp: 90                    # Température maximale, au-delà de laquelle une erreur sera signalée
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Vitesse maximale, correspond à 80 % de la puissance maximale
-    min_speed: 0.3                  # Vitesse minimale, correspond à 30 % de la puissance maximale
+    max_speed: 0.8                  # Vitesse maximale, correspondant à 80 % de la puissance maximale
+    min_speed: 0.3                  # Vitesse minimale, correspondant à 30 % de la puissance maximale
     ```
