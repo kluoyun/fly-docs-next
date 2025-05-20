@@ -15,6 +15,14 @@ SRC_LANG = "zh-Hans"
 TARGET_LANGS = ["en", "ja", "fr", "ko", "ru"]
 I18N_DIR = "i18n"
 TRANSLATE_DIR = f"docusaurus-plugin-content-docs{os.sep}current"
+TARGET_LANGS_AL = {
+    "zh-Hans": "Chinese",
+    "en": "English",
+    "ja": "Japanese",
+    "fr": "French",
+    "ko": "Korean",
+    "ru": "Russian",
+}
 
 
 class Translater:
@@ -30,8 +38,12 @@ class Translater:
         self.running = False
 
     def translate(self, text: str, src_language: str, target_language: str) -> str:
+        translation_options = {
+            "source_lang": TARGET_LANGS_AL[src_language],
+            "target_lang": TARGET_LANGS_AL[target_language],
+        }
         sys_prompt = f"""你是一个专业的翻译工具，任务是翻译用户输入的内容。
-        源语言为{src_language}，目标语言为{target_language}。请确保翻译结果符合目标语言的语法，并保持原文结构不要做任何修改。
+        源语言为{TARGET_LANGS_AL[src_language]}，目标语言为{TARGET_LANGS_AL[target_language]}。请确保翻译结果符合目标语言的语法，并保持原文结构不要做任何修改。
 
         要求：(重要：你返回的内容只能是翻译结果，不需要添加任何注释或代码块符号)
         1. 翻译结果必须符合目标语言的语法。例如，将中文翻译为英文句子，而不是逐字翻译。
@@ -127,7 +139,11 @@ class Translater:
             if os.path.exists(target_file):
                 # 已存在翻译文件，跳过
                 continue
-            if file.endswith("cfg.mdx") or file.endswith("voron0.mdx") or file.endswith("LED_Effect.mdx"):
+            if (
+                file.endswith("cfg.mdx")
+                or file.endswith("voron0.mdx")
+                or file.endswith("LED_Effect.mdx")
+            ):
                 # 暂不翻译cfg，跳过
                 continue
             tr_file_list.append({"src_file": file, "target_file": target_file})
@@ -161,7 +177,7 @@ class Translater:
                     )  # exist_ok=True 防止已存在目录引发错误
                     tr_str = tr_str.replace(b"\xc2\xa0".decode(), " ")
                     tr_str = tr_str.replace(b"\xe2\x80\x8b".decode(), " ")
-                    if not tr_str.endswith('\n'):
+                    if not tr_str.endswith("\n"):
                         tr_str += "\n"
                     with open(target_file, "w", encoding="utf-8") as f:
                         f.write(tr_str)

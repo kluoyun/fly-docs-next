@@ -1,0 +1,81 @@
+---
+sidebar_position: 8
+---
+
+# 静态IP设置
+
+## 静态IP用途和作用
+
+
+1. **确保设备地址固定可达**  
+   静态 IP 使设备始终保持同一个 IP，便于远程访问、通信和控制（如 Web 服务器、MQTT、PLC等）。
+
+2. **便于网络配置和管理**  
+   在局域网或工业网络中，设备如摄像头、传感器、控制器等必须有固定 IP，以便其他系统正确连接。
+
+3. **避免依赖 DHCP 服务器**  
+   某些嵌入式系统部署在没有 DHCP 服务的环境下（如工控、边缘计算），必须使用静态 IP 才能正常通信。
+
+4. **简化调试与测试流程**  
+   开发和调试过程中，固定 IP 更易定位设备，便于重复连接。
+
+5. **支撑设备发现机制**  
+   一些系统通过预设 IP 段访问设备，静态 IP 保证其按需响应。
+
+    | 优点 | 说明 |
+    |------|------|
+    | ✅ **稳定可靠** | IP 不会变化，通信更稳定，适合长期运行的设备。 |
+    | ✅ **适合无图形界面环境** | 嵌入式设备通常没有桌面环境，配置静态 IP 后可免去手动连接和查找。 |
+    | ✅ **易于远程控制和维护** | 通过 SSH、Web、API 等方式连接设备时，固定 IP 更高效。 |
+    | ✅ **方便部署到封闭网络** | 工业网络或专网中常无 DHCP，必须使用静态 IP。 |
+    | ✅ **适配自动化脚本** | 各种自动部署、监控或更新脚本可依赖 IP 地址一致性运行。 |
+
+## 系统设置
+
+:::tip
+
+- IP地址请注意：主板与对端PC均不建议使用 `0`,`1`,`254`,`255` 这些接近最大和最小的IP，如使用192.168.1.254, 则有可能被其它系统应用程序抢占，一会连接一会断开。
+
+:::
+
+1. 连接到系统SSH终端
+2. 执行命令 `ip link show` 查看当前设备网卡名称，如 `eth0`，`end0`
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip1.webp').default} size="60%" align="center" />
+
+3. 执行命令 `nano /etc/systemd/network/end0.network` 编辑配置文件, 文件名称是网卡名称
+4. 打开后如下图，默认是启用的dhcp服务，需要改用为静态IP
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip2.webp').default} size="60%" align="center" />
+
+5. 修改成下图所示，其中的IP地址和网关地址请根据实际情况填写
+
+    ```ini
+    [Match]
+    # 匹配网卡名为 end0
+    Name=end0
+
+    [Network]
+    # 设置静态IP地址, /24 表示子网掩码为 255.255.255.0
+    Address=192.168.1.100/24
+    # 设置默认网关地址
+    Gateway=192.168.1.1
+    # 设置DNS服务器
+    DNS=8.8.8.8
+    ```
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip3.webp').default} size="60%" align="center" />
+
+6. 按 `CTRL + S` 保存, `CTRL + X` 并退出文件，执行命令 `systemctl restart systemd-networkd` 重启网络服务
+
+7. 验证是否成功，确认连接网线后执行命令 `ip a` 显示如下图所示，则说明设置成功
+
+<ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/staticip4.webp').default} size="60%" align="center" />
+
+## PC设置
+
+- 电脑如果要连接到设置了静态IP的主板请使用下面的参数
+- 本机IP: `192.168.1.xxx` , 只需要与主板IP同段即可
+- 网关: `192.168.1.1` , 需要与主板设置一致
+- 子网掩码: `255.255.255.0` , 因为主板IP设置了/24, 所有子网掩码固定，也是常见系统中的默认值
+- DNS服务器: `8.8.8.8`,`114.114.114.144` , 等常见的就行
