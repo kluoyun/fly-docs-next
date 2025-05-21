@@ -12,78 +12,133 @@ import HDMI from '@site/docs/General/fly-os/_hdmi.mdx';
 
 # 屏幕接线与配置
 
-:::info
-
-* FLY-TOOLS需要上位机联网后输入上位机的`IP+:9999`访问`使用浏览器打开`
-* 比如你的ip地址是192.168.6.110,那么你需要在浏览器中输入`192.168.6.110:9999`
-
-:::
-
+## 屏幕接线
     <Tabs>
-        <TabItem value="tft" label="TFT接线" default>
-            * 需要在FLY TOOLS中按下方配置屏幕并且打开KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tft.webp').default} size="80%" align="center" />
-            * FLY-Pi V2 TFT屏接线
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="80%" align="left" />
+        <TabItem value="tft" label="TFT电阻屏接线" default>
+        ### TFT电阻屏接线
+        :::tip
+        - TFT屏幕的包装中会附赠两根FPC排线，一根是`14P的（窄的）`，另一根是`16P的（宽的）`
+        - 电阻屏请务必使用`14P的（窄的）`！！！
+        :::
+        1. FLY-Pi V2 TFT电阻屏接线
+        <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="60%" align="left" />
         </TabItem>
 
         <TabItem value="hdmi" label="HDMI接线">
-            * 需要在FLY TOOLS中按下方配置屏幕并且打开KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/hdmi.webp').default} size="80%" align="center" />               
-            * 使用FPC转HDMI模块
-            * 请注意需要接上带有数据传输功能type-c到模块上
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
-            * FLY-Pi v2 HDMI屏幕接线
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-hdmi.webp').default} size="80%" align="center" />
+        ### HDMI接线
+        1. `FLY-HDMI-LCD5`屏幕接线
+        <table>
+          <tr>
+            <td>
+            接线方式一
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi2.webp').default} size="85%" align="center" />
+            </td>
+            <td>
+            接线方式二
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi1.webp').default} size="85%" align="center" />
+            </td>
+          </tr>
+        </table>
+
         </TabItem>
     </Tabs>
+---
 
-# TFT屏幕配置
+## 屏幕配置
 
 <Tabs>
-    <TabItem value="tft" label="TFT屏幕" default>
-        * 需要在FLY TOOLS中打开KS
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
-        <Tabs>
-    <TabItem value="tft" label="TFT电容屏配置" default>
-## 方法一    
-         * 电容配置需要使用下方命令配置成`fly-tft-v1`
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
-```
-         * 请确认屏幕背面拨码拨到`Cap`
-    * 使用下方命令查看是否修改成功
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
+    <TabItem value="flyos-armbian" label="FLYOS-Armbian系统-TFT屏幕配置" default>
+    ### FLYOS-Armbian系统-TFT屏幕配置
+    :::info
+    - 在上位机连接WiFi，并获取上位机的IP后，在浏览器中输入`IP+:9999` 便可访问FLY TOOLS，进行屏幕相关的配置
+    - 例如你上位机的ip地址是`192.168.6.110`，那么你需要在浏览器中输入`192.168.6.110:9999`
+    :::
+    1. 打开FLY TOOS，按照下图所示步骤，`开启Klipper Screen`，`选择屏幕型号`，点击右下角粉色按钮`保存配置`后，**重启上位机即可生效！** 
+      :::warning
+      - `电阻屏`选择：`fly-tft-v1`，请确认屏幕背面拨码拨到`Resi`
+      - `电容屏`选择：`fly-tft-v2-c`，请确认屏幕背面拨码拨到`Cap`
+      :::
+      <table>
+        <tr>
+          <td>
+           - `电阻屏`：  
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-r_conf.webp').default} size="80%" align="center" />
+          </td>
+          <td>
+          - `电容屏`:
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-c_conf.webp').default} size="80%" align="center" />
+          </td>
+        </tr>
+      </table>
+    2. 保存配置后，重启上位机，即可生效！  
+<br />
+---
 
- * 电容屏修改电阻屏配置使用下方命令
+<br />
+<br />
+<br />
+<br />
+<br />
+    2. 也可在SSH中，通过命令行直接配置（此方法不推荐！）
+        * `电阻屏`配置需要使用下方命令，配置成`fly-tft-v1`，请确认屏幕背面拨码拨到`Resi`
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
+        ```
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
-``` 
-</TabItem>
+        * `电容屏`配置需要使用下方命令，配置成`fly-tft-v2-r`，请确认屏幕背面拨码拨到`Cap`
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+        ```
 
-        <TabItem value="hdmi" label="TFT电阻屏配置">
-## 方法一        
-           * 电阻屏配置需要使用下方命令配置成`fly-tft-v1` 
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
-```
-                                * 请确认屏幕背面拨码拨到`Resi`
         * 使用下方命令查看是否修改成功
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
 
- * 电阻屏修改电容屏配置使用下方命令
+        ```cfg
+        sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+        ```
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
-```
-</TabItem>
+        * `电阻屏`修改为`电容屏`使用下方命令即可
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v1/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+        ```
+        * `电容屏`修改为`电阻屏`使用下方命令即可
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
+        ```
+    </TabItem>
+
+    <TabItem value="flyos-fast" label="FLYOS-FAST系统-TFT屏幕配置">
+
+    ### FLYOS-FAST系统-TFT屏幕配置
+    1. 在浏览器打开设备ip地址，例如：`http://192.168.6.110/` 
+       <table>
+         <tr>
+           <td>
+             `fluidd`按下图所示: `取消勾选` -> `筛选隐藏的文件和文件夹`。
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+           </td>
+           <td>
+             `mainsail`按下图所示: `勾选` -> `显示隐藏文件`。
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+           </td>
+         </tr>
+       </table>
+  
+    2. 此时可以看到`.flyos-config`文件夹，进入这个文件夹会有`sys-config.conf`文件。
+
+     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+    
+    3. 打开`sys-config.conf`文件，将需要修改的配置项修改后 `保存` -> `关闭` 即可。
+    :::warning
+        - `电阻屏`配置为：`fly-tft-v1`，请注意`=`后面**不能有空格！！！**，请确认屏幕背面拨码拨到`Resi`
+        - `电容屏`配置为：`fly-tft-v2-c`，请注意`=`后面**不能有空格！！！**，请确认屏幕背面拨码拨到`Cap`
+        - 注意：`sys-config.conf`文件中配置项的格式为`key=value`，禁止私自修改格式！！！否则配置不会生效！！！
+    :::
+    
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_tft_conf.webp').default} size="90%" align="center" />
+    
+    4. 修改保存后，`重启系统`即可生效。
+    </TabItem>
 </Tabs>    
-</TabItem>
-</Tabs>
+
 
 ----

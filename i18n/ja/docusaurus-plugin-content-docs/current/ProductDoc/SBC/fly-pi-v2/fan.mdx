@@ -6,36 +6,38 @@ sidebar_label: ボード内蔵5Vファンポート
 
 
 
-# ボード内蔵5Vファンポート
+# ボード内蔵5Vファンインターフェース
 
-## Pi-V2は、メインコントローラーの冷却用に制御可能な5Vインターフェースを搭載しており、配線方法は下図の通りです
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.webp').default} size="80%" align="left" />
+## ボード内蔵5Vファン配線
+    * Pi-V2には、メインコントロールの冷却用に制御可能な5Vインターフェースが搭載されています。配線方法は下図をご覧ください。
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_fan.webp').default} size="60%" align="center" />
 
-## 設定を追加する前にsshで実行するコマンド
+## 設定を追加する前に実行する必要があるSSHコマンド
 ```cfg
 wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+sudo reboot
 ```
 
 ## 参照設定
 
     ```cfg
-    [mcu host]                      # FlyOSはすでにあなたのためにlinux MCUを生成しています。設定すると使用できます            
+    [mcu host]                      # FlyOSは既にあなたのためにlinux MCUを生成しています。設定すると使用できます。
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # 上位機器の温度
+    [temperature_sensor FLY-Pi]      # アップボードの温度
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # 上位機器の冷却ファン
-    pin: host:gpiochip1/gpio103     # 上位機器のファンピン
+    [temperature_fan core_fan]      # アップボードの冷却ファン
+    pin: host:gpiochip1/gpio103     # アップボードのファンピン番号
     max_power: 1.0
-    sensor_type: temperature_host   # 上位機器のメインコントローラー温度を設定
-    control:watermark               # 制御方法
-    target_temp: 48                 # 上位機器の冷却ファンが動作する温度
-    min_temp: 0                     # 最低温度、これより低い場合はエラーになります
-    max_temp: 90                    # 最高温度、これより高い場合はエラーになります
+    sensor_type: temperature_host   # アップボードのメインコントロール温度を設定
+    control:watermark               # 制御方式
+    target_temp: 48                 # アップボード冷却ファンの起動温度
+    min_temp: 0                     # この温度より低い場合エラーが発生します
+    max_temp: 90                    # この温度より高い場合エラーが発生します
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # 最大回転速度、フルパワー時の80%
-    min_speed: 0.3                  # 最小回転速度、フルパワー時の30%
+    max_speed: 0.8                  # 最大回転速度、フルパワー運転時の80%
+    min_speed: 0.3                  # 最小回転速度、フルパワー運転時の30%
     ```
