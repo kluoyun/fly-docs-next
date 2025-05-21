@@ -1,0 +1,46 @@
+---
+sidebar_position: 4
+sidebar_label: Programme de la carte CAN via un pont USB
+---
+
+import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
+import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# Programme de la carte CAN via un pont USB
+
+## Début de la compilation
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * Appuyez sur `Q`, une fois que vous voyez **Save configuration**, appuyez à nouveau sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez `make -j4` pour commencer la compilation, cela prendra un certain temps
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Une sortie similaire indique que la compilation a réussi
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+
+## Programme de la carte
+
+:::tip
+Exécutez la commande suivante pour programmer la carte
+:::
+
+    ```bash
+    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+    ```

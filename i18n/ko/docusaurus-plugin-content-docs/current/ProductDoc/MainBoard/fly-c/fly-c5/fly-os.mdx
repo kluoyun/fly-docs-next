@@ -1,0 +1,93 @@
+---
+sidebar_position: 2
+sidebar_label: 시스템 플래싱
+---
+
+import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# 시스템 플래싱
+
+:::tip 시스템 소개
+FlyOS-Fast는 3D 프린팅에 최적화된 가벼운 Linux 시스템으로, Fly 전 시리즈의 상위 기기 플랫폼을 지원합니다. 주요 특징은 다음과 같습니다:
+
+- 빠른 부팅 속도와 커널 최적화로 Klipper 실시간성을 보장합니다.
+- 파일 시스템 최적화로 파워다운으로 인한 부팅 실패 위험 감소
+- 30초 내 KlipperScreen 시작
+- Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen 등 서비스 사전 설치
+- Klipper와 RRF 시스템 간 전환 지원
+- Mainsail과 Fluidd 온라인 한 번 클릭으로 전환 가능
+- USB 플래그 및 전원이 꺼진 상태에서도 재개 인쇄, 시리얼 모니터링 지원
+- fly-c8, fly-geminiv3 자동 플래싱 지원
+- Fluidd 등 프론트엔드 UI의 기본 언어 및 프린터 이름 미리 설정 가능
+
+추가 OEM 맞춤 기능(예: 전원 로고, 사전 설정 파일, Mainsail 탭 숨기기 등)이 필요한 경우 저희에게 연락하세요.
+:::
+
+## 상위 기기 초보자 가이드
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">상위 기기 초보자 가이드</Button>
+
+## 시스템 플래싱 준비
+
+- 카드 리더기
+- 16GB~128GB 용량의 TF 카드 (클래스 10급 또는 그 이상의 전송 속도)
+- <Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618 시스템 이미지 다운로드</Button>
+
+기본 사용자명: `root`  
+기본 비밀번호: `mellow`
+
+:::tip 유의사항
+이 시스템은 가벼운 맞춤형 시스템이며, 내장된 klipper 등의 구성 요소 및 서비스는 공식 버전이 아닙니다. 사용자가 임의로 수정 또는 업그레이드할 수 없습니다.
+:::
+
+## 시스템 이미지 다운로드 과정
+
+1. FlyOS-Fast 제조품 라이브러리 방문
+2. 압축 형식 선택 후 파일 페이지로 이동  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down1.webp').default} size="50%" align="center" />
+3. 버전 선택 (기본값: 최신)  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down2.webp').default} size="50%" align="center" />
+4. 다운로드 버튼이 보이지 않을 경우, 마우스를 파일 목록에 올리고 Shift 키를 누른 채 마우스 휠을 좌우로 스크롤
+5. 아니면 아래 스크롤 막대를 길게 클릭하여 오른쪽으로 드래그하여 다운로드 버튼 표시  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down3.webp').default} size="50%" align="center" />
+6. 다운로드 버튼을 클릭하여 시스템 파일 받기
+
+# 시스템 이미지 플래싱
+
+## 준비 작업
+
+1. [시스템 다운로드](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages) 완료
+2. 플래싱 도구 다운로드 (예: Rufus 사용 추천, alternatively Etcher, Win32 Disk Imager 가능)
+    - [Rufus 한글](https://rufus.ie/zh/#download) / [English](https://rufus.ie/en/#download) (Windows)
+    - [Etcher](https://etcher.balena.io/#download-etcher) (Windows/MacOS/Linux)
+    - [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/) (Windows)
+3. 시스템 이미지 파일 다운로드 (예: `FlyOS-Fast-H5.exe`)
+4. 이미지 파일 압축 해제, `.img` 파일 얻기
+    - `FlyOS-Fast-H5.exe` 더블 클릭 또는 우클릭하여 압축 해제, 디렉토리 선택 후 `Extract` 클릭
+    - 압축 해제 후 `FlyOS-Fast-H5-vx.x.x.img` 파일 생성  
+      <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+5. 플래싱 카드 준비 (권장: SanDisk 32GB C10 이상 TF 카드), 리더기에 삽입 후 컴퓨터 연결
+
+## 시스템 플래싱
+
+1. Rufus 실행, 장치 선택 (용량이 플래싱 카드와 일치해야 함)  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+2. 부트 타입 선택 "이미지 파일"
+3. "선택" 버튼 클릭, 압축 해제된 `.img` 파일 선택
+4. 선택 후, 부트 타입이 이미지 파일명으로 표시됨  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+5. "시작" 버튼 클릭, 디스크 데이터 지우기 요청 시 "확인" 클릭  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+6. 플래싱 완료 후, 컴퓨터 알림음, 진행률 표시줄 "준비 완료"  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+7. 플래싱 완료 후 잠시 동안 플래싱 카드 유지
+8. 파일 탐색기 열기, `FlyOS-Conf`라는 U드라이브 또는 이동식 디스크 존재 확인  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+9. `FlyOS-Conf` 열기, 다음 이미지 두 개의 파일이 있으면 성공적으로 플래싱 됨  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. 그 중 `config.txt`는 시스템 구성 파일입니다. 다음 페이지 내용을 참고하여 수정하십시오  
+

@@ -1,0 +1,92 @@
+---
+sidebar_position: 2
+sidebar_label: 系统烧录
+---
+
+import TF from '@site/docs/General/fly-os/_tf.mdx';
+import M2WE from '@site/docs/General/fly-os/_m2we.mdx';
+import M2SD from '@site/docs/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/docs/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/docs/General/fly-os/_fly_config.mdx';
+
+# 系统烧录
+
+:::tip 系统介绍
+FlyOS-Fast 是为 3D 打印深度定制的轻量化 Linux 系统，支持 Fly 全系列上位机平台。其特点包括：
+
+- 启动速度快，内核优化保障 Klipper 实时性
+- 文件系统优化，降低断电导致无法开机的风险
+- 30 秒快速启动 KlipperScreen
+- 预装 Klipper、RRF、Mainsail、Fluidd、Moonraker、KlipperScreen 等服务
+- 支持 Klipper 与 RRF 系统切换
+- 支持 Mainsail 与 Fluidd 在线一键切换
+- 支持 U 盘打印、断电续打、串口屏幕
+- 支持开机自动烧录固件（fly-c8、fly-geminiv3）
+- 可提前设置 Fluidd 等前端 UI 的默认语言和打印机名称
+
+如需更多 OEM 定制功能（如开机 LOGO、预设配置文件、隐藏 Mainsail 标签页等），请联系我们。
+:::
+
+## 上位机新手操作指南
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">上位机新手操作指南</Button>
+
+## 系统烧录前准备
+
+- 读卡器
+- TF卡一张，容量 16GB-128GB，传输速度 class10 级或以上
+- 下载 <Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618系统镜像</Button>
+
+默认用户名：`root`  
+默认密码：`mellow`
+
+:::tip 须知
+此系统为轻量化定制系统，内置的 klipper 等组件及服务非官方原版，不支持用户自行修改、升级。
+:::
+
+## 系统镜像下载流程
+
+1. 访问 FlyOS-Fast 制品库
+2. 选择压缩格式，进入文件页面  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down1.webp').default} size="50%" align="center" />
+3. 选择版本（默认最新）  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down2.webp').default} size="50%" align="center" />
+4. 若无下载按钮，将鼠标移入文件列表，按住 `Shift` 并滚动鼠标滚轮左右滚动
+5. 或在下方滚动条左键长按向右拖动，显示下载按钮  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down3.webp').default} size="50%" align="center" />
+6. 点击下载按钮，获取系统文件
+
+# 系统镜像烧录
+
+## 准备工作
+
+1. 完成[系统下载](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages)
+2. 下载烧录工具（以 Rufus 为例，亦可用 Etcher、Win32 Disk Imager）
+    - [Rufus 中文](https://rufus.ie/zh/#download) / [English](https://rufus.ie/en/#download)（Windows）
+    - [Etcher](https://etcher.balena.io/#download-etcher)（Windows/MacOS/Linux）
+    - [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/)（Windows）
+3. 下载系统镜像文件（以 `FlyOS-Fast-H5.exe` 为例）
+4. 解压镜像文件，得到 `.img`
+    - 双击或右键打开 `FlyOS-Fast-H5.exe`，选择解压目录，点击 `Extract`
+    - 解压完成后生成 `FlyOS-Fast-H5-vx.x.x.img` 文件  
+      <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+5. 准备烧录卡（建议闪迪32GB C10及以上 TF卡），插入读卡器并连接电脑
+
+## 烧录系统
+
+1. 打开 Rufus，选择设备（容量应与烧录卡一致）  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+2. 引导类型选择“镜像文件”
+3. 点击“选择”按钮，选中解压后的 `.img` 文件
+4. 选择后，引导类型显示镜像文件名  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+5. 点击“开始”，如提示清除磁盘数据，点击“确定”  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+6. 烧录完成后，电脑提示音，进度条显示“准备就绪”  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+7. 烧录完成后暂勿拔出烧录卡
+8. 打开文件资源管理器，查看是否有名为 `FlyOS-Conf` 的U盘或可移动磁盘  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+9. 打开 `FlyOS-Conf`，如有下图两个文件则烧录成功  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. 其中 `config.txt` 为系统配置文件，请查看下一页内容进行修改

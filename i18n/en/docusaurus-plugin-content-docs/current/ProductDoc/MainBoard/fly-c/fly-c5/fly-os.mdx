@@ -1,0 +1,92 @@
+---
+sidebar_position: 2
+sidebar_label: System Flashing
+---
+
+import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# System Flashing
+
+:::tip System Introduction
+FlyOS-Fast is a lightweight Linux system customized specifically for 3D printing, supporting the entire series of Fly host platforms. Its features include:
+
+- Fast boot with kernel optimization to ensure Klipper real-time performance
+- Optimized file system to reduce the risk of failure to boot due to power loss
+- 30-second quick startup of KlipperScreen
+- Pre-installed services including Klipper, RRF, Mainsail, Fluidd, Moonraker, and KlipperScreen
+- Support for switching between Klipper and RRF systems
+- Support for online one-click switching between Mainsail and Fluidd
+- Support for USB drive printing, power-off resume printing, and serial screen
+- Support for automatic firmware flashing (fly-c8, fly-geminiv3) on startup
+- Allows presetting default language and printer name for front-end UIs like Fluidd
+
+For more OEM customization features (such as setting up custom logos, preset configuration files, or hiding Mainsail tabs), please contact us.
+:::
+
+## Host Machine Beginner Guide
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">Host Machine Beginner Guide</Button>
+
+## System Flashing Preparation
+
+- Card reader
+- One TF card with a capacity of 16GB-128GB and a transfer speed of Class10 or higher
+- Download <Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618 system image</Button>
+
+Default username: `root`  
+Default password: `mellow`
+
+:::tip Note
+This system is a lightweight customized system; the built-in klipper components and services are not official original versions and do not support user modifications or upgrades.
+:::
+
+## System Image Download Process
+
+1. Access the FlyOS-Fast repository
+2. Select the compression format and enter the file page  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down1.webp').default} size="50%" align="center" />
+3. Choose the version (default latest)  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down2.webp').default} size="50%" align="center" />
+4. If there is no download button, hover over the file list, hold down `Shift`, and scroll the mouse wheel left and right
+5. Or drag the scroll bar to the right by holding down the left mouse button and moving it, showing the download button  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/down3.webp').default} size="50%" align="center" />
+6. Click the download button to obtain the system file
+
+# System Image Flashing
+
+## Preparation
+
+1. Complete [System Download](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages)
+2. Download the flashing tool (Rufus as an example, Etcher or Win32 Disk Imager can also be used)
+    - [Rufus Chinese](https://rufus.ie/zh/#download) / [English](https://rufus.ie/en/#download) (Windows)
+    - [Etcher](https://etcher.balena.io/#download-etcher) (Windows/MacOS/Linux)
+    - [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/) (Windows)
+3. Download the system image file (e.g., `FlyOS-Fast-H5.exe`)
+4. Extract the image file to get the `.img`
+    - Double-click or right-click open `FlyOS-Fast-H5.exe`, select the extraction directory, and click `Extract`
+    - After extraction, a `FlyOS-Fast-H5-vx.x.x.img` file will be generated  
+      <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+5. Prepare the flashing card (it is recommended to use a SanDisk 32GB C10 or higher TF card), insert the card into the reader and connect it to the computer
+
+## Flashing the System
+
+1. Open Rufus, select the device (capacity should match the flashing card)  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+2. Set the boot type to "image file"
+3. Click the "Select" button and select the extracted `.img` file
+4. After selection, the boot type displays the image file name  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+5. Click "Start". If prompted to clear disk data, click "OK"  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+6. After flashing is complete, the computer emits a prompt sound, and the progress bar shows "Ready"  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+7. Do not remove the flashing card after completion
+8. Open File Explorer, check if there is a USB drive or removable disk named `FlyOS-Conf`  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+9. Open `FlyOS-Conf`. If the following two files are present, the flashing is successful  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. The `config.txt` file is the system configuration file. Please refer to the next page for modification details

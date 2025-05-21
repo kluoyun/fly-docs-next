@@ -1,0 +1,65 @@
+---
+sidebar_position: 6
+sidebar_label: BL 펌웨어, 무시하세요
+---
+
+
+
+
+
+import WIN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/katapult/_katapult.mdx';
+
+# BL 펌웨어
+
+    :::팁
+
+    * 부트로더가 출하 시 미리 플래시되어 있으므로 다시 플래시할 필요가 없습니다.
+
+    :::
+
+## 플래시 모드 진입
+
+
+    * 플래시 모드에 두 가지 방법이 있습니다.
+    * 첫 번째: 보드를 완전히 전원을 끈 상태에서 BOOT 핀을 길게 누른 후 데이터 전송이 가능한 데이터 케이블 한쪽을 보드에, 다른 쪽을 장치에 연결 (윈도우즈 적합)
+    * 두 번째: 데이터 전송이 가능한 데이터 케이블 한쪽을 보드에, 다른 쪽을 장치에 연결한 후 BOOT 핀을 길게 누른 후 명령어를 입력 (상위 기기 적합)
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="100%" align="center" />
+
+## 펌웨어 플래시
+    <Tabs>
+        <TabItem value="win" label="윈도우 플래시 튜토리얼" default>
+
+            * C8의 부트로더 펌웨어 <Button variant="contained" disableElevation href="http://cdn.mellow.klipper.cn/BL/c5.bin">펌웨어 자동 다운로드</Button>
+
+
+            * 다이얼 스위치 `3`, `4`를 오른쪽으로 돌려 하위 기기와 상위 기기를 내장 USB로 연결
+            * 다이얼 스위치 `1`, `2`를 왼쪽으로 돌려 그렇지 않으면 하위 기기와 상위 기기 연결에 영향을 줄 수 있습니다.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.webp').default} size="100%" align="center" />
+            <WIN />
+
+        </TabItem>
+        <TabItem value="linux" label="상위 기기 플래시 튜토리얼">
+
+            * 다이얼 스위치 `1`, `2`를 오른쪽으로 돌려 하위 기기와 상위 기기를 내장 USB로 연결
+            * 다이얼 스위치 `3`, `4`를 왼쪽으로 돌려 그렇지 않으면 하위 기기와 상위 기기 연결에 영향을 줄 수 있습니다.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.webp').default} size="100%" align="center" />
+            * 아래쪽 USB 포트는 하위 기기에서 점유될 것이므로 다른 장치를 연결하지 마십시오.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
+
+            * 상위 기기가 정상적으로 인터넷에 연결되었는지 확인
+
+                ```bash
+                sudo wget http://cdn.mellow.klipper.cn/BL/c5.bin -O ~/c5.bin && sudo fly-flash -d c5 -u -f ~/c5.bin
+                ```
+            * 아래의 메시지가 나타날 때 하위 기기의 BOOT 버튼을 길게 누르고 Enter 키를 입력해야 합니다.
+
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="80%" align="center" />
+
+            * 아래 이미지가 나타나면 플래시가 성공했으며 BOOT 버튼을 놓을 수 있습니다.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="80%" align="center" />
+
+
+        </TabItem>
+    </Tabs>

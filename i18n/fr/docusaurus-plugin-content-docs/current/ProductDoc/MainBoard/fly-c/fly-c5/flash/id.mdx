@@ -1,0 +1,107 @@
+---
+sidebar_position: 5
+sidebar_label: Tutoriel de recherche d'ID
+
+---
+
+import GetUsbID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/get-id/_get-usb-id.mdx';
+import GetRS232ID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/get-id/_get-rs232-id.mdx';
+import GetCanbusUUID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
+
+# Lecture et visualisation de l'ID de la carte mère
+
+:::tip
+Veuillez ne pas modifier les configurations lors de la traduction en ligne.
+:::
+
+:::warning Attention
+Veuillez ne pas modifier les configurations lors de la traduction en ligne.
+:::
+
+:::danger Avertissement
+Veuillez ne pas modifier les configurations lors de la traduction en ligne.
+:::
+
+<Tabs>
+<TabItem value="usb" label="Obtention de l'ID USB" default>
+* Préparez un câble de transmission de données. Si la longueur est particulièrement longue, il est recommandé d'utiliser un câble avec un aimant.
+</TabItem>
+
+<TabItem value="can" label="Obtention de l'ID CAN via le pont USB">
+* Préparez un câble de transmission de données. Si la longueur est particulièrement longue, il est recommandé d'utiliser un câble avec un aimant.
+* Avant de rechercher l'ID, connectez le circuit de l'outil au circuit principal Gemini flashé avec le firmware du pont à l'aide d'un câble XT30.
+* Raccordement du circuit CAN :
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/canbridge.webp').default} size="80%" align="left" />
+* Le raccord de 120Ω doit être branché :
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/120.webp').default} size="80%" align="left" />
+
+## Configuration CAN et recherche d'ID
+
+* Si vous devez utiliser CAN, assurez-vous que l'ordinateur de contrôle est configuré pour CAN.
+
+---
+
+:::danger Avertissement
+Assurez-vous que la carte mère est correctement connectée à l'ordinateur de contrôle avant d'effectuer les opérations suivantes.
+:::
+
+:::warning
+Assurez-vous que le réseau CAN de l'ordinateur de contrôle, le taux de transmission de la carte principale pont et le taux de transmission du circuit CAN sont entièrement cohérents.
+:::
+
+### Remarques avant la recherche d'appareils
+
+* Avant de rechercher l'ID CAN, connectez-vous d'abord à SSH via [connexion SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Cliquez pour accéder").
+* Assurez-vous d'utiliser une connexion réseau pour vous connecter à SSH, et non une connexion série.
+* Assurez-vous que la connexion entre le UTOC ou la carte principale flashée avec le firmware CAN, et le câble de connexion à l'ordinateur de contrôle, a la fonction de transmission de données.
+
+### Recherche d'appareils
+
+* Connectez-vous à l'ordinateur de contrôle, puis tapez `lsusb` pour rechercher des appareils. Plusieurs situations peuvent survenir :
+    * Si une erreur indiquant que la commande `ls` n'est pas trouvée apparaît, entrez la commande suivante pour l'installer :
+        ```bash
+        sudo apt-get install usbutils
+        ```
+    * Si `lsusb` ne réagit pas, c'est un problème système, remplacez le système ou utilisez un système normal.
+    * Si l'information suivante s'affiche, assurez-vous qu'il y a `1d50:606f` :
+        <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
+* `1d50:606f` est l'appareil à utiliser cette fois-ci. Si plusieurs appareils `1d50:606f` apparaissent, il est conseillé d'en exclure un pour éviter des interférences ultérieures.
+* Si ce n'est pas le cas, vérifiez si le câble de données est bien connecté et si le firmware a été correctement flashé.
+
+:::warning Attention
+Lorsqu'il existe `1d50:606f`, seul alors la recherche d'ID CAN peut être effectuée.
+:::
+
+### Recherche de l'ID CAN
+
+* Entrez la commande suivante pour rechercher l'ID :
+    ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+    ```
+* Si l'ID apparaît et que `Application:` affiche `Klipper`, cet ID peut être utilisé directement.
+* Si `Application:` affiche `CANBOOT` ou `Katapult`, il est nécessaire de flasher le firmware :
+    <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+### Résumé des problèmes liés à CAN
+
+:::danger Avertissement
+* Si l'ID CAN ne peut pas être trouvé, reportez-vous aux documents suivants :  
+    <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">Résumé des problèmes liés à CAN</Button>
+:::
+
+### Saisir l'ID CAN dans la configuration
+
+* Ouvrez l'interface web de l'imprimante, trouvez l'option de configuration dans le menu latéral gauche :
+    * fluidd : `{…}`
+    * mainsail : `machine`
+* Après avoir cliqué pour entrer, trouvez `printer.cfg`, copiez et collez l'UUID obtenu dans le nœud `[mcu]` sous `canbus_uuid:`, sauvegardez et redémarrez pour connecter la carte mère.
+    <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+* Si Klipper affiche une mise à jour de firmware requise ou une erreur ADC, cela signifie que Klipper est connecté à la carte mère.
+    <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+:::danger
+Attention : Tous les IDs mentionnés dans le document sont des exemples, chaque carte mère possède un ID unique. Veuillez modifier et remplir en fonction de l'ID réellement obtenu.
+:::
+
+</TabItem>
+</Tabs>
