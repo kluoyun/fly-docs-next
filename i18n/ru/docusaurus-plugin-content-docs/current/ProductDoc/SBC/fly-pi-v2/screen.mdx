@@ -1,6 +1,6 @@
 ---
 sidebar_position: 7
-sidebar_label: Подключение экрана и настройка
+sidebar_label: Подключение и настройка экрана
 ---
 
 
@@ -10,79 +10,138 @@ import HDMI from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/f
 
 
 
-# Подключение экрана и настройка
+# Подключение и настройка экрана
 
-:::info
-
-* Для доступа к FLY-TOOLS с ПК требуется подключение к интернету и ввод IP-адреса ПК с портом `+9999`, например `192.168.6.110:9999`.
-
-:::
-
+## Подключение экрана
     <Tabs>
-        <TabItem value="tft" label="Подключение TFT экрана" default>
-            * В FLY TOOLS необходимо настроить экран и включить KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tft.webp').default} size="80%" align="center" />
-            * Подключение TFT дисплея для FLY-Pi V2
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="80%" align="left" />
+        <TabItem value="tft" label="Подключение сенсорного экрана TFT" default>
+        ### Подключение сенсорного экрана TFT
+        :::tip
+        - В комплекте с TFT-экраном идет две FPC-шлейфа: одна — `14P (узкая)`, другая — `16P (широкая)`
+        - Для сенсорного экрана обязательно используйте `14P (узкую)` шлейф!!!
+        :::
+        1. Подключение сенсорного экрана TFT к FLY-Pi V2
+        <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="60%" align="left" />
         </TabItem>
 
-        <TabItem value="hdmi" label="Подключение HDMI">
-            * В FLY TOOLS необходимо настроить экран и включить KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/hdmi.webp').default} size="80%" align="center" />               
-            * Использование модуля FPC для HDMI
-            * Обратите внимание, что необходимо подключить тип-C с функцией передачи данных к модулю
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
-            * Подключение экрана HDMI для FLY-Pi v2
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-hdmi.webp').default} size="80%" align="center" />
+        <TabItem value="hdmi" label="Подключение через HDMI">
+        ### Подключение через HDMI
+        1. Подключение экрана `FLY-HDMI-LCD5`
+        <table>
+          <tr>
+            <td>
+            Способ подключения один
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi2.webp').default} size="85%" align="center" />
+            </td>
+            <td>
+            Способ подключения два
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi1.webp').default} size="85%" align="center" />
+            </td>
+          </tr>
+        </table>
+
         </TabItem>
     </Tabs>
+---
 
-# Настройка экрана TFT
+## Настройка экрана
 
 <Tabs>
-    <TabItem value="tft" label="Настройка экрана TFT" default>
-        * В FLY TOOLS необходимо включить KS
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
-        <Tabs>
-    <TabItem value="tft" label="Настройка сенсорного экрана TFT" default>
-## Метод 1    
-         * Для настройки сенсорного экрана используйте следующую команду для установки в режим `fly-tft-v1`
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
-```
-         * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Cap`
-    * Для проверки успешности изменений используйте следующую команду
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
+    <TabItem value="flyos-armbian" label="Настройка экрана для системы FLYOS-Armbian" default>
+    ### Настройка экрана для системы FLYOS-Armbian
+    :::info
+    - После подключения к Wi-Fi и получения IP-адреса ПК, в браузере введите `IP+:9999`, чтобы получить доступ к FLY TOOLS и настроить экран
+    - Например, если IP-адрес вашего ПК — `192.168.6.110`, то в браузере нужно ввести `192.168.6.110:9999`
+    :::
+    1. Откройте FLY TOOLS и выполните следующие шаги:
+        - Включите интерфейс Klipper Screen
+        - Выберите модель экрана
+        - Нажмите правую нижнюю кнопку (розового цвета) «Сохранить настройки»
+        **Перезагрузите ПК для применения изменений!**
+      :::warning
+      - Для сенсорного экрана с резистивным датчиком выберите: `fly-tft-v1`, убедитесь, что переключатель на обратной стороне экрана установлен в положение `Resi`
+      - Для сенсорного экрана с емкостным датчиком выберите: `fly-tft-v2-c`, убедитесь, что переключатель на обратной стороне экрана установлен в положение `Cap`
+      :::
+      <table>
+        <tr>
+          <td>
+           - Для сенсорного экрана с резистивным датчиком:  
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-r_conf.webp').default} size="80%" align="center" />
+          </td>
+          <td>
+          - Для сенсорного экрана с емкостным датчиком:
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-c_conf.webp').default} size="80%" align="center" />
+          </td>
+        </tr>
+      </table>
+    2. После сохранения настроек перезагрузите ПК для применения изменений!
+<br />
+---
 
- * Для изменения конфигурации сенсорного экрана на резистивный используйте следующую команду
+<br />
+<br />
+<br />
+<br />
+<br />
+    2. Также можно настроить через командную строку SSH (этот метод не рекомендуется!)
+        * Для настройки сенсорного экрана с резистивным датчиком используйте следующую команду, установив конфигурацию в `fly-tft-v1`. Убедитесь, что переключатель на обратной стороне экрана установлен в положение `Resi`
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
+        ```
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
-``` 
-</TabItem>
+        * Для настройки сенсорного экрана с емкостным датчиком используйте следующую команду, установив конфигурацию в `fly-tft-v2-r`. Убедитесь, что переключатель на обратной стороне экрана установлен в положение `Cap`
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+        ```
 
-        <TabItem value="hdmi" label="Настройка резистивного экрана TFT">
-## Метод 1        
-           * Для настройки резистивного экрана используйте следующую команду для установки в режим `fly-tft-v1` 
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
-```
-                                * Убедитесь, что переключатели на обратной стороне экрана установлены в положение `Resi`
-        * Для проверки успешности изменений используйте следующую команду
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
+        * Используйте следующую команду, чтобы проверить успешность изменения:
+        ```cfg
+        sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+        ```
 
- * Для изменения конфигурации резистивного экрана на сенсорный используйте следующую команду
+        * Для изменения сенсорного экрана с резистивного на емкостный используйте следующую команду:
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v1/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+        ```
+        * Для изменения сенсорного экрана с емкостного на резистивный используйте следующую команду:
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
+        ```
+    </TabItem>
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
-```
-</TabItem>
+    <TabItem value="flyos-fast" label="Настройка экрана для системы FLYOS-FAST">
+
+    ### Настройка экрана для системы FLYOS-FAST
+    1. Откройте браузер и введите адрес устройства, например: `http://192.168.6.110/` 
+       <table>
+         <tr>
+           <td>
+             В `fluidd`: отмените выбор пункта «Фильтровать скрытые файлы и папки».
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+           </td>
+           <td>
+             В `mainsail`: отметьте пункт «Показывать скрытые файлы».
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+           </td>
+         </tr>
+       </table>
+  
+    2. Теперь вы увидите папку `.flyos-config`, внутри которой находится файл `sys-config.conf`.
+
+     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+    
+    3. Откройте файл `sys-config.conf`, сделайте необходимые изменения и сохраните его.
+    :::warning
+        - Для сенсорного экрана с резистивным датчиком установите значение: `fly-tft-v1`, убедитесь, что после знака `=` нет пробелов!!! Убедитесь, что переключатель на обратной стороне экрана установлен в положение `Resi`
+        - Для сенсорного экрана с емкостным датчиком установите значение: `fly-tft-v2-c`, убедитесь, что после знака `=` нет пробелов!!! Убедитесь, что переключатель на обратной стороне экрана установлен в положение `Cap`
+        - Обратите внимание: формат файла `sys-config.conf` — `ключ=значение`, не изменяйте его формат без необходимости, иначе настройки не будут применяться!!!
+    :::
+    
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_tft_conf.webp').default} size="90%" align="center" />
+    
+    4. После сохранения изменений перезагрузите систему для применения настроек.
+    </TabItem>
 </Tabs>    
-</TabItem>
-</Tabs>
 
-    ----
+
+----

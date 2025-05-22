@@ -9,7 +9,7 @@ sidebar_label: FLYOS-FAST 시스템 브러싱
 
 ## 시스템 브러싱
 
-FLYOS-FAST 시스템 브러싱 가이드:<Button variant="contained" disableElevation href="/docs/DebugDoc/flyos-fast/#소개">flyos-fast 시스템 브러싱 가이드</Button>
+FLYOS-FAST 시스템 브러싱 튜토리얼: <Button variant="contained" disableElevation href="/docs/DebugDoc/flyos-fast/#소개">flyos-fast 시스템 브러싱 튜토리얼</Button>
 
 
 <br/>
@@ -19,16 +19,16 @@ FLYOS-FAST 시스템 브러싱 가이드:<Button variant="contained" disableElev
 
 ## 시스템 소개
 
-* FlyOS-Fast는 3D 프린팅을 위해 깊이 최적화된 가벼운 Linux 시스템으로, 부팅 속도가 빠르며 30초만에 시작됩니다. Fly 전체 시리즈의 상위 기기 플랫폼을 지원합니다.
-* 커널 최적화로 Klipper의 실시간 응답 성능 향상
-* 파일 시스템 최적화로 직접 전원이 꺼져도 시스템 손상을 방지
-* Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen 등 서비스를 미리 설치
-* Klipper와 RRF 시스템 간 스위치 지원
-* mainsail과 fluidd 온라인 한 번 클릭으로 전환 가능
-* U디스크 인쇄 지원
-* KPPM 모듈과 함께 사용하면 전원 단절 후 재인쇄 가능
-* Fluidd 등의 프론트엔드 UI 기본 언어 및 기본 프린터 이름 설정 가능
-* 추가 OEM 맞춤 기능:开机 로고, 기본 설정 구성 파일 설정, Mainsail 탭 숨김 설정 등은 저희에게 문의하세요.
+* FlyOS-Fast는 3D 프린팅을 위해 최적화된 가벼운 Linux 시스템으로, 부팅 속도가 빠르며 30초만에 실행됩니다. Fly 전 시리즈의 상위기기 플랫폼을 지원합니다.
+* 커널 최적화를 통해 Klipper의 실시간 응답 성능을 향상시킵니다.
+* 파일 시스템 최적화로 직접 전원이 꺼져도 시스템이 손상되지 않도록 방지합니다.
+* Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen 등 서비스가 미리 설치되어 있습니다.
+* Klipper와 RRF 시스템 간의 전환을 지원합니다.
+* Mainsail과 Fluidd 온라인 일키 클릭 전환을 지원합니다.
+* U디스크 인쇄를 지원합니다.
+* KPPM 모듈과 함께 사용하면 전원 차단 후 재인쇄를 구현할 수 있습니다.
+* Fluidd 등의 프론트엔드 UI의 기본 언어 및 기본 프린터 이름 설정을 사전에 지정할 수 있습니다.
+* 추가 OEM 맞춤 기능: 로고 설정, 기본 설정 파일 제공, Mainsail 탭 숨김 설정 등은 저희에게 문의하시기 바랍니다.
 
 ## 준비 작업
 
@@ -39,51 +39,51 @@ FLYOS-FAST 시스템 브러싱 가이드:<Button variant="contained" disableElev
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_download.webp').default} size="90%" align="center" />
 
 
-2. 브러싱 도구 다운로드, 여기서 예제로 `Rufus`를 사용할 것입니다. 실제로는 다른 도구, 예를 들어 `Etcher`, `Win32 Disk Imager` 등을 사용할 수 있습니다.
-    - Rufus 다운로드 주소: [다운로드 (중국어)](https://rufus.ie/zh/#download) 또는 [Click Download English](https://rufus.ie/en/#download) (Windows 전용).
-    - Etcher 다운로드 주소: [다운로드](https://etcher.balena.io/#download-etcher) (Windows, MacOS, Linux 지원).
+2. 브러싱 도구 다운로드, 이 튜토리얼에서는 `Rufus`를 사용합니다. 실제로는 다른 도구를 사용할 수 있습니다, 예를 들어 `Etcher`, `Win32 Disk Imager` 등.
+    - Rufus 다운로드 주소: [한글 다운로드](https://rufus.ie/zh/#download) 또는 [영문 다운로드](https://rufus.ie/en/#download) (Windows 전용).
+    - Etcher 다운로드 주소: [다운로드](https://etcher.balena.io/#download-etcher) (Windows, MacOS, Linux).
     - Win32 Disk Imager 다운로드 주소: [다운로드](https://sourceforge.net/projects/win32diskimager/) (Windows 전용).
 
-3. 예제로 `FlyOS-Fast-H5.exe`를 사용할 것입니다.
+3. 이 튜토리얼에서는 `FlyOS-Fast-H5.exe`를 사용할 예정입니다.
 
 4. 시스템 이미지 파일 압축 해제, `.img` 파일 얻기.
-    - `FlyOS-Fast-H5.exe`를 더블 클릭하거나 우클릭하여 열기, 몇 초 후 아래와 같은 창이 나타날 것입니다 (시스템에서 안전하지 않다고 경고하는 경우 "더 보기" -> "실행" 선택).
-    - 압축 디렉토리를 선택한 후 `추출` 버튼을 클릭하고, 해제가 완료될 때까지 기다리세요.
+    - `FlyOS-Fast-H5.exe`를 더블 클릭하거나 우클릭하여 열기, 몇 초 후 아래와 같은 창이 나타날 것입니다 ("불안전하다"는 메시지가 표시되면 "더 많은 정보" -> "실행" 선택).
+    - 압축 디렉토리를 선택하고 `Extract` 버튼을 클릭하여 압축을 해제합니다.
     
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
 
-    - 압축이 완료되면 압축 디렉토리 아래에 `FlyOS-Fast-H5-vx.x.x.img` 파일이 생성됩니다. `x.x.x`는 시스템 버전 번호입니다.
+    - 압축이 완료되면 압축 디렉토리에 `FlyOS-Fast-H5-vx.x.x.img` 파일이 생성됩니다. `x.x.x`는 시스템 버전 번호입니다.
 
 ## 이미지 브러싱
 
     <Tabs>
         <TabItem value="TF" label="TF 카드에 브러싱" default>
-
-            1. - 브러싱용 TF 카드는 4GB보다 크고, SanDisk 32GB C10 이상의 TF 카드를 권장합니다 (저렴한 카드는 많은 경우에 브러싱 후 작동하지 않을 수 있음).
-               - 브러싱용 TF 카드는 SD 카드 리더기를 사용해야 하며, 리더기를 컴퓨터에 연결하여 TF 카드를 삽입해야 합니다.
-            2. `Rufus`를 열고 장치를 선택합니다. 선택된 장치 표시 용량이 컴퓨터에 삽입된 브러싱 카드 용량과 일치해야 합니다.  
+            ## TF 카드에 브러싱
+            1. - 브러싱에 사용할 TF 카드는 4GB 이상이어야 하며, SanDisk 32GB C10 이상의 TF 카드를 권장합니다 (저렴한 카드는 많은 경우 불량으로 인해 부팅되지 않습니다).
+               - 브러싱에 사용할 TF 카드는 SD 카드 리더기를 사용해야 하며, 브러싱 카드를 리더기에 삽입한 다음 컴퓨터에 리더기를 연결해야 합니다.
+            2. `Rufus`를 열고 장치를 선택합니다. 선택한 장치가 컴퓨터에 삽입된 브러싱 카드와 용량이 일치해야 합니다.  
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
     
-            3. 이미지 파일 선택, `부트 유형 선택` 오른쪽의 `선택` 버튼을 클릭하여 압축해제된 `.img` 파일을 선택합니다.
-            4. 이미지 파일 선택 후, `부트 유형 선택`이 이미지 파일 이름으로 변경됩니다.
+            3. 이미지 파일 선택, `부트 타입 선택` 오른쪽의 `선택` 버튼을 클릭하여 압축해제된 `.img` 파일을 선택합니다.
+            4. 이미지 파일을 선택하면 `부트 타입 선택`이 이미지 파일의 이름으로 바뀝니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
             
-            5. `시작` 버튼을 클릭하면, 자료 삭제가 필요하다는 경고창이 뜰 수 있으며, 이 경우 `확인`을 클릭합니다.
+            5. `시작` 버튼을 클릭하면, 자료 삭제를 위한 경고 창이 나타나면 `확인`을 클릭합니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
             
-            6. 브러싱이 완료되면 컴퓨터는 경고음을 내고 진행률 표시줄이 `준비 완료`로 바뀝니다.
+            6. 브러싱이 완료되면 컴퓨터가 소리를 내고 진행률 표시줄이 `준비 완료`로 표시됩니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
             
-            7. 브러싱이 완료되면 즉시 브러싱 카드를 빼지 마십시오.
-            8. 파일 탐색기를 열고 `FlyOS-Conf`라는 이름의 U디스크 또는 이동식 디스크가 있는지 확인하십시오.
+            7. 브러싱이 완료된 후 즉시 브러싱 카드를 뽑지 마십시오.
+            8. 파일 탐색기를 열고 `FlyOS-Conf`라는 U디스크 또는 이동식 디스크가 있는지 확인하십시오.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
             
-            9. `FlyOS-Conf`를 열고 다음 그림의 두 개의 파일이 존재한다면 브러싱이 성공한 것입니다.
+            9. `FlyOS-Conf`를 열면 아래 그림의 두 개의 파일이 존재한다면 브러싱이 성공한 것입니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
             
@@ -91,108 +91,109 @@ FLYOS-FAST 시스템 브러싱 가이드:<Button variant="contained" disableElev
 
         </TabItem>
         <TabItem value="M2WE" label="USB를 통해 M2WE에 브러싱">
-        
+            ## USB를 통해 M2WE에 브러싱
             1. 드라이버 다운로드:
                - <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/Utils/zadig-2.7.exe">M2WE 드라이버</Button>
                - <Button variant="contained" disableElevation href="https://cdn.mellow.klipper.cn/Utils/FLY-BOOT-Setup.msi">M2WE BOOT 시작 도구</Button>
 
             2. 드라이버 설치:
-               - `Zadig`를 열고 상단 메뉴 `옵션`에서 `모든 장치 나열`을 체크합니다
+               - `Zadig`를 열고 상단 메뉴에서 `Options`를 선택한 후 `모든 장치 보기`를 체크합니다.
     
             <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
             
-            3. M2WE를 설치한 후, 보드 위의 `BOOT` 버튼을 누른 후, 두 머리 USB 데이터 케이블을 사용하여 상위 기기를 컴퓨터에 연결
+            3. M2WE를 설치한 후 보드의 `BOOT` 버튼을 누른 후, **양방향 USB** 케이블로 상위기기를 컴퓨터에 연결
     
             <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot1.webp').default} size="70%" align="center" />
             <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot2.webp').default} size="70%" align="center" />
     
-            4. zadig 실행
+            4. `Zadig`를 엽니다.
     
             <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="center" />
         
-            5. 모든 것이 정상적으로 작동하면 zadig에 `Unknow Device #x` 또는 `USB Device(VID_1f3a_PID_efe8)`와 같은 새로운 항목이 추가됩니다. 이를 선택합니다.
+            5. 정상적으로 작동하는 경우, `Zadig`에는 `Unknow Device #x` 또는 `USB Device(VID_1f3a_PID_efe8)`가 추가됩니다. 그것을 선택합니다.
             
             <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="center" />
         
-            6. 장치를 선택한 후 USB ID가 위의 그림과 동일한지 확인합니다. 그렇지 않다면 다른 장치를 선택하십시오
-            7. 위의 두 번째 부분에서는 반드시 `WinUSB(vxxxxxxx)`를 선택해야 하며, 버전 번호는 중요하지 않습니다.
-            8. `드라이버 설치`를 클릭하여 드라이버를 설치합니다. **한 컴퓨터에서는 드라이버를 한 번만 설치하면 됩니다.**
+            6. 장치를 선택한 후 USB ID가 위의 그림과 일치하는지 확인하십시오. 그렇지 않다면 다른 장치를 선택하십시오.
+            7. 위의 그림에서 두 번째 부분은 반드시 `WinUSB(vxxxxxxx)`를 선택해야 합니다. 버전 번호는 중요하지 않습니다.
+            8. `Install Driver`를 클릭하여 드라이버를 설치합니다. **동일한 컴퓨터에서는 드라이버를 한 번만 설치하면 됩니다.**
     
             <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="center" />
 
-            9. 설치된 FLY-BOOT를 열고 `장치 검사`를 클릭합니다. 이전 단계들이 정확히 수행되었다면 사용 가능한 장치를 발견했다는 메시지를 받게 될 것입니다.
+            9. 설치된 `FLY-BOOT`을 열고 `장치 검사`를 클릭합니다. 앞의 단계가 정확히 이루어졌다면 이용 가능한 장치를 발견한다는 메시지를 받게 됩니다.
             <ImageView image={require('@site/docs/General/fly-os/img/fly_boot1.webp').default} size="60%" align="center" />
 
-            10. `BOOT`를 시작하면 정상적으로 작동한다면 `BOOT`가 성공적으로 활성화되었다는 메시지가 표시되며 몇 초 정도 기다립니다.
+            10. `BOOT`를 시작하기 위해 클릭합니다. 정상적으로 작동하면 `BOOT`가 성공적으로 활성화되었다는 메시지가 표시됩니다. 몇 초 정도 기다리고 다음 단계를 진행합니다.
 
             <ImageView image={require('@site/docs/General/fly-os/img/fly_boot2.webp').default} size="60%" align="center" />
             
-            11. `Rufus`를 열고 장치를 선택합니다. 선택된 장치 표시 용량이 컴퓨터에 삽입된 브러싱 카드 용량과 일치해야 합니다.  
+            11. `Rufus`를 열고 장치를 선택합니다. 선택된 장치가 컴퓨터에 삽입된 브러싱 카드와 용량이 일치해야 합니다.  
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
     
-            12. 이미지 파일 선택, `부트 유형 선택` 오른쪽의 `선택` 버튼을 클릭하여 압축해제된 `.img` 파일을 선택합니다.
-            13. 이미지 파일 선택 후, `부트 유형 선택`이 이미지 파일 이름으로 변경됩니다.
+            12. 이미지 파일 선택, `부트 타입 선택` 오른쪽의 `선택` 버튼을 클릭하여 압축해제된 `.img` 파일을 선택합니다.
+            13. 이미지 파일을 선택하면 `부트 타입 선택`이 이미지 파일의 이름으로 바뀝니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
             
-            14. `시작` 버튼을 클릭하면, 자료 삭제가 필요하다는 경고창이 뜰 수 있으며, 이 경우 `확인`을 클릭합니다.
+            14. `시작` 버튼을 클릭합니다. 경고 창이 나타나면 데이터 삭제를 위한 경고를 확인하고 `확인`을 클릭합니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
             
-            15. 브러싱이 완료되면 컴퓨터는 경고음을 내고 진행률 표시줄이 `준비 완료`로 바뀝니다.
+            15. 브러싱이 완료되면 컴퓨터가 소리를 내고 진행률 표시줄이 `준비 완료`로 표시됩니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
             
-            16. 브러싱이 완료되면 즉시 브러싱 카드를 빼지 마십시오.
-            17. 파일 탐색기를 열고 `FlyOS-Conf`라는 이름의 U디스크 또는 이동식 디스크가 있는지 확인하십시오.
+            16. 브러싱이 완료된 후 즉시 브러싱 카드를 뽑지 마십시오.
+            17. 파일 탐색기를 열고 `FlyOS-Conf`라는 U디스크 또는 이동식 디스크가 있는지 확인하십시오.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
             
-            18. `FlyOS-Conf`를 열고 다음 그림의 두 개의 파일이 존재한다면 브러싱이 성공한 것입니다.
+            18. `FlyOS-Conf`를 열면 아래 그림의 두 개의 파일이 존재한다면 브러싱이 성공한 것입니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
             
             19. 그 중 `config.txt`는 시스템 구성 파일이며, 다음 페이지의 내용을 참조하여 수정하십시오.
 
         </TabItem>
-        <TabItem value="M2SD" label="M2SD Burner를 통해 M2WE 또는 TF 카드에 브러싱">
+        <TabItem value="M2SD" label="M2SD Burner를 사용하여 M2WE 또는 TF 카드에 브러싱">
+            ## M2SD Burner를 사용하여 M2WE 또는 TF 카드에 브러싱
             :::danger 주의사항
                 * 본 제품은 USB 3.0을 지원합니다.
                 * 본 제품은 TF와 M2WE를 동시에 설치하여 사용할 수 없습니다.
-                * M2WE 또는 SD카드를 컴퓨터 USB포트에 연결하면 형식화 가능
-                * NVME 등 기타 장치를 설치하면 장치가 손상될 수 있으니 절대로 설치하지 마십시오！！！
+                * M2WE 또는 SD카드를 컴퓨터 USB포트에 연결하면 형식화할 수 있습니다.
+                * NVMe 등 다른 장치를 설치하면 장치가 손상될 수 있으므로 절대 설치하지 마십시오!!
             :::
             
-            1. M2WE 또는 SD카드를 M2SD에 설치합니다. TF카드를 사용하여 브러싱하는 경우, TF카드는 4GB보다 커야 하며, SanDisk 32GB C10 이상의 TF카드를 권장합니다 (저렴한 카드는 많은 경우에 브러싱 후 작동하지 않을 수 있음)
+            1. M2WE 또는 SD카드를 M2SD에 설치합니다. TF카드를 사용하여 브러싱하는 경우 TF카드는 4GB 이상이어야 하며, SanDisk 32GB C10 이상의 TF카드를 권장합니다 (저렴한 카드는 많은 경우 불량으로 인해 부팅되지 않습니다).
                 - M2WE 설치
                 <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="100%" align="left" />
                 - SD카드 설치
                 <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd.webp').default} size="100%" align="left" />
 
-            2. `Rufus`를 열고 장치를 선택합니다. 선택된 장치 표시 용량이 컴퓨터에 삽입된 브러싱 카드 용량과 일치해야 합니다.  
+            2. `Rufus`를 열고 장치를 선택합니다. 선택된 장치가 컴퓨터에 삽입된 브러싱 카드와 용량이 일치해야 합니다.  
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
     
-            3. 이미지 파일 선택, `부트 유형 선택` 오른쪽의 `선택` 버튼을 클릭하여 압축해제된 `.img` 파일을 선택합니다.
-            4. 이미지 파일 선택 후, `부트 유형 선택`이 이미지 파일 이름으로 변경됩니다.
+            3. 이미지 파일 선택, `부트 타입 선택` 오른쪽의 `선택` 버튼을 클릭하여 압축해제된 `.img` 파일을 선택합니다.
+            4. 이미지 파일을 선택하면 `부트 타입 선택`이 이미지 파일의 이름으로 바뀝니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
             
-            5. `시작` 버튼을 클릭하면, 자료 삭제가 필요하다는 경고창이 뜰 수 있으며, 이 경우 `확인`을 클릭합니다.
+            5. `시작` 버튼을 클릭합니다. 자료 삭제 경고 창이 나타나면 `확인`을 클릭합니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
             
-            6. 브러싱이 완료되면 컴퓨터는 경고음을 내고 진행률 표시줄이 `준비 완료`로 바뀝니다.
+            6. 브러싱이 완료되면 컴퓨터가 소리를 내고 진행률 표시줄이 `준비 완료`로 표시됩니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
             
-            7. 브러싱이 완료되면 즉시 브러싱 카드를 빼지 마십시오.
-            8. 파일 탐색기를 열고 `FlyOS-Conf`라는 이름의 U디스크 또는 이동식 디스크가 있는지 확인하십시오.
+            7. 브러싱이 완료된 후 즉시 브러싱 카드를 뽑지 마십시오.
+            8. 파일 탐색기를 열고 `FlyOS-Conf`라는 U디스크 또는 이동식 디스크가 있는지 확인하십시오.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
             
-            9. `FlyOS-Conf`를 열고 다음 그림의 두 개의 파일이 존재한다면 브러싱이 성공한 것입니다.
+            9. `FlyOS-Conf`를 열면 아래 그림의 두 개의 파일이 존재한다면 브러싱이 성공한 것입니다.
             
             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
             
@@ -203,35 +204,35 @@ FLYOS-FAST 시스템 브러싱 가이드:<Button variant="contained" disableElev
 
 ## WiFi 설정
 
-    1. `vscode` 또는 다른 전문 텍스트 편집기를 사용하여 `config.txt`를 엽니다 (**Windows 기본 메모장으로 구성 파일을 편집하지 마십시오**)
+    1. `vscode` 또는 기타 전문 텍스트 편집기를 사용하여 `config.txt`를 엽니다 (**Windows 시스템의 기본 메모장은 시스템 구성 파일을 편집하는 데 권장되지 않습니다**)
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
 
-    2. `WIFI_SSID=""` 옵션의 `""`에 **WIFI 이름**을 입력합니다  
-       `WIFI_PASS="""` 옵션의 `""`에 **WIFI 비밀번호**를 입력합니다  
-       저장하고 종료한 후, `FlyOS-Conf`라는 이름의 U디스크 또는 이동식 디스크를 제거합니다.
+    2. `WIFI_SSID=""` 옵션의 `""` 안에 자신의 **WiFi 네임**을 입력합니다.  
+       `WIFI_PASS="""` 옵션의 `""` 안에 자신의 **WiFi 비밀번호**를 입력합니다.  
+       저장하고 종료한 후, `FlyOS-Conf`라는 U디스크 또는 이동식 디스크를 꺼냅니다.
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/osfast_wifi.webp').default} size="70%" align="center" />  
 
-## 상위 기기 시작
+## 상위기기 실행
 
-    1. 시작하기 전에 **메모리 카드** 또는 **M2WE**가 상위 기기에 올바르게 설치되었는지 확인하십시오
+    1. 실행 전, 반드시 **메모리 카드** 또는 **M2WE**가 상위기기에 정확히 설치되었는지 확인하십시오
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="70%" align="center" />
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="70%" align="center" />
   
     2. `M2WE` 또는 `2.4G WiFi` 모듈의 안테나를 설치합니다
     :::warning
-    * FLY 상위 기기는 `M2WE` 또는 `2.4G WiFi` 모듈을 사용해야 하며, 그렇지 않으면 WiFi를 사용할 수 없습니다.
-    * 주의하세요, 상위 기기는 중국어 이름의 WiFi를 지원하지 않으며, 2.4G와 5G를 합친 WiFi는 지원하지 않습니다.
+    * FLY 상위기기는 `M2WE` 또는 `2.4G WiFi` 모듈을 사용해야 하며, 그렇지 않으면 WiFi를 사용할 수 없습니다.
+    * 상위기기는 한글 네임의 WiFi를 지원하지 않으며, 2.4G와 5G 병합 WiFi를 지원하지 않습니다.
     :::
     * 빨간 화살표가 가리키는 곳이 WiFi 안테나 접속부입니다
     * WiFi 안테나 포트는 `ipex1`입니다
-    * PI V2에 안테나를 설치하지 않으면 신호가 약해질 수 있어 라우터에 연결되지 못할 수 있습니다
+    * PI V2에 안테나를 설치하지 않으면 신호가 약해져 라우터에 연결되지 않을 가능성이 있습니다.
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/wifi.webp').default} size="80%" align="left" /> 
 
-    3. 상위 기기에 전원을 공급합니다.  
-    **여기까지, 상위 기기가 시작되었습니다!!**  
-    다음 단계를 수행하십시오: <Button variant="contained" disableElevation href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">상위 기기 SSH 연결</Button>
+    3. 상위기에 전원을 공급합니다.  
+    **여기까지, 상위기가 시작되었습니다!!**  
+    다음 단계를 수행하세요: <Button variant="contained" disableElevation href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">상위기기 SSH 연결</Button>
 
 
 ## 나머지 시스템 구성 옵션 수정
 
-나머지 시스템 구성 옵션 수정은 다음 링크를 참조하십시오: <Button variant="contained" disableElevation href="/docs/DebugDoc/flyos-fast/config">시스템 구성 옵션 수정</Button>
+나머지 시스템 구성 옵션 수정은: <Button variant="contained" disableElevation href="/docs/DebugDoc/flyos-fast/config">시스템 구성 수정</Button> 참조
