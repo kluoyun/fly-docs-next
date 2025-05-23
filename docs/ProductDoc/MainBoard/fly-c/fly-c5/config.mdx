@@ -1,0 +1,172 @@
+---
+sidebar_position: 3
+---
+
+# 系统配置修改
+
+:::tip 必读
+
+- 配置文件中的`部分`设置只会在烧录后第一次启动系统时生效。
+- 所以请在烧录后先修改可移动磁盘`FlyOS-Conf`中配置文件config.txt。
+- 然后再将卡插到板子上启动系统。
+
+:::
+
+:::warning 注意
+
+- 尽量不要使用Windows系统自带的记事本编辑配置文件，可以用vscode或其他专业文本编辑器。
+- 配置文件中最好不要输入中文或特殊字符。
+- 配置文件修改后，需要重启系统才能生效。
+
+:::
+
+:::danger
+
+- 配置文件中`######### PLEASE DO NOT EDIT THE FOLLOWING #########`下面的内容请不要修改。
+
+:::
+
+## 如何修改配置文件
+
+### 烧录完成后修改配置文件
+
+- 仅在`首次启动`时生效的配置项必须在烧录完成后，使用专业文本编辑器打开可移动磁盘`FlyOS-Conf`中的配置文件`config.txt`来修改。
+
+### 系统已启动在线配置修改
+
+- 如果是普通配置项在系统网页配置页面修改后重启系统即可生效。
+    - 在浏览器打开设备ip地址，例如：`http://192.168.1.2/`
+    - fluidd按下图左所示 `取消勾选` -> `筛选隐藏的文件和文件夹`。
+    - mainsail按下图右所示 `勾选` -> `显示隐藏文件`。
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - 此时可以看到`.flyos-config`文件夹，进入这个文件夹会有`sys-config.conf`文件。
+    - `sys-config.conf`文件就是可移动磁盘`FlyOS-Conf`中的配置文件`config.txt`的软链接。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - 打开`sys-config.conf`文件，将需要修改的配置项修改后 `保存` -> `关闭` 即可。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config4.webp').default} size="60%" align="center" />
+
+    - 注意：`sys-config.conf`文件中配置项的格式为`key=value`，不要修改为`key: value`。
+    - 修改保存后，重启系统即可生效。
+
+## 配置项
+
+### 无线网络配置
+
+- 以下配置项在`每次启动`系统时都会生效。
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :---: | :--- | :--- |
+| `WIFI_SSID` | `空` | 任意WIFI名称 | WIFI名称，如果填写，则启动时自动优先连接此WIFI |
+| `WIFI_PASS` | `空` | 无密码则留空 | WIFI密码，如果填写，则使用密码连接WIFI |
+
+----
+
+### 打印机默认配置
+
+:::tip
+- 以下配置项仅在`首次启动`时生效。
+:::
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :---: | :--- | :--- |
+| `language` | `zh-CN` | <details><summary>点击展开详细内容</summary>`zh-CN`, `zh-HK`, `en`, `de`, `cz`, `es`, `hu`, `ja`, `nl`, `pt`, `se`, `uk`, `da`, `fr`, `it`, `ko`, `pl`, `ru`, `tr`</details> | 在首次启动时设置fluidd和mainsail的默认语言 |
+| `printer_name` | `空` | 任意字符串 | 在首次启动时设置fluidd和mainsail的默认打印机名称 |
+
+----
+
+### 系统配置
+
+- 以下配置项在`每次启动`系统时都会生效。
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :-------: | :--- | :--- |
+| `console` | `serial` | `serial`, `both` | 此配置项不要修改，仅serial有效 |
+| `board` | H5: `fly-pi-v2`<br/>H3: `fly-lite2.1` | <details><summary>点击展开H5系列</summary>`fly-pi`, `fly-pi-v2`, `fly-gemini-v1`, `fly-gemini-v2`, `fly-gemini-v3`, `fly-c8`</details><br/><details><summary>点击展开H3系列</summary>`fly-lite2`, `fly-lite2.1`, `fly-minipad`</details> | 主板型号，主要用于自动烧录固件等 |
+| `shutdown_pin_state` | `1` | `0`, `1` | 设置关机按键的电平状态<br/>1: 低电平触发<br/>0: 高电平触发 |
+| `shutdown_pin` | `none` | `PA21`, `PA4`... | 设置关机按键的触发引脚，默认none不启用 |
+| `spidev` | `spidev0.0 spidev1.0` | `spidev0.0`, `spidev0.1`, `spidev1.0`, `spidev1.1` | 设置要启用spidev的端口<br/>要启用多个请使用空格分开 |
+| `localtime` | `Asia/Shanghai` | [世界时区对照表](/docs/DebugDoc/flyos-fast/timezone) | 设置系统默认时区，系统在联网后会自动校时 |
+| `canbus_bitrate` | `1000000` | `1000000`, `500000`, `250000` | 设置系统所有can设备的默认速率，默认为1M |
+
+----
+
+### 打印机类型配置
+
+- 以下配置项在`每次启动`系统时都会生效。
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :-------: | :--- | :--- |
+| `printer` | `klipper` | `klipper`, `rrf` | 配置系统以哪个服务启动<br/>`klipper`: klipper, moonraker等服务<br/>`rrf`: RRF DSF, DWC等服务 |
+
+### 显示配置
+
+- 以下配置项在`每次启动`系统时都会生效。
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :-------: | :--- | :--- |
+| `screen` | `hdmi` | <details><summary>点击展开H5系列</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-tft-v2-r`, `fly-tft-v2-c`</details><br/><details><summary>点击展开H3系列</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-minipad-r`, `fly-minipad-c`, `fly-tft-v2-r`, `fly-tft-v2-c`</details> | 设置屏幕，none则关闭所有显示 |
+| `rotate` | `90` | `0`, `90`, `180`, `270` | 设置FLY-TFT的旋转角度，hdmi无效 |
+
+----
+
+### Klipper相关配置
+
+- 以下配置项在`每次启动`系统时都会生效。
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :-------: | :--- | :--- |
+| `klipper_screen` | `0` | `0`, `1` | 设置是否启用KlipperScreen<br/>1: 启用<br/>0: 不启用<br/>`printer=klipper`时有效 |
+| `moon2uart` | `0` | `0`, `1` | 设置是否启用moon2uart<br/>1: 启用<br/>0: 不启用<br/>`printer=klipper`时有效 |
+| `m2u_port` | `/dev/ttyS1` | 有效的串行端口 | moon2uart的串口，`moon2uart=1`时有效 |
+| `m2u_baud` | `115200` | 有效的波特率 | moon2uart的波特率，`moon2uart=1`时有效 |
+| `klipper_webui` | `fluidd` | `fluidd`, `mainsail` | 设置默认的klipper前端ui<br/>不影响在线一键切换功能<br/>`printer=klipper`时有效 |
+
+----
+
+### RRF相关配置
+
+- 以下配置项在`每次启动`系统时都会生效。
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :-------: | :--- | :--- |
+| `rrf2uart` | `0` | `0`, `1` | 暂时无效，后续版本更新提供 |
+
+----
+
+### 其它设置
+
+- 以下配置项在`每次启动`系统时都会生效。
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :-------: | :--- | :--- |
+| `crowsnest` | `0` | `0`, `1` | 设置是否启用Crowsnest<br/>1: 启用<br/>0: 不启用<br/>klipper与rrf模式均可使用 |
+
+:::tip
+- 以下配置项仅在`首次启动`时生效。
+:::
+
+| 配置项 | 默认值 | 可使用值 | 说明 |
+| :---: | :-------: | :--- | :--- |
+| `firmware` | `空` | 有效的固件文件路径| 设置开机自动烧录固件, 目前仅C8及Gemini-V3有效 |
+
+----
+
+:::danger
+
+- 配置文件中`######### PLEASE DO NOT EDIT THE FOLLOWING #########`下面的内容请不要修改。
+
+:::
