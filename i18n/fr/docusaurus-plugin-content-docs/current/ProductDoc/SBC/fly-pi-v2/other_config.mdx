@@ -1,0 +1,189 @@
+---
+sidebar_position: 8
+sidebar_label: Paramètres supplémentaires de l'ordinateur principal
+---
+
+
+
+# Paramètres supplémentaires de l'ordinateur principal
+
+    <Tabs>
+        <TabItem value="flyos-fast_other_config" label="Configuration système FLYOS-FAST">
+        ## Configuration système FLYOS-FAST
+        :::tip À lire obligatoirement
+        - Les paramètres dans le fichier de configuration ne prendront effet qu'à la première démarrage après le flashage.
+        - Veuillez donc modifier le fichier de configuration config.txt sur la disque amovible FlyOS-Conf après le flashage.
+        - Ensuite, insérez la carte dans la carte mère pour démarrer le système.
+        :::
+        
+        :::warning Attention
+        
+        - Essayez d'éviter d'utiliser le Bloc-notes intégré à Windows pour éditer le fichier de configuration. Vous pouvez utiliser VSCode ou d'autres éditeurs de texte professionnels.
+        - Essayez de ne pas entrer de caractères chinois ou de caractères spéciaux dans le fichier de configuration.
+        - Après avoir modifié le fichier de configuration, vous devez redémarrer le système pour que les modifications prennent effet.
+        
+        :::
+        
+        :::danger Danger
+        
+        - Ne modifiez pas le contenu sous `######### PLEASE DO NOT EDIT THE FOLLOWING #########`.
+        
+        :::
+        
+        ## Comment modifier le fichier de configuration
+        
+        ### Modifier le fichier de configuration après le flashage
+        
+        - Les paramètres qui ne prennent effet qu'à la première démarrage doivent être modifiés après le flashage en utilisant un éditeur de texte professionnel pour ouvrir le fichier config.txt dans la disque amovible FlyOS-Conf.
+        
+        ### Modification en ligne de configuration système déjà démarré
+        
+        - Si c'est une configuration normale, modifiez-la sur la page de configuration du navigateur et redémarrez le système pour que les modifications prennent effet.
+            - Ouvrez le navigateur et entrez l'adresse IP du périphérique, par exemple : `http://192.168.1.2/`
+            - Pour fluidd, décochez comme indiqué à gauche dans la capture d'écran ci-dessous -> `Masquer les fichiers et dossiers cachés`.
+            - Pour mainsail, cochez comme indiqué à droite dans la capture d'écran ci-dessous -> `Afficher les fichiers cachés`.
+            
+            <table>
+              <tr>
+                <td>
+                  <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+                </td>
+                <td>
+                  <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+                </td>
+              </tr>
+            </table>
+        
+            - Vous verrez alors le dossier `.flyos-config`. Entrez dans ce dossier, il y aura le fichier `sys-config.conf`.
+            - Le fichier `sys-config.conf` est un lien symbolique vers le fichier de configuration `config.txt` sur la disque amovible FlyOS-Conf.
+        
+            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+        
+            - Ouvrez le fichier `sys-config.conf`, modifiez les paramètres nécessaires, puis enregistrez et fermez-le.
+        
+            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config4.webp').default} size="60%" align="center" />
+        
+            - Remarque : Le format des paramètres dans le fichier `sys-config.conf` est `clé=valeur`. Ne modifiez pas en `clé: valeur`.
+            - Après avoir enregistré les modifications, redémarrez le système pour que celles-ci prennent effet.
+        ---
+        
+        ## Paramètres
+        
+        ### Configuration réseau sans fil
+        
+        - Les paramètres suivants prennent effet à chaque démarrage du système.
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :---: | :--- | :--- |
+        | `WIFI_SSID` | `vide` | N'importe quel nom de réseau Wi-Fi | Nom du réseau Wi-Fi, si rempli, se connectera automatiquement au démarrage |
+        | `WIFI_PASS` | `vide` | Laisser vide si aucun mot de passe | Mot de passe du réseau Wi-Fi, si rempli, se connectera avec mot de passe |
+        
+        ----
+        
+        ### Configuration par défaut de l'imprimante
+        
+        :::tip
+        - Les paramètres suivants ne prennent effet qu'à la première connexion.
+        :::
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :---: | :--- | :--- |
+        | `language` | `zh-CN` | <details><summary>Cliquez pour déployer le contenu détaillé</summary>`zh-CN`, `zh-HK`, `en`, `de`, `cz`, `es`, `hu`, `ja`, `nl`, `pt`, `se`, `uk`, `da`, `fr`, `it`, `ko`, `pl`, `ru`, `tr`</details> | Définir la langue par défaut pour fluidd et mainsail lors du premier démarrage |
+        | `printer_name` | `vide` | N'importe quelle chaîne de caractères | Définir le nom de l'imprimante par défaut pour fluidd et mainsail lors du premier démarrage |
+        
+        ----
+        
+        ### Configuration système
+        
+        - Les paramètres suivants prennent effet à chaque démarrage du système.
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :-------: | :--- | :--- |
+        | `console` | `serial` | `serial`, `both` | Ce paramètre ne doit pas être modifié, uniquement `serial` est valide |
+        | `board` | H5: `fly-pi-v2`<br/>H3: `fly-lite2.1` | <details><summary>Cliquez pour déployer la série H5</summary>`fly-pi`, `fly-pi-v2`, `fly-gemini-v1`, `fly-gemini-v2`, `fly-gemini-v3`, `fly-c8`</details><br/><details><summary>Cliquez pour déployer la série H3</summary>`fly-lite2`, `fly-lite2.1`, `fly-minipad`</details> | Modèle de la carte mère, principalement utilisé pour le flashage automatique du firmware, etc. |
+        | `shutdown_pin_state` | `1` | `0`, `1` | Définir l'état de niveau logique du bouton d'arrêt<br/>1: bas niveau déclenché<br/>0: haut niveau déclenché |
+        | `shutdown_pin` | `none` | `PA21`, `PA4`... | Définir le broche de déclenchement du bouton d'arrêt, par défaut `none` si non activé |
+        | `spidev` | `spidev0.0 spidev1.0` | `spidev0.0`, `spidev0.1`, `spidev1.0`, `spidev1.1` | Définir les ports SPI à activer<br/>Pour activer plusieurs ports, séparez-les par des espaces |
+        | `localtime` | `Asia/Shanghai` | [Tableau des fuseaux horaires mondiaux](/docs/DebugDoc/flyos-fast/timezone) | Définir le fuseau horaire par défaut du système, le système ajustera automatiquement l'heure après la connexion à Internet |
+        | `canbus_bitrate` | `1000000` | `1000000`, `500000`, `250000` | Définir le taux de transmission par défaut de tous les appareils CAN du système, par défaut de 1 M |
+        
+        ----
+        
+        ### Configuration du type d'imprimante
+        
+        - Les paramètres suivants prennent effet à chaque démarrage du système.
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :-------: | :--- | :--- |
+        | `printer` | `klipper` | `klipper`, `rrf` | Configurer le service de démarrage du système<br/>`klipper`: services klipper, moonraker, etc.<br/>`rrf`: services RRF DSF, DWC, etc. |
+        
+        ### Configuration d'affichage
+        
+        - Les paramètres suivants prennent effet à chaque démarrage du système.
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :-------: | :--- | :--- |
+        | `screen` | `hdmi` | <details><summary>Cliquez pour déployer la série H5</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-tft-v2-r`, `fly-tft-v2-c`</details><br/><details><summary>Cliquez pour déployer la série H3</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-minipad-r`, `fly-minipad-c`, `fly-tft-v2-r`, `fly-tft-v2-c`</details> | Configurer l'écran, `none` pour éteindre tous les affichages |
+        | `rotate` | `90` | `0`, `90`, `180`, `270` | Configurer l'angle de rotation pour FLY-TFT, non applicable pour HDMI |
+        
+        ----
+        
+        ### Configuration liée à Klipper
+        
+        - Les paramètres suivants prennent effet à chaque démarrage du système.
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :-------: | :--- | :--- |
+        | `klipper_screen` | `0` | `0`, `1` | Configurer l'activation de KlipperScreen<br/>1: Activer<br/>0: Désactiver<br/>Valide lorsque `printer=klipper` |
+        | `moon2uart` | `0` | `0`, `1` | Configurer l'activation de moon2uart<br/>1: Activer<br/>0: Désactiver<br/>Valide lorsque `printer=klipper` |
+        | `m2u_port` | `/dev/ttyS1` | Ports série valides | Port série pour moon2uart, valide lorsque `moon2uart=1` |
+        | `m2u_baud` | `115200` | Tauxs de communication valides | Taux de communication pour moon2uart, valide lorsque `moon2uart=1` |
+        | `klipper_webui` | `fluidd` | `fluidd`, `mainsail` | Configurer l'interface utilisateur frontale par défaut pour klipper<br/>N'affecte pas la fonctionnalité de changement rapide en ligne<br/>Valide lorsque `printer=klipper` |
+        
+        ----
+        
+        ### Configuration liée à RRF
+        
+        - Les paramètres suivants prennent effet à chaque démarrage du système.
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :-------: | :--- | :--- |
+        | `rrf2uart` | `0` | `0`, `1` | Temporairement non valide, mise à jour disponible dans les versions futures |
+        
+        ----
+        
+        ### Autres configurations
+        
+        - Les paramètres suivants prennent effet à chaque démarrage du système.
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :-------: | :--- | :--- |
+        | `crowsnest` | `0` | `0`, `1` | Configurer l'activation de Crowsnest<br/>1: Activer<br/>0: Désactiver<br/>Valide pour les modes klipper et rrf |
+        
+        :::tip
+        - Les paramètres suivants ne prennent effet qu'à la première connexion.
+        :::
+        
+        | Paramètre | Valeur par défaut | Valeurs possibles | Description |
+        | :---: | :-------: | :--- | :--- |
+        | `firmware` | `vide` | Chemins valides vers les fichiers firmware | Configurer le flashage automatique de firmware au démarrage, actuellement valide pour C8 et Gemini-V3 |
+        
+        ----
+        
+        :::danger
+        
+        - Ne modifiez pas le contenu sous `######### PLEASE DO NOT EDIT THE FOLLOWING #########`.
+        
+        :::
+        </TabItem>
+    
+        <TabItem value="flyos-armbian_other_config" label="Configuration système FLYOS-Armbian">
+        ## Configuration système FLYOS-Armbian
+        1. Les autres options de configuration sont illustrées ci-dessous, veuillez les activer ou désactiver selon vos besoins réels.
+        2. Cliquez sur le `?` correspondant à chaque option de configuration pour afficher la description du paramètre.
+        3. Après avoir modifié les configurations, cliquez sur le `bouton rose` en bas à droite pour enregistrer les modifications.
+        4. Après avoir enregistré les modifications, redémarrez l'ordinateur principal pour que celles-ci prennent effet.
+
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flytools_conf.webp').default} size="80%" align="center" />
+        </TabItem>
+    </Tabs>
