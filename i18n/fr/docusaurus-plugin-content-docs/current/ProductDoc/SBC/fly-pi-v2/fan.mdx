@@ -1,15 +1,15 @@
 ---
-sidebar_position: 8
-sidebar_label: Port USB 5V pour ventilateur
+sidebar_position: 9
+sidebar_label: Connecteur de ventilateur 5V intégré
 ---
 
 
 
 
-# Port USB 5V pour ventilateur intégré
+# Connecteur de ventilateur 5V intégré
 
-## Branchement du port USB 5V pour ventilateur intégré
-    * La carte Pi-V2 intègre une interface de sortie USB 5V contrôlable, destinée au refroidissement du contrôleur principal. Le mode de branchement est illustré ci-dessous :
+## Raccordement du connecteur de ventilateur 5V intégré
+    * La carte Pi-V2 intègre une interface de ventilation contrôlable de 5V, utilisée pour le refroidissement principal, et le mode de câblage est illustré ci-dessous
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_fan.webp').default} size="60%" align="center" />
 
 ## Commandes à exécuter via SSH avant d'ajouter la configuration
@@ -21,23 +21,23 @@ sudo reboot
 ## Configuration de référence
 
     ```cfg
-    [mcu host]                      # L'OS FlyOS a généré automatiquement le MCU Linux pour vous, il suffit de le définir pour l'utiliser           
+    [mcu host]                      # Le système d'exploitation FlyOS a généré automatiquement le MCU Linux pour vous, il suffit de définir pour l'utiliser            
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-Pi]      # Température du contrôleur supérieur
+    [temperature_sensor FLY-Pi]      # Température de la station principale
     sensor_type: temperature_host
 
 
-    [temperature_fan core_fan]      # Ventilateur de refroidissement du contrôleur supérieur
-    pin: host:gpiochip1/gpio103     # Broche du ventilateur du contrôleur supérieur
+    [temperature_fan core_fan]      # Ventilateur de refroidissement de la station principale
+    pin: host:gpiochip1/gpio103     # Broche du ventilateur de la station principale
     max_power: 1.0
-    sensor_type: temperature_host   # Défini comme température du contrôleur principal
+    sensor_type: temperature_host   # Défini comme la température du contrôle principal de la station
     control:watermark               # Mode de contrôle
-    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement (en °C)
-    min_temp: 0                     # Température minimale, en dessous de laquelle une erreur sera signalée
-    max_temp: 90                    # Température maximale, au-delà de laquelle une erreur sera signalée
+    target_temp: 48                 # Température de démarrage du ventilateur de refroidissement de la station principale
+    min_temp: 0                     # Température minimale, une erreur sera signalée en dessous de cette valeur
+    max_temp: 90                    # Température maximale, une erreur sera signalée au-delà de cette valeur
     off_below: 0.10
     kick_start_time: 0.50
-    max_speed: 0.8                  # Vitesse maximale, correspondant à 80 % de la puissance maximale
-    min_speed: 0.3                  # Vitesse minimale, correspondant à 30 % de la puissance maximale
+    max_speed: 0.8                  # Vitesse maximale, correspondant à 80 % de la puissance pleine
+    min_speed: 0.3                  # Vitesse minimale, correspondant à 30 % de la puissance pleine
     ```

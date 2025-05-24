@@ -1,0 +1,189 @@
+---
+sidebar_position: 8
+sidebar_label: 상위 컴퓨터의 기타 설정
+---
+
+
+
+# 상위 컴퓨터의 기타 설정
+
+    <Tabs>
+        <TabItem value="flyos-fast_other_config" label="FLYOS-FAST 시스템 - 기타 설정">
+        ## FLYOS-FAST 시스템 - 기타 설정
+        :::tip 필독
+        - 구성 파일의 일부 설정은 시스템을 번에 처음 시작할 때만 적용됩니다.
+        - 따라서 번 후 먼저 플러그인된 이동식 디스크 `FlyOS-Conf`의 구성 파일 `config.txt`를 수정해야 합니다.
+        - 그런 다음 카드를 보드에 삽입하여 시스템을 시작하세요.
+        :::
+        
+        :::warning 주의
+        
+        - Windows 시스템의 기본 메모장 대신 프로페셔널 텍스트 편집기를 사용하는 것을 권장합니다.
+        - 구성 파일에는 중국어나 특수 문자를 입력하지 않는 것이 좋습니다.
+        - 구성 파일을 수정한 후에는 시스템을 재시작해야 변경 사항이 적용됩니다.
+        
+        :::
+        
+        :::danger
+        
+        - 구성 파일에서 `######### PLEASE DO NOT EDIT THE FOLLOWING #########` 아래의 내용은 수정하지 마세요.
+        
+        :::
+        
+        ## 구성 파일 수정 방법
+        
+        ### 번 후 구성 파일 수정
+        
+        - 최초 시작 시 적용되는 구성 항목은 번 후 전문 텍스트 편집기를 사용하여 이동식 디스크 `FlyOS-Conf`의 구성 파일 `config.txt`를 수정해야 합니다.
+        
+        ### 시스템이 시작된 후 온라인으로 구성 수정
+        
+        - 일반 구성 항목은 시스템 웹 구성 페이지에서 수정하고 시스템을 재시작하면 적용됩니다.
+            - 브라우저에서 장치 IP 주소를 열기 예: `http://192.168.1.2/`
+            - fluidd는 아래 왼쪽 그림과 같이 `체크 해제` -> `숨김 파일 및 폴더 필터링`을 수행합니다.
+            - mainsail은 아래 오른쪽 그림과 같이 `체크` -> `숨겨진 파일 표시`를 수행합니다.
+            
+            <table>
+              <tr>
+                <td>
+                  <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+                </td>
+                <td>
+                  <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+                </td>
+              </tr>
+            </table>
+        
+            - 이때 `.flyos-config` 폴더를 볼 수 있으며, 이 폴더 내에는 `sys-config.conf` 파일이 있습니다.
+            - `sys-config.conf` 파일은 이동식 디스크 `FlyOS-Conf`의 구성 파일 `config.txt`의 소프트 링크입니다.
+        
+            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+        
+            - `sys-config.conf` 파일을 열고 수정할 구성 항목을 수정한 후 `저장` -> `닫기`를 수행하세요.
+        
+            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config4.webp').default} size="60%" align="center" />
+        
+            - 주의: `sys-config.conf` 파일의 구성 항목 형식은 `key=value`여야 하며, `key: value`로 수정하지 마세요.
+            - 저장한 후 시스템을 재시작하면 적용됩니다.
+        ---
+        
+        ## 구성 항목
+        
+        ### 무선 네트워크 설정
+        
+        - 다음 구성 항목은 시스템 시작 시마다 적용됩니다.
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :---: | :--- | :--- |
+        | `WIFI_SSID` | `빈 값` | 임의의 WIFI 이름 | WIFI 이름, 작성하면 시작 시 자동으로 이 WIFI에 연결 |
+        | `WIFI_PASS` | `빈 값` | 비밀번호가 없는 경우 비워 두기 | WIFI 비밀번호, 작성하면 비밀번호로 연결 |
+        
+        ----
+        
+        ### 프린터 기본 설정
+        
+        :::tip
+        - 다음 구성 항목은 최초 시작 시만 적용됩니다.
+        :::
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :---: | :--- | :--- |
+        | `language` | `zh-CN` | <details><summary>자세히 보기</summary>`zh-CN`, `zh-HK`, `en`, `de`, `cz`, `es`, `hu`, `ja`, `nl`, `pt`, `se`, `uk`, `da`, `fr`, `it`, `ko`, `pl`, `ru`, `tr`</details> | 최초 시작 시 fluidd와 mainsail의 기본 언어 설정 |
+        | `printer_name` | `빈 값` | 임의의 문자열 | 최초 시작 시 fluidd와 mainsail의 기본 프린터 이름 설정 |
+        
+        ----
+        
+        ### 시스템 설정
+        
+        - 다음 구성 항목은 시스템 시작 시마다 적용됩니다.
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :-------: | :--- | :--- |
+        | `console` | `serial` | `serial`, `both` | 이 구성 항목은 수정하지 마세요. `serial`만 유효 |
+        | `board` | H5: `fly-pi-v2`<br/>H3: `fly-lite2.1` | <details><summary>H5 시리즈 펼치기</summary>`fly-pi`, `fly-pi-v2`, `fly-gemini-v1`, `fly-gemini-v2`, `fly-gemini-v3`, `fly-c8`</details><br/><details><summary>H3 시리즈 펼치기</summary>`fly-lite2`, `fly-lite2.1`, `fly-minipad`</details> | 메인보드 모델, 주로 펌웨어 자동 번 등에 사용 |
+        | `shutdown_pin_state` | `1` | `0`, `1` | 종료 버튼의 전압 상태 설정<br/>1: 저전압 트리거<br/>0: 고전압 트리거 |
+        | `shutdown_pin` | `none` | `PA21`, `PA4`... | 종료 버튼의 트리거 핀 설정, 기본값은 none (사용 안 함) |
+        | `spidev` | `spidev0.0 spidev1.0` | `spidev0.0`, `spidev0.1`, `spidev1.0`, `spidev1.1` | 활성화할 spidev 포트 설정<br/>여러 개를 활성화하려면 공백으로 구분 |
+        | `localtime` | `Asia/Shanghai` | [세계 시각대对照표](/docs/DebugDoc/flyos-fast/timezone) | 시스템 기본 시각대 설정, 네트워크 연결 후 자동으로 시간 조정 |
+        | `canbus_bitrate` | `1000000` | `1000000`, `500000`, `250000` | 시스템 모든 can 장치의 기본 속도 설정, 기본값은 1M |
+        
+        ----
+        
+        ### 프린터 유형 설정
+        
+        - 다음 구성 항목은 시스템 시작 시마다 적용됩니다.
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :-------: | :--- | :--- |
+        | `printer` | `klipper` | `klipper`, `rrf` | 시스템이 어떤 서비스로 시작할지 설정<br/>`klipper`: klipper, moonraker 등 서비스<br/>`rrf`: RRF DSF, DWC 등 서비스 |
+        
+        ### 화면 설정
+        
+        - 다음 구성 항목은 시스템 시작 시마다 적용됩니다.
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :-------: | :--- | :--- |
+        | `screen` | `hdmi` | <details><summary>H5 시리즈 펼치기</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-tft-v2-r`, `fly-tft-v2-c`</details><br/><details><summary>H3 시리즈 펼치기</summary>`none`, `hdmi`, `fly-tft-v1`, `fly-minipad-r`, `fly-minipad-c`, `fly-tft-v2-r`, `fly-tft-v2-c`</details> | 화면 설정, none은 모든 화면 비활성화 |
+        | `rotate` | `90` | `0`, `90`, `180`, `270` | FLY-TFT 회전 각도 설정, hdmi는 적용되지 않음 |
+        
+        ----
+        
+        ### Klipper 관련 설정
+        
+        - 다음 구성 항목은 시스템 시작 시마다 적용됩니다.
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :-------: | :--- | :--- |
+        | `klipper_screen` | `0` | `0`, `1` | KlipperScreen을 활성화할지 여부 설정<br/>1: 활성화<br/>0: 비활성화<br/>`printer=klipper`일 경우 적용 |
+        | `moon2uart` | `0` | `0`, `1` | moon2uart을 활성화할지 여부 설정<br/>1: 활성화<br/>0: 비활성화<br/>`printer=klipper`일 경우 적용 |
+        | `m2u_port` | `/dev/ttyS1` | 유효한 시리얼 포트 | moon2uart의 시리얼 포트, `moon2uart=1`일 경우 적용 |
+        | `m2u_baud` | `115200` | 유효한波特률 | moon2uart의波特률, `moon2uart=1`일 경우 적용 |
+        | `klipper_webui` | `fluidd` | `fluidd`, `mainsail` | 기본 Klipper 프론트엔드 UI 설정<br/>온라인 한 번 클릭 전환 기능에는 영향 없음<br/>`printer=klipper`일 경우 적용 |
+        
+        ----
+        
+        ### RRF 관련 설정
+        
+        - 다음 구성 항목은 시스템 시작 시마다 적용됩니다.
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :-------: | :--- | :--- |
+        | `rrf2uart` | `0` | `0`, `1` | 현재는 사용되지 않으며 나중에 업데이트될 예정 |
+        
+        ----
+        
+        ### 기타 설정
+        
+        - 다음 구성 항목은 시스템 시작 시마다 적용됩니다.
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :-------: | :--- | :--- |
+        | `crowsnest` | `0` | `0`, `1` | Crowsnest을 활성화할지 여부 설정<br/>1: 활성화<br/>0: 비활성화<br/>Klipper와 RRF 모드 모두 사용 가능 |
+        
+        :::tip
+        - 다음 구성 항목은 최초 시작 시만 적용됩니다.
+        :::
+        
+        | 구성 항목 | 기본값 | 사용 가능한 값 | 설명 |
+        | :---: | :-------: | :--- | :--- |
+        | `firmware` | `빈 값` | 유효한 펌웨어 파일 경로| 시스템 시작 시 자동으로 펌웨어 번을 설정, 현재 C8 및 Gemini-V3에서만 사용 가능 |
+        
+        ----
+        
+        :::danger
+        
+        - 구성 파일에서 `######### PLEASE DO NOT EDIT THE FOLLOWING #########` 아래의 내용은 수정하지 마세요.
+        
+        :::
+        </TabItem>
+    
+        <TabItem value="flyos-armbian_other_config" label="FLYOS-Armbian 시스템 - 기타 설정">
+        ## FLYOS-Armbian 시스템 - 기타 설정
+        1. 다른 구성 옵션은 아래 이미지를 참조하시고 필요에 따라 활성화 또는 비활성화 하세요.
+        2. 각 구성 옵션 뒤의 `?`를 클릭하면 해당 구성 옵션의 의미를 알 수 있습니다.
+        3. 구성 변경 후 우측 하단의 `분홍색 버튼`을 눌러 변경 사항을 저장하세요.
+        4. 구성 변경 후 상위 컴퓨터를 재시작하면 적용됩니다.
+
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flytools_conf.webp').default} size="80%" align="center" />
+        </TabItem>
+    </Tabs>
