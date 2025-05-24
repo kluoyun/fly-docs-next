@@ -1,0 +1,85 @@
+---
+sidebar_position: 4
+---
+
+# Fonction de reprise d'impression après panne de courant avec Klipper
+
+## Aperçu
+
+- La fonction de reprise d'impression après panne de courant avec Klipper permet à Klipper de reprendre automatiquement l'état d'impression après une coupure de courant.
+- Cette fonction doit être utilisée en conjonction avec le module de mise hors tension sécurisée.
+- Ne convient pas aux modèles où l'axe Z se déplace après une panne de courant.
+
+## Configuration
+
+### Fichier de configuration plr.cfg
+
+- Dans la page de configuration de l'imprimante, créez un nouveau fichier de configuration nommé `plr.cfg`.
+- Le contenu du fichier de configuration est le suivant :
+
+    ```cfg
+    [mcu host]   
+    serial: /tmp/klipper_host_mcu
+    
+    [power_loss_resume]
+    # power_pin: PA0 # Broche d'arrêt du module de mise hors tension connectée à l'entrée PA0 de la carte inférieure
+    power_pin: host:gpiochip1/gpio21 # Broche d'arrêt du module de mise hors tension connectée à l'entrée PA21 de la carte supérieure
+    is_shutdown: True # Exécuter l'opération d'arrêt, par défaut activé
+    paused_recover_z: -2.0 # Si l'impression est en pause lors de l'arrêt, la distance de déplacement Z pendant la reprise, par défaut sans déplacement
+    start_gcode:
+        # G-code exécuté avant la reprise de l'impression
+        # Tous les paramètres sauvegardés avant l'arrêt peuvent être récupérés via {PLR}
+        # Utilisez M118 {PLR} pour afficher tous les paramètres disponibles
+        M118 Début de la reprise : {PLR.print_stats.filename}
+        M118 Position d'interruption : X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; Réglage de la température du lit chauffant
+        M104 S{PLR.extruder.target-10}  ; Réglage de la température de l'extrudeur
+        M109 S{PLR.extruder.target-10}  ; Attendre que l'extrudeur atteigne la température cible
+        G91                             ; Coordonnées relatives
+        G1 Z2 F100                      ; Lever Z, préparation au retour à zéro X,Y
+        G90                             ; Coordonnées absolues
+        G28 X Y                         ; Réinitialiser X et Y à zéro
+        M140 S{PLR.bed.target}          ; Réglage de la température du lit chauffant
+        M104 S{PLR.extruder.target}     ; Réglage de la température de l'extrudeur
+        M190 S{PLR.bed.target}          ; Attendre que le lit chauffant atteigne la température cible
+        M109 S{PLR.extruder.target}     ; Attendre que l'extrudeur atteigne la température cible
+        M83                             ; Extrusion relative
+        # G1 E0.5 F400                  ; Extrusion légère
+    layer_count: 2 # Nombre de couches à imprimer avant d'exécuter layer_change_gcode
+    layer_change_gcode:                
+        # G-code exécuté après avoir imprimé {layer_count} couches
+        M118 Reprise de la vitesse d'impression
+        M106 S{PLR.fan_speed}             ; Activer le ventilateur d'extraction
+        M220 S{PLR.move_speed_percent}    ; Définir le pourcentage de vitesse demandée
+        M221 S{PLR.extrude_speed_percent} ; Définir le pourcentage de vitesse d'extrusion demandée
+    shutdown_gcode:
+        # G-code exécuté avant l'arrêt du système
+        M118 Alimentation faible, arrêt du système
+        # M112 ; Arrêt d'urgence
+
+    ```
+
+    :::attention Note
+
+    - Le macro `start_gcode` dans le fichier de configuration ci-dessus peut nécessiter des ajustements en fonction des spécificités de votre machine.
+
+    :::
+
+- Enregistrez le fichier de configuration ci-dessus.
+- Ouvrez le fichier `printer.cfg` et ajoutez le contenu suivant au début du fichier :
+
+    ```cfg
+
+    [include plr.cfg]
+
+    ```
+
+- Cliquez sur le bouton "Enregistrer" en haut à droite et redémarrez le système.
+- À ce stade, la fonction de reprise d'impression après panne de courant avec Klipper est configurée.
+
+## Test
+
+- Lancez l'impression d'un fichier quelconque et appuyez sur le bouton "Arrêt d'urgence" pendant l'impression pour simuler une panne de courant.
+- Redémarrez le firmware et attendez que Klipper se reconnecte correctement.
+- Si une fenêtre de dialogue apparaît dans le navigateur ou dans KlipperScreen, cela indique que la fonction de reprise après panne de courant fonctionne correctement.
+- Vous pouvez ensuite tester la situation réelle de panne de courant.
