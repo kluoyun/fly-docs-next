@@ -1,0 +1,107 @@
+---
+sidebar_position: 2
+sidebar_label: 시스템 이미지 플래싱
+---
+
+import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# 시스템 이미지 플래싱
+
+## 시스템 소개
+FlyOS-Fast는 3D 프린팅을 위한 경량화된 Linux 시스템으로, Fly 전체 시리즈의 상위 기기 플랫폼을 지원합니다. 주요 특징은 다음과 같습니다:
+
+- 빠른 부팅 속도와 커널 최적화로 Klipper 실시간성을 보장
+- 파일 시스템 최적화로 전원이 꺼져도 부팅에 문제가 되지 않도록 설계
+- 30초 이내 KlipperScreen 빠르게 시작
+- Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen 등 서비스 사전 설치
+- Klipper와 RRF 시스템 간의 전환 지원
+- Mainsail과 Fluidd 온라인 한 번의 클릭으로 전환 가능
+- U 디스크 프린팅, 전원이 꺼진 상태에서도 인쇄를 계속하는 기능, 시리얼 모니터링 지원
+- fly-c8 및 fly-geminiv3에서 부팅 시 자동 펌웨어 플래싱 지원
+- Fluidd 등 프론트엔드 UI의 기본 언어 및 프린터 이름 미리 설정 가능
+
+추가적인 OEM 맞춤 기능(예: 전원 로고 설정, 기본 구성 파일 설정, Mainsail 탭 숨김 등)을 원하시면 연락주세요.
+
+:::tip 주의사항
+이 시스템은 경량화된 맞춤형 시스템이며, 내장된 klipper 등 구성 요소 및 서비스는 공식 버전이 아닙니다. 사용자가 직접 수정 또는 업그레이드할 수 없습니다.
+:::
+
+- FLYOS-FAST 시스템 계정은 `root`이며, 비밀번호는 `mellow`입니다.
+
+## 상위 기기 초보자 가이드
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">상위 기기 초보자 가이드</Button>
+
+## 시스템 플래싱 준비
+
+1. 플래싱을 위한 TF 카드 준비:
+   - 읽기 장치
+   - 용량 16GB~128GB, 전송 속도 Class10 이상의 TF 카드
+   - 권장 브랜드: Kingston, SanDisk, Samsung, Kioxia 등 대형 브랜드 사용 권장! 저급 브랜드 사용 금지!
+
+2. FLY-C5 시스템 이미지 다운로드:
+    <Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618 시스템 이미지</Button>
+    :::tip
+    - 시스템 파일 명명 규칙: `FlyOS-Fast-[칩 시리즈]-[버전 번호].img` 예: `FlyOS-Fast-H5-v1.0.0.img`
+    - Windows 시스템에서는 `.exe` 파일 다운로드, 이 파일은 7z 자동 압축 해제 패키지이며 다운로드 후 더블 클릭하여 압축 해제하면 `.img` 파일을 얻을 수 있음 (Windows 시스템만 해당)
+    - MacOS, Linux 시스템에서는 `.7z` 파일 다운로드, 이 파일은 7z 압축 패키지이며 다운로드 후 7z 형식을 지원하는 도구로 압축 해제하면 `.img` 파일을 얻을 수 있음
+    - 시스템 파일 크기가 큰 관계로 임시적으로 다른 압축 형식 및 원본 이미지 다운로드는 제공하지 않음
+    - 본 설명서에서는 `.exe`를 기준으로 설명
+    :::
+    - FlyOS-Fast 제조품 라이브러리 방문, 압축 형식 선택, 파일 페이지 진입
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+    - 이미지 버전 선택 (기본값: 최신)
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+    - `파일 목록` 클릭, 스크롤 막대 이동, 오른쪽으로 드래그하여 다운로드 버튼 확인
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+    - 다운로드 버튼 클릭하여 시스템 이미지 다운로드
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+3. 플래싱 도구 다운로드, 예시로 Rufus 사용
+    - Rufus 다운로드 주소: [한글 다운로드](https://rufus.ie/zh/#download) 또는 [영문 다운로드](https://rufus.ie/en/#download) (Windows 전용).
+    - Etcher 다운로드 주소: [다운로드](https://etcher.balena.io/#download-etcher) (Windows, MacOS, Linux 지원).
+    - Win32 Disk Imager 다운로드 주소: [다운로드](https://sourceforge.net/projects/win32diskimager/) (Windows 전용).
+
+4. 예시로 `FlyOS-Fast-H5.exe` 사용
+
+5. 시스템 이미지 파일 압축 해제, `.img` 파일 얻기
+    - `FlyOS-Fast-H5.exe` 더블 클릭 또는 우클릭 열기, 몇 초 후 아래와 같은 창이 나타남 (시스템에서 안전하지 않다고 표시되면 "더 보기" -> "실행" 선택)
+    - 압축 해제 디렉토리 선택 후 `추출` 버튼 클릭, 압축 완료까지 기다림
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - 압축이 완료되면 압축 디렉토리에 `FlyOS-Fast-H5-vx.x.x.img` 파일 생성됨. `x.x.x`는 시스템 버전 번호입니다.
+
+6. 준비된 Class10 TF 카드를 읽기 장치에 삽입하고 컴퓨터 연결
+
+
+## 시스템 플래싱
+
+1. Rufus 열기, 장치 선택 (용량은 플래싱 카드와 일치해야 함)  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. 부트 유형 선택: "이미지 파일"
+
+3. "선택" 버튼 클릭 후 압축 해제된 `.img` 파일 선택
+
+4. 선택 후, 부트 유형에 이미지 파일 이름 표시  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+    
+5. "시작" 버튼 클릭, 자료 삭제 메시지가 나올 경우 "확인" 클릭  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. 플래싱 완료 후 컴퓨터 알림 소리, 진행률 표시 "준비 완료"  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. 플래싱 완료 후 잠시 플래싱 카드를 뽑지 말 것
+
+8. 파일 탐색기 열기, `FlyOS-Conf`라는 이름의 USB 드라이브 또는 이동식 디스크 존재 여부 확인  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. `FlyOS-Conf` 열기, 아래와 같은 두 개의 파일이 있으면 플래싱 성공, 그중 `config.txt`는 시스템 구성 파일
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. 다음 단계: <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh">상위 기기 SSH 연결</Button>

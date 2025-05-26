@@ -1,0 +1,106 @@
+---
+sidebar_position: 2
+sidebar_label: システムイメージ焼付け
+---
+
+import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# システムイメージ焼付け
+
+## システム紹介
+FlyOS-Fast は 3D プリントに特化した軽量級 Linux システムで、Fly 全シリーズの上位機プラットフォームをサポートしています。その特徴には以下があります：
+
+- 高速起動、カーネル最適化により Klipper のリアルタイム性を保証
+- ファイルシステム最適化により停電による起動不能リスクを低減
+- KlipperScreen を 30 秒で高速起動
+- Klipper、RRF、Mainsail、Fluidd、Moonraker、KlipperScreen などのサービスが事前にインストール済み
+- Klipper と RRF システムの切り替えが可能
+- Mainsail と Fluidd のオンラインワンクリック切り替えが可能
+- USB プリント、電源断継続印刷、シリアルポート画面がサポート
+- fly-c8、fly-geminiv3 での自動ファームウェア焼付けがサポート
+- Fluidd などのフロントエンド UI のデフォルト言語やプリンター名を事前に設定可能
+
+より高度な ODM 定制機能（例：電源ロゴ、プリセット設定ファイル、Mainsail タブの非表示など）が必要な場合、お問い合わせください。
+
+:::tip 注意
+このシステムは軽量級カスタムシステムであり、組み込まれた klipper などのコンポーネントやサービスは公式バージョンではありません。ユーザーによる独自の変更やアップデートはサポートされません。
+:::
+
+- FLYOS-FAST システムのアカウントは `root`、パスワードは `mellow` です。
+
+## 上位機初心者ガイド
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">上位機初心者ガイド</Button>
+
+## システム焼付け前の準備
+
+1. 焼付け用の TF カードを準備：
+    - リーダー
+    - サイズ 16GB～128GB、転送速度 Class10 以上の TF カード
+    - 推奨されるブランドは `Kingston`、`SanDisk`、`Samsung`、`Kioxia` などです。安価な TF カードの使用は厳禁です！
+
+2. FLY-C5 のシステムイメージをダウンロード：<Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618 システムイメージ</Button>
+    :::tip
+    - システムファイルの命名規則：`FlyOS-Fast-[チップシリーズ]-[バージョン番号].img`、例：`FlyOS-Fast-H5-v1.0.0.img`
+    - Windows 系統では `.exe` ファイルをダウンロードします。これは 7z 自解凍圧縮パッケージです。ダウンロード後、ダブルクリックして解凍すると `.img` ファイルが得られます。（Windows 系統専用）
+    - MacOS や Linux 系統では `.7z` ファイルをダウンロードします。これは 7z 圧縮パッケージです。ダウンロード後、7z 形式に対応するツールで解凍すると `.img` ファイルが得られます。
+    - システムファイルは非常に大きいため、一時的に他の圧縮形式やソースイメージのダウンロードは提供されません。
+    - 本チュートリアルでは `.exe` を例として説明します。
+    :::
+    - FlyOS-Fast ピュアリビングへアクセスし、圧縮形式を選択し、ファイルページに進む
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+    - イメージバージョンを選択（最新バージョンがデフォルト）
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+    - 「ファイルリスト」をクリックし、スクロールバーを右にドラッグするとダウンロードボタンが表示されます
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+    - ダウンロードボタンをクリックしてシステムイメージをダウンロード
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+3. 焼付けツールをダウンロードします。本チュートリアルでは `Rufus` を使用します。実際には他にも `Etcher`、`Win32 Disk Imager` などを利用可能です。
+    - Rufus ダウンロードアドレス：[クリックしてダウンロード（日本語）](https://rufus.ie/zh/#download) または [Click Download English](https://rufus.ie/en/#download) （Windows 専用）。
+    - Etcher ダウンロードアドレス：[クリックしてダウンロード](https://etcher.balena.io/#download-etcher) （Windows、MacOS、Linux 対応）。
+    - Win32 Disk Imager ダウンロードアドレス：[クリックしてダウンロード](https://sourceforge.net/projects/win32diskimager/) （Windows 専用）。
+
+4. 本チュートリアルでは `FlyOS-Fast-H5.exe` を例として使用します。
+
+5. システムイメージファイルを解凍し、`.img` ファイルを取得します。
+    - `FlyOS-Fast-H5.exe` をダブルクリックまたは右クリックして開き、数秒待つと次のウィンドウが表示されます（システムが危険と警告した場合は「詳細情報」→「実行」を選択してください）
+    - 解凍先フォルダーを選択し、「Extract」ボタンをクリックして解凍を待ちます。
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - 解凍が完了すると、解凍先フォルダーに `FlyOS-Fast-H5-vx.x.x.img` ファイルが生成されます。`x.x.x` がシステムバージョン番号です。
+
+6. 用意した Class10 TF カードをリーダーに挿入し、コンピューターに接続
+
+
+## システム焼付け
+
+1. Rufus を開き、デバイスを選択します（容量は焼付けカードと同じである必要があります）
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. イメージタイプを「イメージファイル」に設定
+
+3. 「選択」ボタンをクリックし、解凍後の `.img` ファイルを選択
+
+4. 選択後、イメージタイプにイメージファイル名が表示されます
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+    
+5. 「開始」をクリックし、ディスクデータ消去の確認メッセージが出たら「OK」をクリック
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. 焼付けが完了すると、コンピューターからの音声が鳴り、進行状況バーが「準備完了」に表示されます
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. 焼付けが完了したら、焼付けカードを取り出さないでください
+
+8. ファイルエクスプローラを開き、`FlyOS-Conf` という名前の USB ドライブやリムovableドライブがあるか確認します
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. `FlyOS-Conf` を開き、図のように二つのファイルがあれば焼付け成功です。そのうちの `config.txt` がシステム構成ファイルです
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. 次のステップ：<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh">SSH を通じて上位機に接続</Button>

@@ -1,84 +1,116 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 sidebar_label: SSH Connection to Host Computer
 ---
 
 # Connect to Host Computer via SSH
 
-* You can connect to the device using serial port or WIFI.
-* Please prepare **MobaXterm_Personal** or other **SSH terminal tools** in advance.
-* Please ensure that the SD card or M2WE has burned the system corresponding to the host computer.
-* **If the host computer cannot start up normally, please remove all peripherals such as drivers, limit switches, and fans!**
-* **Finally, please connect to SSH via the network for firmware compilation!**
-* **For firmware compilation, refer to the tutorial on connecting to the host computer via WIFI or Ethernet.**
+:::danger Note
+- If this is the first time your host computer has booted after being flashed with an image, you must use `Serial Port Connection to Host Computer SSH`.
+- During the first boot, do not connect any lines other than power and Type-C!!
+- When compiling firmware, be sure to use `WiFi Connection to Host Computer SSH` for easier firmware compilation and flashing!
+:::
+
+* Before starting the connection, please download: <Button variant="contained" disableElevation href="https://mobaxterm.mobatek.net/download-home-edition.html ">SSH Software</Button>. Select `Installer edition` on the right to download.
+
+---
 
 <Tabs>
-    <TabItem value="serial" label="Serial Connection" default>
+    <TabItem value="serial" label="Serial Port Connection to Host Computer SSH" default>
         ## Use Serial Port to Connect to Host Computer SSH
 
-        * Use a USB Type-C cable to connect the upper computer of FLY with the computer.
-        * For other upper computers, please query the connection method yourself!!
+       :::tip Note
+        - Make sure the TF card or M2WE has been burned with the correct system and installed correctly on the FLY-C5.
+        - The default username for the FLYOS-FAST system is `root`, and the default password is `mellow`.
+       :::
 
-        <Tabs>
-            <TabItem value="c5" label="FLY-C5" default>
-                * Ports of FLY-C5
-                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
-            </TabItem>
-        </Tabs>
+        * Use a Type-C data cable to connect the FLY-C5 to the computer.
 
-        * If the motherboard is connected to the computer normally, you will see the CH340 port in the Device Manager.
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="40%" align="center" />
-        * Open `MobaXterm`, set it up as follows, and select the port seen in the Device Manager.
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="40%" align="center" />
-        * If everything is normal, you can see the boot screen.
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.webp').default} size="40%" align="center" />
-        * After a moment, this screen indicates that it has started.
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
 
-        **If after several minutes, there is no display as shown below, press the Enter key a few times.**
+        * If the motherboard is connected to the computer normally, you can see the CH340 port in the Device Manager.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        **After pressing Enter, the following content will appear.**
+        * Open `MobaXterm` and make the following settings. Select the port seen in the Device Manager.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        * If you need to view the IP address, enter `ip a | grep inet` in SSH and press Enter. Find the IP address in the same segment as your router to access.
+        * If everything is normal, you should see the boot screen.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial1.webp').default} size="60%" align="center" />  
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
+
+
+        * Since FLYOS-FAST boots quickly, you will most likely see garbled text, as shown in the image below. This is normal, so don't worry—just press Enter a few times.
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
+
+
+        * After pressing Enter, you will see the content shown in the image below.
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
+
+        * Enter the account: `root`, then press Enter. Next, enter the password: `mellow`, then press Enter. Password input will not be displayed; this is normal.
+
+        :::warning Note 
+        - The account for the FLYOS-FAST system is `root`, and the password is `mellow`.
+        - The FLYOS-FAST system has only one account, `root`!!
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
+
+        * To view the IP address, enter `ip a | grep inet` in the ssh session and press Enter. Find the IP address that matches your router's segment to access it.
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
+
 
     </TabItem>
-    <TabItem value="net" label="Network Connection" default>
-        ## Use Network IP to Connect to Host Computer SSH
+    <TabItem value="net" label="WiFi Connection to Host Computer SSH" default>
+        ## Use WiFi to Connect to Host Computer SSH
+       :::tip Note
+        - Make sure the host computer system has already **booted up properly**.
+        - The default username for the FLYOS-FAST system is `root`, and the default password is `mellow`.
+        - The **precondition** for connecting to the host computer SSH via WiFi is that your **host computer has already connected to the router and you know the host computer's IP**.
+       :::
 
-        * Please log in to the **router backend** connected to the upper computer.
-        * Please ensure that the system has **started normally**.
-        * Please ensure that you know the **username and password of the upper computer**, the default username for the FLY system is **fly**, and the default password is **mellow**.
-        * If the motherboard has started and is connected to the network, you can use the IP to connect to SSH.
-        * Open MobaXterm, set it up as follows, fill in the IP address previously viewed, or check it in the router backend.
+        * Use a UType-C data cable to connect the FLY-C5 to the computer.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
 
-        **Note: Here, step 4 inputs the username of the upper computer.**
+        * Open MobaXterm, set it as shown in the image below. In the `Remote host` field, enter the IP of the host computer obtained during the serial port connection, or query the host computer's IP through the router backend.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
 
-        * The first connection will pop up this window, click `Accept` to proceed.
+        **Note: Here, the username `root` for the host computer should be entered in step 4.**
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
 
-        * Prompt to input the password, press Enter after entering the upper computer password.
+        * The first connection may pop up this window, just click `Accept`.
 
-        **Note: Here, the entered password is invisible, just press Enter directly after typing.**
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
-        The default username for the FLY system is: `fly`, and the password is: `mellow`.
+        * Prompt to enter the password, enter the host computer password and press Enter.
+        :::tip
+        - Here, the password is not visible when entered. Just press Enter directly after entering.
+        :::
+        
+        Default username for the FLYOS-FAST system is: `root`, and the password is: `mellow`.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.webp').default} size="40%" align="center" />
+        **If the following window pops up, indicating whether to save the user password, click `No`.**
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        * Login successful.
+        * If the following screen appears, login is successful!
+
+        :::warning Note 
+        - The account for the FLYOS-FAST system is `root`, and the password is `mellow`.
+        - The FLYOS-FAST system has only one account, `root`!!
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />
+
+
 
     </TabItem>
 </Tabs>
