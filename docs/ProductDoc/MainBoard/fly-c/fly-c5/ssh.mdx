@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 sidebar_label: SSH连接上位机
 ---
 
@@ -11,6 +11,7 @@ sidebar_label: SSH连接上位机
 * **如果上位机不能正常启动请把驱动、限位、风扇等外设拆除！！！**
 * **最后请通过网络连接到SSH方便编译固件！！**
 * **需要编译固件请看通过WIFI或者网线连接上位机教程**
+---
 
 <Tabs>
     <TabItem value="serial" label="串口连接" default>
@@ -19,66 +20,92 @@ sidebar_label: SSH连接上位机
         * 使用USB Type-c线材将FLY的上位机与电脑连接
         * 其他上位机请自行查询连接方法！！
 
-        <Tabs>
-            <TabItem value="c5" label="FLY-C5" default>
-                * FLY-C5 端口
-                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
-            </TabItem>
-        </Tabs>
+        * FLY-C5端口
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
 
         * 如果主板与电脑连接正常，打开设备管理器，就可以看到CH340的端口了
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
+
         * 打开`MobaXterm`，进行如下设置，端口选择前面在设备管理器看到的端口
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="40%" align="center" />
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
+
         * 一切正常的话就可以看到启动画面了
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.webp').default} size="40%" align="center" />
-        * 等待片刻，出现这个画面就是启动了
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.webp').default} size="40%" align="center" />
 
-        **如果等了几分钟后，像下图一样，界面没有任何显示，按几下回车键即可**
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial1.webp').default} size="60%" align="center" />  
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.webp').default} size="40%" align="center" />
 
-        **回车后会出现下图所示内容**
+        * 因为FLYOS-FAST启动速度较快，所以您大概率看到的的乱码，如下图所示，这是正常现象，请不要担心，**按几下回车即可**
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.webp').default} size="40%" align="center" />
+
+        * **回车后会出现下图所示内容**
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
+
+        * 输入账户：`root`，回车，再输入密码：`mellow`，回车。输入密码时，密码不会显示，此为正常现象  
+
+        :::warning 注意 
+        - FLYOS-FAST 系统账户为`root`，密码为`mellow`
+        - FLYOS-FAST 系统有且仅有`root`账户！！！
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
 
         * 如果需要查看IP，在ssh中输入：输入 `ip a | grep inet` 回车，在返回内容中找到与你路由器同段的IP即可访问
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
+
 
     </TabItem>
     <TabItem value="net" label="网络连接" default>
         ## 使用网络IP连接到上位机SSH
 
-        * 请登录上位机连接的**路由器后台**
-        * 请确保系统已经**正常启动**
-        * 请确保**自己知道上位机的用户名与密码**，FLY系统默认用户名**fly**, 默认密码**mellow**
-        * 如果主板已经启动且已经连接到网络，可以使用IP连接到SSH
-        * 打开MobaXterm，进行如下设置，IP填写前面查看的，也可以在路由器后台查看
+        * 请确保上位机系统已经**正常启动**
+        * 请确保**明确上位机的用户名与密码**。FLY系统默认用户名`fly`, 默认密码`mellow`
+        * 通过WiFi连接到上位机SSH的**前提**是：您的**上位机已经连接到路由器，并且知道上位机的IP**  
+        * 使用USB Type-c线材将FLY的上位机与电脑连接
+        * 其他上位机请自行查询连接方法！！
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="40%" align="center" />
+        * FLY-C5 端口
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
 
-        **注意：这里第4步输入的上位机的用户名**
+        * 打开MobaXterm，设置如下图所示，`Remote host`处则填写您在**串口连接时查询到的上位机IP**，也可以通过路由器后台查询上位机**IP**
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+
+        **注意：这里第4步输入的上位机的用户名`root`**
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
 
         * 第一次连接回弹出这个窗口，点击`Accept`即可
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
         * 提示输入密码，输入上位机密码后回车
+        :::tip
+        - 这里输入的密码是看不到的，输完后直接回车即可
+        :::
+        
+        **FLYOS-FAST** 系统默认用户名为：`root` ，密码为：`mellow`
 
-        **注意：这里输入的密码是看不到的，输完后直接回车即可**
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
 
-        FLY系统默认，用户名为：`fly` ，密码为：`mellow`
+        **如果弹出下图所示界面，此弹窗提示是否保存用户密码，点击`No`即可**
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.webp').default} size="40%" align="center" />
+        * 出现下图所示界面，则登录成功！
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.webp').default} size="40%" align="center" />
+        :::warning 注意 
+        - FLYOS-FAST 系统账户为`root`，密码为`mellow`
+        - FLYOS-FAST 系统有且仅有`root`账户！！！
+        :::
 
-        * 登录成功
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />
+
+
 
     </TabItem>
 </Tabs>
