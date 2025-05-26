@@ -1,0 +1,111 @@
+---
+sidebar_position: 2
+sidebar_label: 系统镜像烧录
+---
+
+import TF from '@site/docs/General/fly-os/_tf.mdx';
+import M2WE from '@site/docs/General/fly-os/_m2we.mdx';
+import M2SD from '@site/docs/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/docs/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/docs/General/fly-os/_fly_config.mdx';
+
+# 系统镜像烧录
+
+## 系统介绍
+FlyOS-Fast 是为 3D 打印深度定制的轻量化 Linux 系统，支持 Fly 全系列上位机平台。其特点包括：
+
+- 启动速度快，内核优化保障 Klipper 实时性
+- 文件系统优化，降低断电导致无法开机的风险
+- 30 秒快速启动 KlipperScreen
+- 预装 Klipper、RRF、Mainsail、Fluidd、Moonraker、KlipperScreen 等服务
+- 支持 Klipper 与 RRF 系统切换
+- 支持 Mainsail 与 Fluidd 在线一键切换
+- 支持 U 盘打印、断电续打、串口屏幕
+- 支持开机自动烧录固件（fly-c8、fly-geminiv3）
+- 可提前设置 Fluidd 等前端 UI 的默认语言和打印机名称
+
+如需更多 OEM 定制功能（如开机 LOGO、预设配置文件、隐藏 Mainsail 标签页等），请联系我们。
+
+:::tip 须知
+此系统为轻量化定制系统，内置的 klipper 等组件及服务非官方原版，不支持用户自行修改、升级。
+:::
+
+
+- FLYOS-FAST 系统账户为`root`，密码为`mellow`
+
+
+## 上位机新手操作指南
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">上位机新手操作指南</Button>
+
+
+## 系统烧录前准备
+
+1. 准备烧录的TF卡：
+    - 读卡器
+    - TF卡一张，容量 16GB-128GB，传输速度 class10 级或以上。
+    - 建议使用`金士顿`、`闪迪`、`三星`、`铠侠`等大品牌的TF卡，禁止使用杂牌TF卡！
+
+2. 下载FLY-C5的系统镜像：<Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618系统镜像</Button>
+    :::tip
+    - 系统文件命名规则：`FlyOS-Fast-[芯片系列]-[版本号].img`，例如：`FlyOS-Fast-H5-v1.0.0.img`
+    - Windows系统下载`.exe`文件，此文件为7z自解压压缩包，下载完成后双击打开解压后即可得到`.img`文件（只能使用Windows系统解压）
+    - 其它系统如MacOS，Linux系统下载`.7z`文件，此文件为7z压缩包，下载完成后使用支持7z格式的工具解压后即可得到`.img`文件
+    - 因系统文件较大，暂时不提供其它压缩格式及源镜像的下载
+    - 本教程以`.exe`为例进行介绍
+    :::
+    - 访问 FlyOS-Fast 制品库，选择压缩格式，进入文件页面
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+    - 选择镜像版本（默认最新）
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+    - 点击`文件列表`，再点击滚动条，向右拖动，即可出现下载按钮
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+    - 点击下载按钮，下载系统镜像
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+
+3. 下载烧录工具，教程将使用`Rufus`为例。实际可以使用其它工具，如`Etcher`，`Win32 Disk Imager`等。
+    - Rufus下载地址：[点击下载 中文](https://rufus.ie/zh/#download) 或者 [Click Download English](https://rufus.ie/en/#download) （仅支持Windows）。
+    - Etcher下载地址：[点击下载](https://etcher.balena.io/#download-etcher) （支持Windows，MacOS，Linux）。
+    - Win32 Disk Imager下载地址：[点击下载](https://sourceforge.net/projects/win32diskimager/) （仅支持Windows）。
+
+4. 教程将使用`FlyOS-Fast-H5.exe`为例.
+
+5. 解压系统镜像文件，得到`.img`文件。
+    - 双击或者右键打开`FlyOS-Fast-H5.exe`, 等待几秒会弹出下面的窗口（如果系统提示不安全，请选择“更多信息”->“运行”）
+    - 可选择解压目录，然后点击`Extract`按钮，等待解压完成。
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - 解压完成后，会在解压目录下生成`FlyOS-Fast-H5-vx.x.x.img`文件。`x.x.x`为系统版本号。
+
+
+6. 将准备好的 class10 TF卡插入读卡器，连接到电脑
+
+
+## 烧录系统
+
+1. 打开 Rufus，选择设备（容量应与烧录卡一致）  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. 引导类型选择“镜像文件”
+
+3. 点击“选择”按钮，选中解压后的 `.img` 文件
+
+4. 选择后，引导类型显示镜像文件名  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+    
+5. 点击“开始”，如提示清除磁盘数据，点击“确定”  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. 烧录完成后，电脑提示音，进度条显示“准备就绪”  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. 烧录完成后暂勿拔出烧录卡
+
+8. 打开文件资源管理器，查看是否有名为 `FlyOS-Conf` 的U盘或可移动磁盘  
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. 打开 `FlyOS-Conf`，如有下图两个文件则烧录成功，其中 `config.txt` 为系统配置文件
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. 下一步：<Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh">通过SSH连接上位机</Button>
