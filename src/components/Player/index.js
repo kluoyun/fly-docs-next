@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { ChevronUp, ChevronDown } from "lucide-react";
+import Translate, { translate } from '@docusaurus/Translate';
 import ReactPlayer from 'react-player'
 
 const Player = (props) => {
@@ -61,7 +62,7 @@ const Player = (props) => {
                 <div style={{ flex: 1, textAlign: 'center' }}>
                     {collapsed && (
                         <span className="collapsed-hint" style={{ fontSize: '0.9rem', color: 'var(--ifm-color-primary)' }}>
-                            🎬 点击展开视频播放器
+                            <Translate>🎬 点击展开视频播放器</Translate>
                         </span>
                     )}
                 </div>
@@ -75,7 +76,7 @@ const Player = (props) => {
                         display: 'flex',
                         alignItems: 'center',
                     }}
-                    title={collapsed ? "展开" : "折叠"}
+                    title={collapsed ? translate({ message: '展开' }) : translate({ message: '收起' })}
                 >
                     {collapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
                 </button>
@@ -134,10 +135,10 @@ const Player = (props) => {
                             boxSizing: "border-box",
                         }}>
                             <div style={{ fontSize: "1.1rem", fontWeight: "bold", marginBottom: "0.5rem" }}>
-                                无法播放该视频
+                                <Translate>无法播放该视频</Translate>
                             </div>
                             <div style={{ fontSize: "0.9rem", wordBreak: "break-word", color: "#666" }}>
-                                原始地址：<br />
+                                <Translate>原始地址：</Translate><br />
                                 <a
                                     href={url}
                                     target="_blank"
