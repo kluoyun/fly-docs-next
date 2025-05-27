@@ -1,28 +1,30 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 sidebar_label: Onboard 5V Fan Header
 ---
 
 
 
 
-# Onboard 5V Fan Header
+# Onboard 5V Fan Interface
 
-## The Pi-V2 board is equipped with a controllable 5V interface for main control cooling, and the wiring method is as follows:
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/fan.webp').default} size="80%" align="left" />
+## Wiring of the Onboard 5V Fan
+    * The Pi-V2 has a controllable 5V interface for main control cooling, and the wiring method is as follows:
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_fan.webp').default} size="60%" align="center" />
 
-## Commands to execute via SSH before adding configuration:
+## Commands to Execute Before Adding Configuration via SSH
 ```cfg
 wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb && sudo dpkg -i linux-dtb-current-fly-sunxi64_3.3.5_arm64.deb
+sudo reboot
 ```
 
 ## Reference Configuration
 
     ```cfg
-    [mcu host]                      # FlyOS has already generated the linux MCU for you by default, just define it to use           
+    [mcu host]                      # FlyOS has already generated the Linux MCU for you, just define it to use            
     serial: /tmp/klipper_host_mcu 
 
-    [temperature_sensor FLY-π]      # Host machine temperature
+    [temperature_sensor FLY-Pi]      # Host machine temperature
     sensor_type: temperature_host
 
 
@@ -32,8 +34,8 @@ wget https://cdn.mellow.klipper.cn/mirrors/fly/linux-dtb-current-fly-sunxi64_3.3
     sensor_type: temperature_host   # Set to the temperature of the host machine main controller
     control:watermark               # Control method
     target_temp: 48                 # Temperature at which the host machine cooling fan starts
-    min_temp: 0                     # Lowest temperature, an error will occur below this value
-    max_temp: 90                    # Highest temperature, an error will occur above this value
+    min_temp: 0                     # Lowest temperature, below this will cause an error
+    max_temp: 90                    # Highest temperature, above this will cause an error
     off_below: 0.10
     kick_start_time: 0.50
     max_speed: 0.8                  # Maximum speed, 80% of full power operation

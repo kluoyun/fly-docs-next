@@ -1,0 +1,117 @@
+---
+sidebar_position: 3
+sidebar_label: Подключение к хост-компьютеру через SSH
+---
+
+# Подключение к хост-компьютеру через SSH
+
+:::danger Внимание
+- Если ваш хост-компьютер запущен впервые после прошивки образа, обязательно используйте «Подключение к хост-компьютеру через последовательный порт».
+- Во время первого запуска запрещается подключать любые провода, кроме источника питания и Type-C!
+- При компиляции прошивки используйте «Подключение к хост-компьютеру через WiFi», чтобы упростить процесс компиляции и прошивания!
+:::
+
+* Перед началом подключения скачайте: <Button variant="contained" disableElevation href="https://mobaxterm.mobatek.net/download-home-edition.html ">ПО для SSH</Button>. Выберите «Installer edition» справа для загрузки.
+
+---
+
+<Tabs>
+    <TabItem value="serial" label="Подключение к хост-компьютеру через последовательный порт" default>
+        ## Использование последовательного порта для подключения к хост-компьютеру через SSH
+
+       :::tip Внимание
+        - Убедитесь, что карта TF или M2WE правильно записаны и правильно установлены на FLY-C5.
+        - По умолчанию для системы FLYOS-FAST имя пользователя — `root`, пароль — `mellow`.
+       :::
+
+        * Используйте кабель Type-C для подключения FLY-C5 к компьютеру.
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
+
+        * Если материнская плата успешно подключена к компьютеру, откройте диспетчер устройств, и вы увидите порт CH340.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
+
+        * Откройте «MobaXterm» и выполните следующие настройки, выбрав ранее в диспетчере устройств видимый порт.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
+
+        * Если всё сделано правильно, вы увидите экран запуска.
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial1.webp').default} size="60%" align="center" />  
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
+
+
+        * Поскольку система FLYOS-FAST запускается быстро, скорее всего, вы увидите нечитаемый текст, как показано на рисунке ниже. Это нормально, просто нажмите несколько раз клавишу Enter.
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
+
+
+        * После нажатия клавиши Enter вы увидите следующее содержимое.
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
+
+        * Введите имя пользователя: `root`, нажмите Enter, затем введите пароль: `mellow`, нажмите Enter. При вводе пароля символы не отображаются, это нормально.
+
+        :::warning Внимание 
+        - Имя пользователя системы FLYOS-FAST — `root`, пароль — `mellow`.
+        - В системе FLYOS-FAST существует только один аккаунт — `root`!!!
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
+
+        * Если нужно проверить IP, введите в ssh: `ip a | grep inet`, затем найдите IP, совпадающий с вашим маршрутизатором, чтобы получить доступ.
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
+
+
+    </TabItem>
+    <TabItem value="net" label="Подключение к хост-компьютеру через WiFi" default>
+        ## Использование WiFi для подключения к хост-компьютеру через SSH
+       :::tip Внимание
+        - Убедитесь, что система хост-компьютера уже запущена нормально.
+        - По умолчанию для системы FLYOS-FAST имя пользователя — `root`, пароль — `mellow`.
+        - Для подключения к хост-компьютеру через WiFi необходимо, чтобы ваш хост-компьютер был подключен к маршрутизатору, и вы знаете его IP-адрес.
+       :::
+
+        * Используйте кабель Type-C для подключения FLY-C5 к компьютеру.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
+
+        * Откройте MobaXterm и установите настройки, как показано на рисунке ниже. В поле «Remote host» введите IP-адрес хост-компьютера, который вы узнали при подключении через последовательный порт, либо через панель управления маршрутизатора.
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
+
+        **Внимание: здесь в четвертом шаге введите имя пользователя хост-компьютера — `root`**
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
+
+        * При первом подключении появится окно, нажмите «Accept».
+
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
+
+        * Введите пароль, нажмите Enter.
+        :::tip
+        - Здесь пароль не будет отображаться при вводе, просто нажмите Enter после ввода.
+        :::
+        
+        По умолчанию для системы FLYOS-FAST имя пользователя — `root`, пароль — `mellow`.
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
+
+        **Если появится окно, как показано ниже, где спрашивается о сохранении пароля пользователя, нажмите «No»**.
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
+
+        * Если появится следующий экран, подключение успешно завершено!
+
+        :::warning Внимание 
+        - Имя пользователя системы FLYOS-FAST — `root`, пароль — `mellow`.
+        - В системе FLYOS-FAST существует только один аккаунт — `root`!!!
+        :::
+
+        <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />
+
+
+
+    </TabItem>
+</Tabs>
+
+----

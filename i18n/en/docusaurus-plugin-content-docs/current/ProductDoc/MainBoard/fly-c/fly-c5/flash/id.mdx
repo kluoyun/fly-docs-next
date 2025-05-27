@@ -1,0 +1,108 @@
+---
+sidebar_position: 5
+sidebar_label: ID Search Tutorial
+---
+
+import GetUsbID from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/get-id/_get-usb-id.mdx';
+import GetRS232ID from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/get-id/_get-rs232-id.mdx';
+import GetCanbusUUID from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
+
+# Motherboard ID Reading and Viewing
+
+:::tip
+Please do not modify the configuration when translating web pages.
+:::
+
+:::warning Notice
+Please do not modify the configuration when translating web pages.
+:::
+
+:::danger Notice
+Please do not modify the configuration when translating web pages.
+:::
+
+<Tabs>
+<TabItem value="usb" label="USB ID Acquisition" default>
+* Please prepare a data cable with data transfer function. If the length is particularly long, it is recommended to use a data cable with a magnetic ring.
+
+<GetUsbID />
+</TabItem>
+
+<TabItem value="can" label="USB Bridge CAN ID Acquisition">
+* Please prepare a data cable with data transfer function. If the length is particularly long, it is recommended to use a data cable with a magnetic ring.
+* Before searching for the ID, connect the tool board to the Gemini main board flashed with bridge firmware using an XT30 data cable.
+* CAN tool board wiring reference:
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/canbridge.webp').default} size="80%" align="left" />
+* The 120Ω jumper needs to be connected:
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/120.webp').default} size="80%" align="left" />
+
+## CAN Configuration and ID Search
+
+* If you need to use CAN, ensure that the host machine has been configured for CAN.
+
+---
+
+:::danger Notice
+Ensure the main board is properly connected to the host machine before proceeding with the following operations.
+:::
+
+:::warning
+Ensure the CAN network of the host machine, the CAN rate of the bridge main board, and the rate of the CAN tool board are completely consistent.
+:::
+
+### Precautions Before Searching for Devices
+
+* Before searching for the CAN ID, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump").
+* Ensure you are logged in via the network to SSH, not via serial port login.
+* Ensure the UTOC is connected or the motherboard flashed with CAN bridge firmware, and the data cable connecting to the host machine has data transfer capability.
+
+### Device Search
+
+* After logging into the host machine, enter the command `lsusb` to search for devices. Several scenarios may occur:
+    * If the prompt says the `ls` command is not found, you can enter the following command to install it:
+        ```bash
+        sudo apt-get install usbutils
+        ```
+    * If `lsusb` shows no reaction, this is a system issue, requiring a system replacement or using a normal system.
+    * If the following information appears, confirm the presence of `1d50:606f`:
+        <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
+* `1d50:606f` is the device required for this session. If there are multiple `1d50:606f`, it is recommended to exclude one to avoid affecting subsequent operations.
+* If none are found, check whether the data cable is properly connected and whether the firmware is correctly flashed.
+
+:::warning Notice
+A `1d50:606f` must exist to search for the CAN ID.
+:::
+
+### CAN ID Search
+
+* Enter the following command to search for the ID:
+    ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+    ```
+* If the ID appears and the `Application:` displays `Klipper`, then this ID can be used directly.
+* If the `Application:` displays `CANBOOT` or `Katapult`, then the firmware needs to be flashed:
+    <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+### CAN Problem Collection
+
+:::danger Notice
+* If the CAN ID cannot be found, refer to the following document:
+    <Button variant="contained" disableElevation href="/docs/DebugDoc/faq/klipper_can">CAN Problem Collection</Button>
+:::
+
+### Filling the CAN ID into the Configuration
+
+* Open the printer's web interface and find the `printer.cfg` under the configuration option in the left sidebar:
+    * fluidd: `{…}`
+    * mainsail: `Machine`
+* After clicking into it, copy and paste the queried UUID into the `canbus_uuid:` field under the `[mcu]` node, save and restart to connect to the main board.
+    <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+* If Klipper prompts that the firmware needs to be updated or reports an ADC error, this indicates that Klipper has successfully connected to the main board.
+    <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+:::danger
+Notice: All IDs in the documentation are examples. Each main board's ID is different, so please modify and fill in according to the actual obtained ID.
+:::
+
+</TabItem>
+</Tabs>

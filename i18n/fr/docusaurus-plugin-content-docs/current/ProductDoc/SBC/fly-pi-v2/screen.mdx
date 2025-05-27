@@ -3,6 +3,8 @@ sidebar_position: 7
 sidebar_label: Connexion et configuration de l'écran
 ---
 
+
+
 import TFT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tft.mdx';
 import HDMI from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_hdmi.mdx';
 
@@ -10,78 +12,131 @@ import HDMI from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/f
 
 # Connexion et configuration de l'écran
 
-:::info
-
-* FLY-TOOLS nécessite que la machine hôte soit connectée à Internet pour accéder à `IP+:9999` après avoir entré l'adresse IP de la machine hôte.
-* Par exemple `192.168.6.110:9999`
-
-:::
-
+## Connexion de l'écran
     <Tabs>
-        <TabItem value="tft" label="Connexion du TFT" default>
-            * Il faut configurer l'écran dans FLY TOOLS et activer KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tft.webp').default} size="80%" align="center" />
-            * Connexion de l'écran TFT de FLY-Pi V2
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-v2-tft-c.webp').default} size="80%" align="left" />
+        <TabItem value="tft" label="Connectique du TFT résistif" default>
+        ### Connectique du TFT résistif
+        :::tip
+        - Le paquet du TFT contient deux rubans d'interconnexion FPC, un de `14 broches (étroit)` et l'autre de `16 broches (large)`.
+        - Le TFT résistif doit impérativement utiliser le ruban de `14 broches (étroit)` !!!!
+        :::
+        1. Raccordement du TFT résistif pour FLY-Pi V2
+        <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="60%" align="left" />
         </TabItem>
 
-        <TabItem value="hdmi" label="Connexion de l'HDMI">
-            * Il faut configurer l'écran dans FLY TOOLS et activer KS
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/hdmi.webp').default} size="80%" align="center" />               
-            * Utiliser le module FPC vers HDMI
-            * Veuillez noter qu'il est nécessaire de connecter le type-C avec fonction de transmission de données au module
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
-            * Connexion de l'écran HDMI de FLY-Pi v2
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-hdmi.webp').default} size="80%" align="center" />
+        <TabItem value="hdmi" label="Connectique HDMI">
+        ### Connectique HDMI
+        1. Raccordement de l'écran `FLY-HDMI-LCD5`
+        <table>
+          <tr>
+            <td>
+            Méthode de raccordement un
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi2.webp').default} size="85%" align="center" />
+            </td>
+            <td>
+            Méthode de raccordement deux
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi1.webp').default} size="85%" align="center" />
+            </td>
+          </tr>
+        </table>
+
         </TabItem>
     </Tabs>
+---
 
-# Configuration de l'écran TFT
+## Configuration de l'écran
 
 <Tabs>
-    <TabItem value="tft" label="Configuration de l'écran TFT" default>
-        * Il faut activer KS dans FLY TOOLS
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
-        <Tabs>
-    <TabItem value="tft" label="Configuration de l'écran TFT capacitif" default>
-## Méthode un    
-         * La configuration de l'écran capacitif nécessite d'utiliser la commande ci-dessous pour configurer en `fly-tft-v2-c`
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
-```
-         * Assurez-vous que le commutateur sur le dos de l'écran est réglé sur `Cap`
-    * Utilisez la commande ci-dessous pour vérifier si la modification a été effectuée avec succès
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
-        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
- * Pour modifier une configuration d'écran résistif en écran capacitif, utilisez la commande ci-dessous
+    <TabItem value="flyos-fast" label="Système FLYOS-FAST - Configuration de l'écran TFT">
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
-``` 
-</TabItem>
+    ### Configuration de l'écran TFT pour le système FLYOS-FAST
+    1. Ouvrir l'adresse IP du périphérique dans le navigateur, par exemple : `http://192.168.6.110/` 
+       <table>
+         <tr>
+           <td>
+             Dans `fluidd`, suivant l'image ci-dessous : `désélectionner` -> `filtrer les fichiers et dossiers cachés`.
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+           </td>
+           <td>
+             Dans `mainsail`, suivant l'image ci-dessous : `cocher` -> `afficher les fichiers cachés`.
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+           </td>
+         </tr>
+       </table>
+  
+    2. À ce moment-là, vous verrez le dossier `.flyos-config`, en entrant dans ce dossier se trouve le fichier `sys-config.conf`.
 
-        <TabItem value="hdmi" label="Configuration de l'écran TFT résistif">
-## Méthode un        
-           * La configuration de l'écran résistif nécessite d'utiliser la commande ci-dessous pour configurer en `fly-tft-v2-r` 
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
-```
-                                * Assurez-vous que le commutateur sur le dos de l'écran est réglé sur `Resi`
+     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+    
+    3. Ouvrir le fichier `sys-config.conf`, apporter les modifications nécessaires puis `enregistrer` -> `fermer` suffit.
+    :::warning
+        - La configuration du TFT résistif est : `fly-tft-v1`, veillez à ne pas avoir d'espace après `=`, veuillez confirmer que le codeur au dos de l'écran est sur `Resi`
+        - La configuration du TFT capacitif est : `fly-tft-v2-c`, veillez à ne pas avoir d'espace après `=`, veuillez confirmer que le codeur au dos de l'écran est sur `Cap`
+        - Attention : Le format des éléments de configuration dans le fichier `sys-config.conf` est `clé=valeur`, la modification du format est interdite !!! Sinon, la configuration ne fonctionnera pas !!!
+    :::
+    
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_tft_conf.webp').default} size="90%" align="center" />
+    
+    4. Après avoir effectué les modifications et sauvegardé, il suffit de `redémarrer le système` pour que cela prenne effet.
+    </TabItem>
+
+
+    <TabItem value="flyos-armbian" label="Système FLYOS-Armbian - Configuration de l'écran TFT" default>
+    ### Configuration de l'écran TFT pour le système FLYOS-Armbian
+    :::info
+    - Connectez votre PC principal au WiFi, obtenez l'IP du PC principal, puis entrez `IP+:9999` dans le navigateur pour accéder à FLY TOOLS et configurer l'écran.
+    - Par exemple, si l'IP de votre PC principal est `192.168.6.110`, vous devez entrer `192.168.6.110:9999` dans le navigateur.
+    :::
+    1. Ouvrez FLY TOOLS, suivez les étapes de l'image ci-dessous pour `activer Klipper Screen`, `choisir le modèle d'écran`, cliquez sur le bouton rose en bas à droite `sauvegarder la configuration` puis **redémarrez le PC principal pour que cela prenne effet !**
+      :::warning
+      - Pour le TFT résistif, choisissez : `fly-tft-v1`, veuillez confirmer que le codeur au dos de l'écran est sur `Resi`
+      - Pour le TFT capacitif, choisissez : `fly-tft-v2-c`, veuillez confirmer que le codeur au dos de l'écran est sur `Cap`
+      :::
+      <table>
+        <tr>
+          <td>
+           - Pour le TFT résistif :  
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-r_conf.webp').default} size="80%" align="center" />
+          </td>
+          <td>
+          - Pour le TFT capacitif :
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-c_conf.webp').default} size="80%" align="center" />
+          </td>
+        </tr>
+      </table>
+    2. Après avoir sauvegardé la configuration, redémarrez le PC principal, cela prendra effet !
+<br />
+---
+
+<br />
+<br />
+<br />
+<br />
+<br />
+    2. Vous pouvez également configurer directement via SSH en utilisant la ligne de commande (cette méthode n'est pas recommandée !)
+        * Pour le TFT résistif, utilisez la commande ci-dessous pour configurer en `fly-tft-v1`, veuillez confirmer que le codeur au dos de l'écran est sur `Resi`
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
+        ```
+
+        * Pour le TFT capacitif, utilisez la commande ci-dessous pour configurer en `fly-tft-v2-r`, veuillez confirmer que le codeur au dos de l'écran est sur `Cap`
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+        ```
+
         * Utilisez la commande ci-dessous pour vérifier si la modification a été effectuée avec succès
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
-                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
- * Pour modifier une configuration d'écran capacitif en écran résistif, utilisez la commande ci-dessous
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
-```
-</TabItem>
-</Tabs>    
-</TabItem>
+        ```cfg
+        sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+        ```
+
+        * Pour modifier un écran résistif en écran capacitif, utilisez la commande ci-dessous
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v1/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+        ```
+        * Pour modifier un écran capacitif en écran résistif, utilisez la commande ci-dessous
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
+        ```
+    </TabItem>
 </Tabs>
-
-    ----

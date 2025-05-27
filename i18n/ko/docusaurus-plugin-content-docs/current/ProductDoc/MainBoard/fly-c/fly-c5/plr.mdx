@@ -1,0 +1,85 @@
+---
+sidebar_position: 4
+---
+
+# Klipper 전원喪失 후 재개 인쇄 기능
+
+## 개요
+
+- Klipper 전원喪失 후 재개 인쇄 기능은 Klipper이 전원이 끊겼다가 다시 켜졌을 때, 인쇄 상태를 자동으로 복구할 수 있는 기능입니다.
+- 이 기능은 안전한 전원 차단 모듈과 함께 사용해야 합니다.
+- 전원喪失 후 Z 축이 이동하는 모델에서는 사용되지 않습니다.
+
+## 설정
+
+### plr.cfg 설정 파일
+
+- 프린터 설정 페이지에서 새로운 설정 파일을 생성하고 `plr.cfg`라는 이름으로 저장합니다.
+- 설정 파일의 내용은 다음과 같습니다:
+
+    ```cfg
+    [mcu host]   
+    serial: /tmp/klipper_host_mcu
+    
+    [power_loss_resume]
+    # power_pin: PA0 # 안전한 전원 차단 모듈의 전원 핀, 하위 MCU의 PA0 핀에 연결
+    power_pin: host:gpiochip1/gpio21 # 안전한 전원 차단 모듈의 전원 핀, 상위 MCU의 PA21 핀에 연결
+    is_shutdown: True # 전원 차단 여부, 기본값은 활성화
+    paused_recover_z: -2.0 # 일시 중지된 상태에서 전원喪失 후 Z 축 이동 거리, 기본값은 이동하지 않음
+    start_gcode:
+        # 인쇄 재개 전에 실행되는 G 코드
+        # 전원喪失 전에 저장된 모든 매개변수는 {PLR}를 통해 접근 가능
+        # M118 {PLR}를 사용하여 모든 사용 가능한 매개변수 출력
+        M118 인쇄 시작: {PLR.print_stats.filename}
+        M118 중단 위치: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; 열침대 온도 설정
+        M104 S{PLR.extruder.target-10}  ; 엑스트루더 온도 설정
+        M109 S{PLR.extruder.target-10}  ; 엑스트루더가 설정 온도까지 예열될 때까지 대기
+        G91                             ; 상대 좌표
+        G1 Z2 F100                      ; Z축을 들어올리고 X,Y 축을 리셋 준비
+        G90                             ; 절대 좌표
+        G28 X Y                         ; X,Y 축 리셋
+        M140 S{PLR.bed.target}          ; 열침대 온도 설정
+        M104 S{PLR.extruder.target}     ; 엑스트루더 온도 설정
+        M190 S{PLR.bed.target}          ; 열침대가 설정 온도까지 예열될 때까지 대기
+        M109 S{PLR.extruder.target}     ; 엑스트루더가 설정 온도까지 예열될 때까지 대기
+        M83                             ; 상대적 엑스트루드
+        # G1 E0.5 F400                  ; 약간의 물질을 엑스트루드
+    layer_count: 2 # 지정된 층 수만큼 인쇄 후 layer_change_gcode 실행
+    layer_change_gcode:                
+        # {layer_count} 층만큼 인쇄 후 실행할 G 코드
+        M118 인쇄 속도 복원
+        M106 S{PLR.fan_speed}             ; 블로우 팬 작동
+        M220 S{PLR.move_speed_percent}    ; 요청 속도 퍼센트 설정
+        M221 S{PLR.extrude_speed_percent} ; 요청 엑스트루드 속도 퍼센트 설정
+    shutdown_gcode:
+        # 전원 차단 전에 실행할 G 코드
+        M118 전력 부족, 전원 차단
+        # M112 ; 긴급 정지
+
+    ```
+
+    :::warning 주의
+
+    - 위 설정 파일의 `start_gcode` 매크로는 실제 장비 환경에 따라 수정해야 할 수 있습니다.
+
+    :::
+
+- 위 설정 파일을 저장한 후
+- `printer.cfg` 파일을 열고 가장 앞에 다음 내용을 추가합니다:
+
+    ```cfg
+
+    [include plr.cfg]
+
+    ```
+
+- 오른쪽 상단의 "저장 및 재시작"을 클릭하면 설정이 적용됩니다.
+- 이제 Klipper 전원喪失 후 재개 인쇄 기능이 설정 완료되었습니다.
+
+## 테스트
+
+- 임의의 파일을 인쇄 중일 때 "긴급 정지" 버튼을 클릭하여 전원喪失을 시뮬레이션합니다.
+- 다시 "펌웨어 재시작"을 클릭하고 Klipper이 정상적으로 연결될 때까지 기다립니다.
+- 웹페이지 또는 KlipperScreen에서 팝업 메시지가 나타나면 정상적으로 기능이 동작하는 것입니다.
+- 이후 실제 전원喪失 상황에서도 테스트할 수 있습니다.

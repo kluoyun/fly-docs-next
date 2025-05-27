@@ -1,40 +1,50 @@
-:::warning Важно
+import NMTUI_OPERATE from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/flyos-fast/_nmtui_operate.mdx';
 
-* Для работы FLY-приложения необходим модуль M2WE или 2.4G Wi-Fi, иначе подключение к Wi-Fi невозможно.
-* Обратите внимание, что не поддерживаются сети Wi-Fi с русскими названиями и сети Wi-Fi 2.4G/5G в режиме объединения.
-* Если у вас mini pad или lite2, игнорируйте данное предупреждение.
+    ## Система FLYOS-Armbian подключается к Wi-Fi
 
-:::
+    1. Сначала подключитесь к хост-компьютеру через последовательный порт: <Button variant="contained" disableElevation href="/docs/ProductDoc/SBC/fly-pi-v2/ssh#flyos-fast-serial-port-connection-to-host-ssh">Подключение через последовательный порт к хост-компьютеру SSH</Button>
 
-## Подключение к ПО верхнего уровня
+    2. Введите команду `sudo nmtui`, возможно, потребуется ввести пароль, введите пароль `mellow`, затем нажмите клавишу `Enter`. На экране появится интерфейс, как показано на изображении ниже (обратите внимание: вводимый пароль не виден)  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi1.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi2.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi3.webp').default} size="60%" align="center" />
 
-* Если настройка Wi-Fi через BOOT-диск завершилась неудачей, используйте следующую конфигурацию для настройки соединения с Wi-Fi. Обратите внимание, что необходимо использовать последовательный порт для подключения к ПО верхнего уровня.
-* Сначала подключитесь к SSH через последовательный порт ([нажмите здесь, чтобы перейти](/docs/DebugDoc/BasicTutorial/index.mdx "щелкните для перехода"))
-* Выполните следующую команду, возможно, потребуется ввести пароль. Введите пароль `mellow` и нажмите Enter (пароль не отображается при вводе):
+    3. Выберите опцию `Activate a connection`, затем нажмите клавишу `Enter`, чтобы перейти на следующий уровень меню
+    <NMTUI_OPERATE />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi4.webp').default} size="60%" align="center" />
 
-```cfg
-sudo nmtui
-```
+    4. Если ваш роутер работает нормально, то вы увидите список доступных сетей Wi-Fi. Знак `*` после имени сети указывает на силу сигнала
+    :::tip
+    - **Не поддерживаются сети Wi-Fi с именем на китайском языке!!!**
+    - Поддерживается Wi-Fi 2.4G, а поддержка Wi-Fi 5G зависит от того, поддерживает ли ваш модуль Wi-Fi 5G
+    - Модуль `M2WE` поддерживает Wi-Fi 5G
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi5.webp').default} size="60%" align="center" />
 
-    <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui1.webp').default} size="80%" align="left" />
+    5. Выберите нужную вам сеть Wi-Fi, нажмите клавишу `Enter`, чтобы перейти на следующий уровень меню
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi6.webp').default} size="60%" align="center" />
 
-    <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui2.webp').default} size="80%" align="left" />
+    6. После этого появится следующее окно. Правильно введите пароль для вашей сети Wi-Fi, затем нажмите клавишу `Enter`, чтобы подключиться к Wi-Fi
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi7.webp').default} size="60%" align="center" />
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi8.webp').default} size="60%" align="center" />
 
-* Выберите `Activate a connection` и нажмите Enter
+    7. Если пароль верный, перед соответствующей сетью Wi-Fi появится символ `*`, что означает успешное подключение к Wi-Fi
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi9.webp').default} size="60%" align="center" />
 
-    <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui3.webp').default} size="80%" align="left" />
+    8. Затем дважды нажмите клавишу `Esc`, чтобы вернуться в командную строку
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi10.webp').default} size="60%" align="center" />
+    
+    9. В SSH введите команду `ip a | grep inet`, затем нажмите клавишу `Enter`. В выводе найдите IP-адрес, совпадающий с вашим маршрутизатором, чтобы получить доступ
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi11.webp').default} size="90%" align="center" />
 
-* После входа в интерфейс используйте клавиши `↑ ↓` для выбора нужной сети Wi-Fi, затем нажмите Enter, введите пароль и дождитесь успешного подключения
+    10. Откройте браузер, введите в поле поиска найденный IP-адрес хост-компьютера, затем нажмите клавишу `Enter`, чтобы войти в веб-интерфейс управления fluidd/mainsail
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi12.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi13.webp').default} size="90%" align="center" />
 
-    <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui4.webp').default} size="80%" align="left" />
+    11. В поле поиска браузера введите `IP:9999`, затем нажмите клавишу `Enter`, чтобы войти в интерфейс `fly tools`. Через этот интерфейс можно активировать различные функции хост-компьютера
+    :::tip
+    - Интерфейс `fly tools` доступен только в системе `FLYOS-Armbian`. В системе `FLYOS-FAST` интерфейс `fly tools` отсутствует!!!
+    :::
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi14.webp').default} size="60%" align="center" />  
+    <ImageView image={require('@site/docs/General/fly-os/img/flyos_wifi15.webp').default} size="90%" align="center" />
 
-
-    <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui5.webp').default} size="80%" align="left" />
-
-* После успешного подключения вы увидите изображение, как показано ниже
-
-    <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui6.webp').default} size="80%" align="left" />
-
-* Нажмите клавишу ESC для выхода в командную строку. Введите `ip a`, IP-адрес верхнего уровня 192.168.2.126 будет показан на изображении
-
-    <ImageView image={require('@site/docs/General/fly-os/img/nmtui/nmtui7.webp').default} size="80%" align="left" />

@@ -3,6 +3,8 @@ sidebar_position: 7
 sidebar_label: スクリーンの配線と設定
 ---
 
+
+
 import TFT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tft.mdx';
 import HDMI from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_hdmi.mdx';
 
@@ -10,78 +12,131 @@ import HDMI from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/f
 
 # スクリーンの配線と設定
 
-:::info
-
-* FLY-TOOLSにアクセスするには、マシンをネットワークに接続し、`IP+:9999`でアクセスしてください。
-* 例：`192.168.6.110:9999`
-
-:::
-
+## スクリーンの配線
     <Tabs>
-        <TabItem value="tft" label="TFT配線" default>
-            * FLY TOOLSで画面の設定を行い、KSを開く必要があります。
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tft.webp').default} size="80%" align="center" />
-            * FLY-Pi V2 TFTスクリーンの配線
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/pi-v2-tft-c.webp').default} size="80%" align="left" />
+        <TabItem value="tft" label="TFT抵抗膜式スクリーンの配線" default>
+        ### TFT抵抗膜式スクリーンの配線
+        :::tip
+        - TFTスクリーンのパッケージには、2本のFPCケーブルが付属しています。1本は「14Pの（細い）」、もう1本は「16Pの（広い）」です。
+        - 抵抗膜式スクリーンは必ず「14Pの（細い）」を使用してください！！！
+        :::
+        1. FLY-Pi V2 TFT抵抗膜式スクリーンの配線
+        <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-tft.webp').default} size="60%" align="left" />
         </TabItem>
 
         <TabItem value="hdmi" label="HDMI配線">
-            * FLY TOOLSで画面の設定を行い、KSを開く必要があります。
-                <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/hdmi.webp').default} size="80%" align="center" />               
-            * FPCからHDMIモジュールへの変換を使用します。
-            * データ転送機能のあるType-Cケーブルが必要です。
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/lcd-hdmi-fpc.webp').default} size="80%" align="center" />
-            * FLY-Pi v2 HDMIスクリーンの配線
-                <ImageView image={require('@site/docs/General/fly-os/img/screen/piv2-hdmi.webp').default} size="80%" align="center" />
+        ### HDMI配線
+        1. `FLY-HDMI-LCD5`スクリーンの配線
+        <table>
+          <tr>
+            <td>
+            配線方法1
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi2.webp').default} size="85%" align="center" />
+            </td>
+            <td>
+            配線方法2
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_hdmi1.webp').default} size="85%" align="center" />
+            </td>
+          </tr>
+        </table>
+
         </TabItem>
     </Tabs>
+---
 
-# TFTスクリーン設定
+## スクリーンの設定
 
 <Tabs>
-    <TabItem value="tft" label="TFTスクリーン" default>
-        * FLY TOOLSでKSを開く必要があります。
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/ks.webp').default} size="80%" align="center" />
-        <Tabs>
-    <TabItem value="tft" label="TFTタッチスクリーン設定" default>
-## 方法一    
-         * タッチスクリーンの設定には、以下のコマンドを使用して`fly-tft-v2-c`に設定する必要があります。
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v2-c/' -i /boot/FlyOS-Env.txt
-```
-         * 画面の裏側のダイアルが`Cap`に設定されていることを確認してください。
-    * 設定が正常に行われたかどうかを確認するには、以下のコマンドを使用します。
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
-        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-c.webp').default} size="80%" align="center" />
- * タッチスクリーンを抵抗膜スクリーンに変更するには、以下のコマンドを使用します。
+    <TabItem value="flyos-fast" label="FLYOS-FASTシステム-TFTスクリーン設定">
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-c/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
-``` 
-</TabItem>
+    ### FLYOS-FASTシステム-TFTスクリーン設定
+    1. ブラウザでデバイスのIPアドレスにアクセスします。例: `http://192.168.6.110/` 
+       <table>
+         <tr>
+           <td>
+             `fluidd`では以下の図のように: `チェックを外す` -> `隠しファイルやフォルダをフィルタリングする`。
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+           </td>
+           <td>
+             `mainsail`では以下の図のように: `チェックを入れる` -> `隠しファイルを表示する`。
+             <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+           </td>
+         </tr>
+       </table>
+  
+    2. このとき、`.flyos-config`フォルダが見えるようになります。このフォルダ内には`sys-config.conf`ファイルがあります。
 
-        <TabItem value="hdmi" label="TFT抵抗膜スクリーン設定">
-## 方法一        
-           * 抵抗膜スクリーンの設定には、以下のコマンドを使用して`fly-tft-v2-r`に設定する必要があります。
-```cfg
-sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
-```
-                                * 画面の裏側のダイアルが`Resi`に設定されていることを確認してください。
-        * 設定が正常に行われたかどうかを確認するには、以下のコマンドを使用します。
-```cfg
-sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
-```
-                                    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-lite/lite2.1/img/tft-r.webp').default} size="80%" align="center" />
- * 抵抗膜スクリーンをタッチスクリーンに変更するには、以下のコマンドを使用します。
+     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+    
+    3. `sys-config.conf`ファイルを開き、必要な設定項目を変更してから`保存` -> `閉じる`します。
+    :::warning
+        - 抵抗膜式スクリーンの設定は: `fly-tft-v1`です。`=`の後ろには**スペースがあってはいけません！！！** もし不明であれば、スクリーン背面のダイアルを`Resi`に設定してください。
+        - 電極式スクリーンの設定は: `fly-tft-v2-c`です。`=`の後ろには**スペースがあってはいけません！！！** もし不明であれば、スクリーン背面のダイアルを`Cap`に設定してください。
+        - 注意: `sys-config.conf`ファイル内の設定項目の形式は`key=value`です。独自に形式を変更しないでください！！！ そうすると設定が有効になりません！！！
+    :::
+    
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_tft_conf.webp').default} size="90%" align="center" />
+    
+    4. 変更保存後、`システムを再起動`すると有効になります。
+    </TabItem>
 
-```cfg
-sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v2-c/}' /boot/FlyOS-Env.txt
-```
-</TabItem>
-</Tabs>    
-</TabItem>
+
+    <TabItem value="flyos-armbian" label="FLYOS-Armbianシステム-TFTスクリーン設定" default>
+    ### FLYOS-Armbianシステム-TFTスクリーン設定
+    :::info
+    - 上位機器でWiFiに接続し、上位機器のIPアドレスを取得後、ブラウザで`IP+:9999`にアクセスすることで、FLY TOOLSにアクセスできます。スクリーンに関する設定を行えます。
+    - 例えば、あなたの上位機器のIPアドレスが`192.168.6.110`の場合、ブラウザで`192.168.6.110:9999`にアクセスします。
+    :::
+    1. FLY TOOLSを開き、以下の図のように手順を進め、`Klipper Screen`を`有効化`し、`スクリーンモデルを選択`し、右下のピンク色のボタン`保存設定`をクリックした後、**上位機器を再起動すると有効になります！** 
+      :::warning
+      - 抵抗膜式スクリーンを選択する場合: `fly-tft-v1`を選択してください。スクリーン背面のダイアルを`Resi`に設定してください。
+      - 電極式スクリーンを選択する場合: `fly-tft-v2-c`を選択してください。スクリーン背面のダイアルを`Cap`に設定してください。
+      :::
+      <table>
+        <tr>
+          <td>
+           - 抵抗膜式スクリーン:  
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-r_conf.webp').default} size="80%" align="center" />
+          </td>
+          <td>
+          - 電極式スクリーン:
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_tft-c_conf.webp').default} size="80%" align="center" />
+          </td>
+        </tr>
+      </table>
+    2. 設定を保存後、上位機器を再起動すると有効になります！  
+<br />
+---
+
+<br />
+<br />
+<br />
+<br />
+<br />
+    2. SSHでコマンドラインからも直接設定できます（この方法は推奨されません！）
+        * 抵抗膜式スクリーンの設定には以下のコマンドを使用します。`fly-tft-v1`に設定し、スクリーン背面のダイアルを`Resi`に設定してください。
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v1/' -i /boot/FlyOS-Env.txt
+        ```
+
+        * 電極式スクリーンの設定には以下のコマンドを使用します。`fly-tft-v2-r`に設定し、スクリーン背面のダイアルを`Cap`に設定してください。
+        ```cfg
+        sudo sed '11s/screen=none/screen=fly-tft-v2-r/' -i /boot/FlyOS-Env.txt
+        ```
+
+        * 設定が正常に変更されたか確認するには以下のコマンドを使用します。
+
+        ```cfg
+        sed -n '9,11p' /boot/FlyOS-Env.txt | grep -v '^#'
+        ```
+
+        * 抵抗膜式スクリーンを電極式スクリーンに変更するには以下のコマンドを使用します。
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v1/screen=fly-tft-v2-r/}' /boot/FlyOS-Env.txt
+        ```
+        * 電極式スクリーンを抵抗膜式スクリーンに変更するには以下のコマンドを使用します。
+        ```cfg
+        sudo sed -i '11{/^#/!s/screen=fly-tft-v2-r/screen=fly-tft-v1/}' /boot/FlyOS-Env.txt
+        ```
+    </TabItem>
 </Tabs>
-
-    ----

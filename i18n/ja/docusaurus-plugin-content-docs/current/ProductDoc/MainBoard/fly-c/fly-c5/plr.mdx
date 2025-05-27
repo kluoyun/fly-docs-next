@@ -1,0 +1,86 @@
+---
+sidebar_position: 4
+---
+
+# Klipper電源喪失復旧機能
+
+## 概要
+
+- Klipper電源喪失復旧機能は、Klipperが電源を切った後、再度電源を入れると、Klipperの印刷状態を自動的に復旧できる機能です。
+- この機能には安全シャットダウンモジュールとの連携が必要です。
+- 停電時にZ軸が移動する機種には適用されません。
+
+## 設定
+
+### plr.cfg 設定ファイル
+
+- プリンターの設定ページで、新しい設定ファイルを作成し、`plr.cfg` ファイルを作成します。
+- 設定ファイルの内容は以下の通りです：
+
+    ```cfg
+    [mcu host]   
+    serial: /tmp/klipper_host_mcu
+    
+    [power_loss_resume]
+    # power_pin: PA0 # セーフティーシャットダウンモジュールの電源ピン、下位機のPA0ピンに接続
+    power_pin: host:gpiochip1/gpio21 # セーフティーシャットダウンモジュールの電源ピン、上位機のPA21ピンに接続
+    is_shutdown: True # シャットダウン操作を行うかどうか、デフォルトでは有効
+    paused_recover_z: -2.0 # 停止時に一時停止していた場合、再開時のZ軸移動距離、デフォルトでは移動しない
+    start_gcode:
+        # 続きから印刷開始する前に実行されるGコード
+        # 停電前に保存されたすべてのパラメータは{PLR}で取得可能
+        # M118 {PLR}で使用可能なすべてのパラメータを出力可能
+        M118 印刷開始: {PLR.print_stats.filename}
+        M118 中断位置: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; 熱ベッド温度の設定
+        M104 S{PLR.extruder.target-10}  ; エクストルーダー温度の設定
+        M109 S{PLR.extruder.target-10}  ; エクストルーダー温度が設定温度に達するまで待機
+        G91                             ; 相対座標
+        G1 Z2 F100                      ; Z軸を上げて、X,Y軸をゼロリセット準備
+        G90                             ; 絶対座標
+        G28 X Y                         ; X,Y軸をゼロリセット
+        M140 S{PLR.bed.target}          ; 熱ベッド温度の設定
+        M104 S{PLR.extruder.target}     ; エクストルーダー温度の設定
+        M190 S{PLR.bed.target}          ; 熱ベッドが設定温度に達するまで待機
+        M109 S{PLR.extruder.target}     ; エクストルーダーが設定温度に達するまで待機
+        M83                             ; 相対エクストルーダー
+        # G1 E0.5 F400                  ; 少量押し出し
+    layer_count: 2 # 指定した層数分だけ印刷した後にlayer_change_gcodeを実行
+    layer_change_gcode:                
+        # {layer_count}層印刷後に実行されるGコード
+        M118 印刷速度を復旧
+        M106 S{PLR.fan_speed}             ; ブロワーファンをオン
+        M220 S{PLR.move_speed_percent}    ; 要求速度パーセンテージを設定
+        M221 S{PLR.extrude_speed_percent} ; 要求押し出し速度パーセンテージを設定
+    shutdown_gcode:
+        # シャットダウン前に実行されるGコード
+        M118 電圧低下、シャットダウン
+        # M112 ; 緊急停止
+
+    ```
+
+    :::warning 注意
+
+    - 上記の設定ファイル内の `start_gcode` マクロは、必要に応じて修正してください。具体的には機械の実際の状況に合わせて調整してください。
+
+    :::
+
+- 上記の設定ファイルを保存した後、`printer.cfg` ファイルを開き、ファイルの一番最初に以下を追加します：
+
+    ```cfg
+
+    [include plr.cfg]
+
+    ```
+
+- 右上の「保存」ボタンをクリックして、再起動してください。
+- これで、Klipperの電源喪失復旧機能の設定は完了です。
+
+## テスト
+
+- 任意のファイルを印刷中に、「緊急停止」ボタンを押して、停電をシミュレートします。
+- 「ファームウェア再起動」ボタンを再度クリックし、Klipperが正常に接続されるのを待ちます。
+- ウェブページまたはKlipperScreenでポップアップが表示されれば、電源喪失復旧機能が正常に動作しています。
+- 後続で本番環境での停電状況もテストできます。
+
+---

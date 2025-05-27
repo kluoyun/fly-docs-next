@@ -1,20 +1,19 @@
 ---
-position: 5
-label: Utilisation de l'accéléromètre
+sidebar_position: 5
+sidebar_label: Utilisation de l'accéléromètre
 ---
+
+
 
 ## Installation des paquets dépendants
 
-:::tip
-Il est recommandé d'utiliser des outils SSH comme `MobaXterm_Personal`.
+:::warning
+- Le logiciel de bureau FLY n'a pas besoin d'exécuter cette étape, car il inclut déjà les paquets dépendants pour l'accéléromètre.
+- **Pour les autres systèmes non FLY, veuillez impérativement exécuter cette étape !** Il est recommandé d'utiliser des outils comme `MobaXterm_Personal` pour opérer via SSH.
 :::
 
-:::tip
-Le logiciel supérieur FLY n'a pas besoin de l'exécuter, car il comprend déjà les paquets dépendants de l'accéléromètre.
-:::
-
-    * Veuillez exécuter les commandes ci-dessous pour installer les paquets dépendants.
-    * Notez que selon la performance du processeur, cela peut prendre beaucoup de temps, jusqu'à 10-20 minutes. Veuillez patienter jusqu'à ce que l'installation soit terminée. Dans certains cas, si le RAM de la carte mère est insuffisant, l'installation pourrait échouer.
+    * Veuillez exécuter les commandes ci-dessous dans l'ordre pour installer les paquets dépendants
+    * Notez que selon la performance du processeur, cela peut prendre beaucoup de temps, jusqu'à 10 à 20 minutes. Veuillez patienter jusqu'à ce que l'installation soit terminée. Dans certains cas, si la RAM de la carte mère est insuffisante, l'installation pourrait échouer.
 
         ```bash
         sudo apt install python3-numpy python3-matplotlib libatlas-base-dev
@@ -26,30 +25,30 @@ Le logiciel supérieur FLY n'a pas besoin de l'exécuter, car il comprend déjà
 
 ## Test de l'accéléromètre
 
-    * Vous devez d'abord réinitialiser avant d'exécuter.
-    * Exécutez `ACCELEROMETER_QUERY` dans la console.
-    * Pour plusieurs accéléromètres, vous pouvez spécifier le test pour un certain `ACCELEROMETER_QUERY CHIP=<ADXL>` où `<ADXL>` doit être modifié en fonction du nom de l'accéléromètre correspondant.
-    * Si une erreur se produit, vérifiez les connexions et les configurations.
+    * Vous devez d'abord remettre à zéro avant d'exécuter cette étape
+    * Exécutez `ACCELEROMETER_QUERY` dans le terminal
+    * Plusieurs accéléromètres peuvent être testés en spécifiant un certain `ACCELEROMETER_QUERY CHIP=<ADXL>`, où `<ADXL>` doit être modifié en fonction du nom de l'accéléromètre correspondant
+    * Si une erreur apparaît, vérifiez les connexions et la configuration
     * La sortie normale est illustrée ci-dessous
         <ImageView image={require('@site/docs/DebugDoc/faq/img/adxl_1.webp').default} size="80%" align="center" />
-    * Ainsi, vous pouvez effectuer la mesure de compensation de résonance.
+    * Cela permettra ensuite de procéder à la mesure de la compensation des résonances
 
 
 ## Calibration de l'accéléromètre
 
-    * Réinitialisez.
-    * Entrez `SHAPER_CALIBRATE` dans la console, cela commencera automatiquement la calibration sur X,Y.
-    * Après la calibration, exécutez `SAVE_CONFIG` pour sauvegarder les données.
-    * Vous pouvez également utiliser `SHAPER_CALIBRATE AXIS=X` pour calibrer automatiquement un axe.
-    * Le processus de calibration peut prendre un certain temps, veuillez patienter.
+    * Remettre à zéro
+    * Entrez `SHAPER_CALIBRATE` dans le terminal pour commencer automatiquement la calibration sur X,Y
+    * Après la fin de la calibration, exécutez `SAVE_CONFIG` pour sauvegarder les données
+    * Vous pouvez également utiliser `SHAPER_CALIBRATE AXIS=X` pour calibrer automatiquement un axe
+    * Le processus de calibration peut être long, veuillez patienter
 
 :::tip
-Attention ! Si le test est trop violent pendant l'impression, appuyez immédiatement sur l'arrêt d'urgence ou envoyez `M112` pour arrêter.
+Attention ! Si le mouvement de l'imprimante est trop violent pendant les tests, appuyez immédiatement sur l'arrêt d'urgence ou envoyez `M112` pour arrêter.
 :::
 
-    * Un `accel_per_hz` trop élevé peut rendre les vibrations intenses, diminuez-le si nécessaire.
+    * Une valeur trop élevée pour accel_per_hz peut rendre les vibrations plus intenses, vous pouvez la diminuer si nécessaire
 
         ```cfg
         [resonance_tester]
-        accel_per_hz: 50  # Valeur par défaut de 75
+        accel_per_hz: 50  # Valeur par défaut : 75
         ```

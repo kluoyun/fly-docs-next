@@ -1,0 +1,46 @@
+---
+sidebar_position: 4
+sidebar_label: USB橋接CANファームウェア焼込
+---
+
+import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
+import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# USB橋接CANファームウェア焼込
+
+## ファームウェアビルド開始
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <CAN />
+
+    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * これで設定が保存され、コマンドラインに戻った状態になっているはずです
+    * `make -j4` を入力してビルドを開始します（時間がかかります）
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されればビルド成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+
+## ファームウェア焼込
+
+:::tip
+以下のコマンドを実行してファームウェアを焼込みます
+:::
+
+    ```bash
+    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+    ```

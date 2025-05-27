@@ -1,0 +1,45 @@
+---
+sidebar_position: 3
+sidebar_label: USB 펌웨어 플래싱
+---
+
+import Katapult from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
+import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+
+import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
+import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
+import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
+# USB 펌웨어 빌드
+
+## 빌드 시작
+
+    <SSH />
+
+    <MakeOperate/>
+
+    <USB />
+
+    * `Q` 키를 누르면 **Save configuration**이 나타나고, 그 다음에 `Y` 키를 누릅니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * 이제 설정이 저장되었으며 명령줄로 돌아왔습니다.
+    * `make -j4` 명령어를 입력하여 빌드를 시작합니다. 시간이 다소 걸립니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 마지막으로 아래와 같은 내용이 출력되면 빌드가 성공적으로 완료된 것입니다.
+
+        ```bash
+        Linking out/klipper.elf
+        Creating hex file out/klipper.bin
+        ```
+
+## 펌웨어 플래싱
+
+:::tip
+다음 명령어를 실행하여 펌웨어를 플래싱합니다.
+:::
+
+    ```bash
+    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+    ```
