@@ -1,0 +1,106 @@
+---
+sidebar_position: 2
+sidebar_label: Gravure d'une image système
+---
+
+import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# Gravure d'une image système
+
+## Présentation du système
+FlyOS-Fast est un système Linux allégé, spécialement conçu pour l'impression 3D, et compatible avec toute la série des plateformes de contrôle Fly. Ses caractéristiques incluent :
+
+- Démarrage rapide, optimisation du noyau garantissant la réactivité de Klipper
+- Optimisation du système de fichiers pour réduire les risques d'incapacité à démarrer en cas de coupure de courant
+- Démarrage en 30 secondes de KlipperScreen
+- Préinstallation des services Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen
+- Prise en charge du basculement entre Klipper et RRF
+- Prise en charge du basculement en ligne entre Mainsail et Fluidd
+- Prise en charge de l'impression via USB, reprise d'impression après coupure de courant, écran série
+- Prise en charge de la gravure automatique de firmware au démarrage (fly-c8, fly-geminiv3)
+- Configuration anticipée possible des langues par défaut et des noms d'imprimante pour Fluidd, etc.
+
+Pour plus de fonctionnalités personnalisées OEM (comme les logos de démarrage, les fichiers de configuration préinstallés, la désactivation des onglets Mainsail, etc.), contactez-nous.
+
+:::tip Remarque importante
+Ce système est une version allégée personnalisée ; les composants internes tels que Klipper ne sont pas des versions officielles et ne peuvent pas être modifiés ou mis à jour par l'utilisateur.
+:::
+
+- Le compte système de FLYOS-FAST est `root` avec le mot de passe `mellow`.
+
+## Guide d'utilisation pour débutants
+
+<Button variant="contained" disableElevation href="/docs/DebugDoc/baodian/host/">Guide d’utilisation pour débutants sur la plate-forme supérieure</Button>
+
+## Préparation avant la gravure du système
+
+1. Préparez une carte TF pour la gravure :
+   - Lecteur de cartes
+   - Une carte TF de capacité 16 Go à 128 Go, avec une vitesse de classe 10 ou supérieure.
+   - Il est recommandé d'utiliser des marques de qualité comme Kingston, SanDisk, Samsung ou Kioxia. Les cartes TF de marque inconnue sont strictement interdites !
+
+2. Téléchargez l'image système FLY-C5 : <Button variant="contained" disableElevation href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">Image système H618</Button>
+   :::tip
+   - La règle de nommage des fichiers système est : `FlyOS-Fast-[série de puce]-[numéro de version].img`, par exemple : `FlyOS-Fast-H5-v1.0.0.img`
+   - Les systèmes Windows téléchargent des fichiers `.exe`, qui sont des fichiers compressés 7z auto-décompressants. Après téléchargement, double-cliquez pour extraire et obtenir le fichier `.img` (seul Windows peut décompresser ce fichier).
+   - Les autres systèmes comme MacOS et Linux téléchargent des fichiers `.7z`, qui sont des fichiers compressés 7z. Après téléchargement, extrayez-le avec un outil compatible avec le format 7z pour obtenir le fichier `.img`.
+   - En raison de la taille importante des fichiers systèmes, d'autres formats de compression et les sources d'images ne sont temporairement pas disponibles.
+   - Ce tutoriel décrit l'exemple avec un fichier `.exe`.
+   :::
+   - Accédez à la bibliothèque de produits FlyOS-Fast, choisissez le format de compression, puis accédez à la page du fichier.
+   <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+   - Sélectionnez la version de l'image (par défaut la dernière version).
+   <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+   - Cliquez sur `Liste des fichiers`, puis faites glisser la barre de défilement vers la droite pour afficher le bouton de téléchargement.
+   <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+   - Cliquez sur le bouton de téléchargement pour télécharger l'image système.
+   <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+3. Téléchargez l'outil de gravure. Ce tutoriel utilise l’exemple de « Rufus ». Vous pouvez également utiliser d'autres outils comme « Etcher » ou « Win32 Disk Imager ».
+   - Adresse de téléchargement de Rufus : [Cliquez pour télécharger en chinois](https://rufus.ie/zh/#download) ou [Cliquez pour télécharger en anglais](https://rufus.ie/en/#download) (support uniquement Windows).
+   - Adresse de téléchargement d’Etcher : [Cliquez pour télécharger](https://etcher.balena.io/#download-etcher) (support Windows, MacOS, Linux).
+   - Adresse de téléchargement de Win32 Disk Imager : [Cliquez pour télécharger](https://sourceforge.net/projects/win32diskimager/) (support uniquement Windows).
+
+4. Ce tutoriel utilise l’exemple de `FlyOS-Fast-H5.exe`.
+
+5. Décompressez le fichier image système pour obtenir le fichier `.img`.
+   - Double-cliquez ou ouvrez le fichier `FlyOS-Fast-H5.exe` par clic droit, attendez quelques secondes, une fenêtre apparaîtra (si le système vous avertit qu'il est non sécurisé, choisissez « Plus d'informations » -> « Exécuter »).
+   - Choisissez un répertoire d'extraction, puis cliquez sur le bouton `Extraire`, attendez la fin de l'extraction.
+   
+   <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+   - Après l'extraction, un fichier `FlyOS-Fast-H5-vx.x.x.img` sera généré dans le répertoire d'extraction. `x.x.x` est le numéro de version du système.
+
+6. Insérez la carte TF de classe 10 préparée dans le lecteur de cartes et connectez-la à l'ordinateur.
+
+
+## Gravure du système
+
+1. Ouvrez Rufus, sélectionnez l'appareil (la capacité doit correspondre à celle de la carte TF à graver).  
+   <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. Sélectionnez « Image de disque » dans le type de démarrage.
+
+3. Cliquez sur le bouton « Sélectionner », puis choisissez le fichier `.img` extrait.
+
+4. Après sélection, le type de démarrage affichera le nom du fichier de l'image.  
+   <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+   
+5. Cliquez sur « Démarrer », si une alerte apparaît pour effacer les données du disque, cliquez sur « OK ».  
+   <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. Une fois la gravure terminée, l'ordinateur émettra un signal sonore, et la barre de progression affichera « Prêt ».  
+   <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. Ne retirez pas immédiatement la carte gravée.
+
+8. Ouvrez l'Explorateur de fichiers pour vérifier s'il existe un lecteur amovible ou une clé USB nommé `FlyOS-Conf`.  
+   <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. Ouvrez `FlyOS-Conf`, si deux fichiers apparaissent comme illustré ci-dessous, la gravure a réussi. Parmi eux, `config.txt` est le fichier de configuration du système.
+   <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+10. Étape suivante : <Button variant="contained" disableElevation href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh">Connexion SSH à la plateforme supérieure</Button>
