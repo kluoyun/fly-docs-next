@@ -3,32 +3,23 @@ sidebar_position: 2
 sidebar_label: USB固件烧录
 ---
 
-import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/docs/General/dfu-flash/_firmware/723/_usb.mdx';
-import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';
-import LS from '@site/docs/General/dfu-flash/_usb.mdx';
-import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
-import GetUsbID from '@site/docs/General/get-id/_get-fast-usb.mdx';
+
+
 
 # USB 固件编译
 
-## 拨码检查
+## SSH连接到上位机
 
-    :::tip
-    FLY C5 通过拨码连接上位机，如果拨码位置不对则无法正常使用
+    :::danger 警告
+    - 固件编译前需要使用`wifi连接到上位机SSH`
     :::
 
-    :::danger 须知
-    请注意拨码开关需要拨打指定位置才可以正常连接上位机
-    :::
-
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="80%" align="left" />
-
-
-
-## 开始编译
-
-    <SSH />
+ * 首先请：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#使用wifi连接到上位机ssh">使用wifi连接到上位机ssh</Button>  
+ ---
+ <br/>
 
     <Tabs>
     <TabItem value="usb" label="USB固件烧录" default>
@@ -39,10 +30,17 @@ import GetUsbID from '@site/docs/General/get-id/_get-fast-usb.mdx';
 
             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="100%" align="center" />
 
-    </TabItem>
+    * 按 `Q` 键，出现 `Save configuration`，这时再按 `Y` 键
+    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
 
-    <TabItem value="can" label="手动编译固件">
-        <MakeOperate/>
+    * 现在应该保存了配置,并且退出到了命令行界面
+
+    * 输入 `make -j4` 开始编译，时间有点长
+    <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
+
+    * 最后输出下面的内容则编译成功
+    <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+---
 
         <USB />
 
@@ -53,18 +51,7 @@ import GetUsbID from '@site/docs/General/get-id/_get-fast-usb.mdx';
             <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
         * 最后输出下面的内容则编译成功
 
-            ```bash
-            Linking out/klipper.elf
-            Creating hex file out/klipper.bin
-            ```
-
-        ### 输入下方指令开始烧录
-            ```bash
-            fly-flash -d c5 -h -f
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="100%" align="center" />
-
-    </TabItem>
-    </Tabs>
-
-    <GetUsbID />
+    ```bash
+    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+    ```
+---
