@@ -1,46 +1,76 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 sidebar_label: USB桥接CAN固件烧录
 ---
 
-import CANFLASH from '@site/docs/General/dfu-flash/_host-can-flash.mdx';
 import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/docs/General/dfu-flash/_firmware/723/_utoc.mdx';
-import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';
+import SSH from '@site/docs/General/dfu-flash/_firmware/_ssh.mdx';   
+import GetCanbusUUID from '@site/docs/General/get-id/_get-fast-can.mdx';
 
-import LS from '@site/docs/General/dfu-flash/_can.mdx';
-import TF from '@site/docs/General/dfu-flash/_pc-tf-flash.mdx';
-import CANBOOT from '@site/docs/General/dfu-flash/_host-katapult-flash.mdx';
+
 
 # USB桥接CAN固件烧录
+
+## 拨码检查
+
+:::tip
+FLY C5 通过拨码连接上位机，如果拨码位置不对则无法正常使用
+:::
+
+:::danger 须知
+请注意拨码开关需要拨打指定位置才可以正常连接上位机
+:::
+
+<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="80%" align="left" />
+
 
 ## 开始编译
 
     <SSH />
 
-    <MakeOperate/>
 
-    <CAN />
+    <Tabs>
+    <TabItem value="usb" label="USB固件烧录" default>
+            * 通过SSH连接上位机输入下方指令即可
+            * 根据你的设备仔细选择即可，默认1M
+            * C5系统默认是1M速率，如果需要500K需要到系统配置中修改`canbus_bitrate`的速率
+            * 此命令是烧录1M的USB桥接CAN固件
+            ```bash
+            fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-1m.bin
+            ```
+            * 此命令是烧录500k的USB桥接CAN固件
+            ```bash
+            fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-500k.bin
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="100%" align="center" />
 
-    * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 现在应该保存了配置并且退出到了命令行界面
-    * 输入 `make -j4` 开始编译，时间有点长
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最后输出下面的内容则编译成功
+    </TabItem>
 
-        ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
-        ```
+    <TabItem value="can" label="手动编译固件">
+        <MakeOperate/>
 
+        <CAN />
 
-## 固件烧录
+        * 按 `Q` 键，出现 **Save configuration**，这时再按 `Y` 键
+            <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+        * 现在应该保存了配置并且退出到了命令行界面
+        * 输入 `make -j4` 开始编译，时间有点长
+            <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+        * 最后输出下面的内容则编译成功
 
-:::tip
-执行下面的命令来烧录固件
-:::
+            ```bash
+            Linking out/klipper.elf
+            Creating hex file out/klipper.bin
+            ```
 
-    ```bash
-    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
-    ```
+        ### 输入下方指令开始烧录
+            ```bash
+            fly-flash -d c5 -h -f
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="100%" align="center" />
+
+    </TabItem>
+    </Tabs>
+
+<GetCanbusUUID />
