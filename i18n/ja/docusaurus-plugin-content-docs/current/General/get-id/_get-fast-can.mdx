@@ -1,0 +1,75 @@
+## CAN設定とID検索
+
+:::warning
+
+* FASTシステムのデフォルトのCANレートは1Mbpsです。
+* 上位機器のCANネットワーク、ブリッジメインボードのCANレート、CANツールボードのレートが完全に一致していることを確認してください。
+
+:::
+
+### 設備を検索する前の注意事項
+
+    * CAN IDを検索する前に、ファームウェアがUSBブリッジCANであることを確認してください。
+
+## 設備の検索
+    * コマンドラインに `lsusb` を入力してEnterを押します。図中の囲まれた情報が出力された場合、次のステップに進んでください。
+        * 何も情報が返ってこない場合、これは上位機器のシステムの問題です。解決できませんので、正常なシステムに変更するか、上位機器を交換してください。
+        * `lsusb` コマンドがないと表示される場合は、以下のコマンドを実行してインストールできます。
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * `lsusb` を入力しても何も反応がない場合、これはシステムの問題です。解決できませんので、システムを変更するか、正常なシステムを使用してください。
+        * 図中の情報が出力された場合、これは参考程度としてください。重要なのは `1d50:606f` が表示されているかどうかを確認することです。
+            <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
+    * `1d50:606f` は今回の使用予定のデバイスです。後続のメッセージは無視してください。システムの問題により、一部しか表示されない場合やまったく表示されない場合があります。
+    * 複数の `1d50:606f` がある場合は、マシン全体でUSBブリッジCANまたはUTOCが一つだけであることを確認してください。
+    * 表示がない場合は、データケーブルが接続されているか、ファームウェアが正しいものになっているかを確認してください。
+
+:::warning 注意事項
+`1d50:606f` が表示される場合のみ、CAN IDの検索を行ってください。
+:::
+
+### CAN IDの検索
+
+    * 下記のコマンドを入力してIDの検索を行います。
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * IDが表示され、最後の `Application:` が `Klipper` と表示された場合、このIDはそのまま使用可能です。
+    * IDが表示され、最後の `Application:` が `CANBOOT` または `Katapult` と表示された場合、ファームウェアの書き込みが必要です。
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+
+### CANに関する問題集
+
+    :::danger 製品情報
+
+    * CAN IDが見つからない場合は、下記のドキュメントをご覧ください。
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CANに関する問題集</Button>
+
+    :::
+
+### CANのIDを設定ファイルに記入する
+
+    * プリンターのWebインターフェースを開き、左側のサイドバーの設定オプションから `fluidd` では `{…}` 、 `mainsail` では `機械` をクリックし、 `printer.cfg` を開きます。
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+
+    * 検出したUUIDをコピーして、 `printer.cfg` の `[mcu]` セクション内の `canbus_uuid:` に貼り付けます。保存して再起動すると、メインボードに接続できます。Klipperがファームウェアの更新やADCエラーなどのメッセージを表示した場合、Klipperがメインボードに接続されたことを示します。
+    * `Application:` が `Canboot` と表示される場合、設定ファイルに記入することはできません。Klipperファームウェアを書き込むまで次のステップには進めません。
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+    * 以下は参考となる設定例です。
+        :::danger
+
+        * ここでは、メインボードとツールボードが一つずつある場合の参考となるMCU ID設定方法です。
+        * メインボードのIDの場合、必ず `[mcu]` に `canbus_uuid:` を追加し、検出したIDを指定してください。
+        * ツールボードのIDの場合、必ず `[mcu ツールボード名]` に `canbus_uuid:` を追加し、検出したIDを指定してください。
+        :::
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />
+
+        :::danger
+
+        注意：ドキュメント中に出現するすべてのIDはサンプルです。実際の各メインボードのIDは異なるため、実際に取得したIDに基づいて修正・記入してください。
+
+        :::

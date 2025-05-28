@@ -1,0 +1,76 @@
+## CAN Configuration and ID Search
+
+:::warning
+
+* The default CAN speed of the FAST system is 1M.
+* Please ensure that the CAN network of the host computer, the CAN speed of the bridge motherboard, and the CAN tool board are completely consistent.
+
+:::
+
+### Precautions Before Device Search
+
+    * Before searching for the CAN ID, please make sure that the firmware is USB bridge CAN.
+
+
+## Device Search
+    * In the command line, enter `lsusb` and press Enter. If the information circled in the image below appears, you can proceed to the next step.
+        * If there is no feedback at all, this is a problem with the host computer's system, and we are unable to help. You need to replace it with a normal system or change the host computer.
+        * If it prompts that the `lsusb` command is not found, you can execute this command to install:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * If nothing happens after entering `lsusb`, this is a system issue, and we are unable to help. You need to replace the system or use a confirmed normal system.
+        * If the information in the image below appears, please note that this is just a reference. You only need to confirm that `1d50:606f` appears.
+            <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
+    * `1d50:606f` belongs to the device you will be using. Ignore the subsequent prompts as system issues may cause them to display incompletely or not at all.
+    * If there are multiple `1d50:606f`, ensure that the entire machine has only one USB bridge CAN or UTOC.
+    * If not, please check if the data cable is properly connected and if the firmware has been correctly flashed.
+
+:::warning Notice
+You can search for the CAN ID only when `1d50:606f` appears.
+:::
+
+### Search CAN ID
+
+    * Enter the following command to search for the ID
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * If an ID appears and the `Application:` at the end shows `Klipper`, then this ID can be used directly.
+    * If an ID appears and the `Application:` at the end shows `CANBOOT` or `Katapult`, then you need to flash the firmware before using it.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+
+### CAN Problem Collection
+
+    :::danger Note
+
+    * If you cannot find the CAN ID, see the documentation below.  
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN Problem Collection</Button>
+
+    :::
+
+### Fill the CAN ID into the configuration
+
+    * Open the printer web interface, find `printer.cfg` under the configuration option in the left sidebar. For fluidd: `{...}`, for mainsail: `machine`, click to access it.
+        
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+
+    * Copy the queried UUID and fill it into the `canbus_uuid:` field under the `[mcu]` section in the `printer.cfg` configuration file. After saving and restarting, you can connect to the mainboard. If Klipper indicates that the firmware needs to be updated or ADC reports an error, it means Klipper has successfully connected to the mainboard.
+    * If `Application:` shows Canboot, it cannot be configured in the configuration file. You need to flash the Klipper firmware before proceeding.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+    * Below is a reference configuration
+        :::danger
+
+        * This is a reference configuration method for one mainboard and one tool board.
+        * If it is the mainboard ID, you must add `canbus_uuid:` under `[mcu]` and add the ID you searched for.
+        * If it is the tool board, you must add `canbus_uuid:` under `[mcu tool board name]` and add the ID you searched for.
+        :::
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />
+
+        :::danger
+
+        Note: All IDs mentioned in the document are examples. Each mainboard's ID is different, so please modify and fill in according to the actual obtained ID.
+
+        :::

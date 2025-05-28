@@ -1,0 +1,49 @@
+## Search for ID
+    * Enter the command `lsusb` in the terminal and press enter. If the information circled in the picture below appears, you can proceed to the next step.
+        * If there is no feedback at all, this is a problem with the host system, and we are unable to help. You need to replace it with a confirmed normal system or replace the host.
+        * If it prompts that there is no `lsusb` command, you can execute the following command to install it:
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * `1d50:6177` belongs to the device you will use. The suffix `OpenMoko, Inc. stm32f407xx` has some reference value but is not used as a basis for judgment.
+        * Some hosts may display incomplete or no display due to system problems.
+        * If the `lsusb` command can display the device but does not show `1d50:6177`, please try replacing the data cable or check the position of the dip switch.
+
+    :::warning Note
+       You must query the `1d50:6177` device before proceeding to the next step.
+    :::
+
+## Search for USBID
+
+    ```bash
+    ls /dev/serial/by-id/*
+    ```
+
+    * Enter the following command and press enter. If everything is normal, a blue ID line will appear below (the ID below is only for reference).
+    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="left" />
+    * If there is no ID output after entering the following command, but `lsusb` shows the device, please replace the host or change the host system.
+
+
+:::warning Note
+If multiple IDs appear, please select the corresponding ID based on your motherboard **MCU** model.
+:::
+
+### Fill in the USB ID into the configuration
+
+    * Open the printer web interface, find `printer.cfg` under the configuration option in the left sidebar. For fluidd it is `{...}`, for mainsail it is `machine`, click to enter.
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+
+    * Copy the blue ID and paste it into the `serial:` of the `[mcu]` node in the `printer.cfg` configuration. After saving and restarting, the mainboard can be connected. If Klipper prompts ``ADC out of range``, it is a normal phenomenon. Connect the hotbed and thermistor well, configure the thermistor pins and output pins of the nozzle and hotbed, then save and restart again.
+
+        :::danger
+
+        * Below is a reference configuration method for MCU ID when the mainboard situation is as follows.
+        * If it is a mainboard ID, the `serial:` must be added under `[mcu]` followed by the ID you found.
+        * Please note that `/dev/serial/by-id/` cannot be omitted.
+        :::
+            <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="100%" align="left" />
+
+:::danger
+Note: All IDs mentioned in the document are examples. The actual ID of each mainboard is different, so please modify and fill in according to the actual obtained ID.
+:::

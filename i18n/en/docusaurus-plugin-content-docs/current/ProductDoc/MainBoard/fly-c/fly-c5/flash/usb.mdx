@@ -3,43 +3,74 @@ sidebar_position: 3
 sidebar_label: USB Firmware Burning
 ---
 
-import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
-import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
-import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
-import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
-import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
+import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
+import GetUsbID from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/get-id/_get-fast-usb.mdx';
+
+
 
 # USB Firmware Compilation
 
-## Start Compilation
+## SSH Connection to Host Machine
 
-    <SSH />
+    :::danger Warning
+    - Before firmware compilation, you need to use `WiFi connection to the host machine SSH`.
+    :::
 
-    <MakeOperate/>
+ * First, please: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#using-wifi-to-connect-to-the-host-machine-ssh">Use WiFi to connect to the host machine SSH</Button>  
+ ---
+ <br/>
 
-    <USB />
+    <Tabs>
+    <TabItem value="usb" label="USB Firmware Burning" default>
+    ### USB Firmware Burning
+        :::tip Tip
+        - A USB firmware has been precompiled in the FLYOS-FAST system, no need to manually compile the firmware, just execute the following command to burn it.
+        - Alternatively, you can choose to `manually compile the USB firmware`.
+        :::
 
-    * Press `Q` key, and when the **Save configuration** prompt appears, press `Y` again
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and you should have returned to the command line interface
-    * Enter `make -j4` to start compiling, it will take some time
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following output is displayed at the end, the compilation is successful
-
+        * Input the following command through SSH connection to the host machine
         ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
         ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+    
+    </TabItem>
 
-## Firmware Burning
+    <TabItem value="can" label="Manually Compile USB Firmware">
+    ## Manually Compile USB Firmware
 
-:::tip
-Execute the following command to burn the firmware
-:::
+        <MakeOperate/>
+    
+        <USB />
+    
+        * Press `Q` key, a `Save configuration` message will appear, then press `Y` key
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    
+        * Now the configuration should be saved and exited to the command line interface
+    
+        * Enter `make -j4` to start compiling, it takes some time
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
+    
+        * If the output below is displayed, the compilation is successful
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+        ---
+        
+        ### Firmware Burning
+        
+        :::tip
+        Execute the following command to burn the firmware
+        :::
+        
+            ```bash
+            fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+            ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
 
-    ```bash
-    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
-    ```
+    </TabItem>
+</Tabs>
+---
+
+<GetUsbID />
+---

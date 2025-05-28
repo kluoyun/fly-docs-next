@@ -4,43 +4,80 @@ sidebar_label: USB Bridge CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
-import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
-import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
-import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import GetCanbusUUID from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
+import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 
 # USB Bridge CAN Firmware Burning
 
-## Start Compilation
+## SSH Connection to Host Machine
 
-    <SSH />
+    :::danger Warning
+    - The firmware must be compiled after using `WiFi to connect to the host machine via SSH`
+    :::
 
-    <MakeOperate/>
+ * First, please: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#using-wifi-to-connect-to-host-ssh">Use WiFi to Connect to Host SSH</Button>  
+ ---
+ <br/>
 
-    <CAN />
+<Tabs>
+    <TabItem value="usb" label="USB Bridge CAN Firmware Burning" default>
+    ### USB Bridge CAN Firmware Burning
+    :::tip Tip
+    - A precompiled USB bridge CAN firmware is available in the FLYOS-FAST system, no need to manually compile the firmware, just execute the following command to burn it
+    - You can also choose to `Manually Compile USB Bridge CAN Firmware` and compile the firmware yourself
+    :::
 
-    * Press the `Q` key, when **Save configuration** appears, press the `Y` key again
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and exited to the command line interface
-    * Enter `make -j4` to start compilation, it takes a while
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following content is output at the end, the compilation is successful
+    * Carefully select according to your device, the default is `1M`
 
-        ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
-        ```
+    * The C5 system defaults to 1M speed, if you need 500K, you need to modify the `canbus_bitrate` speed in the system configuration
 
-
-## Firmware Burning
-
-:::tip
-Execute the following command to burn the firmware
-:::
-
+    * This command burns the `1M` USB bridge CAN firmware
     ```bash
-    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+    fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-1m.bin
     ```
+    * This command burns the `500k` USB bridge CAN firmware
+    ```bash
+    fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-500k.bin
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+
+
+    </TabItem>
+
+
+
+    <TabItem value="can" label="Manually Compile USB Bridge CAN Firmware">
+        ## Manually Compile USB Bridge CAN Firmware
+        <MakeOperate/>
+    
+        <CAN />
+    
+        * Press `Q` key, a `Save configuration` prompt will appear, then press `Y` key
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    
+        * Now the configuration should be saved and you are back at the command line interface
+    
+        * Enter `make -j4` to start compiling, it takes some time
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
+    
+        * Finally, if the output is as follows, compilation is successful
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+    ---
+
+        ### Firmware Burning
+        :::tip
+        Execute the following command to burn the firmware
+        :::
+        
+            ```bash
+            sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+            ```
+            </TabItem>
+</Tabs>
+---
+
+<GetCanbusUUID />
+---

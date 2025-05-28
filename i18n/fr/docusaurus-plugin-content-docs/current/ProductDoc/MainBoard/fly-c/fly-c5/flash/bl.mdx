@@ -1,6 +1,6 @@
 ---
 sidebar_position: 6
-sidebar_label: Firmwares BL, ignorez ceci
+sidebar_label: Firmwares BL, merci de ne pas tenir compte
 ---
 
 
@@ -15,51 +15,52 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * Veuillez noter que le "bootloader" est préinstallé en usine, il n'est pas nécessaire de le réinstaller.
+    * Veuillez noter que le « bootloader » est préinstallé à la sortie de l'usine, il n'est donc pas nécessaire de le réinstaller.
 
     :::
 
-## Mode de démarrage en mode de programmation
+## Entrée en mode de programmation
 
+    :::tip
+
+    * À gauche se trouve le RST de la carte mère, à droite se trouve le BOOT de la carte mère.
+
+    :::
 
     * Il existe deux méthodes pour entrer en mode de programmation
-    * Première méthode : Sous tension complète du motherboard, maintenez enfoncé BOOT puis branchez un câble de transmission de données d'une extrémité sur la motherboard et de l'autre sur votre appareil, compatible avec WINDOWS
-    * Seconde méthode : Après avoir branché un câble de transmission de données d'une extrémité sur la motherboard et de l'autre sur votre appareil, maintenez enfoncé BOOT puis entrez la commande, compatible avec le PC
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="100%" align="center" />
+    * Première méthode : Désactivez complètement l'alimentation de la carte mère, maintenez enfoncée la touche BOOT, puis branchez un câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur votre appareil, adapté à WINDOWS.
+    * Deuxième méthode : Après avoir branché un câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur votre appareil, maintenez enfoncée la touche BOOT, puis entrez une commande, adapté à la station de travail.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="60%" align="center" />
 
 ## Programmation des firmwares
     <Tabs>
         <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
 
-            * Firmware bootloader de C8 <Button variant="contained" disableElevation component="a" rel="noopener" href="http://cdn.mellow.klipper.cn/BL/c5.bin">Cliquez pour télécharger automatiquement le firmware</Button>
+            * Le firmware bootloader de C5 <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/firmware/BL/hid_bootloader_h723_v1.0.bin">cliquez ici pour télécharger automatiquement le firmware</Button>
 
 
-            * Commutateurs dip `3`, `4` vers la droite, pour connecter le périphérique inférieur au périphérique supérieur via USB intégré
-            * Commutateurs dip `1`, `2` vers la gauche, sinon cela affectera la connexion entre le périphérique inférieur et supérieur
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.webp').default} size="100%" align="center" />
+            * Ajustez les commutateurs vers le bas pour connecter le périphérique inférieur via USB externe
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="Tutoriel de programmation via PC">
+        <TabItem value="linux" label="Tutoriel de programmation avec l'ordinateur de bord">
 
-            * Commutateurs dip `1`, `2` vers la droite, pour connecter le périphérique inférieur au périphérique supérieur via USB intégré
-            * Commutateurs dip `3`, `4` vers la gauche, sinon cela affectera la connexion entre le périphérique inférieur et supérieur
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.webp').default} size="100%" align="center" />
-            * Après avoir configuré les commutateurs dip comme indiqué ci-dessus, le port USB inférieur sera occupé par le périphérique inférieur, ne branchez pas d'autres appareils
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
+            * Ajustez les commutateurs vers le haut pour connecter le périphérique inférieur à l'ordinateur de bord
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
-            * Assurez-vous que votre PC peut accéder à Internet
-
+            * Entrez la commande ci-dessous pour commencer à programmer le BL
+            * À droite se trouve le BOOT de la carte mère
 
                 ```bash
-                sudo wget http://cdn.mellow.klipper.cn/BL/c5.bin -O ~/c5.bin && sudo fly-flash -d c5 -u -f ~/c5.bin
+                fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
                 ```
-            * Lorsque vous obtenez le message suivant, appuyez longuement sur le bouton BOOT du périphérique inférieur puis appuyez sur Entrée
 
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="80%" align="center" />
 
-            * Lorsque vous voyez l'image ci-dessous, cela signifie que la programmation a réussi et que vous pouvez relâcher le bouton BOOT
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="80%" align="center" />
+             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="70%" align="center" />
+
+            * Lorsque vous voyez l'image ci-dessous, cela signifie que la programmation a réussi et que vous pouvez relâcher la touche BOOT
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
 
 
         </TabItem>

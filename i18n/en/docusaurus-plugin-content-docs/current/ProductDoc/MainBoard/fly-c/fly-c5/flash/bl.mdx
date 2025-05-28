@@ -1,6 +1,6 @@
 ---
 sidebar_position: 6
-sidebar_label: BL firmware, please ignore
+sidebar_label: BL Firmware, please ignore
 ---
 
 
@@ -21,45 +21,46 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
 ## Entering Programming Mode
 
+    :::tip
 
-    * There are two methods to enter programming mode
-    * First method: Under completely power-off condition of the motherboard, long press BOOT and connect one end of the data transfer cable to the motherboard and the other end to your device, suitable for WINDOWS
-    * Second method: After connecting one end of the data transfer cable to the motherboard and the other end to your device, long press BOOT and input the command, suitable for host machine
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="100%" align="center" />
+    * The left is the motherboard's RST, and the right is the motherboard's BOOT.
+
+    :::
+
+    * There are two ways to enter programming mode.
+    * First method: With the motherboard completely powered off, long press BOOT and connect one end of the data transfer cable to the motherboard and the other end to your device, suitable for WINDOWS.
+    * Second method: After connecting one end of the data transfer cable to the motherboard and the other end to your device, long press BOOT and then input commands, suitable for host machine.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="60%" align="center" />
 
 ## Flashing Firmware
     <Tabs>
-        <TabItem value="win" label="Windows Flash Tutorial" default>
+        <TabItem value="win" label="Windows Flashing Tutorial" default>
 
-            * The bootloader firmware for C8 <Button variant="contained" disableElevation component="a" rel="noopener" href="http://cdn.mellow.klipper.cn/BL/c5.bin">click to automatically download firmware</Button>
+            * The bootloader firmware for C5 <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/firmware/BL/hid_bootloader_h723_v1.0.bin">click to automatically download the firmware</Button>
 
 
-            * Set DIP switches `3` and `4` to the right to connect the lower-level device with the upper-level device via built-in USB
-            * Set DIP switches `1` and `2` to the left, otherwise it will affect the connection between the lower-level device and the upper-level device
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.webp').default} size="100%" align="center" />
+            * Set the dip switch downward to connect the downstream device via external USB.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
             <WIN />
 
         </TabItem>
-        <TabItem value="linux" label="Host Machine Flash Tutorial">
+        <TabItem value="linux" label="Host Machine Flashing Tutorial">
 
-            * Set DIP switches `1` and `2` to the right to connect the lower-level device with the upper-level device via built-in USB
-            * Set DIP switches `3` and `4` to the left, otherwise it will affect the connection between the lower-level device and the upper-level device
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.webp').default} size="100%" align="center" />
-            * After moving the DIP switches as described above, the bottom USB port will be occupied by the lower-level device, so do not connect other devices
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
+            * Set the dip switch upward to connect the downstream device to the host machine.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
-            * Ensure the host machine can access the internet normally
-
+            * Enter the following command to start flashing BL.
+            * The right is the motherboard's BOOT.
 
                 ```bash
-                sudo wget http://cdn.mellow.klipper.cn/BL/c5.bin -O ~/c5.bin && sudo fly-flash -d c5 -u -f ~/c5.bin
+                fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
                 ```
-            * When the following prompt appears, you need to hold down the lower-level device's BOOT button and press Enter
 
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="80%" align="center" />
 
-            * When the following image appears, it proves that the flash is successful and you can release the BOOT button
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="80%" align="center" />
+             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="70%" align="center" />
+
+            * When the image below appears, it proves that the flash is successful and you can release the BOOT button.
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
 
 
         </TabItem>

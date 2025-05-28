@@ -3,43 +3,74 @@ sidebar_position: 3
 sidebar_label: Запись прошивки через USB
 ---
 
-import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
-import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/get-id/_get-fast-usb.mdx';
 
-import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
-import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
-import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Компиляция прошивки через USB
 
-## Начало компиляции
+# Компиляция прошивки для USB
 
-    <SSH />
+## Подключение к хост-компьютеру через SSH
 
-    <MakeOperate/>
+    :::danger Предупреждение
+    - Перед компиляцией прошивки необходимо подключиться к хост-компьютеру через Wi-Fi
+    :::
 
-    <USB />
+ * Сначала, пожалуйста: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#подключение-через-wifi">Подключение через Wi-Fi</Button>  
+ ---
+ <br/>
 
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее, компиляция успешно завершена
+    <Tabs>
+    <TabItem value="usb" label="Запись прошивки через USB" default>
+    ### Запись прошивки через USB
+        :::tip Совет
+        - В системе FLYOS-FAST уже предварительно скомпилирована одна USB-прошивка, поэтому нет необходимости вручную компилировать прошивку, достаточно выполнить команду ниже для записи
+        - Также можно выбрать ручную компиляцию USB-прошивки
+        :::
 
+        * Через SSH подключитесь к хост-компьютеру и введите следующую команду
         ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
         ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+    
+    </TabItem>
 
-## Запись прошивки
+    <TabItem value="can" label="Ручная компиляция USB-прошивки">
+    ## Ручная компиляция USB-прошивки
 
-:::tip
-Выполните следующую команду для записи прошивки
-:::
+        <MakeOperate/>
+    
+        <USB />
+    
+        * Нажмите клавишу `Q`, появится запрос `Save configuration`, затем нажмите клавишу `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    
+        * Теперь конфигурация должна быть сохранена, и вы вернетесь в командную строку
+    
+        * Введите `make -j4`, чтобы начать компиляцию, это займет некоторое время
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
+    
+        * Если вывод последней строки содержит сообщение о успешной компиляции
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+        ---
+        
+        ### Запись прошивки
+        
+        :::tip
+        Выполните следующую команду для записи прошивки
+        :::
+        
+            ```bash
+            fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+            ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
 
-    ```bash
-    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
-    ```
+    </TabItem>
+</Tabs>
+---
+
+<GetUsbID />
+---
