@@ -1,0 +1,50 @@
+## 検索ID
+    * ターミナルに `lsusb` を入力し、Enter キーを押すと、下の画像で囲まれた情報が表示される場合、次のステップに進むことができます。
+        * 何も情報が返ってこない場合、これはホストコンピューターのシステムの問題であり、こちらでは対処できません。正常なシステムに切り替えるか、新しいホストコンピューターを使用してください。
+        * `lsusb` コマンドがないというメッセージが表示された場合は、以下のコマンドを実行してインストールできます。
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+    * `1d50:6177` は今回使用するデバイスに属します。`OpenMoko, Inc. stm32f407xx` の後続部分は参考にはなりますが、判断基準ではありません。
+        * 一部のホストコンピューターはシステムの問題により、完全に表示されない場合があります。
+        * `lsusb` コマンドでデバイスが表示されるが、`1d50:6177` が表示されない場合、データケーブルを変更したり、ダイアルスイッチの位置を確認してください。
+
+    :::warning 注意事項
+       `1d50:6177` デバイスを検出するまでは次のステップに進めません。
+    :::
+
+## USBIDの検索
+
+    ```bash
+    ls /dev/serial/by-id/*
+    ```
+
+    * 下記コマンドを入力して Enter キーを押すと、すべて正常であれば、下記のような青いIDが表示されます。（下記のIDは参考値です）
+    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="left" />
+    * 下記コマンドを入力してもIDが出力されず、`lsusb` ではデバイスが表示される場合、ホストコンピューターまたはホストコンピューターのシステムを交換してください
+
+
+:::warning 注意事項
+複数のIDが表示された場合は、自分のメインボードの**MCU**モデルに基づいて適切なIDを選択してください。
+:::
+
+### USBのIDを設定ファイルに入力する
+
+    * プリンターのWebインターフェースを開き、左側のサイドバーにある設定オプションで fluidd では `{…}`、mainsail では `マシン` を選択し、クリックすると `printer.cfg` が表示されます。
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+
+    * 青色のIDをコピーして、`printer.cfg` 設定ファイル内の `[mcu]` セクションの `serial:` に貼り付けます。保存して再起動すると、メインボードに接続できます。Klipperから `ADC out of range` というメッセージが表示された場合、これは正常現象です。ヒートベッドやヒータセンサーを接続し、ノズル、ヒートベッドのヒータセンサーや出力ピンを設定した後、再度保存して再起動してください。
+
+        :::danger
+
+        * 下記はメインボードの状況に対する参考となるMCU ID設定方法です
+        * メインボードのIDの場合は必ず `[mcu]` に `serial:` を追加し、取得したIDを指定してください
+        * `/dev/serial/by-id/` は省略しないでください
+        :::
+            <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="100%" align="left" />
+
+:::danger
+注意: ドキュメントに記載されているすべてのIDは例示であり、実際の各メインボードのIDは異なりますので、実際に取得したIDに従って修正・入力してください。
+:::

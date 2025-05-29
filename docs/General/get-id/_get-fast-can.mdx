@@ -1,35 +1,22 @@
 
-
-
 ## CAN配置与ID搜索
-
-* 如果你需要使用CAN请确定你上位机有进行CAN配置
-
-----
-
-:::danger 须知
-
-请确定主板已经连接好上位机后在进行下面操作
-
-:::
-
 
 :::warning
 
-请确保上位机的can网络、桥接主板的CAN速率、CAN工具板的速率完全一致
+* FAST系统默认的CAN速率1M
+* 请确保上位机的CAN网络、桥接主板的CAN速率、CAN工具板的速率完全一致
 
 :::
 
 ### 搜索设备前注意事项
 
-    * 搜索CAN ID前，请先[连接到SSH](/docs/DebugDoc/BasicTutorial/index.mdx "点击即可跳转")
-    * 请注意需要确保是使用网络登录到SSH而不是串口登录
-    * 请确保有连接好UTOC或者刷好CAN桥接固件的主板，并且确保连接上位机的数据线具有数据传输功能
+    * 搜索CAN ID前，请先确保固件是USB桥接CAN
 
-### 搜索设备
 
-    * 现在你已经正常登录到上位机了可以输入`lsusb`搜索设备，将会以下几种情况之一
-        * 输入`lsusb`提示找不到`ls`指令,则可以输入下方指令来安装指令
+## 搜索设备
+    * 在指令行输入`lsusb`并且回车，如果出现下方图片中圈起来的信息，就可以进行下一步。
+        * 如果没有任何信息反馈，这是上位机的系统问题，这边无能为力，你需要更换确定正常的系统或者更换上位机。
+        * 如果提示没有`lsusb`指令，可以执行此命令安装
             ```bash
             sudo apt-get install usbutils
             ```
@@ -37,7 +24,7 @@
         * 出现下方图片中的信息，请注意这只是参考。你只需要确定有出现`1d50:606f`即可
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
     * `1d50:606f` 属于本次你要用到的设备。后面的提示你不需要管，因为系统问题可能会导致他显示不全或者干脆不显示
-    * 如果有多个`1d50:606f`，建议排除一个，否则会影响后续烧录与固件连接，如`FLY MINI PAD`则建议使用板载UTOC不要使用其他CAN桥接设备
+    * 如果有多个`1d50:606f`，请确保整个机器只有一个USB桥接CAN或者UTOC
     * 如果没有，请自行检查数据线是否接好，固件有没有刷对。
 
 :::warning 注意事项
@@ -74,19 +61,17 @@
     * 如果`Application:`显示Canboot则无法配置到配置里面，需要刷Klipper固件才能进行下一步
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
+    * 下方是参考配置
+        :::danger
+
+        * 下方是一个主板加一个工具版情况下的参考配置MCU ID方法
+        * 如果是主板ID则一定要`[mcu]` 加上`canbus_uuid:`在加上你搜索到的ID
+        * 如果是工具版则一定要`[mcu 工具版名字]` 加上`canbus_uuid:`在加上你搜索到的ID
+        :::
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />
+
         :::danger
 
         注意：文档中所出现的所有ID均为示例，实际每个主板的ID均不一致，请根据实际获取到的ID修改填写。
 
         :::
-
-    * 下方是参考配置
-        :::danger
-
-        * 下方是一个主板加一个工具版情况下的参考配置MCU ID方法
-        * 如果是主板ID则一定是`[mcu]` 加上`canbus_uuid:`在加上你搜索到的ID
-        * 如果是工具版则一定是`[mcu 工具版名字]` 加上`canbus_uuid:`在加上你搜索到的ID
-        :::
-        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />
-
-

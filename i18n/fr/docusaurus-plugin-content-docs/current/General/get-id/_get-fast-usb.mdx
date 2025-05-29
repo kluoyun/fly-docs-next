@@ -1,0 +1,49 @@
+## ID de recherche
+* Dans la ligne de commande, entrez `lsusb` et appuyez sur Entrée. Si l'information entourée dans l'image ci-dessous apparaît, vous pouvez passer à l'étape suivante.
+    * Si aucune information n'est retournée, il s'agit d'un problème avec le système de la station de travail ; nous ne pouvons rien faire dans ce cas. Vous devez soit changer pour un système fonctionnel, soit remplacer la station de travail.
+    * Si une erreur indiquant qu'il n'y a pas de commande `lsusb` est affichée, vous pouvez installer cette commande en exécutant :
+        ```bash
+        sudo apt-get install usbutils
+        ```
+        <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
+* L'identifiant `1d50:6177` correspond au périphérique que vous utiliserez. Le suffixe `OpenMoko, Inc. stm32f407xx` peut être utile à titre indicatif, mais ne constitue pas un critère de jugement.
+    * Certaines stations de travail peuvent ne pas afficher correctement ou ne pas afficher du tout en raison de problèmes liés au système.
+    * Si vous tapez la commande `lsusb` et que le périphérique est visible, mais que l'identifiant `1d50:6177` ne s'affiche pas, essayez de changer le câble USB ou de vérifier la position du commutateur.
+
+    :::warning Remarque importante
+       Vous devez impérativement trouver l'identifiant `1d50:6177` avant de poursuivre.
+    :::
+
+## Recherche de l'ID USB
+
+    ```bash
+    ls /dev/serial/by-id/*
+    ```
+
+    * Entrez la commande ci-dessous et appuyez sur Entrée. Si tout fonctionne correctement, une ligne bleue contenant un ID apparaîtra (l'ID ci-dessous est uniquement indicatif).
+    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="left" />
+    * Si aucun ID n'apparaît après avoir tapé la commande ci-dessus, mais que `lsusb` affiche le périphérique, changez la station de travail ou le système d'exploitation de celle-ci.
+
+:::warning Remarque importante
+Si plusieurs IDs apparaissent, choisissez celui correspondant au modèle de MCU de votre carte mère.
+:::
+
+### Remplir l'ID USB dans la configuration
+
+* Ouvrez l'interface web de l'imprimante, puis dans le menu latéral de gauche, allez dans les options de configuration. Pour fluidd, cela se trouve sous `{…}` ; pour mainsail, cela se nomme `machine`, cliquez pour accéder à `printer.cfg`.
+
+    <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+
+* Copiez l'ID bleu et collez-le dans la section `[mcu]` du fichier de configuration `printer.cfg` sous la clé `serial:`. Après avoir sauvegardé et redémarré, vous devriez pouvoir connecter la carte mère. Si Klipper affiche ``ADC out of range``, c'est normal. Connectez correctement le lit chauffant et les thermistances, configurez les broches des thermistances et des sorties pour la buse et le lit chauffant, puis sauvegardez et redémarrez à nouveau.
+
+    :::danger
+
+    * Ci-dessous, un exemple de configuration de la carte mère en fonction de l'ID MCU.
+    * Si l'ID correspond à la carte mère, ajoutez toujours `[mcu]` suivi de `serial:` et de l'ID que vous avez trouvé.
+    * Notez bien que `/dev/serial/by-id/` ne doit pas être omis.
+    :::
+        <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="100%" align="left" />
+
+:::danger
+Attention : Tous les IDs mentionnés dans le document sont fournis à titre indicatif. Chaque carte mère possède un ID unique. Veuillez modifier et remplir en fonction de vos données réelles.
+:::

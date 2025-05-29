@@ -1,80 +1,87 @@
 ## CAN 설정 및 ID 검색
 
-* CAN을 사용하려면 상위 컴퓨터에 CAN 설정이 되어 있는지 확인하세요.
+* CAN을 사용하려면 상위 기기에서 CAN 설정이 되었는지 확인하세요.
 
 ----
 
-:::danger 주의
+:::danger 주의사항
 
-메인보드가 상위 컴퓨터와 정상적으로 연결되어 있는지 확인한 후 아래 작업을 진행하세요.
+메인보드가 상위 기기에 연결된 후 아래 작업을 진행해야 합니다.
 
 :::
 
 
 :::warning
 
-상위 컴퓨터의 CAN 네트워크, 다리 보드의 CAN 속도, CAN 도구 보드의 속도가 완전히 일치하는지 확인하세요.
+상위 기기의 can 네트워크, 다리 보드의 CAN 속도, CAN 도구 보드의 속도가 완전히 일치하는지 확인하세요.
 
 :::
 
 ### 장치 검색 전 주의사항
 
-    * CAN ID를 검색하기 전에 [SSH에 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하여 이동")하세요.
-    * 네트워크를 통해 SSH에 로그인하고 있는지 확인하세요. 시리얼 포트를 통해 로그인하지 않았는지 확인하세요.
-    * UTOC를 연결하거나 CAN 브리지 펌웨어를 플래시한 메인보드가 연결되어 있고, 상위 컴퓨터로 데이터를 전송할 수 있는 데이터 케이블이 연결되어 있는지 확인하세요.
+    * CAN ID를 검색하기 전에 [SSH 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하여 이동")을 먼저 해야 합니다.
+    * 네트워크를 통해 SSH에 로그인하고 있는지 확인하세요. 시리얼 포트로 로그인하지 않았는지 확인하세요.
+    * UTOC를 연결하거나 CAN 브릿지 펌웨어가烧好的 메인보드를 연결했는지 확인하고, 상위 기기와 데이터 전송이 가능한 데이터 케이블을 사용했는지 확인하세요.
 
 ### 장치 검색
 
-    * 이제 정상적으로 상위 컴퓨터에 로그인했으므로 `lsusb` 명령어를 입력하여 장치를 검색할 수 있습니다. 다음과 같은 상황 중 하나가 나타날 것입니다.
-        * `lsusb` 명령어를 입력하면 `ls` 명령어가 없다는 메시지를 받게 된다면 아래의 명령어를 입력하여 명령어를 설치할 수 있습니다.
+    * 이제 정상적으로 상위 기기에 로그인했다면 다음 명령어를 입력하여 장치를 검색할 수 있습니다. 다음 중 하나의 경우가 나타날 것입니다.
+        * `lsusb` 명령어를 입력하면 `ls` 명령어를 찾을 수 없다고 나온다면 아래 명령어를 입력하여 명령어를 설치할 수 있습니다.
             ```bash
             sudo apt-get install usbutils
             ```
-        * `lsusb` 명령어를 입력하면 아무런 반응이 없을 경우, 시스템 문제로 인해 해결할 수 없습니다. 다른 시스템으로 교체하거나 정상적인 시스템을 사용하세요.
-        * 아래 이미지에서 제공된 정보가 나타납니다. 이는 참고용입니다. `1d50:606f`가 나타나는지만 확인하세요.
+        * `lsusb` 명령어를 입력하면 아무 반응도 없으면 시스템 문제로 해결할 수 없습니다. 다른 시스템으로 교체하거나 문제 없는 시스템을 사용해야 합니다.
+        * 아래 이미지와 같은 정보가 표시됩니다. 참고만 하세요. `1d50:606f`가 표시되는지 확인하세요.
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f`는 이번에 사용할 장치입니다. 뒤의 메시지는 시스템 문제로 인해 일부만 표시되거나 전혀 표시되지 않을 수 있으므로 무시하세요.
-    * 여러 개의 `1d50:606f`가 있다면 하나를 제외하는 것이 좋습니다. 그렇지 않으면 나중에 프로그래밍 및 펌웨어 연결에 영향을 미칠 수 있습니다. 예를 들어 `FLY MINI PAD`는 보드 내장 UTOC를 사용하도록 권장하며, 다른 CAN 브리지 장비는 사용하지 마세요.
-    * 없다면 데이터 케이블이 제대로 연결되었는지, 펌웨어가 올바르게 플래시되었는지 확인하세요.
+    * `1d50:606f`는 이번에 사용할 장치입니다. 나머지 메시지는 시스템 문제로 인해 불완전하게 표시되거나 아예 표시되지 않을 수 있으니 신경 쓰지 않으셔도 됩니다.
+    * 여러 개의 `1d50:606f`가 표시되면 하나를 제외하는 것이 좋습니다. 그렇지 않으면 후속 플래싱과 펌웨어 연결에 영향을 미칠 수 있습니다. 예를 들어 `FLY MINI PAD`라면 보드 내장 UTOC를 사용하고 다른 CAN 브릿지 장비는 사용하지 않는 것이 좋습니다.
+    * 없다면 데이터 케이블이 잘 연결되었는지, 펌웨어가 올바르게 브러쉬되었는지 다시 확인하세요.
 
-:::warning 주의
-
-`1d50:606f`가 나타날 때까지 CAN ID를 검색하지 마세요.
-
+:::warning 주의사항
+`1d50:606f`가 있을 때만 CAN ID를 검색할 수 있습니다.
 :::
 
 ### CAN ID 검색
 
-    * ID 검색을 위해 아래 명령어를 입력하세요.
+    * 아래 명령어를 입력하여 ID를 검색합니다.
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * ID가 나타나고 마지막에 `Application:`이 `Klipper`라고 표시되면 이 ID는 바로 사용할 수 있습니다.
-    * ID가 나타나고 마지막에 `Application:`이 `CANBOOT` 또는 `Katapult`라고 표시되면 펌웨어를 업데이트해야 사용할 수 있습니다.
+    * ID가 표시되고 마지막에 `Application:`이 `Klipper`라고 나오면 이 ID를 바로 사용할 수 있습니다.
+    * ID가 표시되고 마지막에 `Application:`이 `CANBOOT` 또는 `Katapult`라고 나오면 펌웨어를 플래싱한 후 사용할 수 있습니다.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
 
-### CAN 문제 모음
+### CAN 문제 모음집
 
-    :::danger 주의
+    :::danger 주의사항
 
-    * CAN ID를 찾지 못했다면 아래 문서를 참조하세요.
-    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN 문제 모음</Button>
+    * CAN ID를 찾을 수 없을 경우 아래 문서를 참조하세요.  
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN 문제 모음집</Button>
 
     :::
 
-### CAN ID를 구성 파일에 기입
+### CAN ID를 구성 파일에 입력하기
 
-    * 프린터 웹 페이지 인터페이스를 열고, 좌측 메뉴의 구성 옵션에서 fluidd일 경우 `...`를, mainsail일 경우 `기계`를 클릭하여 `printer.cfg`를 찾으세요.
+    * 프린터 웹 인터페이스를 열고 좌측 메뉴의 구성 옵션에서 fluidd일 경우 `{…}`; mainsail일 경우 `기계`, 클릭하여 `printer.cfg`를 찾을 수 있습니다.
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * 검색된 UUID를 복사하여 `printer.cfg` 구성 파일의 `[mcu]` 섹션에 `canbus_uuid: ` 다음에 작성하세요. 저장하고 재부팅하면 메인보드와 연결됩니다. Klipper가 펌웨어 업데이트 필요, ADC 오류 등과 같은 메시지를 표시한다면 Klipper가 메인보드와 연결되었다는 것을 의미합니다.
-
+    * 검색된 UUID를 복사하여 `printer.cfg` 구성 파일의 `[mcu]` 섹션의 `canbus_uuid:` 뒤에 붙여넣습니다. 저장하고 재부팅하면 메인보드에 연결됩니다. Klipper가 펌웨어 업데이트 필요, ADC 오류 등 메시지를 표시하면 Klipper가 메인보드에 연결된 것입니다.
+    * `Application:`이 Canboot라고 표시되면 구성 파일에 입력할 수 없습니다. Klipper 펌웨어를 플래싱한 후 다음 단계로 진행해야 합니다.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        주의: 문서에 나온 모든 ID는 예시이며, 각 메인보드의 ID는 모두 다릅니다. 실제로 얻은 ID를 바탕으로 수정하여 작성하세요.
+        주의: 문서에 표시된 모든 ID는 예시입니다. 각 메인보드의 ID는 모두 다르므로 실제로 얻은 ID로 수정해야 합니다.
 
         :::
+
+    * 아래는 참고용 구성 예시입니다.
+        :::danger
+
+        * 아래는 하나의 메인보드와 하나의 도구 보드를 사용하는 경우의 참고용 MCU ID 구성 방법입니다.
+        * 메인보드의 ID는 반드시 `[mcu]`에 `canbus_uuid:`을 추가하고 검색된 ID를 붙여야 합니다.
+        * 도구 보드의 경우 `[mcu 도구보드이름]`에 `canbus_uuid:`을 추가하고 검색된 ID를 붙여야 합니다.
+        :::
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />

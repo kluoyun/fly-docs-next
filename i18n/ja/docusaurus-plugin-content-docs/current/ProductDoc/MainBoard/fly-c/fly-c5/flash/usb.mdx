@@ -1,45 +1,76 @@
 ---
 sidebar_position: 3
-sidebar_label: USBファームウェア焼込
+sidebar_label: USBファームウェアの書き込み
 ---
 
-import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
-import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
+import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/get-id/_get-fast-usb.mdx';
 
-import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
-import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
-import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB ファームウェアのコンパイル
 
-## コンパイル開始
+# USBファームウェアのコンパイル
 
-    <SSH />
+## SSHで上位機に接続
 
-    <MakeOperate/>
+    :::danger 警告
+    - ファームウェアのコンパイル前に`WiFiで上位機にSSH接続`する必要があります
+    :::
 
-    <USB />
+ * 最初に：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#wifiで上位機にssh接続する方法を使用">WiFiで上位機にSSH接続する方法を使用</Button>  
+ ---
+ <br/>
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインに戻ります
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されたらコンパイル成功です
+    <Tabs>
+    <TabItem value="usb" label="USBファームウェアの書き込み" default>
+    ### USBファームウェアの書き込み
+        :::tip ヒント
+        - FLYOS-FASTシステムには事前にUSBファームウェアがコンパイルされており、手動でファームウェアをコンパイルする必要はありません。以下のコマンドを実行すると書き込みが可能です。
+        - 「手動でUSBファームウェアをコンパイル」を選択することもできます。
+        :::
 
+        * SSHで上位機に接続し、以下のコマンドを入力します
         ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
         ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+    
+    </TabItem>
 
-## ファームウェア焼込
+    <TabItem value="can" label="USBファームウェアの手動コンパイル">
+    ## USBファームウェアの手動コンパイル
 
-:::tip
-以下のコマンドを実行してファームウェアを焼込みます
-:::
+        <MakeOperate/>
+    
+        <USB />
+    
+        * `Q` キーを押して「Save configuration」が表示されたら、その後に `Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    
+        * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
+    
+        * コンパイルを開始するには `make -j4` を入力します。時間がかかります
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
+    
+        * 最後に以下の内容が出力されればコンパイル成功です
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+        ---
+        
+        ### ファームウェアの書き込み
+        
+        :::tip
+        ファームウェアを書き込むためには以下のコマンドを実行してください
+        :::
+        
+            ```bash
+            fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+            ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
 
-    ```bash
-    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
-    ```
+    </TabItem>
+</Tabs>
+---
+
+<GetUsbID />
+---

@@ -1,78 +1,87 @@
 ## CAN Configuration and ID Search
 
-* If you need to use CAN, please ensure that your host computer has performed CAN configuration.
+* If you need to use CAN, please confirm that your host computer has performed CAN configuration.
 
-----
+---
 
-:::danger Note
+:::danger Notice
 
-Please ensure that the mainboard is properly connected to the host computer before proceeding with the following operations.
+Please ensure the motherboard is connected to the host computer before performing the following operations.
 
 :::
 
 
 :::warning
 
-Please ensure that the host computer's CAN network, the CAN rate of the bridge mainboard, and the CAN tool board rate are completely consistent.
+Please make sure the CAN network of the host computer, the CAN rate of the bridge motherboard, and the rate of the CAN tool board are completely consistent.
 
 :::
 
 ### Precautions Before Device Search
 
-    * Before searching for CAN IDs, please [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Click to jump").
-    * Please note that you must ensure you are logging into SSH via the network rather than via serial port.
-    * Ensure that the UTOC is properly connected or the mainboard has been flashed with the CAN bridge firmware, and ensure that the data cable connecting to the host computer has data transmission capability.
+    * Before searching for the CAN ID, please first [connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "click to jump").
+    * Please note that it is necessary to ensure that the network login is used to SSH instead of serial port login.
+    * Please ensure that the UTOC is connected or the CAN bridge firmware is flashed on the motherboard, and ensure that the data cable connecting the host computer has data transmission capability.
 
 ### Device Search
 
-    * Now that you have successfully logged into the host computer, you can enter `lsusb` to search for devices. This will result in one of the following scenarios:
+    * Now that you have successfully logged into the host computer, you can enter `lsusb` to search for devices, which will result in one of the following scenarios:
         * If entering `lsusb` prompts that the `ls` command is not found, you can enter the following command to install the command:
             ```bash
             sudo apt-get install usbutils
             ```
-        * If entering `lsusb` results in no response, this indicates a system issue, and we are unable to assist. You need to change the system or use a confirmed normal system.
-        * If the information shown below appears, please note that this is just a reference. You only need to confirm that `1d50:606f` appears.
+        * If entering `lsusb` results in no response, this indicates a system issue, and we cannot help. You need to replace the system or use a confirmed normal system.
+        * If the information shown in the image below appears, please note that this is just a reference. You only need to confirm that `1d50:606f` appears.
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f` belongs to the device you will be using. Ignore any subsequent prompts as system issues may cause it to display incompletely or not at all.
-    * If there are multiple `1d50:606f`, it is recommended to exclude one to avoid affecting subsequent firmware burning and connection to the firmware. For example, if it is `FLY MINI PAD`, it is recommended to use the onboard UTOC and not other CAN bridge devices.
-    * If not, please check whether the data cable is properly connected and whether the firmware has been correctly flashed.
+    * `1d50:606f` belongs to the device you need to use. The subsequent prompts do not need to be concerned about, as system issues may cause them to display incompletely or not at all.
+    * If there are multiple `1d50:606f`, it is recommended to exclude one, otherwise it will affect the subsequent burning and firmware connection. For example, if it is `FLY MINI PAD`, it is recommended to use the onboard UTOC and not other CAN bridge devices.
+    * If none appear, please check whether the data cable is properly connected and whether the firmware has been correctly flashed.
 
-:::warning Note
-You can only proceed with searching for CAN IDs when `1d50:606f` is present.
+:::warning Notice
+You can only proceed with CAN ID search when `1d50:606f` appears.
 :::
 
 ### CAN ID Search
 
-    * Enter the following command to perform an ID search:
+    * Enter the following command to search for the ID:
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * If the ID appears and the `Application:` at the end shows `Klipper`, then this ID can be used directly.
-    * If the ID appears and the `Application:` at the end shows `CANBOOT` or `Katapult`, then you need to flash the firmware to use it.
+    * If an ID appears and the `Application:` at the end shows `Klipper`, it means this ID can be used directly.
+    * If an ID appears and the `Application:` at the end shows `CANBOOT` or `Katapult`, it means the firmware needs to be flashed before it can be used.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
 
-### CAN Issue Collection
+### CAN Problem Collection
 
-    :::danger Note
+    :::danger Notice
 
-    * If you cannot find the CAN ID, please refer to the documentation below.  
-    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN Issue Collection</Button>
+    * If you cannot find the CAN ID, see the document below.
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN Problem Collection</Button>
 
     :::
 
 ### Fill in the CAN ID into the Configuration
 
-    * Open the printer web interface, find `printer.cfg` under the configuration options on the left sidebar: for fluidd `{...}`; for mainsail `machine`, click to enter, and you can find `printer.cfg`.
+    * Open the printer web interface, find `printer.cfg` in the configuration options on the left sidebar. For fluidd, it is `{...}`; for mainsail, it is `Machine`. Click to enter and locate `printer.cfg`.
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copy the queried UUID and fill it into the `[mcu]` section of the `canbus_uuid:` in the `printer.cfg` configuration. After saving and restarting, you can connect to the mainboard. If Klipper prompts that firmware needs to be updated, ADC errors, etc., it indicates that Klipper has already connected to the mainboard.
-
+    * Copy the queried UUID and fill it into the `canbus_uuid:` field under the `[mcu]` node in the `printer.cfg` configuration. After saving and restarting, the mainboard can be connected. If Klipper prompts that the firmware needs to be updated or reports errors such as ADC, it indicates that Klipper has connected to the mainboard.
+    * If the `Application:` displays Canboot, it cannot be configured into the configuration file. You need to flash the Klipper firmware before proceeding.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        Note: All IDs appearing in the document are examples. The actual ID for each mainboard is different. Please modify and fill in according to the actual obtained ID.
+        Note: All IDs mentioned in the documentation are examples. Each mainboard's ID is different. Please modify and fill in according to the actual obtained ID.
 
         :::
+
+    * Below is a reference configuration:
+        :::danger
+
+        * This is a reference configuration method for one mainboard and one tool board.
+        * If it is the mainboard ID, it must be `[mcu]` plus `canbus_uuid:` followed by the ID you searched for.
+        * If it is the tool board, it must be `[mcu tool board name]` plus `canbus_uuid:` followed by the ID you searched for.
+        :::
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />

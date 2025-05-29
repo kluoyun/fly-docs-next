@@ -6,6 +6,7 @@ sidebar_label: USB固件烧录
 
 import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/docs/General/dfu-flash/_firmware/723/_usb.mdx';
+import GetUsbID from '@site/docs/General/get-id/_get-fast-usb.mdx';
 
 
 
@@ -21,29 +22,55 @@ import USB from '@site/docs/General/dfu-flash/_firmware/723/_usb.mdx';
  ---
  <br/>
 
-    <MakeOperate/>
+    <Tabs>
+    <TabItem value="usb" label="USB固件烧录" default>
+    ### USB固件烧录
+        :::tip 提示
+        - FLYOS-FAST系统中已提前编译好一份USB固件，无需再手动编译固件，执行下方命令即可烧录
+        - 也可选择`手动编译USB固件`，自行编译固件
+        :::
 
-    <USB />
+        * 通过SSH连接上位机输入下方指令即可
+        ```bash
+        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
+        ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+    
+    </TabItem>
 
-    * 按 `Q` 键，出现 `Save configuration`，这时再按 `Y` 键
-    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    <TabItem value="can" label="手动编译USB固件">
+    ## 手动编译USB固件
 
-    * 现在应该保存了配置,并且退出到了命令行界面
+        <MakeOperate/>
+    
+        <USB />
+    
+        * 按 `Q` 键，出现 `Save configuration`，这时再按 `Y` 键
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    
+        * 现在应该保存了配置,并且退出到了命令行界面
+    
+        * 输入 `make -j4` 开始编译，时间有点长
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
+    
+        * 最后输出下面的内容则编译成功
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+        ---
+        
+        ### 固件烧录
+        
+        :::tip
+        执行下面的命令来烧录固件
+        :::
+        
+            ```bash
+            fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+            ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
 
-    * 输入 `make -j4` 开始编译，时间有点长
-    <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
-
-    * 最后输出下面的内容则编译成功
-    <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+    </TabItem>
+</Tabs>
 ---
 
-## 固件烧录
-
-:::tip
-执行下面的命令来烧录固件
-:::
-
-    ```bash
-    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
-    ```
+<GetUsbID />
 ---

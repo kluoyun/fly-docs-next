@@ -1,46 +1,83 @@
 ---
 sidebar_position: 4
-sidebar_label: USB橋接CANファームウェア焼込
+sidebar_label: USB 브리지 CAN 펌웨어 플래시
 ---
 
 import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
-import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
-import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
-import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+import GetCanbusUUID from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/get-id/_get-canbus-uuid.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
+import USB from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 
-# USB橋接CANファームウェア焼込
+# USB 브리지 CAN 펌웨어 플래시
 
-## ファームウェアビルド開始
+## SSH 연결하기
 
-    <SSH />
+    :::danger 경고
+    - 펌웨어를 컴파일하기 전에 `와이파이를 사용하여 상위 컴퓨터로 SSH 연결`해야 합니다.
+    :::
 
-    <MakeOperate/>
+ * 먼저 다음을 수행하세요: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#사용-wifi-connect-to-up-computer-ssh">와이파이를 사용하여 상위 컴퓨터로 SSH 연결</Button>  
+ ---
+ <br/>
 
-    <CAN />
+<Tabs>
+    <TabItem value="usb" label="USB 브리지 CAN 펌웨어 플래시" default>
+    ### USB 브리지 CAN 펌웨어 플래시
+    :::tip 팁
+    - FLYOS-FAST 시스템에는 미리 컴파일된 USB 브리지 CAN 펌웨어가 포함되어 있으므로 별도로 펌웨어를 컴파일할 필요가 없습니다. 아래 명령을 실행하면 플래시할 수 있습니다.
+    - 또한 `수동으로 USB 브리지 CAN 펌웨어 컴파일`을 선택하여 펌웨어를 직접 컴파일할 수 있습니다.
+    :::
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押す
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインに戻った状態になっているはずです
-    * `make -j4` を入力してビルドを開始します（時間がかかります）
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればビルド成功です
+    * 장치에 따라 신중히 선택하십시오. 기본값은 `1M`입니다.
 
-        ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
-        ```
+    * C5 시스템의 기본 비트레이트는 1M입니다. 500K를 사용하려면 시스템 설정에서 `canbus_bitrate`의 비트레이트를 수정해야 합니다.
 
-
-## ファームウェア焼込
-
-:::tip
-以下のコマンドを実行してファームウェアを焼込みます
-:::
-
+    * 이 명령은 `1M` USB 브리지 CAN 펌웨어를 플래시합니다.
     ```bash
-    sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+    fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-1m.bin
     ```
+    * 이 명령은 `500k` USB 브리지 CAN 펌웨어를 플래시합니다.
+    ```bash
+    fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-500k.bin
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+
+
+    </TabItem>
+
+
+
+    <TabItem value="can" label="USB 브리지 CAN 펌웨어 수동 컴파일">
+        ## USB 브리지 CAN 펌웨어 수동 컴파일
+        <MakeOperate/>
+    
+        <CAN />
+    
+        * `Q` 키를 누르면 `Save configuration`이 나타나고, 그 후 `Y` 키를 누릅니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    
+        * 이제 설정이 저장되었으며 명령줄 인터페이스로 돌아왔습니다.
+    
+        * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 다소 걸립니다.
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
+    
+        * 마지막에 아래와 같은 내용이 출력되면 컴파일이 성공한 것입니다.
+        <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
+    ---
+
+        ### 펌웨어 플래시
+        :::tip
+        아래 명령을 실행하여 펌웨어를 플래시하세요.
+        :::
+        
+            ```bash
+            sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
+            ```
+            </TabItem>
+</Tabs>
+---
+
+<GetCanbusUUID />
+---

@@ -1,0 +1,76 @@
+## Configuration du CAN et recherche d'ID
+
+:::warning
+
+* Le taux de transmission CAN par défaut du système FAST est de 1M.
+* Veuillez vous assurer que le réseau CAN de l'ordinateur supérieur, la carte mère de pont USB et la carte outil CAN ont tous le même taux de transmission.
+
+:::
+
+### Remarques avant la recherche d'appareils
+
+    * Avant de rechercher l'ID CAN, assurez-vous que le firmware est un pont USB-CAN.
+
+
+## Recherche d'appareils
+    * Dans la ligne de commande, tapez `lsusb` puis appuyez sur Entrée. Si une information similaire à celle de l'image ci-dessous apparaît, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est renvoyée, il s'agit d'un problème avec le système de l'ordinateur supérieur. Nous ne pouvons rien faire dans ce cas. Vous devez changer pour un système fonctionnel ou remplacer l'ordinateur supérieur.
+        * Si le message indique qu'il n'y a pas de commande `lsusb`, vous pouvez installer cette commande en exécutant :
+            ```bash
+            sudo apt-get install usbutils
+            ```
+        * Si rien ne se passe après avoir tapé `lsusb`, c'est un problème systémique. Vous devez changer de système ou utiliser un système fonctionnel.
+        * Lorsque l'information suivante apparaît, cela ne constitue qu'une référence. Vous devez simplement vérifier qu'il y a bien `1d50:606f`.
+            <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
+    * `1d50:606f` correspond à l'appareil que vous utiliserez pour cette session. Les autres indications ne sont pas importantes car les problèmes du système peuvent entraîner une affichage incomplet ou inexistant.
+    * Si plusieurs `1d50:606f` apparaissent, assurez-vous que l'ordinateur entier ne contient qu'un seul pont USB-CAN ou UTOC.
+    * Si aucun n'apparaît, vérifiez que les câbles sont correctement connectés et que le firmware a été correctement flashé.
+
+:::warning Attention
+Vous ne pouvez rechercher l'ID CAN que si `1d50:606f` est présent.
+:::
+
+### Recherche de l'ID CAN
+
+    * Entrez la commande suivante pour rechercher l'ID :
+    ```bash
+    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    ```
+    * Si un ID apparaît et que l'indication finale `Application:` affiche `Klipper`, cet ID peut être utilisé directement.
+    * Si un ID apparaît et que l'indication finale `Application:` affiche `CANBOOT` ou `Katapult`, cela signifie que vous devez mettre à jour le firmware pour pouvoir l'utiliser.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+
+### Recueil de problèmes liés au CAN
+
+    :::danger À savoir
+
+    * Si vous ne trouvez pas d'ID CAN, consultez la documentation ci-dessous.
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">Recueil de problèmes liés au CAN</Button>
+
+    :::
+
+### Remplir l'ID CAN dans la configuration
+
+    * Ouvrez l'interface web de l'imprimante, dans le menu latéral de configuration, recherchez : fluidd `{...}` ; mainsail `machine`, cliquez dessus pour accéder à `printer.cfg`.
+
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+
+    * Copiez l'UUID obtenu et collez-le dans la section `[mcu]` du fichier de configuration `printer.cfg` sous la forme `canbus_uuid:`. Après avoir enregistré et redémarré, vous pourrez connecter la carte mère. Si Klipper indique qu'une mise à jour du firmware est nécessaire ou que des erreurs ADC se produisent, cela signifie que Klipper est connecté à la carte mère.
+    * Si `Application:` affiche Canboot, il est impossible de configurer dans la configuration. Vous devez mettre à jour le firmware Klipper avant de poursuivre.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
+
+    * Voici une configuration de référence :
+        :::danger
+
+        * Ci-dessous, une configuration de référence pour une configuration avec une seule carte mère et une seule carte outil.
+        * Si c'est une carte mère, ajoutez obligatoirement `canbus_uuid:` après `[mcu]` suivi de l'ID obtenu lors de la recherche.
+        * Si c'est une carte outil, ajoutez obligatoirement `[mcu nom_de_l_outil]` suivi de `canbus_uuid:` et de l'ID obtenu lors de la recherche.
+        :::
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />
+
+        :::danger
+
+        Note : Tous les ID mentionnés dans ce document sont des exemples. Chaque carte mère possède un ID unique. Modifiez donc les valeurs en fonction des IDs réellement obtenus.
+
+        :::

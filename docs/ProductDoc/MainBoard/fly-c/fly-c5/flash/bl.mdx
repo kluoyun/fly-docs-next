@@ -21,45 +21,46 @@ import CANBOOT from '@site/docs/General/dfu-flash/_firmware/katapult/_katapult.m
 
 ## 进入烧录模式
 
+    :::tip
+
+    * 左边是主板的RST,右边是主板的BOOT
+
+    :::
 
     * 进入烧录模式有两种方法
-    * 第一种：主板完全断电情况下，长接BOOT然后将带有数据传输的数据线一头接主板一头接你设备，合适WINDOWS
+    * 第一种：主板完全断电情况下，长按BOOT然后将带有数据传输的数据线一头接主板一头接你设备，合适WINDOWS
     * 第二种：在将带有数据传输的数据线一头接主板一头接你设备后，长按BOOT然后输入指令，合适上位机
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="100%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="60%" align="center" />
 
 ## 烧录固件
     <Tabs>
         <TabItem value="win" label="windows烧录教程" default>
 
-            * C8的bootloader固件 <Button variant="contained" disableElevation component="a" rel="noopener" href="http://cdn.mellow.klipper.cn/BL/c5.bin">点击自动下载固件</Button>
+            * C5的bootloader固件 <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/firmware/BL/hid_bootloader_h723_v1.0.bin">点击自动下载固件</Button>
 
 
-            * 拨码开关`3`,`4`往右边拨，将下位机与上位机通过内置USB连接
-            * 拨码开关`1`,`2`往左边拨，否则会影响下位机与上位机连接
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip2.webp').default} size="100%" align="center" />
+            * 拨码开关朝下拨，将下位机通过外置USB连接
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
             <WIN />
 
         </TabItem>
         <TabItem value="linux" label="上位机烧录教程">
 
-            * 拨码开关`1`,`2`往右边拨，将下位机与上位机通过内置USB连接
-            * 拨码开关`3`,`4`往左边拨，否则会影响下位机与上位机连接
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/dip1.webp').default} size="100%" align="center" />
-            * 按着此方法拨动拨码开关后，下方usb口将被下位机占用，请不要接入其他设备
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/img/usb.webp').default} size="50%" align="center" />
+            * 拨码开关朝上拨，将下位机USB连接上位机
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
-            * 请确保上位机可以正常上网
-
+            * 输入下方指令开始烧录BL
+            * 右边是主板的BOOT
 
                 ```bash
-                sudo wget http://cdn.mellow.klipper.cn/BL/c5.bin -O ~/c5.bin && sudo fly-flash -d c5 -u -f ~/c5.bin
+                fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
                 ```
-            * 出现下方提示时候需要长按下位机的BOOT键然后回车
 
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/boot.webp').default} size="80%" align="center" />
+
+             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="70%" align="center" />
 
             * 当出现下图时候则证明烧录成功并且可以将BOOT键松开
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="80%" align="center" />
+                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
 
 
         </TabItem>
