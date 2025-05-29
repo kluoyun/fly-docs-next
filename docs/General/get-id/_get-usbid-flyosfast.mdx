@@ -1,0 +1,63 @@
+
+## 搜索USB ID
+    1. 在SSH中输入`lsusb`，按`Enter键`回车，如果出现下图所示的`1d50:6177`，即可可以进行下一步。
+    <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="center" /> 
+
+    2. `1d50:6177` 属于本次你要用到的设备。`OpenMoko, Inc. stm32f723xx`后缀具有一定参考价值，但不作为判断依据。  
+        如果输入`lsusb`指令能够显示设备，但是没有 `1d50:6177`，请自行检查主板拨码模式是否正确、尝试重新编译并烧录USB固件、尝试给主板接24V的供电
+
+    :::warning 注意事项
+       必须在查询到`1d50:6177`设备之后，才能进行下一步
+    :::
+
+
+    3. 在SSH中输入下方指令，按`Enter键`回车。如果一切正常，则会出现下面一行`蓝色的ID`。
+    ```bash
+    ls /dev/serial/by-id/*
+    ```
+    :::warning 注意事项
+    - 下图所示的`ID`仅作参考，每块主板的`ID`都不相同，请以你实际查询到的`ID`为准
+    - 如果接了多个主板，则会同时出现多个ID，请根据你的主板`MCU型号`选择相对应的ID。
+    :::
+
+    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="center" />
+---
+
+
+## 填写USB ID
+
+    1. 打开上位机的WEB界面，在左侧边栏的配置选项里找到：
+
+    <table>
+      <tr>
+        <td>
+          - fluidd为: `{…}` ，点击进去，即可找到 `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+
+    2. 将蓝色的ID复制，在`printer.cfg` 文件中找到 `[mcu]` 选项，在下方的 `serial: `后填写查询到的`ID`，保存重启后即可连上主板。
+    :::danger
+    * 下方配置的ID仅供参考！！！请严格遵守下图所示的格式填写`ID`
+    * 主板的USB ID格式为： 
+     ```
+    [mcu]  
+    serial: /dev/serial/by-id/usb-klipper_******_**********-****
+    ```
+    :::
+
+    <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="100%" align="center" />
+    
+    3. 若Klipper提示 `ADC out of range` 此为正常现象，将热床和热敏连接到主板，并配置好喷头、热床的热敏引脚，再保存重启即可。
+
+:::danger
+注意：文档中所出现的所有ID均为示例，实际每个主板的ID均不相同，请填写实际获取到的ID。
+:::
+---
+
