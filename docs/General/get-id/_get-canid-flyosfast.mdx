@@ -8,17 +8,18 @@
 
     1. 在SSH中输入`lsusb`，按`Enter键`回车如果出现下图所示的`1d50:606f`，即可进行下一步。
     <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="center" />
-    2. 其中`1d50:606f` 属于本次你要用到的设备。`OpenMoko, Inc. Geschwister Schneider CAN adapter`后缀具有一定参考价值，但不作为判断依据。
-    3. 如果接了多个刷了USB桥接CAN的主板或者多个UTOC等，则会出现多个`1d50:606f`设备，这不影响使用
+    2. 其中`1d50:606f` 属于本次你要用到的设备。
+    3. 如果接了多个刷了USB桥接CAN的主板或者多个UTOC等，则会出现多个`1d50:606f`设备，需要排除到只剩下一个
     4. 如果没有`1d50:606f`，请自行检查主板拨码模式是否正确、尝试重新编译并烧录USB桥接CAN固件、尝试给主板接24V的供电
 
     :::warning 注意事项
     - 必须在查询到`1d50:606f`设备之后，才能进行下一步
+    - 并且只能只有一个`1d50:606f`设备
     :::
 
     5. 输入下方指令进行ID搜索
     ```bash
-    ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
+    python ~/klipper/scripts/canbus_query.py can0
     ```
         * 如果出现UUID，`Application:`后显示`Klipper`则代表此ID可以直接使用
         * 如果出现UUID，`Application:`后显示`CANBOOT`或者`Katapult`则代表需要刷USB桥接CAN固件才可以使用
