@@ -1,0 +1,58 @@
+## Search for USB ID
+    1. Enter the command `lsusb` in SSH, press the `Enter` key, and if the following `1d50:614e` appears as shown in the figure below, you can proceed to the next step.
+    <ImageView image={require('@site/docs/General/get-id/img/614e.webp').default} size="80%" align="center" /> 
+
+    2. `1d50:614e` belongs to the device you are using this time.  
+        If the device is displayed after entering the `lsusb` command but there is no `1d50:614e`, please check whether the motherboard jumper mode is correct by yourself, try recompiling and burning the USB firmware, and try supplying 24V power to the motherboard.
+
+    :::warning Note
+       You must query the `1d50:614e` device before proceeding to the next step.
+    :::
+
+    3. In SSH, enter the following command and press the `Enter` key. If everything is normal, a line of `blue ID` will appear.
+    ```bash
+    ls /dev/serial/by-id/*
+    ```
+    :::warning Note
+    - The `ID` shown in the figure below is for reference only; each motherboard's `ID` is different, so please use the actual queried `ID`.  
+    - If multiple motherboards are connected, multiple IDs will appear at the same time, so please select the corresponding ID based on your motherboard's `MCU model`.
+    :::
+
+    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="center" />
+---
+
+## Fill in the USB ID
+
+    1. Open the PC端 web interface, and find the configuration options in the left sidebar:
+
+    <table>
+      <tr>
+        <td>
+          - For fluidd: `{…}`, click to enter, and you can find `printer.cfg`  
+          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - For mainsail: `Machine`, click to enter, and you can find `printer.cfg`  
+          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    2. Copy the blue ID, find the `[mcu]` option in the `printer.cfg` file, and fill in the queried `ID` after `serial: `, and it will connect to the motherboard after saving and restarting.
+    :::danger
+    * The ID below is for reference only!!! Please strictly follow the format shown in the figure below to fill in the `ID`.  
+    * The motherboard's USB ID format is as follows:  
+     ```
+    [mcu]  
+    serial: /dev/serial/by-id/usb-klipper_******_**********-****
+    ```
+    :::
+
+    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
+
+    3. If Klipper prompts `ADC out of range`, this is a normal phenomenon. Connect the heated bed and thermistor to the motherboard, configure the hotend and heated bed thermistor pins, then save and restart.
+
+:::danger
+Note: All IDs mentioned in the document are examples; the actual ID of each motherboard is different, so please fill in the actual obtained ID.
+:::
+---

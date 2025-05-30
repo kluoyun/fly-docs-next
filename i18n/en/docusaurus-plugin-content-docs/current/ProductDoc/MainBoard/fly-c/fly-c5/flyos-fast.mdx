@@ -3,109 +3,26 @@ sidebar_position: 2
 sidebar_label: System Image Burning
 ---
 
-import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
-import M2WE from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
-import M2SD from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
-import TF_EMMC from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
-import CONFIG from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+import FASTFASLH from '@site/i18n/en/docusaurus-plugin-content-docs/current/DebugDoc/flyos-fast/_h618_falsh.mdx';
+
 
 # System Image Burning
 
-## System Introduction
-FlyOS-Fast is a lightweight Linux system customized specifically for 3D printing, supporting the entire series of Fly mainboards. Its features include:
 
-- Fast boot with kernel optimization to ensure Klipper real-time performance
-- Optimized file system to reduce the risk of failure to boot due to power loss
-- 30-second fast startup of KlipperScreen
-- Pre-installed services including Klipper, RRF, Mainsail, Fluidd, Moonraker, and KlipperScreen
-- Support for switching between Klipper and RRF systems
-- Support for online one-click switching between Mainsail and Fluidd
-- Support for USB drive printing, power-off resume printing, and serial port screen
-- Support for automatic firmware burning on startup (fly-c8, fly-geminiv3)
-- Ability to pre-set default language and printer name for front-end UIs like Fluidd
+<FASTFASLH />
 
-For more OEM customization features (such as custom boot logo, preset configuration files, hiding Mainsail tabs, etc.), please contact us.
+## Installing the System Card
 
-:::tip Note
-This system is a lightweight customized system; the built-in klipper components and services are not official original versions and do not support user modifications or upgrades.
-:::
+<Tabs>
+    <TabItem value="usb" label="Diagram of M2WE installed to C5" default>
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/m2we.webp').default} size="30%" align="center" />
+    </TabItem>
+    <TabItem value="can" label="Diagram of TF card installed to C5">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/tf.webp').default} size="30%" align="center" />
+    </TabItem>
+</Tabs>
 
 
-- The system account for FLYOS-FAST is `root`, with the password being `mellow`.
-
-
-## Host New User Guide
-
-<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/baodian/host/">Host New User Guide</Button>
-
-
-## System Burning Preparation
-
-1. Prepare the TF card for burning:
-    - Card reader
-    - One TF card with a capacity of 16GB-128GB and a transmission speed of Class10 or higher.
-    - It is recommended to use brand-name TF cards such as Kingston, SanDisk, Samsung, or Kioxia; avoid using generic TF cards!
-
-2. Download the FLY-C5 system image: <Button variant="contained" disableElevation component="a" rel="noopener" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618 System Image</Button>
     :::tip
-    - The naming rule for the system file is: `FlyOS-Fast-[chip series]-[version number].img`, for example: `FlyOS-Fast-H5-v1.0.0.img`
-    - For Windows systems, download the `.exe` file, which is a 7z self-extracting archive. After downloading, double-click it to extract and obtain the `.img` file (this can only be used on Windows systems to extract).
-    - For other systems such as MacOS and Linux, download the `.7z` file, which is a 7z archive. After downloading, use tools that support the 7z format to extract and obtain the `.img` file.
-    - Due to the large size of the system file, other compression formats and source images are temporarily unavailable for download.
-    - This tutorial will introduce using the `.exe` file as an example.
+    - After the system card is installed, you can proceed to the next step and connect via SSH to the host machine.
     :::
-    - Access the FlyOS-Fast artifact repository, select the compression format, and enter the file page
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
-    - Select the image version (default latest)
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
-    - Click `File List`, then scroll the scrollbar to drag it to the right to display the download button
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
-    - Click the download button to download the system image
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
-
-
-3. Download the burning tool. This tutorial will use `Rufus` as an example. In fact, other tools such as `Etcher` and `Win32 Disk Imager` can also be used.
-    - Rufus download address: [Download Chinese](https://rufus.ie/zh/#download) or [Click Download English](https://rufus.ie/en/#download) (only supports Windows).
-    - Etcher download address: [Click Download](https://etcher.balena.io/#download-etcher) (supports Windows, MacOS, Linux).
-    - Win32 Disk Imager download address: [Click Download](https://sourceforge.net/projects/win32diskimager/) (only supports Windows).
-
-4. This tutorial will use `FlyOS-Fast-H5.exe` as an example.
-
-5. Extract the system image file to obtain the `.img` file.
-    - Double-click or right-click to open `FlyOS-Fast-H5.exe`, wait a few seconds, and a window will pop up (if the system prompts that it is unsafe, select "More Info" -> "Run").
-    - You can choose the extraction directory, then click the `Extract` button, and wait for the extraction to complete.
-    
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
-
-    - After extraction, a `FlyOS-Fast-H5-vx.x.x.img` file will be generated in the extraction directory. `x.x.x` is the system version number.
-
-
-6. Insert the prepared Class10 TF card into the card reader and connect it to the computer
-
-
-## Burning the System
-
-1. Open Rufus, select the device (the capacity should match the burn card)  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
-
-2. Select "Image File" under Boot Selection.
-
-3. Click the "Select" button and select the `.img` file after extraction.
-
-4. After selection, the Boot Selection displays the image file name.  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
-    
-5. Click "Start". If prompted to clear disk data, click "OK".  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-
-6. After burning is complete, the computer emits a prompt sound, and the progress bar shows "Ready".  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
-
-7. Do not remove the burn card after completion.
-
-8. Open File Explorer to check if there is a named `FlyOS-Conf` USB drive or removable disk.  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-
-9. Open `FlyOS-Conf`. If the two files shown below are present, the burn is successful, where `config.txt` is the system configuration file.
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-10. Next: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh">Connect to Host via SSH</Button>

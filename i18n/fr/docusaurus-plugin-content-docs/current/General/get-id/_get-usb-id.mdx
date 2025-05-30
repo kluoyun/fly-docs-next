@@ -1,27 +1,27 @@
-## Recherche de tutoriels USB
+## Rechercher des tutoriels USB
 
-## Remarques avant la recherche du périphérique
+## Consignes avant de rechercher l'appareil
 
-    * Avant de rechercher l'ID USB, veuillez vous [connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder")
-    * Veuillez noter qu'il est nécessaire d'être connecté à SSH via le réseau et non via un port série
-    * Assurez-vous que la carte mère avec le firmware USB est correctement connectée et que le câble de données reliant la station supérieure au matériel a la fonction de transmission de données
+    * Avant de rechercher l'ID USB, veillez à [vous connecter via SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder").
+    * Veuillez vous assurer que la connexion SSH est effectuée via le réseau et non via un port série.
+    * Assurez-vous d'avoir correctement connecté la carte mère flashée avec le firmware USB, et que le câble de données utilisé pour connecter la carte mère à l'ordinateur dispose bien de la fonctionnalité de transmission de données.
 
-## Recherche de périphériques
-    * Assurez-vous que la station supérieure est correctement connectée à Internet et que le câble de données reliant la station supérieure au matériel a la fonction de transmission de données.
-    * Connectez-vous à SSH sur la station supérieure et entrez `lsusb` puis appuyez sur Entrée. Si des informations entourées dans l'image ci-dessous sont affichées, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est renvoyée, il s'agit d'un problème de système de la station supérieure. Nous ne pouvons rien faire de plus, vous devrez changer pour un système confirmé comme étant normal ou changer la station supérieure.
-        * Si le message indique qu'il n'y a pas de commande `lsusb`, vous pouvez exécuter cette commande pour l'installer :
+## Recherche de l'appareil
+    * Assurez-vous que l'ordinateur principal peut se connecter normalement à Internet et que le câble de données reliant la carte mère à l'ordinateur possède bien la fonctionnalité de transmission de données.
+    * Après avoir établi une connexion SSH sur l'ordinateur principal, entrez la commande `lsusb` puis appuyez sur Entrée. Si les informations entourées dans l'image ci-dessous apparaissent, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est renvoyée, il s'agit d'un problème du système de l'ordinateur principal. Nous ne pouvons rien faire à ce sujet. Vous devez soit remplacer par un système confirmé comme fonctionnel, soit changer d'ordinateur principal.
+        * Si vous obtenez un message indiquant qu'il n'y a pas de commande `lsusb`, vous pouvez installer cette commande en exécutant :
             ```bash
             sudo apt-get install usbutils
             ```
             <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * `1d50:6177` appartient à l'appareil que vous utiliserez cette fois-ci. Le suffixe `OpenMoko, Inc. stm32f407xx` peut être utile à titre indicatif, mais ne doit pas servir de critère de jugement.
-        * Certaines stations supérieures peuvent afficher des informations incomplètes ou ne rien afficher en raison de problèmes de système.
-        * Si vous entrez la commande `lsusb` et que l'appareil est visible, mais que `1d50:6177` n'est pas présent, essayez de changer de câble de données et de connecter la carte mère à un autre port USB de la station supérieure.
-    * Si vous avez déjà effectué les étapes ci-dessus et que vous avez réussi à flasher le firmware Klipper, et que la carte mère fonctionne normalement, et que vous souhaitez simplement mettre à jour le firmware Klipper, veuillez consulter la section `Mise à jour du firmware` du menu de droite de cette page.
+    * L'identifiant `1d50:6177` correspond à l'appareil que vous allez utiliser lors de cette opération.
+        * Certains ordinateurs principaux peuvent afficher incorrectement ou ne pas afficher du tout en raison de problèmes liés au système.
+        * Si la commande `lsusb` affiche l'appareil mais pas `1d50:6177`, essayez de changer de câble de données et de connecter la carte mère à une autre prise USB sur l'ordinateur principal.
+    * Si vous avez suivi les étapes ci-dessus précédemment et que la mise à jour du firmware Klipper a été effectuée avec succès, et que la carte mère fonctionne normalement, mais que vous souhaitez simplement mettre à jour le firmware Klipper, consultez la section `Mise à jour du firmware` du menu de droite de cette page.
 
     :::warning Remarque
-       Vous devez avoir trouvé l'appareil `1d50:6177` avant de pouvoir passer à l'étape suivante.
+       Vous devez impérativement trouver l'appareil `1d50:6177` avant de poursuivre.
     :::
 
 ## Recherche de l'ID USB
@@ -30,24 +30,25 @@
     ls /dev/serial/by-id/*
     ```
 
-    * Entrez la commande ci-dessous et appuyez sur Entrée. Si tout se passe bien, une ligne d'ID bleue apparaîtra. (L'exemple ci-dessous est donné à titre indicatif)
+    * Entrez la commande ci-dessous et appuyez sur Entrée. Si tout se passe bien, un identifiant bleu apparaîtra (l'exemple ci-dessous est donné à titre indicatif).
     <ImageView image={require('@site/docs/General/get-id/img/usb-id.webp').default} size="80%" align="left" />
-    * Si aucune ID n'apparaît après l'entrée de la commande ci-dessous, mais que `lsusb` montre un appareil, veuillez changer de station supérieure ou de système de la station supérieure
+    * Si aucune ID n'apparaît après l'entrée de la commande ci-dessus, mais que `lsusb` affiche un appareil, essayez de changer d'ordinateur principal ou de système d'exploitation sur l'ordinateur principal.
+
 
 :::warning Remarque
-Si plusieurs ID apparaissent, choisissez l'ID correspondant au modèle de MCU de votre carte mère.
+Si plusieurs ID apparaissent, choisissez celui correspondant au modèle de MCU de votre carte mère.
 :::
 
 ### Inscription de l'ID USB dans la configuration
 
-    * Ouvrez l'interface web de l'imprimante, trouvez `printer.cfg` dans l'option de configuration du panneau latéral gauche : fluidd est `{…}` ; mainsail est `machine`, cliquez dessus pour y accéder.
+    * Ouvrez l'interface web de l'imprimante, trouvez dans le menu latéral gauche l'option de configuration : fluidd `{…}` ; mainsail `machine`, cliquez dessus pour accéder à `printer.cfg`.
 
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copiez l'ID bleu et collez-le dans le champ `serial:` du nœud `[mcu]` de la configuration `printer.cfg`. Enregistrez et redémarrez pour vous connecter à la carte mère. Si Klipper affiche ``ADC out of range``, c'est un phénomène normal. Branchez correctement le lit chauffant et le thermocouple, configurez les broches thermiques et les broches de sortie du hot-end et du lit, puis enregistrez et redémarrez.
+    * Copiez l'identifiant bleu et insérez-le dans le champ `serial:` du nœud `[mcu]` dans la configuration `printer.cfg`. Redémarrez après sauvegarde pour connecter la carte mère. Si Klipper affiche ``ADC out of range``, c'est un phénomène normal. Connectez bien la plaque chauffante et les capteurs thermiques, configurez les broches thermiques et de sortie pour la buse et la plaque chauffante, puis sauvegardez et redémarrez.
 
             <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
 
-:::danger
-Attention : tous les ID mentionnés dans le document sont des exemples. Chaque carte mère a un ID unique. Veuillez modifier et remplir en fonction de l'ID réellement obtenu.
+:::danger Attention
+Remarque : Tous les IDs mentionnés dans le document sont des exemples. Chaque carte mère a un ID unique. Veuillez modifier et remplir avec l'ID réellement obtenu.
 :::

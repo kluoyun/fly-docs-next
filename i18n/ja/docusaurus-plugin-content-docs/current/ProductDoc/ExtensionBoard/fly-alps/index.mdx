@@ -2,41 +2,41 @@
 sidebar_position: 1
 ---
 
-# 紹介
-ALPS圧力モジュールは、ADS131M02をベースにした圧力センシングソリューションで、主に3Dプリンターの自動Z軸ホーム（Home）とメッシュベッドレベル調平の開発に特化しています。高感度な圧力検出とリアルタイムの信号処理により、モジュールはプリントヘッドとベッドの接触状態を正確に感知し、ミリ単位での調平精度を実現します。これにより、従来の機械式リミットスイッチによる校正エラーを排除し、最初の層の印刷成功を大幅に向上させます。
+# イントロダクション
+ALPS圧力モジュールは、ADS131M02をベースにした圧力センシングソリューションで、主に3Dプリンターの自動Z軸ホーム（Home）とメッシュベッドレベル調平のために開発されました。高感度な圧力検出とリアルタイム信号処理により、モジュールはプリントヘッドとメッシュベッドの接触状態を正確に感知し、ミリ単位の調平精度を実現します。これにより、従来の機械式リミットスイッチ校正のエラーを解消し、ファーストレイヤーの印刷成功を大幅に向上させます。
 
 # パラメータ比較
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/csdb.webp').default} size="100%" align="center" />
 
-## ALPS圧力モジュールの使用
+## ALPS圧力モジュールの使用方法
 
-### エラーカスタマイズ機能の推奨
-ALPS圧力モジュールを使用する際には、ノズルクリーニング機能との組み合わせを推奨します。これにより、調平の精度と安定性が向上します。
+### クリーニング機能との組み合わせ推奨
+ALPS圧力モジュールを使用する際には、ノズルクリーニング機能と組み合わせることをお勧めします。これにより、調平の精度と安定性が向上します。
 
 #### XH2.54 4Pin配線図
-モジュールはメインボードのUARTポートまたは拡張ボードのUARTポートに直接挿入できます。UARTポートがない場合は、メインボード上の2つのピンを見つけてください。ただし、電源線の極性を確認してください。
+モジュールは直接マザーボードのUARTポートに挿入できます。または拡張ボードのUARTポートに接続することも可能です。UARTポートがない場合は、マザーボード上で2つのピンを探し、電源ラインの正負を確認してください。
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/uart1.webp').default} size="100%" align="center" />
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/uart.webp').default} size="100%" align="center" />
 
-### インストールに関する注意事項
-1. モジュールがしっかりと固定されていることを確認し、振動による接触不良を防ぎましょう。
-2. 接線が正しいことを確認し、接線エラーによってモジュールが正常に動作しないことがないようにしましょう。
-3. 最初に使用する前に、複数回の調平テストを行い、モジュールの感度と精度が予想通りであることを確認してください。
+### インストール時の注意点
+1. モジュールがしっかりと固定されていることを確認し、印刷中の振動によって接触不良が発生しないようにしてください。
+2. 接線が正しいか確認し、誤接続によりモジュールが正常に動作しない場合があります。
+3. 初めて使用する際には、複数回の調平テストを行い、モジュールの感度と精度が期待通りであることを確認してください。
 
-## ステータスライトの表示
-- **電源投入時**: 緑色枠のステータスライトが点灯している場合、モジュールが正常に動作しています。
-- **トリガー時**: 赤色枠のステータスライトが点滅している場合、モジュールがトリガー状態です。
+## ステータスLEDの表示
+- **電源投入時**: 緑色のフレームLEDが点灯している場合、モジュールが正常に動作しています。
+- **トリガー時**: 赤色のフレームLEDが点滅している場合、モジュールがトリガー状態です。
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/LED.webp').default} size="20%" align="center" />
 
-### ステータスライトのトラブルシューティング
-- ステータスライトが点灯しない場合、電源接続が正しいか確認してください。
-- ステータスライトが連続して点滅する場合、モジュールが異常信号を検出した可能性があります。プローブが異物で詰まっているか損傷していないか確認してください。
+### ステータスLEDのトラブルシューティング
+- LEDが点灯しない場合は、電源接線が正しいかどうかを確認してください。
+- LEDが連続して点滅する場合は、モジュールが異常信号を検出した可能性があります。プローブが異物で詰まっているか損傷していないかを確認してください。
 
 ## 設定ガイド
-既存の設定ファイル内の `probe` および `ホーム` 部分を置き換えて、以下の設定を追加してください。
+既存の設定ファイル内の `probe` および `ホーム` 部分を置き換え、以下のような設定を追加してください。
 
 ### 設定ファイル例
-以下は推奨される設定ファイルの内容です。実際のニーズに基づいて調整してください。
+以下の推奨される設定ファイルの内容を、実際のニーズに応じて調整してください。
 
 
 ```cfg
@@ -61,7 +61,7 @@ gcode:
        {% endif %}
 
        {% if home_all or 'Z' in params %}
-       # 同時にeddyと圧力センサーを使用する場合、以下をコメント解除
+       # もしeddyと圧力センサを同時に使用する場合、以下のコメントを外してください
             #SET_PIN PIN=_probe_ready VALUE=1 
             G28 Z 
             #SET_PIN PIN=_probe_ready VALUE=0
@@ -69,35 +69,37 @@ gcode:
         {% endif %}
 
 [output_pin _probe_ready]
-pin: PA9 #En #有効ピン
+pin: PA9 #En #Enableピン
 shutdown_value: 0
+value:0
 
 [probe]
-pin: PA10 #out #プローブピン
-x_offset: 0                  # X軸-センサーのノズルからのオフセット
-y_offset: 0               # Y軸-センサーのノズルからのオフセット
-z_offset:0                # Z軸-センサーのノズルからのオフセット
-speed: 8                 # レベル調整速度
+pin: ^PA10 #out #プローブピン
+x_offset: 0                  # X軸-センサのノズルに対するオフセット量
+y_offset: 0               # Y軸-センサのノズルに対するオフセット量
+z_offset:0                # Z軸-センサのノズルに対するオフセット量
+speed: 8                 # 調平速度
 samples: 3                   # サンプル回数
 samples_result: median       # 取り出し方式（デフォルトはmedian-中央値）
-sample_retract_dist: 2     # レベル調整時の引き戻し距離
-samples_tolerance: 0.05      # サンプル公差（注意：小さい値はサンプル回数を増やす可能性があります）
-samples_tolerance_retries: 3 # 公差超過時の再試行回数
+sample_retract_dist: 2     # 調平引き戻し距離
+samples_tolerance: 0.05      # サンプル許容範囲（小さな値はサンプル回数増加につながる可能性があります）
+samples_tolerance_retries: 3 # 許容範囲超過リトライ回数
 activate_gcode:
            G4 P500
            SET_PIN PIN=_probe_ready VALUE=1
 deactivate_gcode:
            SET_PIN PIN=_probe_ready VALUE=0  
+
 ```
 
-### Z Offset値の調整参考
-このコマンドを使用してz-offsetを調整します：
+### Z Offset値の調整
+このコマンドを使用してZ Offsetを調整します：
 ```gcode
 PROBE_CALIBRATE
 ```
 
-- z-offsetの数値を調整する前に、Klipperの文書のチュートリアルを参照してください: [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+- Z Offset値を調整する前に、Klipperのドキュメントのチュートリアル「Paper Test」を参照してください：[Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
 
 :::info 注意
-- 圧力モジュールをZ軸リミットとして使用する場合、既存の`endstop_pin`設定を以下のように変更してください:`endstop_pin: probe:z_virtual_endstop`
+- 圧力モジュールをZ軸エンドストップとして使用する場合、既存の `endstop_pin` を次のように上書きしてください：`endstop_pin: probe:z_virtual_endstop`
 :::

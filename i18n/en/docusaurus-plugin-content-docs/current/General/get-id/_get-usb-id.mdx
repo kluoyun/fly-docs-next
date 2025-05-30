@@ -2,26 +2,26 @@
 
 ## Precautions Before Searching for Devices
 
-    * Please connect to SSH before searching for the USB ID ([Connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Click to jump"))
-    * Note that you must log in to SSH via the network rather than via serial port
-    * Ensure that the mainboard with the flashed USB firmware is properly connected and that the data cable connecting it to the host computer has data transfer capability
+    * Please connect to SSH before searching for the USB ID [Connect to SSH](/docs/DebugDoc/BasicTutorial/index.mdx "Click to jump")
+    * Please note that you need to ensure that you log in to SSH via the network rather than via serial port
+    * Please ensure that the mainboard with the flashed USB firmware is connected, and the data cable connecting to the host computer has data transmission function
 
 ## Search for Devices
-    * Ensure that the host computer can access the internet normally and that the data cable connecting the peripheral device to the host computer has data transfer capability.
-    * After connecting to the host computer via SSH, enter `lsusb` and press Enter. If the information circled in the following image appears, you can proceed to the next step.
-        * If there is no feedback, this indicates a problem with the host computer's system, and we are unable to assist; you need to replace the system with one that is confirmed to be working or replace the host computer.
-        * If the instruction `lsusb` is not found, you can execute the following command to install it:
+    * Ensure that the host computer can connect normally to the network, and ensure that the data cable connecting the downstream device to the host computer has data transmission function.
+    * After SSH connection to the host computer, enter `lsusb` and press Enter. If the information circled in the image below appears, you can proceed to the next step.
+        * If there is no feedback at all, this is a system problem with the host computer. We are unable to help. You need to replace it with a confirmed normal system or replace the host computer.
+        * If the prompt says there is no `lsusb` command, you can execute the following command to install:
             ```bash
             sudo apt-get install usbutils
             ```
             <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * `1d50:6177` is the device you will be using for this task. The suffix `OpenMoko, Inc. stm32f407xx` is somewhat indicative but should not be used as a basis for judgment.
-        * Some host computers may display incomplete or no information due to system issues.
-        * If the `lsusb` command displays the device but does not show `1d50:6177`, try changing the data cable and connecting the mainboard to another USB port on the host computer.
-    * If you have previously executed the above steps and successfully burned the Klipper firmware, and the mainboard is running normally, but you just want to update the Klipper firmware, refer directly to the `Firmware Update` section in the right-hand menu of this page.
+    * `1d50:6177` belongs to the device you will use this time.
+        * Some host computers may not display fully or not display due to system issues.
+        * If the `lsusb` command can display the device but does not show `1d50:6177`, please try replacing the data cable and connecting the mainboard to another USB port on the host computer.
+    * If you have executed the above steps before and successfully burned the Klipper firmware, the mainboard is running normally, and you just need to update the Klipper firmware, please directly refer to the `Firmware Update` section in the right-hand menu bar of this page.
 
-    :::warning Precautions
-       You must query the `1d50:6177` device before proceeding to the next step.
+    :::warning Note
+       You must query the `1d50:6177` device before proceeding to the next step
     :::
 
 ## Search for USBID
@@ -30,24 +30,24 @@
     ls /dev/serial/by-id/*
     ```
 
-    * Enter the command below and press Enter. If everything is normal, a blue ID will appear. (The ID below is for reference only)
+    * Enter the command below and press Enter. If everything is normal, one blue ID will appear. (The following is for reference only)
     <ImageView image={require('@site/docs/General/get-id/img/usb-id.webp').default} size="80%" align="left" />
-    * If no ID appears after entering the command below, but `lsusb` shows devices, please replace the host computer or change the host computer system
+    * If no ID appears after entering the command below, but `lsusb` shows the device, please replace the host computer or the host computer system.
 
-:::warning Precautions
-If multiple IDs appear, select the appropriate ID based on your mainboard's **MCU** model.
+
+:::warning Note
+If multiple IDs appear, please select the corresponding ID based on your mainboard's **MCU** model.
 :::
 
-### Fill in the USB ID into the Configuration
+### Fill in the USB ID into the configuration
 
-    * Open the printer web interface, find `printer.cfg` under the configuration options in the left sidebar: fluidd is `{...}`, mainsail is `Machine`, click to enter.
-
+    * Open the printer web interface, find `printer.cfg` under the configuration option in the left sidebar: fluidd is `{...}`, mainsail is `Machine`, click to enter.
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copy the blue ID and paste it into the `serial:` field under the `[mcu]` section in the `printer.cfg` configuration file. After saving and restarting, the mainboard should be connected. If Klipper prompts `ADC out of range`, this is a normal phenomenon; connect the heated bed and thermistor properly, configure the thermistor and output pins for the nozzle and heated bed, then save and restart.
-
+    * Copy the blue ID and paste it into the `serial:` field under the `[mcu]` node in the `printer.cfg` configuration file. After saving and restarting, the motherboard can be connected. If Klipper prompts ``ADC out of range``, it is a normal phenomenon. Connect the heated bed and thermistor properly, configure the thermistor and output pins for the nozzle and heated bed, then save and restart.
+        
             <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
 
 :::danger
-Note: All IDs mentioned in the document are examples. Each mainboard's ID is different, so modify and fill in according to the actual ID obtained.
+Note: All IDs shown in the document are examples. The actual ID of each mainboard is different. Please modify and fill in according to the actual obtained ID.
 :::
