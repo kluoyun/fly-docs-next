@@ -1,111 +1,28 @@
 ---
 sidebar_position: 2
-sidebar_label: Инсталляция системного образа
+sidebar_label: Прошивка системного образа
 ---
 
-import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
-import M2WE from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
-import M2SD from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
-import TF_EMMC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
-import CONFIG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
-
-# Инсталляция системного образа
-
-## Описание системы
-FlyOS-Fast — это лёгкая Linux-система, специально разработанная для глубокой оптимизации работы с 3D-печатью и поддерживающая все платформы верхнего уровня Fly. Её основные характеристики:
-
-- Быстрый старт, оптимизация ядра для обеспечения реальности работы Klipper
-- Оптимизированный файловой системы для снижения риска неработоспособности после внезапного отключения питания
-- Быстрый запуск KlipperScreen за 30 секунд
-- Предустановлены такие службы, как Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen
-- Поддержка переключения между Klipper и RRF
-- Возможность переключения между Mainsail и Fluidd в режиме онлайн
-- Поддержка печати через USB-накопитель, возобновление печати после обрыва электропитания, вывод на экран через последовательный порт
-- Автоматическая инсталляция прошивки при старте (fly-c8, fly-geminiv3)
-- Возможность предварительной настройки параметров интерфейса передней панели (например, Fluidd), таких как язык и имя принтера
-
-Для получения дополнительных функций OEM-настройки (например, логотип при старте, предопределённые конфигурационные файлы, скрытие табличек Mainsail и др.), свяжитесь с нами.
-
-:::tip Важно
-Эта система является специализированной лёгкой системой, компоненты и службы внутри неё (например, klipper) не являются официальными версиями и не поддерживают пользовательские изменения или обновления.
-:::
+import FASTFASLH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/DebugDoc/flyos-fast/_h618_falsh.mdx';
 
 
-- Учётная запись системы FLYOS-FAST: `root`, пароль: `mellow`
+# Прошивка системного образа
 
 
-## Начало работы с новичками
+<FASTFASLH />
 
-<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/baodian/host/">Руководство по работе с устройством для новичков</Button>
+## Установка системной карты
+
+<Tabs>
+    <TabItem value="usb" label="Схематическое изображение установки M2WE в C5" default>
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/m2we.webp').default} size="30%" align="center" />
+    </TabItem>
+    <TabItem value="can" label="Схематическое изображение установки TF-карты в C5">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/tf.webp').default} size="30%" align="center" />
+    </TabItem>
+</Tabs>
 
 
-## Подготовка к инсталляции системы
-
-1. Подготовка TF-карты для записи:
-    - Читалка
-    - TF-карта объёмом 16 ГБ–128 ГБ, скорость передачи класса 10 или выше
-    - Рекомендуется использовать TF-карты брендов `Kingston`, `SanDisk`, `Samsung`, `Kioxia` и т. д., запрещено использование неизвестных марок!
-
-2. Скачайте системный образ для FLY-C5: <Button variant="contained" disableElevation component="a" rel="noopener" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">Образ системы H618</Button>
     :::tip
-    - Правило именования файлов системы: `FlyOS-Fast-[серия_чипов]-[номер_версии].img`, например: `FlyOS-Fast-H5-v1.0.0.img`
-    - Для Windows скачайте `.exe`-файл, это самораспаковывающийся архив 7z, после скачивания дважды кликните по нему для распаковки, чтобы получить `.img`-файл (можно использовать только Windows для распаковки)
-    - Для других систем, таких как MacOS и Linux, скачайте `.7z`-файл, это архив 7z, после скачивания используйте инструменты, поддерживающие формат 7z, для распаковки и получения `.img`-файла
-    - Из-за большого размера файла системы временно недоступны другие форматы сжатия и исходный образ
-    - В данном руководстве будет описан процесс с использованием `.exe`-файла
+    - После завершения установки системной карты можно перейти к следующему шагу — подключиться к хост-компьютеру через SSH.
     :::
-    - Перейдите в библиотеку制品 FlyOS-Fast, выберите формат сжатия, откройте страницу файла
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
-    - Выберите версию образа (по умолчанию последняя)
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
-    - Нажмите на «Список файлов», затем прокрутите ползунок вправо, чтобы появилась кнопка загрузки
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
-    - Нажмите на кнопку загрузки и скачайте системный образ
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
-
-
-3. Скачайте инструмент для записи, в этом руководстве будет использоваться пример с `Rufus`. На практике можно использовать другие инструменты, такие как `Etcher`, `Win32 Disk Imager` и т. д.
-    - Ссылка на скачивание Rufus: [скачать на русском](https://rufus.ie/zh/#download) или [Download English](https://rufus.ie/en/#download) (поддерживает только Windows).
-    - Ссылка на скачивание Etcher: [скачать](https://etcher.balena.io/#download-etcher) (поддерживает Windows, MacOS, Linux).
-    - Ссылка на скачивание Win32 Disk Imager: [скачать](https://sourceforge.net/projects/win32diskimager/) (поддерживает только Windows).
-
-4. В этом руководстве используется пример `FlyOS-Fast-H5.exe`.
-
-5. Распакуйте системный образ, чтобы получить `.img`-файл.
-    - Дважды щелкните или откройте файл `FlyOS-Fast-H5.exe`, подождите несколько секунд, появится следующее окно (если система выдаст предупреждение об опасности, выберите «Дополнительная информация» -> «Запустить»)
-    - Можно выбрать каталог для распаковки, затем нажмите кнопку `Extract` и дождитесь завершения распаковки.
-    
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
-
-    - После завершения распаковки в каталоге распаковки появится файл `FlyOS-Fast-H5-vx.x.x.img`, где `x.x.x` — номер версии системы.
-
-
-6. Вставьте подготовленную TF-карту класса 10 в читалку и подключите её к компьютеру
-
-
-## Процесс записи системы
-
-1. Откройте Rufus, выберите устройство (объём должен совпадать с объёмом карточки для записи)  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
-
-2. Выберите тип записи «Изображение»
-
-3. Нажмите кнопку «Выбрать», выберите распакованный `.img`-файл
-
-4. После выбора, тип записи покажет имя файла изображения  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
-    
-5. Нажмите «Начать», если появится предупреждение о очистке диска, нажмите «ОК»  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-
-6. После завершения записи, компьютер подаст звуковой сигнал, прогресс-полоска покажет «Готово»  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
-
-7. После завершения записи не вынимайте карточку сразу
-
-8. Откройте проводник Windows, проверьте наличие USB-накопителя или съёмного устройства с названием `FlyOS-Conf`  
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-
-9. Откройте `FlyOS-Conf`, если есть два файла, как показано на картинке ниже, запись выполнена успешно, где `config.txt` — конфигурационный файл системы
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-10. Следующий шаг: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh">Подключение к верхнему уровню через SSH</Button>

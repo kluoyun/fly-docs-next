@@ -1,6 +1,7 @@
 ---
 sidebar_position: 6
-sidebar_label: Фирменное ПО BL, проигнорировать
+sidebar_label: Фирменное ПО BL, проигнорируйте
+
 ---
 
 
@@ -15,53 +16,32 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * Обратите внимание, что на заводе уже предварительно записан `bootloader`, повторная запись не требуется
-
+    * Обратите внимание, что при出厂е уже предварительно записан `bootloader`, поэтому повторная запись не требуется
+    * C5 может использовать только родной ПО для записи
     :::
 
-## Вход в режим программирования
+## Подключение по SSH к ПО
 
-    :::tip
-
-    * Слева — это кнопка RST материнской платы, справа — это кнопка BOOT материнской платы
-
+    :::danger Предупреждение
+    - Перед записью Фирменного ПО BL необходимо подключиться к ПО через `wi-fi SSH`
     :::
 
-    * Есть два способа войти в режим программирования
-    * Первый: при полном отключении питания материнской платы длительное нажатие кнопки BOOT, затем подключение одного конца передающего данных кабеля к материнской плате, а другой конец к вашему устройству, подходящий для WINDOWS
-    * Второй: после подключения одного конца передающего данных кабеля к материнской плате, а другого конца к вашему устройству, длительное нажатие кнопки BOOT, затем ввод команды, подходящей для ПК
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="60%" align="center" />
+ * Сначала выполните: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#подключение-по-wifi-к-ssh-у-ПО">Подключение по wi-fi к SSH у ПО</Button>  
+ ---
+ <br/>
 
-## Программирование прошивки
-    <Tabs>
-        <TabItem value="win" label="Инструкция по программированию в Windows" default>
-
-            * Фирменное ПО bootloader для C5 <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/firmware/BL/hid_bootloader_h723_v1.0.bin">Щелкните для автоматической загрузки прошивки</Button>
+## Запись Фирменного ПО
 
 
-            * Переключатель переключателя вниз, подключение нижнего устройства через внешний USB
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-            <WIN />
+    * Переведите переключатель вверх, подключите нижнее устройство к верхнему через USB
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
-        </TabItem>
-        <TabItem value="linux" label="Инструкция по программированию с помощью ПК">
-
-            * Переключатель переключателя вверх, подключение нижнего устройства через USB к ПК
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-
-            * Введите следующую команду для начала программирования BL
-            * Справа — это кнопка BOOT материнской платы
-
-                ```bash
-                fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
-                ```
+    * Введите следующую команду для начала записи BL
 
 
-             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="70%" align="center" />
+        ```bash
+        fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
+        ```
 
-            * Когда появится изображение ниже, это означает успешное программирование, и кнопку BOOT можно отпустить
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
-
-
-        </TabItem>
-    </Tabs>
+    * Когда появится изображение ниже, это означает успешную запись и можно отпустить кнопку BOOT
+       <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />

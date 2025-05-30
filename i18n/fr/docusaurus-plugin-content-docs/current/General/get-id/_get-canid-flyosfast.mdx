@@ -1,0 +1,82 @@
+## Recherche de l'ID CAN
+
+:::avertissement
+* Le taux de CAN par défaut du système FLYOS-FAST est de 1M.
+* Veuillez vous assurer que le réseau CAN de la station supérieure, le taux de CAN de la carte mère de pont USB et le taux de CAN de l'outil de bord sont complètement identiques.
+:::
+
+    1. Dans SSH, entrez la commande `lsusb`, puis appuyez sur la touche `Entrée`. Si l'image suivante apparaît avec `1d50:606f`, vous pouvez passer à l'étape suivante.
+    <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="center" />
+    2. Parmi ceux-ci, `1d50:606f` correspond au périphérique que vous utiliserez.
+    3. Si plusieurs cartes mères équipées de pont USB CAN ou plusieurs UTOC sont connectées, plusieurs appareils `1d50:606f` apparaîtront. Vous devez exclure jusqu'à n'en avoir qu'un seul.
+    4. Si `1d50:606f` ne s'affiche pas, vérifiez manuellement si le mode de commutation de la carte mère est correct, essayez de recompiler et de réenregistrer le firmware du pont USB CAN, ou essayez d'alimenter la carte mère en 24V.
+
+    :::avertissement Attention
+    - Vous devez impérativement identifier l'appareil `1d50:606f` avant de continuer.
+    - Il ne doit y avoir qu'un seul appareil `1d50:606f`.
+    :::
+
+    5. Entrez la commande suivante pour rechercher l'ID :
+    ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+    ```
+        * Si un UUID apparaît et que l'application après `Application:` affiche `Klipper`, cet ID peut être utilisé directement.
+        * Si un UUID apparaît et que l'application après `Application:` affiche `CANBOOT` ou `Katapult`, il sera nécessaire de flasher le firmware du pont USB CAN pour pouvoir utiliser cet ID.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="80%" align="center" />
+
+    :::avertissement Attention
+    - Seul un UUID apparaissant et une application après `Application:` affichant `Klipper` permettent de passer à l'étape suivante.
+    :::
+
+    :::danger Important
+    * Si vous ne trouvez pas l'ID CAN, consultez : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">Référentiel des problèmes CAN</Button>
+    :::
+---
+
+## Saisie de l'ID CAN
+
+    1. Ouvrez l'interface WEB de la station supérieure, dans la barre latérale de configuration, recherchez :
+
+    <table>
+      <tr>
+        <td>
+          - Pour fluidd : `{…}`, cliquez pour accéder à `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - Pour mainsail : `machine`, cliquez pour accéder à `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    2. Copiez l'UUID trouvé précédemment. Dans le fichier `printer.cfg`, trouvez l'option `[mcu]`, puis sous la ligne `canbus_uuid: `, insérez l'UUID trouvé. En sauvegardant et redémarrant, vous pourrez alors connecter la carte mère.
+
+    :::danger
+    * L'image ci-dessous est un exemple où une carte mère équipée d'un firmware de pont USB CAN est connectée à une carte d'outil CAN !
+    * Les configurations d'UUID ci-dessous sont fournies à titre indicatif. Veuillez respecter strictement le format indiqué dans l'image.
+    * Le format de l'UUID de la carte mère CAN est :
+     ```
+    [mcu]
+    canbus_uuid: ********
+    ```
+
+    * Le format de l'UUID de la carte d'outil CAN est :
+    ```
+    [mcu nom_de_la_carte_outil]
+    canbus_uuid: ********
+    ```    
+    :::
+
+
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="center" />
+
+
+    3. Si Klipper affiche `ADC out of range`, c'est un phénomène normal. Connectez le lit chauffant et les thermistances à la carte mère, configurez les broches de thermistance de l'imprimante et du lit, puis sauvegardez et redémarrez.
+
+        :::danger
+
+        Attention : Tous les ID mentionnés dans ce document sont des exemples. Chaque carte mère a un ID unique. Veuillez modifier et remplir en fonction de l'ID réellement obtenu.
+
+        :::
+---

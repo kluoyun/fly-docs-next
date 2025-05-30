@@ -15,54 +15,32 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     :::팁
 
-    * 공장 출하 시 이미 `부트로더`가 미리 설치되어 있으므로 다시 설치하지 않으셔도 됩니다.
-
+    * 출하 시 이미 `부트로더`가 미리 플래시되어 있으므로 다시 플래시할 필요가 없습니다.
+    * C5는 자체적으로 제공하는 상위기계를 사용해야 합니다.
     :::
 
-## 플래싱 모드 진입
+## 상위기계에 SSH 연결
 
-    :::팁
-
-    * 왼쪽은 메인보드의 RST, 오른쪽은 메인보드의 BOOT입니다.
-
+    :::경고
+    - BL 펌웨어를 플래시하기 전에 `와이파이를 통해 상위기계에 SSH 연결`해야 합니다.
     :::
 
-    * 플래싱 모드에 진입하는 방법은 두 가지가 있습니다.
-    * 첫 번째 방법: 메인보드를 완전히 전원을 끈 상태에서 BOOT를 길게 누른 후 데이터 전송이 가능한 데이터 케이블 한쪽을 메인보드에 연결하고 다른一侧을 장치에 연결합니다. 적합한 경우 WINDOWS
-    * 두 번째 방법: 데이터 전송이 가능한 데이터 케이블 한쪽을 메인보드에 연결하고 다른一侧을 장치에 연결한 후 BOOT를 길게 누르고 명령어를 입력합니다. 적합한 상위 기기
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="60%" align="center" />
+ * 먼저: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#상위기계에-wifi-연결하여-ssh-접속하기">상위기계에 wifi 연결하여 ssh 접속하기</Button>  
+ ---
+ <br/>
 
-## 펌웨어 플래싱
-
-    <Tabs>
-        <TabItem value="win" label="윈도우 플래싱 가이드" default>
-
-            * C5의 부트로더 펌웨어 <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/firmware/BL/hid_bootloader_h723_v1.0.bin">자동 다운로드 클릭</Button>
+## 펌웨어 플래시
 
 
-            * 디ップ 스위치를 아래쪽으로 돌려 하위 기기를 외부 USB로 연결합니다.
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-            <WIN />
+    * 다운 스위치를 위쪽으로 옮기고 하위기계의 USB를 상위기계에 연결합니다.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
-        </TabItem>
-        <TabItem value="linux" label="상위 기기 플래싱 가이드">
-
-            * 디ップ 스위치를 위쪽으로 돌려 하위 기기를 상위 기기에 USB로 연결합니다.
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-
-            * 아래 명령어를 입력하여 BL을 플래싱 시작
-            * 오른쪽은 메인보드의 BOOT입니다.
-
-                ```bash
-                fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
-                ```
+    * 아래 명령어를 입력하여 BL을 플래시 시작합니다.
 
 
-             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="70%" align="center" />
+        ```bash
+        fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
+        ```
 
-            * 다음 이미지가 나타나면 플래싱이 성공했음을 증명하며 BOOT 키를 놓을 수 있습니다.
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
-
-
-        </TabItem>
-    </Tabs>
+    * 다음 그림과 같이 표시되면 플래시가 성공했으며 BOOT 버튼을 놓아도 됩니다.
+       <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />

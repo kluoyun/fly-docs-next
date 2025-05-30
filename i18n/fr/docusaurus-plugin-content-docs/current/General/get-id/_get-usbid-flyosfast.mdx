@@ -1,0 +1,59 @@
+## Recherche de l'ID USB
+    1. Dans SSH, entrez la commande `lsusb`, puis appuyez sur la touche `Entrée`. Si vous voyez s'afficher l'ID `1d50:614e` comme indiqué ci-dessous, vous pouvez passer à l'étape suivante.
+    <ImageView image={require('@site/docs/General/get-id/img/614e.webp').default} size="80%" align="center" /> 
+
+    2. L'ID `1d50:614e` correspond au périphérique que vous allez utiliser.  
+        Si vous entrez la commande `lsusb` et que le périphérique est visible mais que vous n'avez pas l'ID `1d50:614e`, vérifiez manuellement que le mode de dip switch du circuit imprimé est correct, essayez de recompiler et reprogrammer le firmware USB, ou essayez d'alimenter le circuit imprimé avec une tension de 24V.
+
+    :::warning Remarque importante
+       Vous devez impérativement trouver l'appareil `1d50:614e` avant de poursuivre.
+    :::
+
+    3. Dans SSH, entrez la commande ci-dessous, puis appuyez sur la touche `Entrée`. Si tout se passe bien, vous verrez apparaître un `ID bleu`.
+    ```bash
+    ls /dev/serial/by-id/*
+    ```
+    :::warning Remarque importante
+    - L'ID montré ci-dessous n'est qu'à titre indicatif, chaque circuit imprimé a un ID unique. Veuillez utiliser l'ID que vous avez réellement trouvé.
+    - Si plusieurs circuits imprimés sont connectés, plusieurs IDs apparaîtront simultanément. Veuillez choisir l'ID correspondant au modèle de MCU de votre circuit imprimé.
+    :::
+
+    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="center" />
+---
+
+## Saisir l'ID USB
+
+    1. Ouvrez l'interface Web de l'ordinateur supérieur, puis trouvez l'option de configuration dans la barre latérale gauche :
+
+    <table>
+      <tr>
+        <td>
+          - Pour fluidd : `{…}`, cliquez pour accéder à `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - Pour mainsail : `Machine`, cliquez pour accéder à `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+
+    2. Copiez l'ID bleu, puis ouvrez le fichier `printer.cfg` et trouvez l'option `[mcu]`. Ajoutez l'ID que vous avez trouvé après la ligne `serial: `. En sauvegardant et en redémarrant, vous pourrez alors connecter le circuit imprimé.
+    :::danger
+    * L'ID ci-dessous est fourni à titre indicatif !!! Veuillez respecter strictement le format affiché ci-dessous pour saisir l'ID.
+    * Le format de l'ID USB du circuit imprimé est :
+     ```
+    [mcu]  
+    serial: /dev/serial/by-id/usb-klipper_******_**********-****
+    ```
+    :::
+
+    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
+    
+    3. Si Klipper affiche un message d'erreur `ADC out of range`, il s'agit d'un phénomène normal. Connectez la plaque chauffante et le capteur thermique au circuit imprimé, configurez les broches des capteurs de la buse et de la plaque chauffante, puis sauvegardez et redémarrez.
+
+:::danger
+Attention : Tous les IDs mentionnés dans ce document ne sont fournis qu'à titre d'exemple. Chaque circuit imprimé a un ID unique. Veuillez utiliser l'ID que vous avez réellement obtenu.
+:::
+---

@@ -1,0 +1,84 @@
+## CAN ID 검색
+
+:::warning
+* FLYOS-FAST 시스템의 기본 CAN 속도는 1M입니다.
+* 상위 기기의 CAN 네트워크, 브리지 보드의 CAN 속도, CAN 도구 보드의 속도가 완전히 일치해야 합니다.
+:::
+
+    1. SSH에서 `lsusb`를 입력하고 `Enter` 키를 누릅니다. 아래와 같은 `1d50:606f`가 나타나면 다음 단계로 진행할 수 있습니다.
+    <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="center" />
+    2. 여기서 `1d50:606f`는 이번에 사용할 장치입니다.
+    3. 여러 개의 USB CAN 브리지 보드 또는 여러 개의 UTOC를 연결한 경우 여러 개의 `1d50:606f` 장치가 나타날 수 있으므로 하나만 남도록 제외합니다.
+    4. 만약 `1d50:606f`가 나타나지 않는 경우, 보드의 다이얼 모드를 확인하고 올바른지, 다시 USB CAN 브리지 펌웨어를 컴파일하고 프로그래밍하며, 보드에 24V 전원을 공급해보십시오.
+
+    :::warning 주의사항
+    - `1d50:606f` 장치를 찾은 후에야 다음 단계로 진행할 수 있습니다.
+    - 반드시 하나의 `1d50:606f` 장치만 있어야 합니다.
+    :::
+
+    5. 아래 명령어를 입력하여 ID 검색을 수행합니다.
+    ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+    ```
+        * UUID가 나타나고 `Application:` 뒤에 `Klipper`가 표시되면 이 ID를 바로 사용할 수 있습니다.
+        * UUID가 나타나고 `Application:` 뒤에 `CANBOOT` 또는 `Katapult`가 표시되면 USB CAN 브리지 펌웨어를 업데이트해야 사용 가능합니다.
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="80%" align="center" />
+
+    :::warning 주의사항
+    - `UUID`가 나타나고 `Application:` 뒤에 `Klipper`가 표시된 경우에만 다음 단계로 진행할 수 있습니다.
+    :::
+
+    :::danger 주의사항
+    * CAN ID를 찾을 수 없는 경우: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN 문제 모음집</Button> 참조
+    :::
+---
+
+## CAN ID 입력
+
+    1. 상위 기기의 웹 인터페이스를 열고, 좌측 메뉴의 설정 옵션에서 찾습니다:
+
+    <table>
+      <tr>
+        <td>
+          - fluidd의 경우: `{…}`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail의 경우: `기계`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    2. 검색된 `UUID`를 복사하여 `printer.cfg` 파일에서 `[mcu]` 옵션 아래, `canbus_uuid: ` 뒤에 검색된 `UUID`를 작성하고 저장한 후 재부팅하면 보드에 연결됩니다.
+
+
+    :::danger
+    * 아래 예시는 **USB CAN 브리지 펌웨어를 업데이트한 보드**와 **CAN 도구 보드**를 연결한 상황입니다!!
+    * 아래 설정된 UUID는 참고용입니다!! 실제로 얻은 UUID를 기반으로 정확하게 작성하십시오.
+    * 보드의 CAN UUID 형식은 다음과 같습니다:
+     ```
+    [mcu]  
+    canbus_uuid: ********
+    ```
+
+    * 도구 보드 CAN UUID 형식은 다음과 같습니다:
+    ```
+    [mcu 도구 보드 이름]  
+    canbus_uuid: ********
+    ```    
+    :::
+
+
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="center" />
+
+
+    3. Klipper가 `ADC out of range`라는 경고를 출력하는 경우, 이는 정상적인 현상입니다. 열판과 열감지를 보드에 연결하고 노즐, 열판의 핀을 구성한 후 저장하고 재부팅하면 됩니다.
+
+
+        :::danger
+
+        주의: 문서에 나온 모든 ID는 예시입니다. 각 보드의 ID는 모두 다르므로 실제로 얻은 ID를 기반으로 수정하여 작성하십시오.
+
+        :::
+---
