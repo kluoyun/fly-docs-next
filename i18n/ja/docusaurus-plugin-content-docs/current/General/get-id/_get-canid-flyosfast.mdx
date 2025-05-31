@@ -1,0 +1,83 @@
+## CAN IDの検索
+
+:::warning
+* FLYOS-FASTシステムのデフォルトCANレートは1Mです
+* 上位機器のCANネットワーク、ブリッジメインボードのCANレート、CANツールボードのレートが完全に一致していることを確認してください
+:::
+
+    1. SSHで`lsusb`を入力し、`Enter`キーを押すと、下図に示すように`1d50:606f`が表示された場合、次のステップに進むことができます。
+    <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="center" />
+    2. `1d50:606f`は今回使用する予定のデバイスです。
+    3. 複数のUSBブリッジCANが搭載されたメインボードや複数のUTOCなどが接続されている場合、複数の`1d50:606f`デバイスが表示されることがあります。この場合は、1つだけに絞り込む必要があります。
+    4. `1d50:606f`がない場合、メインボードのダイアルモード設定を確認し、USBブリッジCANファームウェアの再コンパイルと焼込み、または24Vの電源供給を試みてください。
+
+    :::warning 注意事項
+    - 次のステップに進む前に、必ず`1d50:606f`デバイスを検出してください
+    - かつては`1d50:606f`デバイスが1つだけ存在している必要があります
+    :::
+
+    5. IDの検索を行うために、以下のコマンドを入力します
+    ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+    ```
+        * UUIDが表示され、`Application:`の後に`Klipper`と表示された場合、このIDはそのまま使用できます
+        * UUIDが表示され、`Application:`の後に`CANBOOT`または`Katapult`と表示された場合、USBブリッジCANファームウェアを焼込み後使用可能です
+        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="80%" align="center" />
+
+    :::warning 注意事項
+    - 次のステップに進むには、`UUID`が表示され、`Application:`の後に`Klipper`が表示されている必要があります
+    :::
+
+    :::danger 注意
+    * CAN IDが見つからない場合、<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN問題まとめ</Button>をご覧ください
+    :::
+---
+
+## CAN IDの入力
+
+    1. 上位機器のWEBインターフェースを開き、左側のサイドバーにある構成オプションから探します：
+
+    <table>
+      <tr>
+        <td>
+          - fluiddの場合: `{…}` をクリックすると、`printer.cfg`が見つかります
+          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsailの場合: `マシン`をクリックすると、`printer.cfg`が見つかります
+          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    2. 検出した`UUID`をコピーし、`printer.cfg`ファイル内の`[mcu]`オプションを見つけ、その下の`canbus_uuid: `の後に検出した`UUID`を記入して保存し、再起動するとメインボードに接続されます。
+
+
+    :::danger
+    * 下図は**USBブリッジCANファームウェアを搭載したメインボード**と**CANツールボード**を接続した状況の例です！！！
+    * 下記の設定は参考例です！！！実際のUUIDに従って正確な形式で`UUID`を入力してください
+    * メインボードのCAN UUIDの形式は次の通りです:
+     ```
+    [mcu]  
+    canbus_uuid: ********
+    ```
+
+    * ツールボードCAN UUIDの形式は次の通りです:
+    ```
+    [mcu ツールボードの名前]  
+    canbus_uuid: ********
+    ```    
+    :::
+
+
+        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="center" />
+
+
+    3. Klipperが`ADC out of range`と表示された場合、これは正常な現象です。熱ベッドと温度センサーをメインボードに接続し、ノズル、熱ベッドの温度センサピンを設定して保存し、再起動してください。
+
+        :::danger
+
+        注意: ドキュメント内に記載されているすべてのIDは例示です。実際の各メインボードのIDは異なりますので、実際に取得したIDに基づいて修正・入力してください。
+
+        :::
+---

@@ -1,41 +1,84 @@
 ---
 sidebar_position: 3
-sidebar_label: Запись прошивки через USB
+sidebar_label: Загрузка прошивки через USB
 ---
 
 
 import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
-import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/get-id/_get-fast-usb.mdx';
+import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/get-id/_get-usbid-flyosfast.mdx';
 
 
 
-# Компиляция прошивки для USB
+# Загрузка прошивки через USB
 
-## Подключение к хост-компьютеру через SSH
+
+## Проверка переключателя
+
+    :::danger Важно
+    - При нормальной работе системы переключатель должен быть установлен в верхнее положение.
+    - При установке переключателя убедитесь, что он находится в крайнем верхнем положении, иначе подключение к нижнему устройству может не произойти!!!
+    :::
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
+
+
+## Подключение к верхнему устройству по SSH
 
     :::danger Предупреждение
-    - Перед компиляцией прошивки необходимо подключиться к хост-компьютеру через Wi-Fi
+    - Перед компиляцией прошивки необходимо подключиться к верхнему устройству через SSH с помощью Wi-Fi.
     :::
 
- * Сначала, пожалуйста: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#подключение-через-wifi">Подключение через Wi-Fi</Button>  
+ * Сначала подключитесь: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#подключение-к-верхнему-устройству-по-ssh">Подключение к верхнему устройству по SSH</Button>  
  ---
  <br/>
 
     <Tabs>
-    <TabItem value="usb" label="Запись прошивки через USB" default>
-    ### Запись прошивки через USB
+    <TabItem value="usb" label="Загрузка прошивки через USB" default>
+    ### Загрузка прошивки через USB
         :::tip Совет
-        - В системе FLYOS-FAST уже предварительно скомпилирована одна USB-прошивка, поэтому нет необходимости вручную компилировать прошивку, достаточно выполнить команду ниже для записи
-        - Также можно выбрать ручную компиляцию USB-прошивки
+        - В системе FLYOS-FAST уже предварительно скомпилирована одна USB-прошивка, поэтому нет необходимости повторно компилировать прошивку вручную. Просто выполните команду ниже для загрузки.
+        - Также можно выбрать ручную компиляцию USB-прошивки.
         :::
 
-        * Через SSH подключитесь к хост-компьютеру и введите следующую команду
+        * Через SSH подключитесь к верхнему устройству и введите следующую команду
         ```bash
-        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
+        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723xx-128k-usb.bin
         ```
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
     
+
+## Заполнение USB ID
+
+    1. Откройте веб-интерфейс верхнего устройства и найдите в боковой панели конфигурационные параметры:
+
+    <table>
+      <tr>
+        <td>
+          - Для fluidd: `{…}`, перейдите внутрь, чтобы найти `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - Для mainsail: `Машина`, перейдите внутрь, чтобы найти `printer.cfg`
+          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+
+    2. Скопируйте синий ID и в файле `printer.cfg` найдите опцию `[mcu]`. После параметра `serial:` добавьте скопированный `ID`, сохраните изменения и перезагрузите устройство.
+    :::tip
+    * Ниже приведен пример добавления ID в конфигурации MCU:
+
+    ```
+    [mcu]
+    serial: /dev/serial/by-id/usb-Klipper_stm32h723xx_12345-if00
+    ```
+    :::
+
+    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
+    
+    3. Если Klipper выдает сообщение `ADC out of range`, это нормальное явление. Подключите нагревательный стол и термисторы к материнской плате и правильно настройте пины для головки и нагревательного стола, затем сохраните изменения и перезагрузите устройство.
+
     </TabItem>
 
     <TabItem value="can" label="Ручная компиляция USB-прошивки">
@@ -45,22 +88,22 @@ import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Gener
     
         <USB />
     
-        * Нажмите клавишу `Q`, появится запрос `Save configuration`, затем нажмите клавишу `Y`
+        * Нажмите клавишу `Q`, появится запрос `Save configuration`, нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * Теперь конфигурация должна быть сохранена, и вы вернетесь в командную строку
+        * Сейчас должна сохраниться конфигурация, и вы вернетесь в командную строку
     
-        * Введите `make -j4`, чтобы начать компиляцию, это займет некоторое время
+        * Введите `make -j4` для начала компиляции, процесс займет некоторое время
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
-        * Если вывод последней строки содержит сообщение о успешной компиляции
+        * В конце вывода, если появится следующее содержимое, компиляция успешно завершена
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
         ---
         
-        ### Запись прошивки
+        ### Загрузка прошивки
         
         :::tip
-        Выполните следующую команду для записи прошивки
+        Выполните следующую команду для загрузки прошивки
         :::
         
             ```bash
@@ -68,9 +111,10 @@ import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Gener
             ```
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
 
+        <GetUsbID />
+
     </TabItem>
 </Tabs>
 ---
 
-<GetUsbID />
----
+<br/>

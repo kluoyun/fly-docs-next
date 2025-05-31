@@ -1,0 +1,113 @@
+
+
+import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# システムイメージの焼付け
+
+## システム紹介
+FlyOS-Fast は、3D プリントに特化した軽量な Linux システムで、Fly 全シリーズのアップボードプラットフォームをサポートしています。その特徴には以下の点があります：
+
+- 高速起動、カーネルの最適化により Klipper のリアルタイム性を保証
+- ファイルシステムの最適化により、電源障害による起動不能リスクを低減
+- KlipperScreen を 30 秒で迅速に起動
+- Klipper、RRF、Mainsail、Fluidd、Moonraker、KlipperScreen などのサービスが事前にインストール済み
+- Klipper と RRF システムの切り替えが可能
+- Mainsail と Fluidd のオンラインワンクリック切り替えが可能
+- USB プリント、電源断継続プリント、シリアルポートスクリーンのサポート
+- fly-c8、fly-geminiv3 での自動ファームウェア焼付けをサポート
+- Fluidd などのフロントエンド UI のデフォルト言語やプリンタ名を事前に設定可能
+
+OEM カスタマイズ機能（例：電源ロゴ、プリセット設定ファイル、Mainsail タブの非表示など）が必要な場合は、お問い合わせください。
+
+:::tip 注意
+このシステムは軽量なカスタムシステムであり、組み込まれている klipper などのコンポーネントおよびサービスは公式バージョンではありません。ユーザーによる変更やアップデートはサポートされません。
+:::
+
+- FLYOS-FAST システムのアカウントは`root`、パスワードは`mellow`です
+
+
+## システム焼付け前の準備
+
+1. 必要な機器の準備
+
+<Tabs>
+    <TabItem value="usb" label="TFカードでシステムを起動する場合、以下の機器が必要です" default>
+        - SDカードリーダー
+        - 容量 16GB-128GB、転送速度 Class10 以上の TFカード
+        - 推奨されるブランド：`Kingston`、`SanDisk`、`Samsung`、`Kioxia`
+        - 低品質の TFカードは使用しないでください！
+        - Windows 系 OS コンピュータ（Windows 7、Windows 10、Windows 11 に対応）
+    </TabItem>
+    <TabItem value="can" label="M2WEでシステムを起動する場合、以下の機器が必要です">
+        - M2WE（FLY専用デバイス）
+        - M2SD（FLY焼付けデバイス）
+        - Windows 系 OS コンピュータ（Windows 7、Windows 10、Windows 11 に対応）
+        - インストールイメージ図
+            <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="90%" align="center" />
+    </TabItem>
+</Tabs>
+
+2. FLY-H618 システムイメージのダウンロード：<Button variant="contained" disableElevation component="a" rel="noopener" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">H618 システムイメージ</Button>
+    :::tip
+    - システムファイルの命名規則：`FlyOS-Fast-[チップシリーズ]-[バージョン番号].img`、例：`FlyOS-Fast-H618-v1.0.0.img`
+    - Windows 系統では`.exe`ファイルをダウンロードします。このファイルは7z 自解凍圧縮パッケージで、ダウンロード後にダブルクリックして解凍すると`.img`ファイルが得られます。（MacOS、Linux 以外でのみ解凍可能です）
+    - MacOS、Linux 系統では`.7z`ファイルをダウンロードします。このファイルは7z 圧縮パッケージで、ダウンロード後に7z 形式に対応したツールで解凍すると`.img`ファイルが得られます
+    - 現在、システムファイルは非常に大きいので、他の圧縮形式やソースイメージのダウンロードは一時的に提供されません
+    - このチュートリアルでは`.exe`ファイルを例として説明します
+    :::
+    - FlyOS-Fast 製品ライブラリにアクセスし、圧縮形式を選択してファイルページに進む
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+    - ミラーサイズを選択（最新版がデフォルト）
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+    - 「ファイルリスト」をクリックし、スクロールバーを右にドラッグするとダウンロードボタンが表示されます
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+    - ダウンロードボタンをクリックしてシステムイメージをダウンロード
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+
+3. システムイメージファイルを解凍して`.img`ファイルを得る。
+    - `FlyOS-Fast-H618.exe`をダブルクリックまたは右クリックして開くと、数秒後に次のウィンドウが表示されます（システムが危険と警告する場合は「詳細情報」→「実行」を選択してください）
+    - 解凍先ディレクトリを選択して「Extract」ボタンをクリックし、解凍が完了するまで待ちます。
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - 解凍が完了すると、解凍先ディレクトリに`FlyOS-Fast-H618-vx.x.x.img`ファイルが生成されます。`x.x.x`はシステムのバージョン番号です。
+
+
+4. 焼付けに必要なデバイスをコンピュータに接続する
+
+
+## システム焼付け
+
+1. Rufus を開き、デバイスを選択します。選択されたデバイスの容量は、パソコンに接続された焼付けカードの容量と一致する必要があります。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. ブートタイプの選択、「デフォルトで`イメージファイル`を選択」します。
+3. イメージファイルの選択、右側の「選択」ボタンをクリックして、解凍後の`.img`ファイルを選択します。
+4. イメージファイルを選択すると、「ブートタイプの選択」がイメージファイルのファイル名になります。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+
+5. 「開始」ボタンをクリックすると、ディスクデータを消去する必要がある旨の警告が出た場合、「OK」をクリックしてください。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. 焼付けが完了すると、コンピュータからピューピュー音が鳴り、進行状況バーが「準備完了」に変わります。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. 焼付けが完了したら、すぐに焼付けカードを取り出さないでください。
+8. ファイルエクスプローラを開き、`FlyOS-Conf`という名前のUSBドライブまたは可搬型ディスクが存在するか確認します。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. `FlyOS-Conf`を開き、下図の二つのファイルが存在すれば焼付けが成功しました。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+
+10. システムカードをマザーボードに取り付けます。

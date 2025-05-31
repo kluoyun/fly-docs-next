@@ -1,11 +1,8 @@
 ---
 sidebar_position: 6
-sidebar_label: BL Firmware, please ignore
+sidebar_label: BL Firmware, Please Ignore
+
 ---
-
-
-
-
 
 import WIN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
 import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-katapult-flash.mdx';
@@ -15,53 +12,32 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * Please note that the `bootloader` has been pre-flashed at the factory and does not need to be re-flashed.
-
+    * Please note that the `bootloader` has been pre-flashed at the factory and does not need to be flashed again.
+    * C5 can only use the built-in host software for flashing.
     :::
 
-## Entering Programming Mode
+## SSH Connection to Host Machine
 
-    :::tip
-
-    * The left is the motherboard's RST, and the right is the motherboard's BOOT.
-
+    :::danger Warning
+    - The BL firmware must be burned after using `WiFi connection to the host machine SSH`.
     :::
 
-    * There are two ways to enter programming mode.
-    * First method: With the motherboard completely powered off, long press BOOT and connect one end of the data transfer cable to the motherboard and the other end to your device, suitable for WINDOWS.
-    * Second method: After connecting one end of the data transfer cable to the motherboard and the other end to your device, long press BOOT and then input commands, suitable for host machine.
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="60%" align="center" />
+ * First, please: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#using-wifi-to-connect-to-the-host-ssh">Use WiFi to Connect to the Host SSH</Button>
+ ---
+ <br/>
 
 ## Flashing Firmware
-    <Tabs>
-        <TabItem value="win" label="Windows Flashing Tutorial" default>
-
-            * The bootloader firmware for C5 <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/firmware/BL/hid_bootloader_h723_v1.0.bin">click to automatically download the firmware</Button>
 
 
-            * Set the dip switch downward to connect the downstream device via external USB.
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-            <WIN />
+    * Set the dip switch upward and connect the downstream device USB to the host machine.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
-        </TabItem>
-        <TabItem value="linux" label="Host Machine Flashing Tutorial">
-
-            * Set the dip switch upward to connect the downstream device to the host machine.
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-
-            * Enter the following command to start flashing BL.
-            * The right is the motherboard's BOOT.
-
-                ```bash
-                fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
-                ```
+    * Enter the following command to start flashing the BL
 
 
-             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="70%" align="center" />
+        ```bash
+        fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
+        ```
 
-            * When the image below appears, it proves that the flash is successful and you can release the BOOT button.
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
-
-
-        </TabItem>
-    </Tabs>
+    * When the following image appears, it proves that the flashing is successful and you can release the BOOT key.
+       <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />

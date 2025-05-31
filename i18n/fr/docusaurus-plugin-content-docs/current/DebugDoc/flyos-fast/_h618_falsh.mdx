@@ -1,0 +1,112 @@
+
+
+import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# Installation de l'image système
+
+## Présentation du système
+FlyOS-Fast est un système Linux allégé spécialement conçu pour l'impression 3D, prenant en charge les plateformes principales de la série Fly. Ses caractéristiques incluent :
+
+- Démarrage rapide, optimisation du noyau pour garantir la latence de Klipper
+- Optimisation du système de fichiers pour réduire les risques d'impossibilité de démarrage en cas de coupure de courant
+- Démarrage en 30 secondes de KlipperScreen
+- Préinstallation des services Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen
+- Prise en charge du changement de système entre Klipper et RRF
+- Prise en charge du changement en ligne entre Mainsail et Fluidd
+- Prise en charge de l'impression via USB, impression continue après coupure de courant, écran par port série
+- Prise en charge de l'écriture automatique des firmwares au démarrage (fly-c8, fly-geminiv3)
+- Configuration anticipée possible pour la langue par défaut et le nom de l'imprimante dans des interfaces comme Fluidd
+
+Pour plus de fonctionnalités personnalisées OEM (comme le logo au démarrage, les fichiers de configuration prédéfinis, la suppression des onglets Mainsail, etc.), contactez-nous.
+
+:::tip Remarque importante
+Ce système est un système personnalisé allégé, les composants internes tels que klipper ne sont pas des versions officielles et ne supportent pas les modifications ou mises à jour par l'utilisateur.
+:::
+
+- Le compte système de FLYOS-FAST est `root`, mot de passe `mellow`
+
+
+## Préparation avant l'installation du système
+
+1. Préparer les équipements nécessaires
+
+<Tabs>
+    <TabItem value="usb" label="Si vous utilisez une carte SD pour démarrer le système, préparez les équipements suivants" default>
+        - Lecteur de cartes
+        - Carte SD d'une capacité comprise entre 16 Go et 128 Go, avec une vitesse de classe 10 ou supérieure.
+        - Il est recommandé d'utiliser des marques de qualité comme Kingston, SanDisk, Samsung ou Kioxia. Les cartes SD de marque inconnue sont strictement interdites !
+        - Ordinateur Windows (Windows 7, Windows 10, Windows 11)
+    </TabItem>
+    <TabItem value="can" label="Si vous utilisez M2WE pour démarrer le système, préparez les équipements suivants">
+        - M2WE (matériel dédié FLY)
+        - M2SD (matériel de gravure FLY)
+        - Ordinateur Windows (Windows 7, Windows 10, Windows 11)
+        - Schéma d'installation
+            <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="90%" align="center" />
+    </TabItem>
+</Tabs>
+
+2. Télécharger l'image système H618 FLY : <Button variant="contained" disableElevation component="a" rel="noopener noreferrer" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">Image système H618</Button>
+    :::tip
+    - La règle de nommage des fichiers système est : `FlyOS-Fast-[série de puces]-[numéro de version].img`, par exemple : `FlyOS-Fast-H618-v1.0.0.img`
+    - Le système Windows télécharge le fichier `.exe`, qui est un fichier de compression 7z autodécompactable. Après téléchargement, double-cliquez pour l'ouvrir et extraire le fichier `.img` (seul le système Windows peut extraire ce fichier).
+    - Les autres systèmes comme MacOS et Linux téléchargent le fichier `.7z`, qui est un fichier de compression 7z. Après téléchargement, extrayez-le à l'aide d'un outil compatible avec le format 7z pour obtenir le fichier `.img`.
+    - En raison de la taille importante du fichier système, nous ne fournissons momentanément que cette méthode de compression et n'offrons pas de téléchargement de source d'image.
+    - Ce tutoriel explique l'utilisation de l'exemple `.exe`.
+    :::
+    - Accédez à la bibliothèque de produits FlyOS-Fast, choisissez le format de compression, puis accédez à la page de fichier
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+    - Sélectionnez la version de l'image (par défaut la dernière)
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+    - Cliquez sur `Liste de fichiers`, faites glisser la barre de défilement vers la droite pour afficher le bouton de téléchargement
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+    - Cliquez sur le bouton de téléchargement pour obtenir l'image système
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+
+3. Décompressez le fichier image système pour obtenir le fichier `.img`.
+    - Double-cliquez ou ouvrez avec un clic droit sur `FlyOS-Fast-H618.exe`, attendez quelques secondes pour voir apparaître la fenêtre suivante (si le système vous avertit qu'il est non sécurisé, sélectionnez « Plus d'informations » -> « Exécuter »).
+    - Vous pouvez choisir le dossier de destination, puis cliquez sur le bouton `Extraire`, attendez la fin du processus.
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - Une fois l'extraction terminée, un fichier `FlyOS-Fast-H618-vx.x.x.img` sera généré dans le dossier de destination. `x.x.x` correspond à la version du système.
+
+
+4. Installez l'appareil à graver sur l'ordinateur
+
+
+## Gravure du système
+
+1. Ouvrez Rufus, sélectionnez l'appareil, la capacité sélectionnée doit correspondre à celle de la carte de gravure insérée dans l'ordinateur.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. Sélectionnez le type de démarrage, la sélection par défaut de `image` suffit.
+3. Sélectionnez le fichier image, cliquez sur le bouton `Sélectionner` à droite du type de démarrage pour choisir le fichier `.img` extrait.
+4. Une fois le fichier image sélectionné, le type de démarrage changera pour afficher le nom du fichier image.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+
+5. Cliquez sur le bouton `Démarrer`, si une fenêtre s'affiche pour demander la suppression des données du disque, cliquez sur `OK`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. Une fois la gravure terminée, l'ordinateur émettra un signal sonore de confirmation, et la barre de progression indiquera `Prêt`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. Ne retirez pas immédiatement la carte de gravure après la fin de la gravure.
+8. Ouvrez l'Explorateur de fichiers, vérifiez la présence d'une clé USB ou disque amovible nommée `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. Ouvrez `FlyOS-Conf`, si les deux fichiers ci-dessous sont présents, cela signifie que la gravure a réussi.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+
+10. Installez la carte système sur la carte mère.

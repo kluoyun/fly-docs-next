@@ -1,6 +1,6 @@
 ---
 sidebar_position: 6
-sidebar_label: Firmwares BL, merci de ne pas tenir compte
+sidebar_label: Firmwares BL, ignorez cela
 ---
 
 
@@ -15,53 +15,32 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     :::tip
 
-    * Veuillez noter que le « bootloader » est préinstallé à la sortie de l'usine, il n'est donc pas nécessaire de le réinstaller.
-
+    * Notez bien que le "bootloader" est préinstallé à la sortie d'usine, pas besoin de le réinstaller.
+    * Le C5 ne peut utiliser que l'application propriétaire pour le flashage.
     :::
 
-## Entrée en mode de programmation
+## Connexion SSH à l'ordinateur principal
 
-    :::tip
-
-    * À gauche se trouve le RST de la carte mère, à droite se trouve le BOOT de la carte mère.
-
+    :::danger Attention
+    - Avant de flasher les firmwares BL, veillez à vous connecter via `WiFi` à l'ordinateur principal via SSH.
     :::
 
-    * Il existe deux méthodes pour entrer en mode de programmation
-    * Première méthode : Désactivez complètement l'alimentation de la carte mère, maintenez enfoncée la touche BOOT, puis branchez un câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur votre appareil, adapté à WINDOWS.
-    * Deuxième méthode : Après avoir branché un câble de transmission de données d'un côté sur la carte mère et de l'autre côté sur votre appareil, maintenez enfoncée la touche BOOT, puis entrez une commande, adapté à la station de travail.
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="60%" align="center" />
+ * Commencez par :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#connexion-ssh-via-wifi-a-lordinateur-principal">connexion SSH via WiFi à l'ordinateur principal</Button>  
+ ---
+ <br/>
 
-## Programmation des firmwares
-    <Tabs>
-        <TabItem value="win" label="Tutoriel de programmation sous Windows" default>
-
-            * Le firmware bootloader de C5 <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/firmware/BL/hid_bootloader_h723_v1.0.bin">cliquez ici pour télécharger automatiquement le firmware</Button>
+## Flashage des firmwares
 
 
-            * Ajustez les commutateurs vers le bas pour connecter le périphérique inférieur via USB externe
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-            <WIN />
+    * Positionnez l'interrupteur de commutation vers le haut et connectez l'appareil inférieur à l'ordinateur principal via USB.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
-        </TabItem>
-        <TabItem value="linux" label="Tutoriel de programmation avec l'ordinateur de bord">
-
-            * Ajustez les commutateurs vers le haut pour connecter le périphérique inférieur à l'ordinateur de bord
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
-
-            * Entrez la commande ci-dessous pour commencer à programmer le BL
-            * À droite se trouve le BOOT de la carte mère
-
-                ```bash
-                fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
-                ```
+    * Entrez la commande ci-dessous pour démarrer le flashage du BL
 
 
-             <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/boot.webp').default} size="70%" align="center" />
+        ```bash
+        fly-flash -d c5 -u -f /usr/lib/firmware/bootloader/hid_bootloader_h723_v1.0.bin
+        ```
 
-            * Lorsque vous voyez l'image ci-dessous, cela signifie que la programmation a réussi et que vous pouvez relâcher la touche BOOT
-                <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
-
-
-        </TabItem>
-    </Tabs>
+    * Lorsque vous voyez l'image ci-dessous, cela signifie que le flashage a réussi et que vous pouvez relâcher la touche BOOT.
+       <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c8/flash/img/hid3.webp').default} size="70%" align="center" />
