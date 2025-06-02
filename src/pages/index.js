@@ -91,7 +91,7 @@ export default function Home() {
   } = useDocusaurusContext();
   const { description } = customFields;
   return (
-    <Layout title={tagline} description={description}>
+    <Layout title={tagline} description={description} nowatermark>
       <main>
         <TopBanner />
         <HeroBanner />
