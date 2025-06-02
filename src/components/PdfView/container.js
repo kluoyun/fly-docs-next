@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useColorMode } from '@docusaurus/theme-common';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { Worker, Viewer, SpecialZoomLevel, ProgressBar, ScrollMode } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-import { localeSwitcherPlugin } from '@react-pdf-viewer/locale-switcher';
 
 
 // Import the styles
@@ -40,11 +40,11 @@ const getLanguage = () => {
 
 const PdfViewContainer = (props) => {
     const { file, width, height } = props;
+    const { setColorMode } = useColorMode();
     const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
     const [mode, setMode] = useState < 'light' | 'dark' > (isDarkMode ? 'dark' : 'light');
 
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
-    const localeSwitcherPluginInstance = localeSwitcherPlugin();
 
     useEffect(() => {
         const target = document.documentElement;
@@ -62,6 +62,12 @@ const PdfViewContainer = (props) => {
         return () => observer.disconnect();
     }, []);
 
+    const handleSwitchTheme = (theme) => {
+        if (theme === 'light' || theme === 'dark') {
+            setColorMode(theme);
+        }
+    };
+
     const pageLayout = {
         // buildPageStyles: () => ({
         //     alignItems: 'center',
@@ -74,38 +80,87 @@ const PdfViewContainer = (props) => {
         }),
     };
 
-    const renderPage = (props) => (
-        <>
-            {props.canvasLayer.children}
-            <div
-                style={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    height: '100%',
-                    justifyContent: 'center',
-                    left: 0,
-                    position: 'absolute',
-                    top: 0,
-                    width: '100%',
-                }}
-            >
-                <div
-                    style={{
-                        color: 'rgba(0, 0, 0, 0.2)',
-                        fontSize: `${8 * props.scale}rem`,
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        transform: 'rotate(-45deg)',
-                        userSelect: 'none',
-                    }}
-                >
-                    -Mellow-
-                </div>
-            </div>
-            {props.annotationLayer.children}
-            {props.textLayer.children}
-        </>
-    );
+    const renderPage = (props) => {
+        const width = props.width;
+        const height = props.height;
+        const fontSizeRem = 2 * props.scale; // 字体大小跟缩放相关
+        const fontSizePx = fontSizeRem * 16; // rem转px，16是默认字体大小
+
+        // 基础水印大小
+        const baseWidth = fontSizePx * 7;
+        const baseHeight = fontSizePx * 2.5;
+
+        // 加间距倍数
+        const spacingFactor = 2.3;
+
+        // 计算铺满页面的行列数，带间距
+        const watermarkWidth = baseWidth * spacingFactor;
+        const watermarkHeight = baseHeight * spacingFactor;
+
+        const cols = Math.ceil(width / watermarkWidth);
+        const rows = Math.ceil(height / watermarkHeight);
+
+        const top = 50;
+        const watermarks = [];
+
+        const text = 'mellow.klipper.cn';
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const x = col * watermarkWidth;
+                const y = row * watermarkHeight;
+
+                watermarks.push(
+                    <div
+                        key={`watermark-${row}-${col}`}
+                        style={{
+                            position: 'absolute',
+                            top: y + top,
+                            left: x,
+                            transform: 'rotate(-45deg)',
+                            fontSize: `${fontSizeRem}rem`,
+                            fontWeight: 'bold',
+                            userSelect: 'none',
+                            pointerEvents: 'none',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {/* 阴影层 */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                color: 'rgba(0, 0, 0, 0.2)',
+                                left: 1,
+                                top: top + 1,
+                            }}
+                        >
+                            {text}
+                        </div>
+                        {/* 亮色前景 */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                color: 'rgba(255, 255, 255, 0.25)',
+                                left: 0,
+                                top: top,
+                            }}
+                        >
+                            {text}
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        return (
+            <>
+                {props.canvasLayer.children}
+                {watermarks}
+                {props.annotationLayer.children}
+                {props.textLayer.children}
+            </>
+        );
+    };
 
     return (
         <Worker workerUrl="/js/pdfjs-dist@3.11.174/pdf.worker.min.js">
@@ -118,8 +173,8 @@ const PdfViewContainer = (props) => {
                     width: '100%',
                 }}>
                 <Viewer
-                    localization={getLanguage}
-                    plugins={[defaultLayoutPluginInstance, localeSwitcherPluginInstance]}
+                    localization={getLanguage()}
+                    plugins={[defaultLayoutPluginInstance]}
                     renderPage={renderPage}
                     pageLayout={pageLayout}
                     // defaultScale={SpecialZoomLevel.PageWidth}
@@ -132,6 +187,7 @@ const PdfViewContainer = (props) => {
                     theme={{
                         theme: mode
                     }}
+                    onSwitchTheme={handleSwitchTheme}
                     fileUrl={file}
                     initialPage={0} >
                 </Viewer>
