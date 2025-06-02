@@ -1,85 +1,105 @@
 
-## 搜索 CAN ID
+## 搜索CAN ID
+1. 打开浏览器，在网址栏中输入上位机的IP地址，比如我上位机IP是`192.168.101.179`直接输入然后回车即可
+  <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-:::warning
-* FLYOS-FAST系统默认的CAN速率1M
-* 请确保上位机的CAN网络、桥接主板的CAN速率、CAN工具板的速率完全一致
-:::
+2. 打开上位机的WEB界面，在左侧边栏的配置选项里找到：
+  <table>
+    <tr>
+      <td>
+        - fluidd为: `{…}` ，点击进去，即可找到 `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-    1. 在SSH中输入`lsusb`，按`Enter键`回车如果出现下图所示的`1d50:606f`，即可进行下一步。
-    <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="center" />
-    2. 其中`1d50:606f` 属于本次你要用到的设备。
-    3. 如果接了多个刷了USB桥接CAN的主板或者多个UTOC等，则会出现多个`1d50:606f`设备，需要排除到只剩下一个
-    4. 如果没有`1d50:606f`，请自行检查主板拨码模式是否正确、尝试重新编译并烧录USB桥接CAN固件、尝试给主板接24V的供电
-
-    :::warning 注意事项
-    - 必须在查询到`1d50:606f`设备之后，才能进行下一步
-    - 并且只能只有一个`1d50:606f`设备
-    :::
-
-    5. 输入下方指令进行ID搜索
-    ```bash
-    python ~/klipper/scripts/canbus_query.py can0
-    ```
-        * 如果出现UUID，`Application:`后显示`Klipper`则代表此ID可以直接使用
-        * 如果出现UUID，`Application:`后显示`CANBOOT`或者`Katapult`则代表需要刷USB桥接CAN固件才可以使用
-        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="80%" align="center" />
-
-    :::warning 注意事项
-    - 只有出现`UUID`，并在`Application:`后显示`Klipper`才能执行下一步
-    :::
-
-    :::danger 须知
-    * 找不到CAN ID，请查看：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN问题合集</Button>
-    :::
----
-
-## 填写CAN ID
-
-    1. 打开上位机的WEB界面，在左侧边栏的配置选项里找到：
-
+  3.点击`printer.cfg` 进去后，在点击右上方的`DEVICES`
     <table>
       <tr>
         <td>
-          - fluidd为: `{…}` ，点击进去，即可找到 `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_devices.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_devices.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
-    2. 复制查询到的`UUID`，在`printer.cfg` 文件中找到 `[mcu]`选项,在下方的 `canbus_uuid: ` 后填写查询到的`UUID`保存重启后即可连上主板。
+  4.点击`CAN` ，然后刷新
+    <table>
+      <tr>
+        <td>
+          - fluidd的刷新
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_can.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail的刷新
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_can.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
+  5.复制ID,点击箭头所指即可复制
+    <table>
+      <tr>
+        <td>
+          - fluidd需要确定第一个箭头所指的是否是`Klipper`，如果是即可点击右边箭头所指的复制
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_canid.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail需要确定第一个箭头所指的是否是`Klipper`，如果是即可点击右边箭头所指的复制
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_canid.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
-    :::danger
-    * 下图示例为：**一个刷了USB桥接CAN固件的主板**和**一个CAN工具板**相连的情况！！！
-    * 下方配置的UUID仅供参考！！！请严格遵守下图所示的格式填写`UUID`
-    * 主板的CAN UUID格式为:
-     ```
-    [mcu]  
-    canbus_uuid: ********
-    ```
+## 填写CAN ID
 
-    * 工具板CAN UUID的格式为：  
-    ```
-    [mcu 工具板的名字]  
-    canbus_uuid: ********
-    ```    
+    1. 关闭`DEVICES`填写ID
+    :::danger 须知
+
+    * 第一个红框前面的# 需要删除，请注意是包括空格
+    * FLY系统默认配置中会存在[MCU]但是下方ID如果是`serial: /tmp/klipper_host_mcu`需要将`[MCU]`改名为`[mcu HOST]`,或者将这两行删除
     :::
 
+    <table>
+      <tr>
+        <td>
+          - fluidd中找到[MCU]
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail中找到[MCU]
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="center" />
 
+    2. 将ID填写到配置中
+    :::tip
 
+    * 填写好ID后点击右上方的`SAVE & RESTART `
+    :::
+
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_can_save.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_can_save.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
     3. 若Klipper提示 `ADC out of range` 此为正常现象，将热床和热敏连接到主板，并配置好喷头、热床的热敏引脚，再保存重启即可。
 
+:::danger
+注意：文档中所出现的所有ID均为示例，实际每个主板的ID均不相同，请填写实际获取到的ID。
+:::
+---
 
-        :::danger
-
-        注意：文档中所出现的所有ID均为示例，实际每个主板的ID均不一致，请根据实际获取到的ID修改填写。
-
-        :::
-    ---
