@@ -362,12 +362,12 @@ const config = {
         darkTheme: prismThemes.oneDark,
       },
       algolia: {
-        appId: 'LZ40BJW1SW',
-        apiKey: '729491300f69121a45f199542a7bac71',
-        indexName: 'mellow-next-klipper',
+        appId: 'N8ANFFHX3V',
+        apiKey: 'dba306db73bd1b48769f1a57c652a1ba',
+        indexName: 'docs',
         container: '### REPLACE ME WITH A CONTAINER (e.g. div) ###',
         contextualSearch: true,
-        facetFilters: ["language:zh-Hans", ["docusaurus_tag:default", "docusaurus_tag:docs-default-current"]],
+        facetFilters: [["docusaurus_tag:default", "docusaurus_tag:docs-default-current"]],
       },
     }),
 };
