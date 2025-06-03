@@ -1,0 +1,66 @@
+---
+sidebar_position: 10
+sidebar_label: Screen Wiring and Configuration
+---
+
+
+# Screen Wiring and Configuration
+
+## Configuration Method
+
+
+- Enter the device's IP address in the browser's address bar, for example: `http://192.168.6.179`
+- Access the configuration page
+    - Open the device IP address in the browser, for example: `http://192.168.1.2/`
+    - In fluidd, uncheck as shown on the left in the figure -> "Filter hidden files and folders".
+    - In mainsail, check as shown on the right in the figure -> "Show hidden files".
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - At this point, you can see the `.flyos-config` folder. Enter this folder to find the `sys-config.conf` file.
+    - The `sys-config.conf` file is a symbolic link of the configuration file `config.txt` in the removable disk `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - Open the `sys-config.conf` file and modify the screen type by finding `screen=`.
+    - Change the number `0` after the item `klipper_screen` at index ❶ to `1` to enable the `klipper_screen` service.
+    - Modify the configuration item after `screen` at index ❷ to the desired screen type, then save and close, and restart the system.
+    <ImageView image={require('@site/docs/General/flyos-fast/img/screen.webp').default} size="90%" align="center" />
+
+    - Note: The format of the configuration items in the `sys-config.conf` file is `key=value`, do not change it to `key: value`.
+    - After modifying and saving, restarting the system will take effect.
+
+## C5 Screen Wiring
+
+    :::danger Notice
+    - Turn off the power before connecting the screen to avoid damaging the screen.
+    - Pay attention to the direction of the FPC cable when wiring the screen to avoid damaging the screen.
+    :::
+<Tabs>
+    <TabItem value="tftc" label="TFT Screen Wiring" default>
+        Wiring and configuration of the TFT screen
+        :::tip
+        - For resistive screens, set the DIP switch to `Resi`.
+        - For capacitive screens, set the DIP switch to `Cap`.
+        :::
+
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/tft.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi" label="HDMI FPC One-Line-Through Wiring">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi_fpc.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi1" label="HDMI Normal Wiring">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi.webp').default} size="80%" align="left" />
+    </TabItem>
+</Tabs>

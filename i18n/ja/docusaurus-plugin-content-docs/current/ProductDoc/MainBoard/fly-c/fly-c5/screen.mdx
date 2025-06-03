@@ -1,0 +1,66 @@
+---
+sidebar_position: 10
+sidebar_label: スクリーン接続と設定
+---
+
+
+# スクリーン接続と設定
+
+## 設定方法
+
+
+- デバイスのIPアドレスをブラウザのアドレスバーに入力します。例：`http://192.168.6.179`
+- 設定ページにアクセスします
+    - デバイスのIPアドレスをブラウザで開きます。例：`http://192.168.1.2/`
+    - fluiddでは図の左側のように `チェックを外す` -> `隠しファイルとフォルダをフィルタリング`。
+    - mainsailでは図の右側のように `チェックを入れる` -> `隠しファイルを表示`。
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - これにより`.flyos-config`フォルダが見えます。このフォルダには`sys-config.conf`ファイルがあります。
+    - `sys-config.conf`ファイルは可搬型ディスク`FlyOS-Conf`内の設定ファイル`config.txt`のシンボリックリンクです。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - `sys-config.conf`ファイルを開き、`screen=`を変更してスクリーンタイプを設定します
+    - 番号❶の`klipper_screen`の後の`0`を`1`に変更して`klipper_screen`サービスを起動します
+    - 番号❷の`screen`の後の設定項目を必要なスクリーンに変更し、`保存` -> `閉じる`してから再起動します
+    <ImageView image={require('@site/docs/General/flyos-fast/img/screen.webp').default} size="90%" align="center" />
+
+    - 注意：`sys-config.conf`ファイル内の設定項目の形式は`key=value`です。`key: value`に変更しないでください。
+    - 変更を保存後、システムを再起動すると設定が有効になります。
+
+## C5 スクリーン接線
+
+    :::danger 注意
+    - スクリーンを接続する際は電源を先に切ってください。スクリーンを損傷させる可能性があります。
+    - スクリーン接線を行う際はFPCラインの向きに注意してください。スクリーンを損傷させる可能性があります。
+    :::
+<Tabs>
+    <TabItem value="tftc" label="TFTスクリーン接線" default>
+        TFTスクリーン接線と設定
+        :::tip
+        - 抵抗タッチスクリーンを使用する場合はダイアルを`Resi`に設定してください
+        - 電容量タッチスクリーンを使用する場合はダイアルを`Cap`に設定してください
+        :::
+
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/tft.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi" label="HDMI FPC一本通接線">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi_fpc.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi1" label="HDMI 普通接線">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi.webp').default} size="80%" align="left" />
+    </TabItem>
+</Tabs>

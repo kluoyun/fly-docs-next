@@ -1,0 +1,113 @@
+import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# Инструкция по прошивке системы
+
+## Описание системы
+FlyOS-Fast — это облегченная система Linux, специально адаптированная для 3D-печати и поддерживающая все платформы верхнего уровня Fly. Основные особенности:
+
+- Быстрый старт, оптимизация ядра для обеспечения реальности Klipper
+- Оптимизированный файловой системой, снижающий риск неработоспособности при внезапном отключении питания
+- За 30 секунд запускается KlipperScreen
+- Предустановлены службы Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen
+- Поддержка переключения между системами Klipper и RRF
+- Возможность онлайн переключения между интерфейсами Mainsail и Fluidd
+- Поддержка печати с USB-накопителя, восстановления печати после обрыва питания, работы с последовательным экраном
+- Автоматическая прошивка (fly-c8, fly-geminiv3)
+- Возможность предварительной настройки параметров интерфейса Fluidd, например, язык и имя принтера
+
+Для дополнительных функций OEM-профиля (например, логотип при загрузке, предустановленные конфигурационные файлы, скрытие вкладок Mainsail), свяжитесь с нами.
+
+:::tip Важно
+Это облегченная специализированная система, компоненты и службы, встроенные в нее (например, klipper), не являются официальными версиями и не поддерживают пользовательские изменения или обновления.
+:::
+
+
+- Учетная запись системы FLYOS-FAST — root, пароль — mellow
+
+
+## Подготовка перед прошивкой
+
+1. Подготовьте необходимое оборудование
+
+<Tabs>
+    <TabItem value="usb" label="Если вы используете карту памяти для запуска системы, подготовьте следующее оборудование" default>
+        - Кардридер
+        - Карту памяти емкостью 16 ГБ–128 ГБ, класс скорости 10 и выше
+        - Рекомендуется использовать карты памяти брендов Kingstone, SanDisk, Samsung, Kioxia, избегайте использования карточек непроверенных производителей!
+        - ПК с Windows (Windows 7, Windows 10, Windows 11)
+    </TabItem>
+    <TabItem value="can" label="Если вы используете M2WE для запуска системы, подготовьте следующее оборудование">
+        - M2WE (специальное устройство FLY)
+        - M2SD (устройство для записи FLY)
+        - ПК с Windows (Windows 7, Windows 10, Windows 11)
+        - Схема установки
+            <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="90%" align="center" />
+    </TabItem>
+</Tabs>
+
+
+2. Скачайте образ системы FLY-{props.name}: <Button variant="contained" disableElevation component="a" rel="noopener" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">{props.name} образ системы</Button>
+    :::tip
+    - Название файла системы: `FlyOS-Fast-[серия_чипов]-[номер_версии].img`, например: **FlyOS-Fast-{props.name}-v1.0.0.img**
+    - Для Windows скачивайте `.exe`-файл, это архив 7z с самораспаковкой, после скачивания дважды кликните для распаковки и получите `.img`-файл (можно распаковать только через Windows)
+    - Для других систем, таких как MacOS и Linux, скачивайте `.7z`-файл, это архив 7z, после скачивания распакуйте его с помощью инструментов, поддерживающих формат 7z, чтобы получить `.img`-файл
+    - Из-за большого размера системы временно не предоставляются другие форматы сжатия и исходный образ
+    - В данном руководстве используется пример с `.exe`
+    :::
+    - Перейдите в библиотеку制品 FlyOS-Fast, выберите формат сжатия, перейдите на страницу файла
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+    - Выберите версию образа (по умолчанию последняя)
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+    - Нажмите на `Список файлов`, затем прокрутите ползунок вправо, чтобы показать кнопку загрузки
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+    - Нажмите кнопку загрузки, чтобы скачать образ системы
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+
+3. Распакуйте образ системы, чтобы получить `.img`-файл.
+    - Дважды щелкните или откройте правой кнопкой мыши **FlyOS-Fast-{props.name}.exe**, через несколько секунд появится окно (если система предупреждает о безопасности, выберите «Подробнее» -> «Запустить»)
+    - Выберите каталог для распаковки, затем нажмите кнопку `Извлечь`
+    - Дождитесь завершения распаковки.
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - После завершения распаковки в каталоге для распаковки появится файл **FlyOS-Fast-{props.name}-vx.x.x.img**. `x.x.x` — номер версии системы.
+
+
+4. Установите устройство для записи на компьютер
+
+
+## Прошивка системы
+
+1. Откройте Rufus, выберите устройство, которое должно отображать объем, совпадающий с объемом устройства для записи, подключенное к компьютеру.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. Выберите тип загрузки, по умолчанию выбрано `образ файла`.
+3. Выберите образ файла, щелкнув кнопку `Выбрать` справа от типа загрузки, и выберите `.img`-файл, распакованный ранее.
+4. После выбора образа файла тип загрузки изменится на имя файла образа.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+
+5. Нажмите кнопку `Начать`. Если появится окно с предупреждением о необходимости очистки диска, нажмите `ОК`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. После завершения записи компьютер подаст звуковой сигнал, и прогресс-бар покажет «Готово».
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. После завершения записи не торопитесь вынимать устройство для записи.
+8. Откройте проводник, проверьте наличие флешки или мобильного устройства с именем `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. Откройте `FlyOS-Conf`, если там присутствуют два указанных ниже файла, значит, запись прошла успешно.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+
+10. Установите карту системы на материнскую плату.

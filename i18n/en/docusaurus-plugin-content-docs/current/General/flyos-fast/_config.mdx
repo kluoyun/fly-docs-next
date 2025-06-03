@@ -1,0 +1,170 @@
+## Important Tips
+    :::tip Must Read
+
+    - The settings in the `part` section of the configuration file will only take effect when the system is started for the first time after burning.
+    - This tutorial only provides modifiable options.
+
+    :::
+
+    :::warning Notice
+
+    - Try to use the `mainsail` or `fluidd` web pages for configuration modifications.
+    - Do not open web page translation, otherwise the system may not start after saving.
+    - Chinese or special characters are not recommended in the configuration file.
+    - After modifying the configuration file, the system needs to be restarted to take effect.
+
+    :::
+
+    :::danger
+
+    - Do not modify the content below `######### PLEASE DO NOT EDIT THE FOLLOWING #########` in the configuration file.
+
+    :::
+
+## How to Modify the Configuration File
+
+### Modify the Configuration File After Burning
+
+- The configuration items that only take effect on the `first startup` must be modified by using a professional text editor to open the configuration file `config.txt` in the removable disk `FlyOS-Conf` after burning.
+
+### Online Configuration Modification While System is Running
+
+- If it is a regular configuration item, the system can take effect after modification on the web configuration page and restarting the system.
+    - Open the device IP address in the browser, for example: `http://192.168.1.2/`
+    - For fluidd, uncheck `->` and hide the files and folders as shown in the left picture.
+    - For mainsail, check `->` and show hidden files as shown in the right picture.
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - At this point, you can see the `.flyos-config` folder. Enter this folder and there will be a `sys-config.conf` file.
+    - The `sys-config.conf` file is a soft link to the configuration file `config.txt` in the removable disk `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - Open the `sys-config.conf` file, make the necessary changes, save and close it, then restart the system.
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config4.webp').default} size="60%" align="center" />
+
+    - Note: The format of the configuration items in the `sys-config.conf` file is `key=value`, do not change it to `key: value`.
+    - After saving the changes, restart the system to take effect.
+
+## Configuration Items
+
+### Wireless Network Configuration
+
+- The following configuration items will take effect every time the system starts.
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :---: | :--- | :--- |
+| `WIFI_SSID` | `Empty` | Any WIFI name | WIFI name, if filled in, the system will automatically prioritize connecting to this WIFI at startup |
+| `WIFI_PASS` | `Empty` | Leave blank if no password | WIFI password, if filled in, the system will connect to WIFI with the password |
+
+----
+
+### Printer Default Configuration
+
+:::tip
+- The following configuration items will only take effect on the `first startup`.
+:::
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :---: | :--- | :--- |
+| `language` | `zh-CN` | <details><summary>Click to expand details</summary>`zh-CN`, `zh-HK`, `en`, `de`, `cz`, `es`, `hu`, `ja`, `nl`, `pt`, `se`, `uk`, `da`, `fr`, `it`, `ko`, `pl`, `ru`, `tr`</details> | Set the default language for fluidd and mainsail during the first startup |
+| `printer_name` | `Empty` | Any string | Set the default printer name for fluidd and mainsail during the first startup |
+
+----
+
+### System Configuration
+
+- The following configuration items will take effect every time the system starts.
+- Below are the modifiable options.
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :-------: | :--- | :--- |
+| `board` |  <code>{props.board}</code> |   <code>{props.board}</code> | Mainboard model, please do not modify configurations outside the usable values |
+| `localtime` | `Asia/Shanghai` | [World Time Zone Table](/docs/DebugDoc/flyos-fast/timezone) | Set the system's default time zone, the system will automatically adjust the time after connecting to the network |
+| `canbus_bitrate` | `1000000` | `1000000`<br/> `500000`<br/> `250000` | Set the default rate for all can devices in the FAST system, can only be modified here, default is 1M |
+
+----
+
+### Screen Display Configuration
+
+- The following configuration items will take effect every time the system starts.
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :-------: | :--- | :--- |
+| `screen` | `hdmi` | <code>nano</code>,<code>{props.screen}</code> <br/> <code>{props.screen1}</code><code>{props.screen2}</code> | Set the screen, none will turn off all displays |
+| `rotate` | `90` | `0`, `90`, `180`, `270` | Set the rotation angle of FLY-TFT, hdmi is invalid |
+| `klipper_screen` | `0` | `0`, `1` | Set whether to enable KlipperScreen<br/>1: Enable<br/>0: Disable<br/>Effective when `printer=klipper` |
+| `moon2uart` | `0` | `0`, `1` | Set whether to enable moon2uart<br/>1: Enable<br/>0: Disable<br/>Effective when `printer=klipper` |
+
+----
+
+### Klipper Related Configuration
+
+- The following configuration items will take effect every time the system starts.
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :-------: | :--- | :--- |
+| `klipper_webui` | `fluidd` | `fluidd`, `mainsail` | Set the default front-end UI for Klipper<br/>Does not affect the one-click switch function online<br/>Effective when `printer=klipper` |
+| `canbus_bitrate` | `1000000` | `1000000`, `500000`, `250000` | Set the default rate for all can devices in the FAST system, can only be modified here, default is 1M |
+| `crowsnest` | `0` | `0`, `1` | Set whether to enable Crowsnest<br/>1: Enable<br/>0: Disable<br/>Can be used in both klipper and rrf modes |
+
+----
+
+### Printer Type Configuration
+
+- The following configuration items will take effect every time the system starts.
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :-------: | :--- | :--- |
+| `printer` | `klipper` | `klipper`, `rrf` | Configure which service the system starts<br/>`klipper`: klipper, moonraker services<br/>`rrf`: RRF DSF, DWC services |
+
+----
+
+### Power-off Shutdown
+
+- The following configuration items will take effect every time the system starts.
+- Power-off continuous printing requires disabling the power-off shutdown function.
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :-------: | :--- | :--- |
+| `shutdown_pin_state` | `0` | `0`, `1` | Set the voltage level state of the power-off button<br/> 1: Low level repeat<br/> 0: High level trigger  |
+| `shutdown_pin` | <code>{props.shutdown_pin}</code>| <code>{props.shutdown_pin}</code> | Set the trigger pin of the power-off button, set none to disable  |
+
+----
+
+### RRF Related Configuration
+
+- The following configuration items will take effect every time the system starts.
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :-------: | :--- | :--- |
+| `rrf2uart` | `0` | `0`, `1` | Temporarily invalid, future versions will provide updates |
+
+----
+
+:::tip
+- The following configuration items will only take effect on the `first startup`.
+:::
+
+| Configuration Item | Default Value | Usable Values | Description |
+| :---: | :-------: | :--- | :--- |
+| `firmware` | `Empty` | Valid firmware file path | Set the firmware to be burned automatically at startup, currently only C8, Gemini-V3 and C5 are valid |
+
+----
+
+:::danger
+
+- Do not modify the content below `######### PLEASE DO NOT EDIT THE FOLLOWING #########` in the configuration file.
+
+:::

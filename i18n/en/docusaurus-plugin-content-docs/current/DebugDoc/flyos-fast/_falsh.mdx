@@ -1,0 +1,112 @@
+import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+# System Image Burning
+
+## System Introduction
+FlyOS-Fast is a lightweight Linux system customized for 3D printing, supporting all Fly series host platforms. Its features include:
+
+- Fast boot with kernel optimization to ensure the real-time performance of Klipper
+- File system optimization to reduce the risk of being unable to start due to power failure
+- 30-second quick startup of KlipperScreen
+- Pre-installed services including Klipper, RRF, Mainsail, Fluidd, Moonraker, and KlipperScreen
+- Support for switching between Klipper and RRF systems
+- Support for online one-click switching between Mainsail and Fluidd
+- Support for USB printing, power-off resume printing, and serial screen
+- Support for automatic firmware burning (fly-c8, fly-geminiv3)
+- Allows presetting default language and printer name for front-end UIs like Fluidd
+
+For more OEM customization features (such as setting custom boot logos, preset configuration files, or hiding Mainsail tabs), please contact us.
+
+:::tip Notice
+This system is a lightweight customized system; the built-in klipper components and services are not official original versions and do not support user modifications or upgrades.
+:::
+
+
+- The system account for FLYOS-FAST is `root`, and the password is `mellow`
+
+
+## System Burning Preparation
+
+1. Prepare the required equipment
+
+<Tabs>
+    <TabItem value="usb" label="If using a TF card to boot the system, prepare the following devices:" default>
+        - Card reader
+        - A TF card with a capacity of 16GB-128GB, with a transmission speed of Class10 or higher
+        - It is recommended to use TF cards from reputable brands such as Kingston, SanDisk, Samsung, or Kioxia; avoid using generic TF cards!
+        - A Windows system computer (Windows 7, 10, or 11 can be used)
+    </TabItem>
+    <TabItem value="can" label="If using M2WE to boot the system, prepare the following devices">
+        - M2WE (FLY proprietary device)
+        - M2SD (FLY burn-in device)
+        - A Windows system computer (Windows 7, 10, or 11 can be used)
+        - Installation diagram
+            <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="90%" align="center" />
+    </TabItem>
+</Tabs>
+
+
+2. Download the FLY-{props.name} system image: <Button variant="contained" disableElevation component="a" rel="noopener" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">{props.name} system image</Button>
+    :::tip
+    - System file naming rule: `FlyOS-Fast-[chip series]-[version number].img`, e.g., **FlyOS-Fast-{props.name}-v1.0.0.img**
+    - For Windows systems, download the `.exe` file, which is a 7z self-extracting compression package. After downloading, double-click it to extract and obtain the `.img` file (only works on Windows systems)
+    - For other systems like MacOS or Linux, download the `.7z` file, which is a 7z compression package. After downloading, use a tool that supports the 7z format to extract and obtain the `.img` file
+    - Due to the large size of the system files, other compression formats and source images are temporarily unavailable
+    - This tutorial introduces the process using the `.exe` file as an example
+    :::
+    - Access the FlyOS-Fast artifact repository, select the compression format, and enter the file page
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
+    - Select the image version (default is the latest)
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
+    - Click `File List`, then click the scrollbar and drag it to the right to display the download button
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
+    - Click the download button to download the system image
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
+
+
+3. Extract the system image file to obtain the `.img` file.
+    - Double-click or open **FlyOS-Fast-{props.name}.exe**, wait a few seconds, and a window will pop up (if the system prompts that it is unsafe, choose "More Info" -> "Run")
+    - You can choose the extraction directory, then click the `Extract` button, and wait for the extraction to complete.
+    
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
+
+    - After extraction, a **FlyOS-Fast-{props.name}-vx.x.x.img** file will be generated in the extraction directory. `x.x.x` is the system version number.
+
+
+4. Install the device to be burned onto the computer.
+
+
+## Burning the System
+
+1. Open Rufus, select the device, and the selected device should display a capacity consistent with the burned card inserted into the computer.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
+
+2. Choose the `Boot Type`, which defaults to selecting `Image File`.
+3. Select the image file by clicking the `Choose` button next to the `Boot Type` selection, and choose the extracted `.img` file.
+4. After selecting the image file, the `Boot Type` will change to the file name of the image file.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
+
+5. Click the `Start` button. If a prompt window appears indicating that disk data needs to be cleared, click `OK`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
+
+6. After burning is complete, the computer will emit a提示 sound, and the progress bar will show `Ready`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
+
+7. Do not rush to remove the burned card after completion.
+8. Open File Explorer to check if there is a U drive or removable disk named `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
+
+9. Open `FlyOS-Conf`. If the two files shown below exist, it indicates that the burning was successful.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
+
+10. Install the system card onto the motherboard.

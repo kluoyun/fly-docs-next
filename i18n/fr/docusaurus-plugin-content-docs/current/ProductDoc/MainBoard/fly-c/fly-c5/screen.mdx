@@ -1,0 +1,66 @@
+---
+sidebar_position: 10
+sidebar_label: Configuration et câblage de l'écran
+---
+
+
+# Configuration et câblage de l'écran
+
+## Méthode de configuration
+
+
+- Entrez l'adresse IP du périphérique dans la barre d'adresse du navigateur, par exemple : `http://192.168.6.179`
+- Accédez à la page de configuration
+    - Ouvrez l'adresse IP du périphérique dans le navigateur, par exemple : `http://192.168.1.2/`
+    - Dans fluidd, décochez l'option indiquée à gauche dans la capture d'écran ci-dessous -> `Filtrer les fichiers et dossiers cachés`.
+    - Dans mainsail, cochez l'option indiquée à droite dans la capture d'écran ci-dessous -> `Afficher les fichiers cachés`.
+
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - Vous verrez alors le dossier `.flyos-config`. Entrez dans ce dossier pour trouver le fichier `sys-config.conf`.
+    - Le fichier `sys-config.conf` est un lien symbolique vers le fichier de configuration `config.txt` du lecteur amovible `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - Ouvrez le fichier `sys-config.conf`, recherchez `screen=` pour modifier le type d'écran.
+    - Modifiez le numéro de séquence ❶ `klipper_screen` après le `0` en `1` pour activer le service `klipper_screen`.
+    - Modifiez l'élément de configuration ❷ après `screen` avec le type d'écran requis, puis enregistrez et fermez. Redémarrez ensuite le système.
+    <ImageView image={require('@site/docs/General/flyos-fast/img/screen.webp').default} size="90%" align="center" />
+
+    - Remarque : Le format des éléments de configuration dans le fichier `sys-config.conf` est `clé=valeur`. Ne modifiez pas en `clé: valeur`.
+    - Après modification et sauvegarde, redémarrez le système pour que les modifications prennent effet.
+
+## Raccordement de l'écran C5
+
+    :::danger Avertissement
+    - Éteignez l'alimentation avant de connecter l'écran pour éviter d'endommager celui-ci.
+    - Lors du raccordement de l'écran, assurez-vous que la direction du câble FPC est correcte pour éviter d'endommager l'écran.
+    :::
+<Tabs>
+    <TabItem value="tftc" label="Raccordement de l'écran TFT" default>
+        Raccordement et configuration de l'écran TFT
+        :::tip
+        - Pour les écrans résistifs, placez le dip-switch sur `Resi`.
+        - Pour les écrans capacitifs, placez le dip-switch sur `Cap`.
+        :::
+
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/tft.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi" label="Raccordement HDMI FPC (un câble)">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi_fpc.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi1" label="Raccordement HDMI classique">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi.webp').default} size="80%" align="left" />
+    </TabItem>
+</Tabs>
