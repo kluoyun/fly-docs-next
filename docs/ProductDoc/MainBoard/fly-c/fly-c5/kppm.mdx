@@ -12,9 +12,43 @@ sidebar_position: 9
 
 ## 配置
 
+### 关闭断电关机
+    :::danger 须知
+    - 需要关闭断电关机，否则无法使用断电续打。
+    - 断电续打中有保存进度后自动关机功能。
+    :::
+
+- 通过浏览器中的网址栏输入设备的IP地址,例如：`http://192.168.6.179`
+- 进入配置页面
+    - 在浏览器打开设备ip地址，例如：`http://192.168.1.2/`
+    - fluidd按下图左所示 `取消勾选` -> `筛选隐藏的文件和文件夹`。
+    - mainsail按下图右所示 `勾选` -> `显示隐藏文件`。
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - 此时可以看到`.flyos-config`文件夹，进入这个文件夹会有`sys-config.conf`文件。
+    - `sys-config.conf`文件就是可移动磁盘`FlyOS-Conf`中的配置文件`config.txt`的软链接。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - 打开`sys-config.conf`文件，找到`shutdown_pin_state`与`shutdown_pin=`这两个配置
+    - 将这几个配置前面加# 
+    - 然后 `保存` -> `关闭` 然后重启即可
+    <ImageView image={require('@site/docs/General/flyos-fast/img/kppm.webp').default} size="90%" align="center" />
+
 ### plr.cfg 配置文件
 
-- 在打印机配置页面中，点击新建配置文件，创建一个 `plr.cfg` 文件。
+- 在打印机配置页面中，找到`plr.cfg` 文件。
+- 将里面内容请空，然后将下方配置粘贴进去
 - 配置文件内容如下：
 
     ```cfg
@@ -22,8 +56,7 @@ sidebar_position: 9
     serial: /tmp/klipper_host_mcu
     
     [power_loss_resume]
-    # power_pin: PA0 # 安全关机模块的关机引脚，接在下位机的PA0引脚
-    power_pin: host:gpiochip1/gpio20 # 安全关机模块的关机引脚，接在上位机的PA21引脚
+    power_pin: host:gpiochip0/gpio260 # 安全关机模块的关机引脚，接在上位机的PA21引脚
     is_shutdown: True # 是否执行关机操作, 默认为启用
     paused_recover_z: -2.0 # 如果停机时为暂停打印，续打时Z移动距离, 默认为不移动
     start_gcode:
