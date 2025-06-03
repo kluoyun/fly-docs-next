@@ -6,18 +6,61 @@ sidebar_label: 屏幕接线与配置
 
 # 屏幕接线与配置
 
-## C5 屏幕接线与配置
-tft屏幕接线与配置
-:::tip
-- 连接屏幕时请先关闭电源，避免损坏屏幕。
-- 屏幕接线时请注意fpc线方向，避免损坏屏幕。
-:::
+## 配置方法
 
-<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/screen.webp').default} size="80%" align="left" />
 
-- 通过ip地址访问设备,例如：`http://192.168.1.1`
+- 通过浏览器中的网址栏输入设备的IP地址,例如：`http://192.168.6.179`
 - 进入配置页面
-<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/screen1.webp').default} size="80%" align="left" />
-<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/screen2.webp').default} size="80%" align="left" />
-- 打开配置文件`sys-config.conf`
-<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/screen3.webp').default} size="80%" align="left" />
+    - 在浏览器打开设备ip地址，例如：`http://192.168.1.2/`
+    - fluidd按下图左所示 `取消勾选` -> `筛选隐藏的文件和文件夹`。
+    - mainsail按下图右所示 `勾选` -> `显示隐藏文件`。
+    
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - 此时可以看到`.flyos-config`文件夹，进入这个文件夹会有`sys-config.conf`文件。
+    - `sys-config.conf`文件就是可移动磁盘`FlyOS-Conf`中的配置文件`config.txt`的软链接。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - 打开`sys-config.conf`文件，找到`screen=`修改屏幕类型
+    - 将序号❶`klipper_screen`后面的`0`改成`1`打开`klipper_screen`服务
+    - 将序号❷`screen`后面的配置项修改成需要的使用的屏幕后 `保存` -> `关闭` 然后重启即可
+    <ImageView image={require('@site/docs/General/flyos-fast/img/screen.webp').default} size="90%" align="center" />
+
+    - 注意：`sys-config.conf`文件中配置项的格式为`key=value`，不要修改为`key: value`。
+    - 修改保存后，重启系统即可生效。
+
+## C5 屏幕接线
+
+    :::danger 须知
+    - 连接屏幕时请先关闭电源，避免损坏屏幕。
+    - 屏幕接线时请注意fpc线方向，避免损坏屏幕。
+    :::
+<Tabs>
+    <TabItem value="tftc" label="TFT屏接线" default>
+        tft屏幕接线与配置
+        :::tip
+        - 电阻屏需要将拨码拨到`Resi`
+        - 电容屏需要将拨码拨到`Cap`
+        :::
+
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/tft.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi" label="HDMI FPC一线通接线">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi_fpc.webp').default} size="80%" align="left" />
+    </TabItem>
+
+    <TabItem value="hdmi1" label="HDMI 普通接线">
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/hdmi.webp').default} size="80%" align="left" />
+    </TabItem>
+</Tabs>
