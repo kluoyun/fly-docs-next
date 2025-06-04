@@ -1,81 +1,109 @@
-## Search for CAN ID
+## Search CAN ID
+1. Open the browser and enter the IP address of the host machine in the address bar, for example, if my host machine's IP is `192.168.101.179`, just type it directly and press Enter.
+   <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-:::warning
-* The default CAN speed in the FLYOS-FAST system is 1M.
-* Please ensure that the CAN network of the upper computer, the CAN speed of the bridge mainboard, and the CAN speed of the CAN tool board are completely consistent.
-:::
+2. Open the host machine's WEB interface, and find in the left sidebar configuration options:
+   <table>
+     <tr>
+       <td>
+         - For fluidd: `{…}`, click to enter, you can find `printer.cfg`
+         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+       </td>
+       <td>
+         - For mainsail: `Machine`, click to enter, you can find `printer.cfg`
+         <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+       </td>
+     </tr>
+   </table>
 
-    1. In SSH, input `lsusb`, press the `Enter` key. If the following figure appears with `1d50:606f`, you can proceed to the next step.
-    <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="center" />
-    2. Among them, `1d50:606f` is the device you will use this time.
-    3. If multiple CAN bridge mainboards or multiple UTOC devices have been connected, multiple `1d50:606f` devices may appear. You need to eliminate until only one remains.
-    4. If there is no `1d50:606f`, please check whether the DIP switch mode of the mainboard is correct, try to recompile and burn the USB CAN bridge firmware, or try to power the mainboard with 24V.
+   3. Click `printer.cfg` after entering, then click `DEVICES` on the top right
+     <table>
+       <tr>
+         <td>
+           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_devices.webp').default} size="100%" align="center" />
+         </td>
+         <td>
+           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_devices.webp').default} size="100%" align="center" />
+         </td>
+       </tr>
+     </table>
 
-    :::warning Notice
-    - You must query the `1d50:606f` device before proceeding to the next step.
-    - And there can only be one `1d50:606f` device.
-    :::
+   4. Click `CAN`, then refresh
+     <table>
+       <tr>
+         <td>
+           - Refresh for fluidd
+           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_can.webp').default} size="100%" align="center" />
+         </td>
+         <td>
+           - Refresh for mainsail
+           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_can.webp').default} size="100%" align="center" />
+         </td>
+       </tr>
+     </table>
 
-    5. Enter the following command to search for the ID:
-    ```bash
-    python ~/klipper/scripts/canbus_query.py can0
-    ```
-        * If a UUID appears and the `Application:` shows `Klipper`, then this ID can be used directly.
-        * If a UUID appears and the `Application:` shows `CANBOOT` or `Katapult`, then it needs to flash the USB CAN bridge firmware to use it.
-        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="80%" align="center" />
-
-    :::warning Notice
-    - Only when a `UUID` appears and the `Application:` shows `Klipper` can you proceed to the next step.
-    :::
-
-    :::danger Note
-    * If the CAN ID cannot be found, see: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN Problem Collection</Button>.
-    :::
----
+   5. Copy the ID, click the arrow to copy
+     <table>
+       <tr>
+         <td>
+           - In fluidd, make sure the first arrow points to `Klipper`, if so, click the right arrow to copy
+           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_canid.webp').default} size="100%" align="center" />
+         </td>
+         <td>
+           - In mainsail, make sure the first arrow points to `Klipper`, if so, click the right arrow to copy
+           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_canid.webp').default} size="100%" align="center" />
+         </td>
+       </tr>
+     </table>
 
 ## Fill in CAN ID
 
-    1. Open the web interface of the upper computer, find the configuration option in the left sidebar:
+    1. Close `DEVICES` and fill in the ID
+    :::danger Notice
+
+    * The # before the first red box needs to be deleted, please note that this includes spaces, then change `serial:` to `canbus_uuid:`
+    * FLY system default configuration may contain `[MCU]`, but if the ID below is `serial: /tmp/klipper_host_mcu`, rename `[MCU]` to `[mcu HOST]`, or delete these two lines
+    * You can copy the following `canbus_uuid:`
+    :::
+
+    ```cfg
+    [mcu]
+    canbus_uuid:
+    ```
 
     <table>
       <tr>
         <td>
-          - For fluidd: `{…}`, click to enter and find `printer.cfg`.
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+          - Find [MCU] in fluidd
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - For mainsail: `Machine`, click to enter and find `printer.cfg`.
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+          - Find [MCU] in mainsail
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
-    2. Copy the queried `UUID` and fill it into the `canbus_uuid:` under the `[mcu]` option in the `printer.cfg` file. After saving and restarting, you can connect to the mainboard.
 
-    :::danger
-    * The following figure is an example of a situation where **one mainboard with a USB CAN bridge firmware** is connected to a **CAN tool board**!
-    * The UUIDs below are for reference only! Please strictly follow the format shown in the figure to fill in the `UUID`.
-    * The format of the mainboard's CAN UUID is as follows:
-     ```
-    [mcu]  
-    canbus_uuid: ********
-    ```
+    2. Fill in the ID in the configuration
+    :::tip
 
-    * The format of the tool board's CAN UUID is as follows:  
-    ```
-    [mcu Tool Board Name]  
-    canbus_uuid: ********
-    ```    
+    * After filling in the ID, click `SAVE & RESTART` on the top right
     :::
 
-        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="center" />
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_can_save.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_can_save.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    3. If Klipper prompts `ADC out of range`, this is a normal phenomenon. Connect the heated bed and thermistor to the motherboard, configure the thermistor pins for the nozzle and heated bed, then save and restart.
 
-
-    3. If Klipper prompts `ADC out of range`, this is normal. Connect the hotbed and thermistor to the mainboard, configure the thermistor pins of the nozzle and hotbed, save and restart.
-    
-
-        :::danger
-
-        Note: All IDs mentioned in the document are examples. Each mainboard's ID is different. Please modify and fill in according to the actual obtained ID.
-
-        :::
+:::danger
+Notice: All IDs mentioned in the document are examples, and each motherboard's ID is different. Please fill in the actual obtained ID.
+:::
+---

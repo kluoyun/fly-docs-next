@@ -2,58 +2,91 @@
 sidebar_position: 9
 ---
 
-# Klipper電源喪失復旧機能
+# Klipper電源喪失再開機能
 
 ## 概要
 
-- Klipperの電源喪失復旧機能とは、Klipperが電源を喪失した後、再度電源が投入された際に、Klipperの印刷状態を自動的に復旧する機能です。
-- この機能は、安全シャットダウンモジュールとの連携が必要です。
+- Klipperの電源喪失再開機能は、Klipperが電源を切った後、再度電源を入れると自動的にKlipperの印刷状態を復元できる機能です。
+- この機能にはセーフティシャットダウンモジュールとの連携が必要です。
 - 停電時にZ軸が移動する機種には適用されません。
 
 ## 設定
 
+### 電源喪失シャットダウンの無効化
+    :::danger 注意
+    - 電源喪失シャットダウンを無効にしないと、この機能を使用できません。
+    - 電源喪失再開機能には保存後に自動でシャットダウンする機能があります。
+    :::
+
+- デバイスのIPアドレスをブラウザのURLバーに入力してアクセスします。例: `http://192.168.6.179`
+- 設定ページにアクセスします
+    - デバイスのIPアドレス (`http://192.168.1.2/`) をブラウザで開きます。
+    - Fluiddでは下図左のように「チェックを外す」 -> 「隠しファイルをフィルタリング」。
+    - Mainsailでは下図右のように「チェックをつける」 -> 「隠しファイルを表示」。
+
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - これにより `.flyos-config` フォルダが見えます。このフォルダ内には `sys-config.conf` ファイルがあります。
+    - `sys-config.conf` ファイルは、可搬可能なディスク `FlyOS-Conf` の設定ファイル `config.txt` のシンボリックリンクです。
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - `sys-config.conf` ファイルを開き、`shutdown_pin_state` と `shutdown_pin=` という設定を探します。
+    - これらの設定の前に # を追加します。
+    - その後 `保存` -> `閉じる` して再起動してください。
+    <ImageView image={require('@site/docs/General/flyos-fast/img/kppm.webp').default} size="90%" align="center" />
+
 ### plr.cfg 設定ファイル
 
-- プリンターの設定ページで、新しい設定ファイルを作成し、`plr.cfg` という名前をつけます。
-- 設定ファイルの内容は以下の通りです：
+- プリンターの設定ページで `plr.cfg` ファイルを見つけます。
+- ファイルの中身をクリアにして、以下の内容を貼り付けます。
+- 設定ファイルの内容は次の通りです：
 
     ```cfg
     [mcu host]   
     serial: /tmp/klipper_host_mcu
     
     [power_loss_resume]
-    # power_pin: PA0 # セーフティーシャットダウンモジュールの電源ピン、下位機のPA0ピンに接続
-    power_pin: host:gpiochip1/gpio20 # セーフティーシャットダウンモジュールの電源ピン、上位機のPA21ピンに接続
-    is_shutdown: True # シャットダウン操作を行うかどうか、デフォルトでは有効
-    paused_recover_z: -2.0 # 停止時に一時停止中であった場合の、復旧時のZ軸移動距離、デフォルトでは移動しない
+    power_pin: !host:gpiochip0/gpio260 # セーフティシャットダウンモジュールのシャットダウンピンは、ホストPCのPA21ピンに接続されています
+    is_shutdown: True # シャットダウン操作を実行するかどうか、デフォルトは有効
+    paused_recover_z: -2.0 # 停止中に一時停止した場合の再開時のZ軸移動距離、デフォルトは移動しない
     start_gcode:
-        # 続け打ち開始前に実行されるGコード
-        # 停電前に保存されたすべてのパラメータは {PLR} で取得可能
-        # M118 {PLR} で利用可能なすべてのパラメータを出力できます
-        M118 再開印刷: {PLR.print_stats.filename}
-        M118 停止位置: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
-        M140 S{PLR.bed.target}      ; ベッド温度の設定
+        # 再開前のGコードの実行
+        # 停電前に保存されたすべてのパラメータは{PLR}で取得できます
+        # M118 {PLR}ですべての利用可能なパラメータを出力できます
+        M118 再開: {PLR.print_stats.filename}
+        M118 中断位置: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; 熱ベッド温度の設定
         M104 S{PLR.extruder.target-10}  ; エクストルーダー温度の設定
-        M109 S{PLR.extruder.target-10}  ; エクストルーダーが設定温度になるまで待機
+        M109 S{PLR.extruder.target-10}  ; エクストルーダー温度が設定温度に達するまで待ちます
         G91                             ; 相対座標
-        G1 Z2 F100                      ; Z軸を上げてX,Y軸ゼロに戻る準備
+        G1 Z2 F100                      ; Z軸を上げてX,Y軸をリセット準備
         G90                             ; 絶対座標
-        G28 X Y                         ; X,Y軸をゼロに戻す
-        M140 S{PLR.bed.target}          ; ベッド温度の再設定
-        M104 S{PLR.extruder.target}     ; エクストルーダー温度の再設定
-        M190 S{PLR.bed.target}          ; ベッドが設定温度になるまで待機
-        M109 S{PLR.extruder.target}     ; エクストルーダーが設定温度になるまで待機
-        M83                             ; 相対エクストルージョン
-        # G1 E0.5 F400                  ; 少量押し出し
-    layer_count: 2 # 指定した層数分だけ続打後に layer_change_gcode を実行
+        G28 X Y                         ; X,Y軸をリセット
+        M140 S{PLR.bed.target}          ; 熱ベッド温度の設定
+        M104 S{PLR.extruder.target}     ; エクストルーダー温度の設定
+        M190 S{PLR.bed.target}          ; 熱ベッドが設定温度に達するまで待ちます
+        M109 S{PLR.extruder.target}     ; エクストルーダーが設定温度に達するまで待ちます
+        M83                             ; 相対エクストルード
+        # G1 E0.5 F400                  ; 少量の押し出し
+    layer_count: 2 # 指定した層数分の再開後にlayer_change_gcodeを実行
     layer_change_gcode:                
-        # {layer_count} 層続打後に実行されるGコード
-        M118 印刷速度復帰
-        M106 S{PLR.fan_speed}             ; ブロワーファンを起動
-        M220 S{PLR.move_speed_percent}    ; 要求速度パーセンテージを設定
-        M221 S{PLR.extrude_speed_percent} ; 要求押し出し速度パーセンテージを設定
+        # {layer_count}層分の再開後に実行されるGコード
+        M118 再開印刷速度
+        M106 S{PLR.fan_speed}             ; ブロワーファンをオン
+        M220 S{PLR.move_speed_percent}    ; 要求速度のパーセントを設定
+        M221 S{PLR.extrude_speed_percent} ; 要求エクストルード速度のパーセントを設定
     shutdown_gcode:
-        # 電源投入前の実行されるGコード
+        # シャットダウン前のGコード
         M118 電圧低下、シャットダウン
         # M112 ; 緊急停止
 
@@ -61,12 +94,12 @@ sidebar_position: 9
 
     :::warning 注意
 
-    - 上記設定ファイル内の `start_gcode` マクロは、機器の実際の状況に応じて修正が必要です。
+    - 上記の設定ファイル内の `start_gcode` マクロは、機器の実際の状況に応じて修正する必要があります。
 
     :::
 
-- 上記設定ファイルを保存した後、
-- `printer.cfg` ファイルを開き、ファイルの一番上に以下を追加します：
+- 上記の設定ファイルを保存した後
+- `printer.cfg` ファイルを開き、ファイルの一番最初に以下の内容を追加します：
 
     ```cfg
 
@@ -74,12 +107,14 @@ sidebar_position: 9
 
     ```
 
-- 右上の「保存」ボタンをクリックして再起動してください。
-- これでKlipperの電源喪失復旧機能の設定が完了しました。
+- 右上の「保存」をクリックして再起動します。
+- これでKlipperの電源喪失再開機能の設定は完了です。
 
 ## テスト
 
-- 任意のファイルを印刷中に、「緊急停止」ボタンをクリックして電源喪失をシミュレーションします。
-- 「ファームウェア再起動」をクリックし、Klipperが正常に接続されるのを待ちます。
-- ウェブページやKlipperScreenにポップアップが表示された場合、電源喪失復旧機能が正常に動作しています。
-- 後続のテストとして本格的な停電状況も確認できます。
+- 任意のファイルを印刷中に「緊急停止」ボタンをクリックして電源喪失をシミュレートします。
+- 次に「ファームウェア再起動」をクリックして、Klipperが正常に接続されるのを待ちます。
+- ページまたはKlipperScreenでポップアップが表示された場合、電源喪失再開機能が正常に動作しています。
+- 後ほど本物の停電状況でもテストできます。
+
+---

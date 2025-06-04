@@ -2,66 +2,99 @@
 sidebar_position: 9
 ---
 
-# Fonction de reprise d'impression après coupure de courant Klipper
+# Fonction de reprise d'impression après coupure de courant avec Klipper
 
-## Présentation
+## Aperçu
 
-- La fonction de reprise d'impression après coupure de courant Klipper permet à Klipper de restaurer automatiquement l'état d'impression après une coupure de courant et un redémarrage.
+- La fonction de reprise d'impression après coupure de courant avec Klipper permet à Klipper de restaurer automatiquement l'état d'impression après une coupure de courant et une nouvelle mise sous tension.
 - Cette fonction doit être utilisée en conjonction avec le module de mise hors tension sécurisée.
-- Non applicable aux modèles où l'axe Z se déplace après une coupure de courant.
+- Non compatible avec les modèles où l'axe Z se déplace après une coupure de courant.
 
 ## Configuration
 
+### Désactiver la mise hors tension automatique
+
+    :::danger À noter
+    - Il est nécessaire de désactiver la mise hors tension automatique, sinon la fonction de reprise d'impression après coupure de courant ne fonctionnera pas.
+    - La fonction de reprise d'impression après coupure de courant comporte une fonction d'arrêt automatique après sauvegarde de l'état.
+    :::
+
+- Entrez l'adresse IP du périphérique dans la barre d'URL du navigateur, par exemple : `http://192.168.6.179`
+- Accédez à la page de configuration
+    - Ouvrez l'adresse IP du périphérique dans le navigateur, par exemple : `http://192.168.1.2/`
+    - Dans fluidd, décochez comme indiqué à gauche dans l'image ci-dessous -> `Filtrer et masquer les fichiers et dossiers cachés`.
+    - Dans mainsail, cochez comme indiqué à droite dans l'image ci-dessous -> `Afficher les fichiers cachés`.
+
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config2.webp').default} size="85%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    - Vous verrez alors le dossier `.flyos-config`, entrez dans ce dossier pour trouver le fichier `sys-config.conf`.
+    - Le fichier `sys-config.conf` est un lien symbolique vers le fichier de configuration `config.txt` du disque amovible `FlyOS-Conf`.
+
+    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
+
+    - Ouvrez le fichier `sys-config.conf`, recherchez les configurations `shutdown_pin_state` et `shutdown_pin=`.
+    - Ajoutez un # devant ces configurations.
+    - Ensuite, cliquez sur `Enregistrer` -> `Fermer`, puis redémarrez le système.
+    <ImageView image={require('@site/docs/General/flyos-fast/img/kppm.webp').default} size="90%" align="center" />
+
 ### Fichier de configuration plr.cfg
 
-- Dans la page de configuration de l'imprimante, cliquez sur « Nouveau fichier de configuration » pour créer un fichier nommé `plr.cfg`.
-- Le contenu du fichier de configuration est le suivant :
+- Dans la page de configuration de l'imprimante, trouvez le fichier `plr.cfg`.
+- Effacez tout son contenu, puis collez le contenu suivant :
 
     ```cfg
     [mcu host]   
     serial: /tmp/klipper_host_mcu
     
     [power_loss_resume]
-    # power_pin: PA0 # Broche de mise hors tension du module de mise hors tension connectée au port PA0 du microcontrôleur inférieur
-    power_pin: host:gpiochip1/gpio20 # Broche de mise hors tension du module de mise hors tension connectée au port PA21 du microcontrôleur supérieur
-    is_shutdown: True # Exécuter ou non une opération de mise hors tension, par défaut activé
-    paused_recover_z: -2.0 # Si l'impression est en pause lors de l'arrêt, distance de déplacement Z pendant la reprise, par défaut sans déplacement
+    power_pin: !host:gpiochip0/gpio260 # Pin d'arrêt du module de mise hors tension, connecté au port PA21 de la station de travail
+    is_shutdown: True # Exécuter l'arrêt du système, paramètre par défaut activé
+    paused_recover_z: -2.0 # Si l'impression est en pause lors de l'arrêt, distance de mouvement Z pendant la reprise, par défaut sans mouvement
     start_gcode:
-        # G-code exécuté avant la reprise
-        # Tous les paramètres sauvegardés avant la coupure peuvent être récupérés via {PLR}
-        # Les paramètres disponibles peuvent être affichés via M118 {PLR}
-        M118 Début de la reprise : {PLR.print_stats.filename}
-        M118 Position d'interruption : X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
-        M140 S{PLR.bed.target}      ; Réglage de la température de la plaque chauffante
-        M104 S{PLR.extruder.target-10}  ; Réglage de la température de l'extrudeur
-        M109 S{PLR.extruder.target-10}  ; Attente que l'extrudeur atteigne la température définie
+        # G-code à exécuter avant la reprise
+        # Tous les paramètres enregistrés avant la coupure peuvent être récupérés via {PLR}
+        # Utilisez M118 {PLR} pour afficher tous les paramètres disponibles
+        M118 Début de la reprise: {PLR.print_stats.filename}
+        M118 Position d'interruption: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; Définir la température de la plaque chauffante
+        M104 S{PLR.extruder.target-10}  ; Définir la température de l'extrudeur
+        M109 S{PLR.extruder.target-10}  ; Attendre que l'extrudeur atteigne la température cible
         G91                             ; Coordonnées relatives
-        G1 Z2 F100                      ; Augmentation de Z pour préparer le retour à zéro X,Y
+        G1 Z2 F100                      ; Lever Z, préparer le retour à zéro X,Y
         G90                             ; Coordonnées absolues
-        G28 X Y                         ; Retour à zéro XY
-        M140 S{PLR.bed.target}          ; Réglage de la température de la plaque chauffante
-        M104 S{PLR.extruder.target}     ; Réglage de la température de l'extrudeur
-        M190 S{PLR.bed.target}          ; Attente que la plaque chauffante atteigne la température définie
-        M109 S{PLR.extruder.target}     ; Attente que l'extrudeur atteigne la température définie
-        M83                             ; Mode d'extrusion relatif
-        # G1 E0.5 F400                  ; Extrusion d'un peu de filament
-    layer_count: 2 # Nombre de couches à imprimer avant l'exécution de layer_change_gcode
+        G28 X Y                         ; Réinitialiser X et Y
+        M140 S{PLR.bed.target}          ; Définir la température de la plaque chauffante
+        M104 S{PLR.extruder.target}     ; Définir la température de l'extrudeur
+        M190 S{PLR.bed.target}          ; Attendre que la plaque chauffante atteigne la température cible
+        M109 S{PLR.extruder.target}     ; Attendre que l'extrudeur atteigne la température cible
+        M83                             ; Mode d'extraction relative
+        # G1 E0.5 F400                  ; Extrusion légère
+    layer_count: 2 # Nombre de couches à imprimer avant d'exécuter layer_change_gcode
     layer_change_gcode:                
         # G-code à exécuter après avoir imprimé {layer_count} couches
-        M118 Reprise de la vitesse d'impression
-        M106 S{PLR.fan_speed}             ; Activation du ventilateur d'extrusion
-        M220 S{PLR.move_speed_percent}    ; Réglage du pourcentage de vitesse demandée
-        M221 S{PLR.extrude_speed_percent} ; Réglage du pourcentage de vitesse d'extrusion demandée
+        M118 Rétablissement de la vitesse d'impression
+        M106 S{PLR.fan_speed}             ; Activer le ventilateur de refroidissement
+        M220 S{PLR.move_speed_percent}    ; Définir le pourcentage de vitesse demandée
+        M221 S{PLR.extrude_speed_percent} ; Définir le pourcentage de vitesse d'extrusion demandé
     shutdown_gcode:
-        # G-code exécuté avant la mise hors tension
-        M118 Tension basse, mise hors tension
+        # G-code à exécuter avant l'arrêt du système
+        M118 Tension faible, arrêt du système
         # M112 ; Arrêt d'urgence
 
     ```
 
-    :::warning Note
+    :::warning Attention
 
-    - Le macro `start_gcode` ci-dessus peut nécessiter des ajustements selon les spécificités de votre machine.
+    - Le fichier de configuration `start_gcode` ci-dessus peut nécessiter des modifications, en fonction des spécificités de votre machine.
 
     :::
 
@@ -74,12 +107,12 @@ sidebar_position: 9
 
     ```
 
-- Cliquez sur le bouton en haut à droite pour enregistrer et redémarrez le système.
-- À ce stade, la fonction de reprise d'impression après coupure de courant Klipper est configurée.
+- Cliquez sur le bouton de sauvegarde en haut à droite, puis redémarrez le système.
+- La fonction de reprise d'impression après coupure de courant avec Klipper est maintenant configurée.
 
 ## Test
 
-- Imprimez un fichier quelconque, et pendant l'impression, cliquez sur le bouton « Arrêt d'urgence » pour simuler une coupure de courant.
-- Cliquez à nouveau sur « Redémarrage du firmware », attendez que Klipper se reconnecte normalement.
-- Si une fenêtre de message apparaît sur le site web ou dans KlipperScreen, cela signifie que la fonction de reprise après coupure fonctionne correctement.
+- Lancez l'impression d'un fichier quelconque, et pendant l'impression, appuyez sur le bouton d'arrêt d'urgence pour simuler une coupure de courant.
+- Appuyez ensuite sur le bouton de redémarrage du firmware, attendez que Klipper se reconnecte normalement.
+- Si une fenêtre de notification apparaît sur la page web ou dans KlipperScreen, cela signifie que la fonction de reprise d'impression après coupure de courant fonctionne correctement.
 - Vous pouvez ensuite tester une situation réelle de coupure de courant.
