@@ -37,6 +37,21 @@ ALPS 压力模块是一款基于 ADS131M02 设计的压力传感解决方案，�
 ### 示例配置文件
 以下是推荐的配置文件内容，请根据实际需求进行调整：
 
+:::tip
+
+- 如果需要将ALPS 压力模块当Z限位可以参考下方配置
+
+:::
+```cfg
+[stepper_z]
+endstop_pin: probe:z_virtual_endstop
+# position_endstop: -0.5  
+```
+:::tip
+
+- ALPS 压力模块参考配置
+
+:::
 
 ```cfg
 [homing_override]
@@ -60,10 +75,7 @@ gcode:
        {% endif %}
 
        {% if home_all or 'Z' in params %}
-       # 如果同时使用eddy加压力传感器取消下面注释
-            #SET_PIN PIN=_probe_ready VALUE=1 
             G28 Z 
-            #SET_PIN PIN=_probe_ready VALUE=0
             G1 Z10 F3000           
         {% endif %}
 
