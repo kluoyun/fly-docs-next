@@ -1,80 +1,109 @@
 ## Поиск CAN ID
+1. Откройте браузер и в адресной строке введите IP-адрес верхнего уровня, например, мой IP верхнего уровня — `192.168.101.179`. Просто введите его и нажмите Enter.
+  <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-:::предупреждение
-* Система FLYOS-FAST по умолчанию имеет скорость CAN 1М
-* Убедитесь, что скорость сети CAN на верхнем уровне, мостовая плата CAN и скорость CAN на инструментальной плате полностью совпадают
-:::
+2. Откройте веб-интерфейс верхнего уровня, найдите в левом боковом меню конфигурационный раздел:
+  <table>
+    <tr>
+      <td>
+        - Для fluidd: `{…}`, нажмите, чтобы найти файл `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - Для mainsail: `Машина`, нажмите, чтобы найти файл `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-    1. В SSH введите команду `lsusb`, нажмите клавишу `Enter`. Если появится изображение `1d50:606f`, можно переходить к следующему шагу.
-    <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="center" />
-    2. Где `1d50:606f` является устройством, которое вы будете использовать.
-    3. Если подключено несколько мостовых плат с прошивкой USB Bridge CAN или нескольких UTOC и т. д., то могут появиться несколько устройств `1d50:606f`, необходимо исключить до одного устройства.
-    4. Если нет `1d50:606f`, проверьте правильность режима переключателя на материнской плате, попробуйте повторно скомпилировать и записать прошивку USB Bridge CAN, попробуйте подключить 24В питание к материнской плате.
-
-    :::предупреждение Внимание
-    - Должен быть найден `1d50:606f` перед выполнением следующего действия
-    - И должно быть только одно устройство `1d50:606f`
-    :::
-
-    5. Введите следующую команду для поиска ID:
-    ```bash
-    python ~/klipper/scripts/canbus_query.py can0
-    ```
-        * Если появляется UUID, после `Application:` показывает `Klipper`, то этот ID можно использовать напрямую
-        * Если появляется UUID, после `Application:` показывает `CANBOOT` или `Katapult`, то для использования необходима прошивка USB Bridge CAN
-        <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="80%" align="center" />
-
-    :::предупреждение Внимание
-    - Только при появлении `UUID` и после `Application:` показывает `Klipper` можно переходить к следующему шагу
-    :::
-
-    :::опасность Важно
-    * Если не удается найти CAN ID, см. :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">Сборник проблем CAN</Button>
-    :::
----
-
-## Заполнение CAN ID
-
-    1. Откройте веб-интерфейс верхнего уровня, найдите в боковом меню конфигурационные опции:
-
+  3. Нажмите на `printer.cfg`, затем нажмите на кнопку `DEVICES` в правом верхнем углу
     <table>
       <tr>
         <td>
-          - Для fluidd: `{…}`, нажмите, чтобы найти `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_devices.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - Для mainsail: `Машина`, нажмите, чтобы найти `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_devices.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
-    2. Скопируйте найденный `UUID` и в файле `printer.cfg` найдите опцию `[mcu]`, затем внизу добавьте `canbus_uuid: ` с найденным `UUID`, сохраните и перезагрузите систему для подключения к материнской плате.
+  4. Нажмите на `CAN` и обновите страницу
+    <table>
+      <tr>
+        <td>
+          - Обновление для fluidd
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_can.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - Обновление для mainsail
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_can.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
-    :::опасность
-    * Пример ниже показывает ситуацию с **одной материнской платой с прошивкой USB Bridge CAN** и **одной CAN инструментальной платой**, подключенными вместе!!
-    * Настройки UUID приведены только в ознакомительных целях!! Пожалуйста, строго следуйте указанному формату при заполнении UUID
-    * Формат UUID материнской платы CAN:
-     ```
-    [mcu]  
-    canbus_uuid: ********
-    ```
+  5. Скопируйте ID, щелкните указанными стрелками для копирования
+    <table>
+      <tr>
+        <td>
+          - В fluidd убедитесь, что первый указатель направлен на `Klipper`, если да, то нажмите на правую стрелку для копирования
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_canid.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - В mainsail убедитесь, что первый указатель направлен на `Klipper`, если да, то нажмите на правую стрелку для копирования
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_canid.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
-    * Формат UUID инструментальной платы CAN:  
-    ```
-    [mcu имя_инструментальной_платы]  
-    canbus_uuid: ********
-    ```    
+## Заполнение CAN ID
+
+    1. Закройте раздел `DEVICES` и заполните ID
+    :::danger Важно
+
+    * Перед # в первом красном прямоугольнике необходимо удалить пробелы, а также изменить `serial:` на `canbus_uuid:`
+    * В стандартной конфигурации FLY может присутствовать `[MCU]`, но если ID ниже является `serial: /tmp/klipper_host_mcu`, нужно переименовать `[MCU]` в `[mcu HOST]` или удалить эти две строки
+    * Для копирования можно использовать следующий образец `canbus_uuid:`
     :::
 
-        <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="center" />
+    ```cfg
+    [mcu]
+    canbus_uuid:
+    ```
+
+    <table>
+      <tr>
+        <td>
+          - В fluidd найдите [MCU]
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - В mainsail найдите [MCU]
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
 
-    3. Если Klipper выводит сообщение `ADC out of range`, это нормальное явление. Подключите горячий стол и термистор к материнской плате и настройте пины термистора для головки и горячего стола, затем сохраните и перезагрузите систему.
+    2. Впишите ID в конфигурацию
+    :::tip
 
-        :::опасность
+    * После ввода ID нажмите `SAVE & RESTART` в правом верхнем углу
+    :::
 
-        Важно: Все ID, указанные в документации, являются примерами. На самом деле каждый ID материнской платы уникален. Пожалуйста, измените и заполните согласно фактически полученному ID.
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_can_save.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_can_save.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    3. Если Klipper выдает сообщение `ADC out of range`, это нормально. Подключите нагревательный стол и термодатчик к материнской плате и настройте выводные пины для сопла и нагревательного стола, затем сохраните и перезагрузите систему.
 
-        :::
+:::danger
+Внимание: Все ID, указанные в документе, являются примерами. У каждого материнского компонента ID уникален. Пожалуйста, используйте фактические полученные ID.
+:::
+---
