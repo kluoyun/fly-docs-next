@@ -1,0 +1,40 @@
+---
+sidebar_position: 10
+sidebar_label: CAN 브리지
+---
+
+import GetCanbusUUID from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/get-id/_get-canid-flyosfast.mdx';
+
+
+# CAN 브리지
+
+CAN 버스는 실시간 응용 프로그램을 위한 시리얼 통신 프로토콜 버스로, 신호를 전송하기 위해 두 개의 트위스트드 페어를 사용할 수 있으며, 세계적으로 가장 널리 사용되는 필드 버스 중 하나입니다. CAN 프로토콜은 자동차 내 다양한 구성 요소 간의 통신에 사용되어 비싸고 무거운 배선 하네스를 대체합니다. 이 프로토콜의 강력한 견고성으로 인해 기타 자동화 및 산업 응용 분야에도 사용됩니다. CAN 프로토콜의 특징에는 전체적인 시리얼 데이터 통신, 실시간 지원, 최대 1Mbps의 전송 속도, 11비트 주소 지정 및 오류 검출 기능이 포함됩니다.
+3D 프린터에서는 CAN 버스를 사용하여 프린팅 헤드가 메인보드에 연결되는 케이블의 수를 줄입니다. 원래 십여 개의 케이블이 필요했지만, CAN을 사용하면 단순히 네 개의 케이블만 사용하면 되므로 케이블 수를 크게 줄이고 배선 난이도를 낮춥니다.
+이 장에서는 CAN 브리지를 사용하는 방법을 간단히 설명합니다.
+
+
+
+## 중요한 주의사항
+
+    :::danger 주의
+
+    * FLY 시스템의 CAN 속도는 기본적으로 `1M`이며, 도구 보드와 메인보드도 `1M` 속도의 펌웨어를 작성하는 것이 권장됩니다.
+    * FLY 도구 보드는 기본적으로 `Katapult` 펌웨어가 설치되어 있으며, CAN 속도는 `1M`입니다.
+    * 도구 보드가 `Katapult` 펌웨어 아래 있을 경우 메인보드에서 LED가 깜빡이는 현상이 발생할 수 있습니다. 이는 `KLIPPER` 펌웨어를 작성해야 정상적으로 연결할 수 있음을 나타냅니다.
+    * CANH와 CANL의 저항 값을 측정하기 위해 전원을 차단한 상태에서 만 ohm 근처인지 확인하십시오.
+
+    :::
+
+## 메인보드 펌웨어 작성
+
+    * C5 메인보드에 설치된 펌웨어가 반드시 `USB CAN 브리지 펌웨어 구성`이어야 합니다.
+    * 아래의 버튼은 CAN ID를 작성하고 검색하는 방법입니다.
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/can">USB CAN 브리지 펌웨어 구성</Button>
+
+
+## 도구보드를 사용하여 CAN 연결 메인보드
+
+    * 도구보드 모델이 너무 많아 여기서는 C5에서의 연결 방법만 설명합니다.
+    * 도구보드 전원선이 CAN 포트에 연결되는 것이 아니라 12V-24V 전원선에 연결된다는 점에 유의하십시오.
+    * `120Ω` 점퍼를 연결해야 한다는 점에 유의하십시오.
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/canbridge.webp').default} size="80%" align="center" />
