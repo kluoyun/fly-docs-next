@@ -7,26 +7,25 @@ import CONFIG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General
 # Installation du système d'exploitation
 
 ## Présentation du système
-FlyOS-Fast est un système d'exploitation Linux allégé, spécialement conçu pour l'impression 3D, et compatible avec toutes les plateformes de contrôle supérieures de la série Fly. Ses caractéristiques incluent :
+FlyOS-Fast est un système Linux allégé spécialement conçu pour l'impression 3D, prenant en charge la série complète des plateformes de contrôle Fly. Ses caractéristiques incluent :
 
-- Démarrage rapide, optimisation du noyau pour garantir la latence de Klipper
-- Optimisation du système de fichiers pour réduire les risques de démarrage impossible en cas de coupure de courant
+- Démarrage rapide avec un noyau optimisé pour garantir la réactivité de Klipper
+- Optimisation du système de fichiers pour réduire le risque d'impossibilité de démarrage en cas de coupure de courant
 - Démarrage de KlipperScreen en 30 secondes
-- Préinstallation des services Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen
-- Prise en charge de l'échange entre Klipper et RRF
-- Prise en charge de l'échange en ligne entre Mainsail et Fluidd
-- Prise en charge de l'impression via clé USB, impression reprise après coupure de courant, écran en port série
-- Prise en charge du flashage automatique de firmware au démarrage (fly-c8, fly-geminiv3)
-- Configuration anticipée possible pour les langues par défaut et le nom de l'imprimante dans Fluidd
+- Préinstallation des services Klipper, RRF, Mainsail, Fluidd, Moonraker et KlipperScreen
+- Prise en charge du basculement entre Klipper et RRF
+- Possibilité de basculer en ligne entre Mainsail et Fluidd
+- Prise en charge de l'impression via USB, reprise après coupure de courant et écran par port série
+- Prise en charge du flashage automatique des firmwares au démarrage (fly-c8, fly-geminiv3)
+- Configuration anticipée possible pour les langues par défaut et les noms d'imprimantes dans des interfaces comme Fluidd
 
-Pour plus de fonctionnalités personnalisées (comme le logo de démarrage, les fichiers de configuration prédéfinis, la suppression du menu Mainsail, etc.), contactez-nous.
+Pour des fonctionnalités supplémentaires de personnalisation OEM (comme le logo au démarrage, les fichiers de configuration prédéfinis ou la suppression des onglets Mainsail), contactez-nous.
 
-:::tip Remarque
-Ce système est un système personnalisé allégé. Les composants internes tels que Klipper ne sont pas les versions officielles et ne supportent pas les modifications ou mises à jour personnalisées par l'utilisateur.
+:::tip Remarque importante
+Ce système est un système personnalisé allégé ; les composants internes tels que klipper ne sont pas des versions officielles et ne supportent pas la modification ou la mise à jour par l'utilisateur.
 :::
 
-- Le compte système de FLYOS-FAST est `root`, le mot de passe est `mellow`
-
+- Le compte système de FLYOS-FAST est `root`, mot de passe : `mellow`
 
 ## Préparation avant l'installation du système
 
@@ -35,76 +34,75 @@ Ce système est un système personnalisé allégé. Les composants internes tels
 <Tabs>
     <TabItem value="usb" label="Si vous utilisez une carte SD pour démarrer le système, préparez les équipements suivants" default>
         - Un lecteur de cartes
-        - Une carte SD d'une capacité de 16 Go à 128 Go, avec une vitesse de classe 10 ou supérieure.
-        - Il est recommandé d'utiliser des cartes SD de marques renommées telles que Kingston, SanDisk, Samsung ou Kioxia. L'utilisation de cartes SD de mauvaise qualité est interdite !
+        - Une carte SD d'une capacité de 16 Go à 128 Go, avec une vitesse de classe 10 ou supérieure
+        - Il est recommandé d'utiliser des marques de qualité telles que SanDisk, Samsung ou Kioxia ; évitez les cartes SD de mauvaise qualité !
         - Un ordinateur sous Windows (Windows 7, Windows 10, Windows 11)
     </TabItem>
     <TabItem value="can" label="Si vous utilisez M2WE pour démarrer le système, préparez les équipements suivants">
-        - M2WE (périphérique dédié FLY)
-        - M2SD (périphérique de flashage FLY)
+        - M2WE (matériel dédié FLY)
+        - M2SD (matériel de flashage FLY)
         - Un ordinateur sous Windows (Windows 7, Windows 10, Windows 11)
         - Schéma d'installation
             <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="90%" align="center" />
     </TabItem>
 </Tabs>
 
-
-2. Télécharger l'image système FLY-{props.name} : <Button variant="contained" disableElevation component="a" rel="noopener" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">{props.name} image système</Button>
+2. Télécharger l'image système FLY-{props.name} : <Button variant="contained" disableElevation component="a" rel="noopener noreferrer" href="https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/packages">Image système {props.name}</Button>
     :::tip
-    - La règle de nommage des fichiers système : `FlyOS-Fast-[série-de-puce]-[numéro-de-version].img`, par exemple : **FlyOS-Fast-{props.name}-v1.0.0.img**
-    - Les systèmes Windows téléchargent le fichier `.exe`, qui est un fichier compressé 7z auto-extractible. Après le téléchargement, double-cliquez pour extraire et obtenez le fichier `.img` (seul le système Windows peut extraire ce fichier)
-    - Les autres systèmes comme MacOS ou Linux téléchargent le fichier `.7z`, qui est un fichier compressé 7z. Après le téléchargement, extrayez-le à l'aide d'un outil compatible avec le format 7z pour obtenir le fichier `.img`
-    - En raison de la taille importante des fichiers système, d'autres formats de compression et les sources d'images ne sont pas encore disponibles
-    - Ce tutoriel explique l'utilisation de l'exemple `.exe`
+    - La règle de nommage des fichiers systèmes : `FlyOS-Fast-[série de puce]-[numéro de version].img`, par exemple : **FlyOS-Fast-{props.name}-v1.0.0.img**
+    - Les systèmes Windows téléchargent des fichiers `.exe`, qui sont des archives auto-extractibles 7z. Une fois téléchargés, double-cliquez pour extraire et obtenir le fichier `.img` (seul le système Windows peut extraire ce type de fichier)
+    - Les autres systèmes comme MacOS et Linux téléchargent des fichiers `.7z`, qui sont des archives 7z. Une fois téléchargés, utilisez un outil compatible pour extraire et obtenir le fichier `.img`
+    - En raison de la taille importante des fichiers système, nous ne fournissons pas temporairement d'autres formats de compression ni les sources d'images
+    - Ce tutoriel se base sur le format `.exe` pour les explications
     :::
-    - Accédez à la bibliothèque de produits FlyOS-Fast, choisissez le format de compression, puis accédez à la page du fichier
+    - Accéder à la bibliothèque des produits FlyOS-Fast, choisir le format de compression, puis accéder à la page des fichiers
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl1.webp').default} size="90%" align="center" />
-    - Sélectionnez la version de l'image (par défaut la dernière)
+    - Choisir la version de l'image (par défaut la dernière)
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl2.webp').default} size="90%" align="center" />
-    - Cliquez sur `Liste des fichiers`, puis faites glisser le curseur vers la droite pour afficher le bouton de téléchargement
+    - Cliquez sur `Liste des fichiers`, puis faites glisser la barre de défilement vers la droite pour afficher le bouton de téléchargement
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl3.webp').default} size="90%" align="center" />
     - Cliquez sur le bouton de téléchargement pour télécharger l'image système
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/flyos-fast_dl4.webp').default} size="90%" align="center" />
 
 
-3. Décompressez le fichier image système pour obtenir le fichier `.img`.
-    - Double-cliquez ou ouvrez le fichier **FlyOS-Fast-{props.name}.exe**, attendez quelques secondes, une fenêtre s'affichera (si le système indique qu'il n'est pas sûr, choisissez « Plus d'informations » -> « Exécuter »)
-    - Vous pouvez choisir le répertoire de décompression, puis cliquez sur le bouton `Extraire`, attendez la fin du processus.
+3. Décompresser le fichier image système pour obtenir le fichier `.img`.
+    - Double-cliquez ou ouvrez le fichier **FlyOS-Fast-{props.name}.exe**, attendez quelques secondes, une fenêtre apparaîtra (si le système indique qu'il est non sécurisé, sélectionnez « Plus d'informations » -> « Exécuter »)
+    - Vous pouvez choisir le répertoire de décompression, puis cliquez sur le bouton `Extraire`, attendez que l'extraction soit terminée.
     
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
 
-    - Après la décompression, un fichier **FlyOS-Fast-{props.name}-vx.x.x.img** sera généré dans le répertoire de décompression. `x.x.x` est le numéro de version du système.
+    - Après l'extraction, un fichier **FlyOS-Fast-{props.name}-vx.x.x.img** sera généré dans le répertoire de décompression. `x.x.x` représente la version du système.
 
 
-4. Installez le périphérique à graver sur l'ordinateur
+4. Installer l'appareil à flasher sur l'ordinateur
 
 
-## Graver le système
+## Flashage du système
 
-1. Ouvrez Rufus, sélectionnez le périphérique, la capacité affichée doit correspondre à celle de la carte SD à graver insérée dans l'ordinateur.
+1. Ouvrir Rufus, choisir le périphérique, la capacité affichée doit correspondre à celle de la carte à flasher insérée dans l'ordinateur.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="30%" align="center" />
 
-2. Sélectionnez le type de guide, par défaut choisissez `image`.
-3. Sélectionner le fichier image, cliquez sur le bouton `Sélectionner` à droite de `type de guide`, sélectionnez le fichier `.img` extrait.
-4. Après avoir sélectionné le fichier image, le `type de guide` changera pour afficher le nom du fichier image.
+2. Sélectionner le type de démarrage, par défaut sélectionnez `image`.
+3. Sélectionner le fichier image, cliquez sur le bouton `Choisir` à droite du type de démarrage, choisissez le fichier `.img` décompressé.
+4. Après avoir sélectionné le fichier image, le type de démarrage changera pour afficher le nom du fichier image.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="30%" align="center" />
 
-5. Cliquez sur le bouton `Démarrer`, si une fenêtre apparaît pour demander la suppression des données du disque, cliquez sur `OK`.
+5. Cliquez sur le bouton `Démarrer`, si une fenêtre de confirmation apparaît pour effacer les données du disque, cliquez sur `OK`.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
 
-6. Une fois le gravage terminé, l'ordinateur émettra un signal sonore de confirmation, et la barre de progression affichera `Prêt`.
+6. Une fois le flashage terminé, l'ordinateur émettra un signal sonore de confirmation et la barre de progression affichera `Prêt`.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="30%" align="center" />
 
-7. Après le gravage, ne retirez pas immédiatement la carte SD.
-8. Ouvrez l'Explorateur de fichiers pour vérifier la présence d'une clé USB ou périphérique amovible nommée `FlyOS-Conf`.
+7. Ne retirez pas immédiatement la carte flash après le flashage.
+8. Ouvrez l'explorateur de fichiers, vérifiez s'il existe un lecteur amovible ou une clé USB nommé `FlyOS-Conf`.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
 
-9. Ouvrez `FlyOS-Conf`, si les deux fichiers suivants sont présents, cela signifie que le gravage a réussi.
+9. Ouvrez `FlyOS-Conf`, si les deux fichiers ci-dessous sont présents, cela signifie que le flashage a réussi.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
 

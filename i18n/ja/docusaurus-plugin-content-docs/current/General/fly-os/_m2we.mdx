@@ -1,29 +1,33 @@
-import WIN32 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_win32.mdx';
+import FALSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/fly-os/_falsh.mdx';
 
-# USB経由でM2WEにシステムをインストールする方法
+# USB経由でM2WEにブートローダーをインストールする方法
 
-### 準備作業
+### 事前準備
 
-    * `Win32DiskImager`ソフトウェアのインストールをお願いします
-    <Button variant="contained" disableElevation component="a" rel="noopener" href="https://mellow.klipper.cn/docs/ResDownload/auxiliary_software/">フォーマットツール</Button>
-    * システムを解凍し、解凍後のファイル名の拡張子は`.img`になります
-    * `balenaEtcher`や`Raspberry Pi`を使用したシステムの焼込みは推奨しません
-    * M2WEにデータがある場合はバックアップをお願いします
-       * [M2WE BOOTドライバーのダウンロード](/docs/ResDownload/auxiliary_software/ "クリックしてジャンプ")
+### 事前準備
+
+    * ソフトウェア`SDFormatter`と`Rufus`を先にインストールします
+    <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ResDownload/auxiliary_software/">フォーマットツール</Button>
+    * [M2WE BOOTドライバー](/docs/ResDownload/auxiliary_software/ "クリックしてジャンプ")をダウンロードします
+    * システムを解凍し、解凍後のファイル名の拡張子は`.img`となっています
+    * `balenaEtcher`や`Raspberry Pi`を使用したシステム書き込みは推奨されません
+    * M2WEまたはSDカードをM2SDに取り付け、その後M2SDをコンピューターのUSBポートに差します
+    * M2WEにデータがある場合はバックアップしてください
+
 
 ### ドライバーのインストール
 
-    * `Zadig`ソフトウェアを開く
-    * 最初の`Zadig`はインストールせずそのまま実行可能ですが、他の二つはインストールが必要です。インストールの際は全て「次へ」または「Next」を選択してください
-    * `Zadig`を開き、メニューの`Options`で「すべてのデバイスをリストする」にチェックを入れる
+    * `Zadig`ソフトウェアを開きます
+    * 最初の`Zadig`以外の2つはインストールが必要です。インストールの過程ではすべて「次へ」または「Next」をクリックしてください
+    * `Zadig`を開き、メニューの`Options`から`List All Devices`を選択します
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
 
 :::tip
-キーを押した状態でデバイスをコンピュータに接続してください
+押している状態でデバイスをコンピューターに接続することを確認してください
 :::
 
-    * M2WEのインストールが完了しており、BOOTボタンを押しながら両頭USBをコンピュータに接続する
+    * M2WEが正常にインストールされ、BOOTボタンを押しながら両頭USBをコンピューターに接続します
 
     <ImageView image={require('@site/docs/General/fly-os/img/usb-boot.webp').default} size="80%" align="center" />
             <Tabs>
@@ -50,37 +54,37 @@ import WIN32 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/
                 </TabItem>
             </Tabs>
 
-    * zadigを開く
+    * zadigを起動します
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="left" />
 
-    * 問題がなければ、ここでzadigに`Unknown Device #x`または`USB Device(VID_1f3a_PID_efe8)`が追加されます。それを選択する
+    * 問題なければ、この時点でzadigに`Unknow Device #x`または`USB Device(VID_1f3a_PID_efe8)`が追加されます。それを選択します
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="left" />
 
-    * 選択したデバイスのUSB IDが図と同じであることを確認してください。異なっている場合、他のデバイスを選択してください
-    * 上記の図の2番目は「WinUSB(vxxxxxxx)」を選択できれば問題ありません。バージョン番号は関係ありません
-    * 「Install Driver」をクリックしてドライバーをインストールする
+    * デバイスを選択後、USB IDが上図と同じであるか確認してください。一致しない場合、他のデバイスを選んでください
+    * 上図の2番目の箇所は必ず`WinUSB(vxxxxxxx)`を選択してください。バージョン番号は問題ありません
+    * `Install Driver`をクリックしてドライバーをインストールします
 
     <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="left" />
-
-    * USBドライバーのインストールが成功しました（ドライバーは一度だけインストールすればOKです。再度焼込みを行う際にはインストールする必要はありません）
-    * インストール済みのFLY-BOOTを開き、「デバイスのチェック」をクリックする
-    * 前述の手順が正しく行われた場合、「利用可能なデバイスが見つかりました」というメッセージが表示されるはずです
-    * 「BOOT」を起動すると正常であれば「BOOT」が成功に有効化された旨のメッセージが表示されます
-
+:::tip
+    * USBドライバーのインストールが成功しました。（ドライバーは一度だけインストールすればOKです。もし再度ブートローダーを書き込む場合、ドライバーを再インストールする必要はありません）
+    * インストールされたFLY-BOOTを開き、「デバイスをチェック」をクリックします
+    * 前の手順が正しく行われた場合、「利用可能なデバイスが見つかりました」というメッセージが表示されます
+    * 「BOOT」をクリックして起動すると、正常であれば「BOOTが正常に有効化されました」というメッセージが表示されます
+:::
 ### M2WEのフォーマット
 
-    * `TFFormatter.exe`ソフトウェアを使用して「BOOT」ディスクをフォーマットする
+    * `TFFormatter.exe`ソフトウェアを使用して`BOOT`ディスクをフォーマットします
 
     <ImageView image={require('@site/docs/General/fly-os/img/sdformatter.webp').default} size="80%" align="left" />
 
-    * またはWindows標準のディスク管理でパーティションを削除し、削除後に新しいパーティションを作成してください
-    * これでファイルエクスプローラーを開くと、14.5GBのUディスクが追加されます（16GB eMMCの表示サイズは14.5GBです）
-    * この時点でWin32diskimagerを使ってシステムイメージを焼込むことができます。ドライブ選択はこの14.5GBのUディスクを選んでください
+    * または、Windowsのディスク管理を使用してパーティションを削除し、削除後に新しいパーティションを作成します
+    * 現在、ファイルエクスプローラーを開くと、14.5GBのUディスク（16GB eMMCの表示サイズは14.5GB）が追加されています
+    * これにより、Win32DiskImagerを使用してシステムイメージを書き込むことができます。ドライブ選択はこの14.5GB Uディスクのドライブを選択してください
 
 
 
-### M2WEへのシステム焼込み
+### M2WEへの書き込み
 
-<WIN32 />
+<FALSH />

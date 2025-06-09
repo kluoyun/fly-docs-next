@@ -2,88 +2,113 @@
 sidebar_position: 1
 ---
 
-# イントロダクション
-ALPS圧力モジュールは、ADS131M02をベースにした圧力センシングソリューションで、主に3Dプリンターの自動Z軸ホーム（Home）とメッシュベッドレベル調平のために開発されました。高感度な圧力検出とリアルタイム信号処理により、モジュールはプリントヘッドとメッシュベッドの接触状態を正確に感知し、ミリ単位の調平精度を実現します。これにより、従来の機械式リミットスイッチ校正のエラーを解消し、ファーストレイヤーの印刷成功を大幅に向上させます。
-
+# 紹介
+ALPS 圧力モジュールは、ADS131M02 をベースにした圧力センシングソリューションで、主に 3D プリンターの自動 Z 軸ホーム（帰還）とメッシュベッドレベル化を目的として開発されました。高感度な圧力検出とリアルタイム信号処理により、モジュールはプリントヘッドとベッドの接触状態を正確に感知し、ミリ単位の調整精度を実現します。これにより、従来の機械式リミットスイッチによる校正の誤差を解消し、ファーストレイヤーの印刷成功率を大幅に向上させます。
 # パラメータ比較
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/csdb.webp').default} size="100%" align="center" />
 
-## ALPS圧力モジュールの使用方法
+## APLS 圧力モジュールの使用
 
-### クリーニング機能との組み合わせ推奨
-ALPS圧力モジュールを使用する際には、ノズルクリーニング機能と組み合わせることをお勧めします。これにより、調平の精度と安定性が向上します。
+### クリーニング機能との組み合わせをお勧めします
+APLS 圧力モジュールを使用する際には、ノズルの清掃機能と組み合わせることをお勧めします。これにより、調平の精度と安定性が向上します。
 
-#### XH2.54 4Pin配線図
-モジュールは直接マザーボードのUARTポートに挿入できます。または拡張ボードのUARTポートに接続することも可能です。UARTポートがない場合は、マザーボード上で2つのピンを探し、電源ラインの正負を確認してください。
+#### XH2.54 4Pin 接線図
+モジュールはマザーボードの UART インターフェースに直接挿入するか、拡張ボードの UART インターフェースに接続できます。UART インターフェースがない場合、マザーボード上の 2 つのピンを探し、電源ラインの正負を確認してください。
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/uart1.webp').default} size="100%" align="center" />
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/uart.webp').default} size="100%" align="center" />
 
 ### インストール時の注意点
-1. モジュールがしっかりと固定されていることを確認し、印刷中の振動によって接触不良が発生しないようにしてください。
-2. 接線が正しいか確認し、誤接続によりモジュールが正常に動作しない場合があります。
-3. 初めて使用する際には、複数回の調平テストを行い、モジュールの感度と精度が期待通りであることを確認してください。
+1. モジュールがしっかりと取り付けられていることを確認し、振動による接触不良が起こらないようにしてください。
+2. 接線が正しいことを確認し、接線エラーによってモジュールが正常に動作しないことがないよう注意してください。
+3. 最初に使用する前に、複数回の調平テストを行うことをお勧めします。これにより、モジュールの感度と精度が期待通りであることを確認できます。
 
-## ステータスLEDの表示
-- **電源投入時**: 緑色のフレームLEDが点灯している場合、モジュールが正常に動作しています。
-- **トリガー時**: 赤色のフレームLEDが点滅している場合、モジュールがトリガー状態です。
+## ステータスランプの表示
+- **電源投入時**: 緑色枠のステータスランプが常時点灯している場合、モジュールは正常に動作しています。
+- **トリガー時**: 赤色枠のステータスランプが点滅している場合、モジュールはトリガー状態です。
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/LED.webp').default} size="20%" align="center" />
 
-### ステータスLEDのトラブルシューティング
-- LEDが点灯しない場合は、電源接線が正しいかどうかを確認してください。
-- LEDが連続して点滅する場合は、モジュールが異常信号を検出した可能性があります。プローブが異物で詰まっているか損傷していないかを確認してください。
+### ステータスランプのトラブルシューティング
+- ステータスランプが点灯しない場合は、電源接線が正しいことを確認してください。
+- ステータスランプが継続して点滅する場合は、モジュールが異常信号を検出した可能性があります。プローブが異物に挟まれているか、損傷していないかを確認してください。
 
 ## 設定ガイド
-既存の設定ファイル内の `probe` および `ホーム` 部分を置き換え、以下のような設定を追加してください。
+既存の設定ファイル内の `probe` と `ホーム` 部分を置き換えて、以下の設定を追加してください。
 
-### 設定ファイル例
-以下の推奨される設定ファイルの内容を、実際のニーズに応じて調整してください。
+### 設定例
+以下は推奨される設定ファイルの内容です。実際のニーズに基づいて調整してください。
 
+:::tip
+
+- ALPS 圧力モジュールを Z リミットとして使用する場合、以下の設定を参考にしてください。
+
+:::
+```cfg
+[stepper_z]
+endstop_pin: probe:z_virtual_endstop
+# position_endstop: -0.5  
+```
+:::tip
+
+- ALPS 圧力モジュールの参考設定
+
+:::
 
 ```cfg
 [homing_override]
 axes: xyz
-set_position_z:10
+set_position_z: 10
 gcode:
-       G91
-       G1 Z10 F3000
-       G90
-        SET_PIN PIN=_probe_ready VALUE=0
-        ## _LIFT_Z
-       {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+    {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+    {% set e_target = printer.extruder.target %} # 現在の温度を保存
+    {% set fan_speed = printer.fan.speed %}      # 現在のファン速度を保存
+    
+    {% if home_all or 'X' in params %}
+        G28 X
+    {% endif %}
 
-       {% if home_all or 'X' in params %}
-            G28 X
-       {% endif %}
+    {% if home_all or 'Y' in params %}
+        G28 Y
+    {% endif %}
 
-       {% if home_all or 'Y' in params %}
-            G28 Y
-            G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
-       {% endif %}
-
-       {% if home_all or 'Z' in params %}
-       # もしeddyと圧力センサを同時に使用する場合、以下のコメントを外してください
-            #SET_PIN PIN=_probe_ready VALUE=1 
-            G28 Z 
-            #SET_PIN PIN=_probe_ready VALUE=0
-            G1 Z10 F3000           
+    {% if home_all or 'Z' in params %}
+        G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
+        {% if e_target >= 150 or printer.extruder.temperature >= 150 %}
+            M106 S255 # ファンをオンにする
+            M109 S150 # 150度でZ軸ホームを行う
         {% endif %}
+        M106 S0       # ファンをオフにする
+
+        G91
+        G1 Z5 F2000 # 喷嘴が熱床に近づきすぎないように事前に距離を開ける
+        G90
+
+        # Eddyと同時に使用する場合、以下をコメント解除してください
+        #SET_PIN PIN=_probe_ready VALUE=1 
+        G28 Z 
+        #SET_PIN PIN=_probe_ready VALUE=0
+        G1 Z10 F2000
+        
+        M109 S{e_target}  # 温度を復元する
+        M106 S{fan_speed} # ファン速度を復元する
+    {% endif %}
+        
 
 [output_pin _probe_ready]
-pin: PA9 #En #Enableピン
+pin: PA9 #En #有効化ピン
 shutdown_value: 0
 value:0
 
 [probe]
 pin: ^PA10 #out #プローブピン
-x_offset: 0                  # X軸-センサのノズルに対するオフセット量
-y_offset: 0               # Y軸-センサのノズルに対するオフセット量
-z_offset:0                # Z軸-センサのノズルに対するオフセット量
+x_offset: 0                  # X軸-センサ相対ノズルオフセット量
+y_offset: 0               # Y軸-センサ相対ノズルオフセット量
+z_offset:0                # Z軸-センサ相対ノズルオフセット量
 speed: 8                 # 調平速度
 samples: 3                   # サンプル回数
-samples_result: median       # 取り出し方式（デフォルトはmedian-中央値）
-sample_retract_dist: 2     # 調平引き戻し距離
-samples_tolerance: 0.05      # サンプル許容範囲（小さな値はサンプル回数増加につながる可能性があります）
-samples_tolerance_retries: 3 # 許容範囲超過リトライ回数
+samples_result: median       # 取り出し方（デフォルトはmedian-中央値）
+sample_retract_dist: 2     # 調平リトラクト距離
+samples_tolerance: 0.05      # サンプル許容範囲（小さい値はサンプル回数増加につながる可能性あり）
+samples_tolerance_retries: 3 # 超許容範囲再試行回数
 activate_gcode:
            G4 P500
            SET_PIN PIN=_probe_ready VALUE=1
@@ -92,14 +117,15 @@ deactivate_gcode:
 
 ```
 
-### Z Offset値の調整
-このコマンドを使用してZ Offsetを調整します：
+### Z Offset 値の調整に関する参考
+このコマンドを使用して z-offset を調整します：
 ```gcode
 PROBE_CALIBRATE
 ```
 
-- Z Offset値を調整する前に、Klipperのドキュメントのチュートリアル「Paper Test」を参照してください：[Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
+- z-offset 数値を調整する前に、Klipper ドキュメントのチュートリアル「Paper Test」を参照してください。
+[Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test)
 
 :::info 注意
-- 圧力モジュールをZ軸エンドストップとして使用する場合、既存の `endstop_pin` を次のように上書きしてください：`endstop_pin: probe:z_virtual_endstop`
+- Z 軸リミットとして圧力モジュールを使用する場合、既存の `endstop_pin` 設定を次のように置き換えてください：`endstop_pin: probe:z_virtual_endstop`
 :::

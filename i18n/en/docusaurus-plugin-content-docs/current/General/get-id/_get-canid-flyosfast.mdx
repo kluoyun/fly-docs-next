@@ -1,22 +1,22 @@
-## Search CAN ID
-1. Open the browser and enter the IP address of the host machine in the address bar, for example, if my host machine's IP is `192.168.101.179`, just type it directly and press Enter.
+## Search for CAN ID
+1. Open the browser and enter the IP address of the host computer in the address bar. For example, if my host computer's IP is `192.168.101.179`, just type it in and press Enter.
    <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-2. Open the host machine's WEB interface, and find in the left sidebar configuration options:
+2. Open the WEB interface of the host computer, find in the configuration options on the left sidebar:
    <table>
      <tr>
        <td>
-         - For fluidd: `{…}`, click to enter, you can find `printer.cfg`
+         - For fluidd: `{…}`, click to enter and you can find `printer.cfg`
          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
        </td>
        <td>
-         - For mainsail: `Machine`, click to enter, you can find `printer.cfg`
+         - For mainsail: `Machine`, click to enter and you can find `printer.cfg`
          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
        </td>
      </tr>
    </table>
 
-   3. Click `printer.cfg` after entering, then click `DEVICES` on the top right
+   3. Click `printer.cfg`, then click `DEVICES` on the top right
      <table>
        <tr>
          <td>
@@ -46,11 +46,11 @@
      <table>
        <tr>
          <td>
-           - In fluidd, make sure the first arrow points to `Klipper`, if so, click the right arrow to copy
+           - For fluidd, confirm whether the first arrow points to `Klipper`, if yes, click the right arrow to copy
            <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_canid.webp').default} size="100%" align="center" />
          </td>
          <td>
-           - In mainsail, make sure the first arrow points to `Klipper`, if so, click the right arrow to copy
+           - For mainsail, confirm whether the first arrow points to `Klipper`, if yes, click the right arrow to copy
            <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_canid.webp').default} size="100%" align="center" />
          </td>
        </tr>
@@ -59,17 +59,23 @@
 ## Fill in CAN ID
 
     1. Close `DEVICES` and fill in the ID
-    :::danger Notice
-
-    * The # before the first red box needs to be deleted, please note that this includes spaces, then change `serial:` to `canbus_uuid:`
-    * FLY system default configuration may contain `[MCU]`, but if the ID below is `serial: /tmp/klipper_host_mcu`, rename `[MCU]` to `[mcu HOST]`, or delete these two lines
-    * You can copy the following `canbus_uuid:`
-    :::
-
-    ```cfg
-    [mcu]
-    canbus_uuid:
+    :::danger Note
+    * Please modify the following content in the configuration file:  
     ```
+    [mcu] 
+    serial: /tmp/klipper_host_mcu
+    ```  
+    to
+    ```
+    [mcu host] 
+    serial: /tmp/klipper_host_mcu
+    ```
+    * Add:
+    ```
+    [mcu]
+    canbus_uuid: <Replace with the ID you just queried>
+    ```
+    :::
 
     <table>
       <tr>
@@ -101,9 +107,9 @@
         </td>
       </tr>
     </table>
-    3. If Klipper prompts `ADC out of range`, this is a normal phenomenon. Connect the heated bed and thermistor to the motherboard, configure the thermistor pins for the nozzle and heated bed, then save and restart.
+    3. If Klipper prompts `ADC out of range`, this is a normal phenomenon. Connect the heated bed and thermistor to the motherboard and configure the thermistor pins of the nozzle and heated bed, then save and restart.
 
 :::danger
-Notice: All IDs mentioned in the document are examples, and each motherboard's ID is different. Please fill in the actual obtained ID.
+Note: All IDs mentioned in the document are examples. Each motherboard has a different ID. Please fill in the actual obtained ID.
 :::
 ---

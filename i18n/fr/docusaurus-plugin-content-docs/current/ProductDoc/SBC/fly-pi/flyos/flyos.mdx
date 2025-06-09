@@ -1,0 +1,96 @@
+---
+sidebar_position: 2
+sidebar_label: Système FLYOS-Armbian - gravage
+
+---
+
+**Non recommandé !!!** Un système d'exploitation pour ordinateur de bureau, relativement ouvert, mais avec une faible stabilité !
+
+
+
+import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tf.mdx';
+import M2WE from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_m2we.mdx';
+import M2SD from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_m2sd.mdx';
+import TF_EMMC from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_tf_emmc.mdx';
+import CONFIG from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/fly-os/_fly_config.mdx';
+
+
+# Gravage du système
+
+## Guide de démarrage pour les débutants
+
+    <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/baodian/host/">Guide de démarrage pour les débutants</Button>
+
+## Préparation avant le gravage du système
+
+    * Lecteur de cartes
+    * Carte TF d'une capacité minimale de 16 Go et maximale de 128 Go, la vitesse de transmission de la carte TF doit être de classe 10 ou supérieure
+    * Télécharger l'image de système correspondante <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ResDownload/system-img/fly-pi-v2">image de système</Button>
+    * Télécharger l'outil de gravage nécessaire <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ResDownload/auxiliary_software/">outil de gravage</Button>
+
+## Gravage du système
+
+:::info
+Le gravage sur une carte TF et le gravage via une carte TF vers M2WE nécessitent uniquement l'utilisation d'une méthode de gravage.
+:::
+
+:::info
+* Si la machine est équipée de M2WE et d'une carte mémoire, le système démarre automatiquement depuis la carte mémoire
+* Il est recommandé d'utiliser une carte TF pour graver le système sur M2WE, car la gravure via USB peut échouer en raison de conflits de pilotes. Il est conseillé d'utiliser directement [la gravure de la carte mémoire dans M2WE](https://mellow-next.klipper.cn/docs/ProductDoc/SBC/fly-pi-v2/fly-os)
+* Veuillez vérifier que l'image de système téléchargée correspond bien, sinon le système ne pourra pas démarrer
+:::
+
+    <Tabs>
+        <TabItem value="TF" label="Gravage vers la carte TF" default>
+            
+            <TF />
+            
+        </TabItem>
+        <TabItem value="TF_M2WE" label="Gravage via une carte TF vers M2WE">
+            
+            <TF_EMMC />
+
+        </TabItem>
+        <TabItem value="M2WE" label="Gravage via USB vers M2WE">
+            
+            <M2WE />
+
+        </TabItem>
+        <TabItem value="M2SD" label="Gravage via M2SD Burner vers M2WE ou une carte TF">
+            
+            <M2SD />
+
+        </TabItem>
+    </Tabs>
+
+
+
+## Installation du système
+
+    <Tabs>
+        <TabItem value="TF" label="Installation de la carte TF sur PI" default>
+            * Après avoir gravé le système sur une carte TF, il est nécessaire de connecter la carte TF au PI, sinon le système ne démarrera pas
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/tf.webp').default} size="80%" align="left" />  
+
+        </TabItem>
+        <TabItem value="M2WE" label="Installation de la carte M2WE sur PI">
+            * Veuillez noter qu'en présence d'une carte TF, le système démarre par défaut à partir de la carte TF
+            * Veuillez noter que les vis de fixation doivent être fixées à l'aide d'un tournevis hexagonal de 1,27 mm
+            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/m2we.webp').default} size="80%" align="left" />  
+
+        </TabItem>
+    </Tabs>
+
+
+## Installation de l'antenne
+
+    1. Installer l'antenne des modules `M2WE` ou `WiFi 2,4G`
+    :::warning
+    * Le poste de travail FLY nécessite l'utilisation de modules `M2WE` ou `WiFi 2,4G`, sans quoi il ne sera pas possible d'utiliser le WiFi
+    * Veuillez noter que le poste de travail ne prend pas en charge les noms de réseau Wi-Fi en chinois, ni les réseaux Wi-Fi combinés 2,4G et 5G
+    :::
+    * L'endroit pointé par la flèche rouge correspond à l'interface de l'antenne Wi-Fi
+    * L'interface Wi-Fi est `ipex1`
+    * Veuillez installer l'antenne sur PI V2, sinon un signal faible pourrait empêcher la connexion au routeur
+    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi/img/wifi.webp').default} size="80%" align="left" /> 
+

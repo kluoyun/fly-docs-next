@@ -5,25 +5,30 @@ sidebar_label: モジュールトリガ値の調整方法
 
 
 # モジュールトリガ値の調整方法
-<Button variant="contained" disableElevation component="a" rel="noopener" href="https://apps.microsoft.com/detail/9nblggh43hdm?launch=true&mode=full&hl=en&gl=hk&ocid=bingwebsearch">シリアルツールアシスタントの取得</Button>
 
-シリアルツールを使用して、以下のコマンドが利用可能です：
-`Klipper`コンソールで「SET_PIN PIN=_probe_ready VALUE=1」を送信し、トリガインジケーターを観察しながら、インジケーターが点灯しなくなるまでしきい値を小さくから大きく調整します。次のコマンドを入力してください：
-```cfg
-SET_PIN PIN=_probe_ready VALUE=1
-```
-* USBデータ線でモジュールとパソコンを接続し、シリアルツールアシスタントを開き、対応するポート番号を選択し、ボーレートを115200に設定して「接続」をクリックします。
-<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-usb.webp').default} size="10%" align="left" />
-<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-1.webp').default} size="100%" align="left" />
-シリアルツールで以下のコマンドを入力してトリガ値を調整します：
-```cfg
-set 触発値
-```
-デフォルトトリガ値：20000
-数値が小さいほど感度が高くなり、数値が大きいほど感度が低くなります。
-* 例：`set 20000`、トリガ値を20000に設定します。数値が小さいほど感度が高くなり、数値が大きいほど感度が低くなります。
-* シリアルツールでのコマンド使用：
+## 平衡モジュールを開く
+    `Klipper`コンソールに`SET_PIN PIN=_probe_ready VALUE=1`を送信し、トリガインジケーターの状態を観察しながら、トリガ値を小さなものから大きくしてインジケーターが点灯しなくなるまで調整します。以下のコマンドを入力してください：
+    ```cfg
+    SET_PIN PIN=_probe_ready VALUE=1
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/sewt_pin.webp').default} size="100%" align="left" />
 
-* シリアル送信`v`で、実時間でabc値を出力します。a:フィルタ前；b:フィルタ後。
-* シリアル送信`uv`で、出力を停止します。
-* シリアル送信 `rt`で、現在のしきい値を確認します。
+
+## 押力値の調整
+    <Button variant="contained" disableElevation component="a" rel="noopener" href="https://apps.microsoft.com/detail/9nblggh43hdm?launch=true&mode=full&hl=en&gl=hk&ocid=bingwebsearch">シリアルツールアシスタントで取得</Button>
+
+    * USBケーブルを使用してモジュールとパソコンを接続し、シリアルツールアシスタントを開き、対応するポート番号を選択し、ボーレートを115200に設定して「接続」をクリックします。
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-usb.webp').default} size="10%" align="left" />
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-1.webp').default} size="100%" align="left" />
+    シリアルツールに入力してトリガ値を調整します：
+    ```cfg
+    set トリガ値
+    ```
+    デフォルトトリガ値：20000
+    数値が小さいほど感度が高く、数値が大きいほど感度が低くなります。
+    * 例：`set 20000`、トリガ値を20000に設定します。数値が小さいほど感度が高く、数値が大きいほど感度が低くなります。
+    * シリアルツールでのコマンド：
+
+    * シリアル送信`v`、リアルタイムでabc値を出力します。a:フィルタ前の値；b:フィルタ後の値。
+    * シリアル送信`uv`、出力を停止します。
+    * シリアル送信`rt`、現在のしきい値を確認します。

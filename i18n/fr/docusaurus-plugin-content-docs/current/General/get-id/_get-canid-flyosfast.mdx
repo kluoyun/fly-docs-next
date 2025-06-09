@@ -1,8 +1,8 @@
 ## Rechercher l'ID CAN
-1. Ouvrir le navigateur, taper l'adresse IP de la station supérieure dans la barre d'URL, par exemple, si mon adresse IP de la station supérieure est `192.168.101.179`, tapez directement puis appuyez sur Entrée.
+1. Ouvrir le navigateur, taper l'adresse IP du contrôleur supérieur dans la barre d'URL, par exemple, si mon adresse IP est `192.168.101.179`, tapez directement puis appuyez sur Entrée.
   <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-2. Ouvrir l'interface WEB de la station supérieure, dans le menu latéral de configuration à gauche, trouver :
+2. Ouvrir l'interface WEB du contrôleur supérieur, dans la barre latérale de configuration à gauche, recherchez :
   <table>
     <tr>
       <td>
@@ -16,7 +16,7 @@
     </tr>
   </table>
 
-  3. Cliquez sur `printer.cfg`, puis cliquez sur le bouton `DEVICES` en haut à droite
+  3. Cliquez sur `printer.cfg`, puis cliquez sur `DEVICES` en haut à droite
     <table>
       <tr>
         <td>
@@ -28,7 +28,7 @@
       </tr>
     </table>
 
-  4. Cliquez sur `CAN`, puis actualiser
+  4. Cliquez sur `CAN`, puis actualisez
     <table>
       <tr>
         <td>
@@ -42,15 +42,15 @@
       </tr>
     </table>
 
-  5. Copier l'ID, cliquer sur la flèche pour copier
+  5. Copiez l'ID, cliquez sur la flèche pour copier
     <table>
       <tr>
         <td>
-          - Pour fluidd, vérifiez que la première flèche pointe vers `Klipper`, s'il en est ainsi, cliquez sur la flèche à droite pour copier
+          - Pour fluidd, vérifiez que la première flèche pointe vers `Klipper`, si c'est le cas, cliquez sur la flèche à droite pour copier
           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_canid.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - Pour mainsail, vérifiez que la première flèche pointe vers `Klipper`, s'il en est ainsi, cliquez sur la flèche à droite pour copier
+          - Pour mainsail, vérifiez que la première flèche pointe vers `Klipper`, si c'est le cas, cliquez sur la flèche à droite pour copier
           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_canid.webp').default} size="100%" align="center" />
         </td>
       </tr>
@@ -59,26 +59,32 @@
 ## Remplir l'ID CAN
 
     1. Fermez `DEVICES` et remplissez l'ID
-    :::danger Avertissement
-
-    * La première boîte rouge précédente avec le symbole # doit être supprimée, assurez-vous également de supprimer les espaces, puis changer `serial:` en `canbus_uuid:`
-    * Le système FLY inclut automatiquement `[MCU]`, mais si l'ID ci-dessous est `serial: /tmp/klipper_host_mcu`, il faut renommer `[MCU]` en `[mcu HOST]`, ou supprimer ces deux lignes
-    * Vous pouvez copier l'ID suivant `canbus_uuid:`
-    :::
-
-    ```cfg
-    [mcu]
-    canbus_uuid:
+    :::danger À savoir
+    * Modifiez le fichier de configuration comme suit :  
     ```
+    [mcu] 
+    serial: /tmp/klipper_host_mcu
+    ```  
+    en
+    ```
+    [mcu host] 
+    serial: /tmp/klipper_host_mcu
+    ```
+    * Ajoutez :
+    ```
+    [mcu]
+    canbus_uuid: <remplacez ici par l'ID que vous avez obtenu précédemment>
+    ```
+    :::
 
     <table>
       <tr>
         <td>
-          - Dans fluidd, trouvez `[MCU]`
+          - Trouvez `[MCU]` dans fluidd
           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - Dans mainsail, trouvez `[MCU]`
+          - Trouvez `[MCU]` dans mainsail
           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
         </td>
       </tr>
@@ -86,7 +92,7 @@
 
 
     2. Remplissez l'ID dans la configuration
-    :::tip Conseil
+    :::tip
 
     * Après avoir rempli l'ID, cliquez sur `SAVE & RESTART` en haut à droite
     :::
@@ -101,9 +107,9 @@
         </td>
       </tr>
     </table>
-    3. Si Klipper affiche un message `ADC out of range`, c'est un phénomène normal, connectez le lit chauffant et le thermocouple au circuit principal, configurez bien les broches des sondes de température pour la buse et le lit chauffant, puis enregistrez et redémarrez.
+    3. Si Klipper affiche `ADC out of range`, il s'agit d'un phénomène normal. Connectez le lit chauffant et les thermistances à la carte mère, configurez correctement les broches des thermistances pour l'embout extrudeur et le lit chauffant, puis sauvegardez et redémarrez.
 
 :::danger
-Attention : Tous les ID mentionnés dans ce document sont des exemples, chaque carte mère a un ID différent, veuillez utiliser l'ID réellement obtenu.
+Attention : Les ID mentionnés dans le document sont tous des exemples. Chaque carte mère a un ID différent. Veuillez utiliser l'ID réellement obtenu.
 :::
 ---

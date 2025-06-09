@@ -1,22 +1,22 @@
 ## CAN ID 검색하기
-1. 브라우저를 열고 주소 표에 업스트림 컴퓨터의 IP 주소를 입력합니다. 예를 들어, 제 업스트림 컴퓨터의 IP 주소가 `192.168.101.179`라면 이 주소를 입력하고 Enter 키를 누릅니다.
+1. 브라우저를 열고 주소 표에 상위 기기의 IP 주소를 입력합니다. 예를 들어, 상위 기기의 IP 주소가 `192.168.101.179` 이면 해당 주소를 입력하고 Enter 키를 누릅니다.
   <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-2. 업스트림 컴퓨터의 웹 인터페이스를 엽니다. 왼쪽 사이드바의 설정 옵션에서 다음을 찾습니다:
+2. 상위 기기의 웹 인터페이스를 열고 좌측 메뉴의 설정 옵션에서 찾습니다:
   <table>
     <tr>
       <td>
-        - fluidd는 `{…}`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+        - fluidd는: `{…}` 을 클릭하면 `printer.cfg`를 찾을 수 있습니다.
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
       </td>
       <td>
-        - mainsail은 `기계`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+        - mainsail은: `기계`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
         <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
       </td>
     </tr>
   </table>
 
-3. `printer.cfg`를 클릭한 후 우측 상단의 `DEVICES`를 클릭합니다.
+  3. `printer.cfg`를 클릭한 후 우측 상단의 `DEVICES`를 클릭합니다.
     <table>
       <tr>
         <td>
@@ -28,7 +28,7 @@
       </tr>
     </table>
 
-4. `CAN`을 클릭하고 새로 고침합니다.
+  4. `CAN`을 클릭하고 새로 고침합니다.
     <table>
       <tr>
         <td>
@@ -42,15 +42,15 @@
       </tr>
     </table>
 
-5. ID를 복사합니다. 화살표가 가리키는 곳을 클릭하여 복사합니다.
+  5. ID를 복사합니다. 화살표가 가리키는 곳을 클릭하여 복사합니다.
     <table>
       <tr>
         <td>
-          - fluidd에서는 첫 번째 화살표가 가리키는 것이 Klipper인지 확인하고 맞다면 오른쪽 화살표를 클릭하여 복사합니다.
+          - fluidd에서는 첫 번째 화살표가 가리키는 것이 Klipper인지 확인하고, 그렇다면 오른쪽 화살표를 클릭하여 복사합니다.
           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_canid.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - mainsail에서도 첫 번째 화살표가 가리키는 것이 Klipper인지 확인하고 맞다면 오른쪽 화살표를 클릭하여 복사합니다.
+          - mainsail에서도 첫 번째 화살표가 가리키는 것이 Klipper인지 확인하고, 그렇다면 오른쪽 화살표를 클릭하여 복사합니다.
           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_canid.webp').default} size="100%" align="center" />
         </td>
       </tr>
@@ -58,36 +58,43 @@
 
 ## CAN ID 입력하기
 
-    1. `DEVICES`를 닫고 ID 입력
-    :::danger 주의事项
-
-    * 첫 번째 붉은 박스 앞의 #을 삭제해야 합니다. 공백 포함해서 삭제해야 하며, `serial:`을 `canbus_uuid:`으로 변경해야 합니다.
-    * FLY 시스템 기본 설정에는 [MCU]가 있을 수 있으나 아래 ID가 `serial: /tmp/klipper_host_mcu`라면 `[MCU]`를 `[mcu HOST]`로 변경하거나 해당 두 줄을 삭제해야 합니다.
-    * 아래에서 `canbus_uuid:`를 복사할 수 있습니다.
-    :::
-
-    ```cfg
-    [mcu]
-    canbus_uuid:
+    1. `DEVICES`를 닫고 ID를 입력합니다
+    :::danger 주의사항
+    * 구성 파일에서 다음 부분을 수정해야 합니다:  
     ```
+    [mcu] 
+    serial: /tmp/klipper_host_mcu
+    ```  
+    수정된 내용은 다음과 같습니다:
+    ```
+    [mcu host] 
+    serial: /tmp/klipper_host_mcu
+    ```
+    * 추가적으로 다음 내용을 입력합니다:
+    ```
+    [mcu]
+    canbus_uuid: <여기에 방금 조회한 ID를 입력하세요>
+    ```
+    :::
 
     <table>
       <tr>
         <td>
-          - fluidd에서 [MCU] 찾기
+          - fluidd에서 [MCU]를 찾습니다
           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - mainsail에서 [MCU] 찾기
+          - mainsail에서 [MCU]를 찾습니다
           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
-    2. ID를 구성 파일에 입력
-    :::tip 팁
 
-    * ID를 입력한 후 우측 상단의 `SAVE & RESTART`를 클릭해야 합니다.
+    2. ID를 구성 파일에 입력합니다
+    :::tip
+
+    * ID를 입력한 후 오른쪽 상단의 `SAVE & RESTART`를 클릭합니다.
     :::
 
     <table>
@@ -100,9 +107,9 @@
         </td>
       </tr>
     </table>
-    3. Klipper가 `ADC out of range`를 나타내면 이것은 정상적인 현상입니다. 열판과 온도 센서를 메인보드에 연결하고 노즐, 열판의 온도 센서 핀을 설정한 후 저장 및 재시작하면 됩니다.
+    3. Klipper에서 `ADC out of range`라는 메시지가 나타나는 경우, 이는 정상적인 현상입니다. 핫베드와 히터를 메인보드에 연결하고 노즐과 핫베드의 히터 핀을 설정한 후 다시 저장하고 재시작하면 됩니다.
 
 :::danger
-주의: 문서에 나온 모든 ID는 예시입니다. 각 메인보드의 ID는 모두 다르므로 실제로 얻은 ID를 입력해야 합니다.
+주의: 문서에서 나온 모든 ID는 예제입니다. 각 메인보드의 ID는 모두 다릅니다. 실제로 얻은 ID를 입력해야 합니다.
 :::
 ---

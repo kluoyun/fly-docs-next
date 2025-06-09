@@ -1,236 +1,51 @@
 ---
 sidebar_position: 1
-sidebar_label: FLYOS-FAST System Burning
+sidebar_label: FLYOS-FAST System Flashing
 ---
 
-Strongly recommended to use!!! This system is a system customized by FLY for 3D printers!
 
-# FLYOS-FAST System Burning
-
-## System Burning
-
-FLYOS-FAST system burning tutorial: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/flyos-fast/#introduction">FLYOS-FAST system burning tutorial</Button>
+import FASTFASLH from '@site/i18n/en/docusaurus-plugin-content-docs/current/DebugDoc/flyos-fast/_falsh.mdx';
 
 
-<br/>
-<br/>
-<br/>
 
 
-## System Introduction
 
-* FlyOS-Fast is a lightweight Linux system customized for 3D printing, with fast boot speed (only 30 seconds to start), and supports all Fly series host platforms.
-* Optimized kernel to improve the real-time response performance of Klipper.
-* Optimized file system to prevent system damage caused by direct power failure.
-* Pre-installed services including Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen, etc.
-* Supports switching between Klipper and RRF systems.
-* Supports one-click online switching between Mainsail and Fluidd.
-* Supports USB disk printing.
-* When used with KPPM module, it can achieve interrupted print recovery.
-* Supports presetting default languages and printer names for front-end UIs like Fluidd.
-* More OEM customization features: such as setting up startup logos, preset configuration files, hiding Mainsail tab pages, etc., please contact us.
+# System Image Flashing
 
-## Preparation
+<FASTFASLH name="H5" />
 
-1. Download system image
-    - Image link: [Piv2 system image download](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/FlyOS-Fast-H5.exe/version/50907014/overview "Click this link to jump") (Only supports Windows).  
-    - Image link: [Piv2 system image download](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/FlyOS-Fast-H5.7z/version/50907002/overview "Click this link to jump") (Supports Windows, MacOS, Linux).
+            
+## Installing the System Card
 
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_download.webp').default} size="90%" align="center" />
+<Tabs>
+    <TabItem value="usb" label="Diagram of M2WE Installation to PI-V2" default>
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="30%" align="center" />
+    </TabItem>
+    <TabItem value="can" label="Diagram of TF Card Installation to PI-V2">
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="30%" align="center" />
+    </TabItem>
+</Tabs>
 
+## Installing the Antenna
 
-2. Download the burning tool, the tutorial will use `Rufus` as an example. Actually, other tools can be used, such as `Etcher`, `Win32 Disk Imager`, etc.
-    - Rufus download address: [Click Download Chinese](https://rufus.ie/zh/#download) or [Click Download English](https://rufus.ie/en/#download) (Only supports Windows).
-    - Etcher download address: [Click Download](https://etcher.balena.io/#download-etcher) (Supports Windows, MacOS, Linux).
-    - Win32 Disk Imager download address: [Click Download](https://sourceforge.net/projects/win32diskimager/) (Only supports Windows).
-
-3. The tutorial will use `FlyOS-Fast-H5.exe` as an example.
-
-4. Extract the system image file to get the `.img` file.
-    - Double-click or right-click open `FlyOS-Fast-H5.exe`, wait a few seconds, and a window will pop up (if the system prompts that it is unsafe, select "More information" -> "Run").
-    - You can choose the extraction directory, then click the `Extract` button, and wait for the extraction to complete.
-    
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
-
-    - After extraction, a `FlyOS-Fast-H5-vx.x.x.img` file will be generated in the extraction directory. `x.x.x` is the system version number.
-
-## Burn Image
-
-    <Tabs>
-        <TabItem value="TF" label="Burn to TF Card" default>
-            ## Burn to TF Card
-            1. - The TF card used for burning needs to be larger than 4G, it is recommended to use a SanDisk 32GB C10 or higher TF card (tests found that many cheap cards cannot start after being burned).
-               - The TF card used for burning needs to use an SD card reader, insert the burning card into the reader, then insert the reader into the computer.
-            2. Open `Rufus`, select the device. The selected device should display a capacity consistent with the capacity of the burning card inserted into the computer.  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            3. Select the image file, click the `Select` button on the right side of the `Boot selection` to select the `.img` file after extraction.
-            4. After selecting the image file, the `Boot selection` will become the name of the image file.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            5. Click the `Start` button, if a pop-up window appears prompting to clear disk data, click `OK` to continue.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            6. After burning is complete, the computer will emit a prompt sound, and the progress bar will show as `Ready`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            7. Do not remove the burned card immediately after burning.
-            8. Open File Explorer, check whether there is a U-drive or removable disk named `FlyOS-Conf`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            9. Open `FlyOS-Conf`, if there are two files as shown in the figure below, it indicates successful burning.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            10. The `config.txt` is the system configuration file, please refer to the next page content to modify the configuration file.
-
-        </TabItem>
-        <TabItem value="M2WE" label="Burn to M2WE via USB">
-            ## Burn to M2WE via USB
-            1. Download the driver:
-               - <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/Utils/zadig-2.7.exe">M2WE driver program</Button>
-               - <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/Utils/FLY-BOOT-Setup.msi">M2WE BOOT startup tool</Button>
-
-            2. Install the driver:
-               - Open `Zadig`, check `List All Devices` in the top menu bar `Options`
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
-            
-            3. Install M2WE, then press the `BOOT` button on the motherboard, and connect the host to the computer using a **double-headed USB** cable
-    
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot1.webp').default} size="70%" align="center" />
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot2.webp').default} size="70%" align="center" />
-    
-            4. Open zadig
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="center" />
-        
-            5. If everything is normal, a new `Unknow Device #x` or `USB Device(VID_1f3a_PID_efe8)` will appear in zadig, select it
-        
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="center" />
-        
-            6. Check whether the USB ID is consistent with the above picture after selecting the device, if not, please select another device.
-            7. The second place in the above picture can only select `WinUSB(vxxxxxxx)`, the version number does not matter.
-            8. Click `Install Driver` to install the driver, **the driver only needs to be installed once on the same computer**.
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="center" />
-
-            9. Open the installed FLY-BOOT, click `Check Device`, if the previous steps are operated correctly, it will prompt that a usable device is found.
-            <ImageView image={require('@site/docs/General/fly-os/img/fly_boot1.webp').default} size="60%" align="center" />
-
-            10. Click `Start BOOT`, if normal, it will prompt that BOOT has been successfully enabled, wait a few seconds to proceed to the next step.
-
-            <ImageView image={require('@site/docs/General/fly-os/img/fly_boot2.webp').default} size="60%" align="center" />
-            
-            11. Open `Rufus`, select the device. The selected device should display a capacity consistent with the capacity of the inserted burning card.  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            12. Select the image file, click the `Select` button on the right side of the `Boot selection` to select the `.img` file after extraction.
-            13. After selecting the image file, the `Boot selection` will become the name of the image file.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            14. Click the `Start` button, if a pop-up window appears prompting to clear disk data, click `OK` to continue.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            15. After burning is complete, the computer will emit a prompt sound, and the progress bar will show as `Ready`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            16. Do not remove the burning card immediately after burning.
-            17. Open File Explorer, check whether there is a U-drive or removable disk named `FlyOS-Conf`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            18. Open `FlyOS-Conf`, if there are two files as shown in the figure below, it indicates successful burning.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            19. The `config.txt` is the system configuration file, please refer to the next page content to modify the configuration file.
-
-        </TabItem>
-        <TabItem value="M2SD" label="Burn to M2WE or TF Card via M2SD Burner">
-            ## Burn to M2WE or TF Card via M2SD Burner
-            :::danger Note
-                * This product supports USB3.0.
-                * This product does not support simultaneous installation of TF and M2WE for use together.
-                * After installing M2WE or SD card and connecting it to the computer's USB port, you can format it.
-                * Do not install NVMe or other devices, otherwise it will cause device damage!!!
-            :::
-            
-            1. Install M2WE or SD card onto M2SD. If using a TF card for burning, the TF card needs to be larger than 4G, it is recommended to use a SanDisk 32GB C10 or higher TF card (tests found that many cheap cards cannot start after being burned).
-                - Install M2WE
-                <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="100%" align="left" />
-                - Install SD card
-                <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd.webp').default} size="100%" align="left" />
-
-            2. Open `Rufus`, select the device. The selected device should display a capacity consistent with the capacity of the inserted burning card.  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            3. Select the image file, click the `Select` button on the right side of the `Boot selection` to select the `.img` file after extraction.
-            4. After selecting the image file, the `Boot selection` will become the name of the image file.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            5. Click the `Start` button, if a pop-up window appears prompting to clear disk data, click `OK` to continue.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            6. After burning is complete, the computer will emit a prompt sound, and the progress bar will show as `Ready`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            7. Do not remove the burning card immediately after burning.
-            8. Open File Explorer, check whether there is a U-drive or removable disk named `FlyOS-Conf`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            9. Open `FlyOS-Conf`, if there are two files as shown in the figure below, it indicates successful burning.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            10. The `config.txt` is the system configuration file, please refer to the next page content to modify the configuration file.
-
-        </TabItem>
-    </Tabs>
-
-## Configure WiFi
-
-    1. Use `vscode` or other professional text editors to open `config.txt` (**Try not to use the built-in Notepad of Windows to edit the configuration file**)
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-
-    2. Fill in your **WiFi name** in the `WIFI_SSID=""` option within the `""`, and fill in your **WiFi password** in the `WIFI_PASS="""` option within the `""`. Save and exit, eject the U-drive or removable disk named `FlyOS-Conf`.
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/osfast_wifi.webp').default} size="70%" align="center" />  
-
-## Start Host
-
-    1. Before starting, make sure that the **memory card** or **M2WE** has been correctly installed on the host.
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="70%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="70%" align="center" />
-  
-    2. Install the antenna for the `M2WE` or `2.4G WiFi` module.
+    1. Install the antenna for `M2WE` or `2.4G WiFi` module
     :::warning
-    * FLY host requires the use of `M2WE` or `2.4G WiFi` module, otherwise WiFi cannot be used.
-    * Please note that the host does not support WIFI with Chinese names, and does not support 2.4G and 5G dual-band integration WIFI.
+    * The FLY host machine requires either the `M2WE` or `2.4G WIFI` module to use WiFi
+    * Please note that the host machine does not support WiFis with Chinese names and does not support dual-band (2.4G and 5G) unification
     :::
-    * The red arrow points to the WIFI antenna interface.
-    * The WIFI antenna port is `ipex1`.
-    * Please install the antenna on PI V2, otherwise the weak signal may result in inability to connect to the router.
+    * The red arrow points to the Wi-Fi antenna interface
+    * The Wi-Fi antenna port is `ipex1`
+    * Please install the antenna on the M2WE, otherwise poor signal may cause connection failure to the router
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/wifi.webp').default} size="80%" align="left" /> 
 
-    3. Power on the host.  
-    **At this point, your host has started!**  
-    Please proceed to the next step: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">SSH connection to the host</Button>
+    :::tip
+    - After completing the system card installation, you can proceed to the next step by connecting to the host machine via SSH
+    :::
 
+    2. Power on the host machine.  
+    **Your host machine is now ready to start up!!!**  
+    Please proceed to the next step: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">SSH Connection to Host Machine</Button>
 
-## Modify Other System Configuration Options
+## Modification of Other System Configuration Options
 
-To modify other system configuration options, please see: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/flyos-fast/config">Modify system configuration</Button>
+For modification of other system configuration options, please refer to: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/flyos/os_config">Modification of System Configuration</Button>
