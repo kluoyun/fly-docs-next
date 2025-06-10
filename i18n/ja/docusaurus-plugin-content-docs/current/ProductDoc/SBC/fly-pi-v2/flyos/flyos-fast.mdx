@@ -1,238 +1,51 @@
 ---
 sidebar_position: 1
-sidebar_label: FLYOS-FAST システム焼込み
+sidebar_label: FLYOS-FAST システム焼込
 ---
 
-強烈におすすめします！！！このシステムはFLYが3Dプリンターに深くカスタマイズしたシステムです！
 
-# FLYOS-FAST システム焼込み
-
-## システム焼込み
-
-FLYOS-FAST システム焼込みチュートリアル：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/flyos-fast/#简介">flyos-fast システム焼込みチュートリアル</Button>
+import FASTFASLH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/DebugDoc/flyos-fast/_falsh.mdx';
 
 
-<br/>
-<br/>
-<br/>
 
 
-## システム概要
 
-* FlyOS-Fast は軽量のLinuxシステムで、3Dプリンターに深くカスタマイズされ、起動が速く、30秒で起動できます。Fly全シリーズのアップボードプラットフォームをサポートしています。
-* カーネルを最適化し、Klipperのリアルタイム応答パフォーマンスを向上させます
-* ファイルシステムを最適化し、突然電源が切れた場合でもシステムが損傷しないようにします
-* Klipper、RRF、Mainsail、Fluidd、Moonraker、KlipperScreenなどのサービスがプリインストールされています
-* KlipperとRRFシステムの切り替えをサポート
-* MainsailとFluiddのオンラインでのワンクリック切り替えをサポート
-* USBメモリによる印刷をサポート
-* KPPMモジュールを使用すると、電源断継続印刷が可能です
-* FluiddなどのフロントエンドUIのデフォルト言語やデフォルトプリンタ名を事前に設定することをサポート
-* さらなるOEMカスタマイズ機能：起動ロゴ、事前設定された設定ファイル、Mainsailタブページの非表示などについては、お問い合わせください。
+# システムイメージ焼込
 
-## 準備作業
+<FASTFASLH name="H5" />
 
-1. システムイメージのダウンロード
-    - イメージリンク：[Piv2 システムイメージダウンロード](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/FlyOS-Fast-H5.exe/version/50907014/overview "クリックするとリンクに飛びます")（Windowsのみ対応）  
-    - イメージリンク：[Piv2 システムイメージダウンロード](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/FlyOS-Fast-H5.7z/version/50907002/overview "クリックするとリンクに飛びます")（Windows、MacOS、Linux対応）
+            
+## システムカードのインストール
 
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_download.webp').default} size="90%" align="center" />
+<Tabs>
+    <TabItem value="usb" label="M2WEをPI-V2に取り付ける図" default>
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="30%" align="center" />
+    </TabItem>
+    <TabItem value="can" label="TFカードをPI-V2に取り付ける図">
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="30%" align="center" />
+    </TabItem>
+</Tabs>
 
+## アンテナの取り付け
 
-2. 焼き付けツールのダウンロード、このチュートリアルでは`Rufus`を使用します。実際には他のツールも使用可能、例えば`Etcher`、`Win32 Disk Imager`など。
-    - Rufus ダウンロードリンク：[クリックしてダウンロード（日本語）](https://rufus.ie/ja/#download) または [Click to Download English](https://rufus.ie/en/#download) （Windowsのみ対応）。
-    - Etcher ダウンロードリンク：[クリックしてダウンロード](https://etcher.balena.io/#download-etcher) （Windows、MacOS、Linux対応）。
-    - Win32 Disk Imager ダウンロードリンク：[クリックしてダウンロード](https://sourceforge.net/projects/win32diskimager/) （Windowsのみ対応）。
-
-3. このチュートリアルでは`FlyOS-Fast-H5.exe`を使用します。
-
-4. システムイメージファイルを解凍し、`.img`ファイルを得ます。
-    - `.exe`ファイルをダブルクリックまたは右クリックして開き、数秒待つと次のウィンドウが表示されます。（システムが不安全と警告される場合は、「より詳細」→「実行」を選択してください）
-    - 解凍先ディレクトリを選択し、「Extract」ボタンをクリックして解凍を待ちます。
-    
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
-
-    - 解凍が完了すると、解凍ディレクトリに`FlyOS-Fast-H5-vx.x.x.img`ファイルが生成されます。`x.x.x`はシステムバージョン番号です。
-
-## イメージ焼込み
-
-    <Tabs>
-        <TabItem value="TF" label="TFカードに焼込む" default>
-            ## TFカードに焼込む
-            1. - 焼き用のTFカードは4GB以上必要で、推奨はSanDisk 32GB C10以上のTFカードを使用してください。（安価なカードでは多くの場合、焼込み後に起動できないことが確認されています）。
-               - 焼き用のTFカードはSDカードリーダーを使用し、リーダーをパソコンに挿入します。
-            2. `Rufus`を開き、デバイスを選択します。選択したデバイスの容量が、パソコンに挿入された焼込みカードの容量と一致する必要があります。  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            3. イメージファイルを選択し、「ブートタイプ選択」の右側にある「選択」ボタンをクリックし、解凍後の`.img`ファイルを選択します。
-            4. イメージファイルを選択すると、「ブートタイプ選択」がイメージファイルのファイル名になります。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            5. 「開始」ボタンをクリックすると、磁盤データをクリアする必要がある旨のポップアップが出る場合がありますので、「確定」をクリックしてください。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            6. 焼き込みが完了すると、コンピューターから通知音が鳴り、進行状況バーが「準備完了」に変わります。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            7. 焼き込みが完了したら、すぐに焼込みカードを取り出さないでください。
-            8. ファイルエクスプローラーを開き、`FlyOS-Conf`という名前のUSBドライブまたは可搬型記憶装置があるかどうか確認します。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            9. `FlyOS-Conf`を開き、以下の画像に示されている2つのファイルがあれば、焼込み成功です。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            10. 其中の`config.txt`はシステムの設定ファイルです。次のページの内容をご覧いただき、設定ファイルを変更してください。
-
-        </TabItem>
-        <TabItem value="M2WE" label="USB経由でM2WEに焼込む">
-            ## USB経由でM2WEに焼込む
-            1. ドライバーのダウンロード：
-               - <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/Utils/zadig-2.7.exe">M2WEドライバー</Button>
-               - <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/Utils/FLY-BOOT-Setup.msi">M2WE BOOTスタートツール</Button>
-
-            2. ドライバーのインストール：
-               - `Zadig`を開き、トップメニューの`Options`で`すべてのデバイスをリスト表示`にチェックを入れる
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
-            
-            3. M2WEをインストールし、マザーボード上の`BOOT`ボタンを押して、ダブルUSBケーブルでアップボードをパソコンに接続します
-    
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot1.webp').default} size="70%" align="center" />
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot2.webp').default} size="70%" align="center" />
-    
-            4. `zadig`を開く
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="center" />
-        
-            5. 問題なければ、ここで`zadig`に新しい`不明デバイス #x`または`USBデバイス(VID_1f3a_PID_efe8)`が追加されます。それを選択してください
-        
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="center" />
-        
-            6. 選択したデバイスのUSB IDが上図と一致しているか確認してください。一致しなければ他のデバイスを選んでください
-            7. 上図の2箇所目は`WinUSB(vxxxxxxx)`を選択してください。バージョン番号は関係ありません
-            8. 「ドライバーをインストール」をクリックしてドライバーをインストールします。**同じパソコンでは一度だけインストールすればOKです**
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="center" />
-
-            9. インストール済みの`FLY-BOOT`を開き、「デバイスをチェック」をクリックすると、手順が正しい場合、利用可能なデバイスが見つかると通知されます
-            <ImageView image={require('@site/docs/General/fly-os/img/fly_boot1.webp').default} size="60%" align="center" />
-
-            10. 「BOOT」を起動すると、正常であれば「BOOT」が有効になり、数秒待って次に進んでください
-
-            <ImageView image={require('@site/docs/General/fly-os/img/fly_boot2.webp').default} size="60%" align="center" />
-            
-            11. `Rufus`を開き、デバイスを選択します。選択したデバイスの容量が、パソコンに挿入された焼込みカードの容量と一致する必要があります。  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            12. イメージファイルを選択し、「ブートタイプ選択」の右側にある「選択」ボタンをクリックし、解凍後の`.img`ファイルを選択します。
-            13. イメージファイルを選択すると、「ブートタイプ選択」がイメージファイルのファイル名になります。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            14. 「開始」ボタンをクリックすると、磁盤データをクリアする必要がある旨のポップアップが出る場合がありますので、「確定」をクリックしてください。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            15. 焼き込みが完了すると、コンピューターから通知音が鳴り、進行状況バーが「準備完了」に変わります。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            16. 焼き込みが完了したら、すぐに焼込みカードを取り出さないでください。
-            17. ファイルエクスプローラーを開き、`FlyOS-Conf`という名前のUSBドライブまたは可搬型記憶装置があるかどうか確認します。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            18. `FlyOS-Conf`を開き、以下の画像に示されている2つのファイルがあれば、焼込み成功です。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            19. 其中の`config.txt`はシステムの設定ファイルです。次のページの内容をご覧いただき、設定ファイルを変更してください
-
-        </TabItem>
-        <TabItem value="M2SD" label="M2SD Burner経由でM2WEまたはTFカードに焼込む">
-            ## M2SD Burner経由でM2WEまたはTFカードに焼込む
-            :::danger 注意
-                * 本製品はUSB3.0に対応しています
-                * 本製品はTFカードとM2WEを同時にインストールして使用することはできません
-                * M2WEまたはSDカードをパソコンのUSBポートに接続すると、フォーマットが可能です
-                * NVMeなどの他のデバイスをインストールしないでください。それによってデバイスが破損する可能性があります！！！
-            :::
-            
-            1. M2WEまたはSDカードをM2SDに取り付けます。TFカードを使用して焼込む場合、TFカードは4GB以上必要で、推奨はSanDisk 32GB C10以上のTFカードを使用してください。（多くの安価なカードでは、焼込み後に起動できないことが確認されています）
-                - M2WEを取り付ける
-                <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="100%" align="left" />
-                - SDカードを取り付ける
-                <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd.webp').default} size="100%" align="left" />
-
-            2. `Rufus`を開き、デバイスを選択します。選択したデバイスの容量が、パソコンに挿入された焼込みカードの容量と一致する必要があります。  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            3. イメージファイルを選択し、「ブートタイプ選択」の右側にある「選択」ボタンをクリックし、解凍後の`.img`ファイルを選択します。
-            4. イメージファイルを選択すると、「ブートタイプ選択」がイメージファイルのファイル名になります。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            5. 「開始」ボタンをクリックすると、磁盤データをクリアする必要がある旨のポップアップが出る場合がありますので、「確定」をクリックしてください。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            6. 焼き込みが完了すると、コンピューターから通知音が鳴り、進行状況バーが「準備完了」に変わります。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            7. 焼き込みが完了したら、すぐに焼込みカードを取り出さないでください。
-            8. ファイルエクスプローラーを開き、`FlyOS-Conf`という名前のUSBドライブまたは可搬型記憶装置があるかどうか確認します。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            9. `FlyOS-Conf`を開き、以下の画像に示されている2つのファイルがあれば、焼込み成功です。
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            10. 其中の`config.txt`はシステムの設定ファイルです。次のページの内容をご覧いただき、設定ファイルを変更してください。
-
-        </TabItem>
-    </Tabs>
-
-## WiFi設定
-
-    1. `vscode`や他の専門的なテキストエディターを使用して`config.txt`を開きます（**できる限り、Windowsの標準のメモ帳で設定ファイルを編集しないでください**）
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-
-    2. `WIFI_SSID=""`の「」内に**WiFi名**を入力します  
-       `WIFI_PASS="""`の「」内に**WiFiパスワード**を入力します  
-       保存後、閉じて、名前が`FlyOS-Conf`のUSBドライブまたは可搬型記憶装置がポップアップします。
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/osfast_wifi.webp').default} size="70%" align="center" />  
-
-## アップボードの起動
-    1. 起動前に、**メモリカード**または**M2WE**がアップボードに正しく取り付けられていることを確認してください
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="70%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="70%" align="center" />
-  
-    2. `M2WE`または`2.4G WiFi`モジュールのアンテナを設置します
+    1. `M2WE`または`2.4G WiFi`モジュールのアンテナを取り付けます
     :::warning
-    * FLYアップボードは`M2WE`または`2.4G WiFi`モジュールを使用する必要があります。それがないとWiFiを使用できません
-    * 注意：アップボードは中国語名前のWiFiはサポートしていません。また、2.4Gと5Gの両方を統合したWiFiもサポートしていません
+    * FLY上位機は`M2WE`または`2.4G WIFI`モジュールを使用する必要があります。それ以外ではWiFiを使用できません。
+    * 注意してください、上位機は中国語名前のWiFiをサポートしておらず、2.4Gと5Gの両方を統合したWiFiもサポートしていません。
     :::
-    * WiFiアンテナの接続場所は赤い矢印で示されています
+    * レッドアローが指している部分がWiFiアンテナ接続部です
     * WiFiアンテナポートは`ipex1`です
-    * PI V2にアンテナを接続しないと、信号が弱いためルータに接続できない可能性があります
+    * 信号が悪い場合に接続がルーターにできない可能性があるため、必ずM2WEにアンテナを取り付けてください
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/wifi.webp').default} size="80%" align="left" /> 
 
-    3. アップボードに電力を供給します。  
-    **ここから、あなたのアップボードは起動しました！！！**  
-    次のステップに進むには：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">SSHによるアップボードへの接続</Button>
+    :::tip
+    - システムカードのインストールが完了したら、次の手順に進み、SSHで上位機に接続できます
+    :::
 
+    2. 上位機に電源を供給します。  
+    **ここでは、あなたの上位機はすでに起動できます！！！**  
+    次の手順に進んでください:<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">上位機にSSH接続</Button>
 
-## その他のシステム設定オプションの変更
+## その他のシステム構成オプションの変更
 
-その他のシステム設定オプションの変更については：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/flyos-fast/config">システム設定の変更</Button>
-
+その他のシステム構成オプションの変更については、こちらをご覧ください:<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/flyos/os_config">システム構成の変更</Button>

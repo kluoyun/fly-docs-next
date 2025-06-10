@@ -1,58 +1,113 @@
 ## USB ID 검색하기
-    1. SSH에서 `lsusb` 명령어를 입력하고 Enter 키를 누릅니다. 아래에 나와 있는 `1d50:614e`가 표시되면 다음 단계로 진행할 수 있습니다.
-    <ImageView image={require('@site/docs/General/get-id/img/614e.webp').default} size="80%" align="center" />
+1. 브라우저를 열고 주소 표에 호스트 컴퓨터의 IP 주소를 입력합니다. 예를 들어, 호스트 컴퓨터의 IP가 `192.168.101.179`라면 이 주소를 입력하고 Enter 키를 누릅니다.
+  <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-    2. `1d50:614e`는 이번에 사용할 장치입니다.  
-        만약 `lsusb` 명령어를 입력하면 장치가 표시되지만 `1d50:614e`가 없다면, 메인보드의 스위치 모드 설정을 확인하고 올바르게 재컴파일하여 USB 펌웨어를 다시 블러닝하고, 메인보드에 24V 전원을 공급해 보세요.
+2. 호스트 컴퓨터의 웹 인터페이스를 열고 좌측 사이드바의 설정 옵션에서 찾아보세요:
+  <table>
+    <tr>
+      <td>
+        - fluidd의 경우: `{…}` 을 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsail의 경우: `기계`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-    :::warning 주의사항
-       반드시 `1d50:614e` 장치를 찾은 후 다음 단계로 진행해야 합니다.
-    :::
-
-    3. SSH에서 아래 명령어를 입력하고 Enter 키를 누릅니다. 모든 것이 정상적으로 작동한다면 아래의 `파란색 ID`를 볼 수 있습니다.
-    ```bash
-    ls /dev/serial/by-id/*
-    ```
-    :::warning 주의사항
-    - 아래에 표시된 `ID`는 참고용이며, 각 메인보드의 `ID`는 모두 다릅니다. 실제 확인한 `ID`를 사용해야 합니다.
-    - 여러 개의 메인보드를 연결했다면 여러 개의 ID가 나타날 수 있으므로, 자신의 메인보드 `MCU 모델`에 맞는 ID를 선택해야 합니다.
-    :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="center" />
----
-
-## USB ID 입력하기
-
-    1. 상위기기를 웹 인터페이스로 열고, 왼쪽 사이드바의 설정 옵션에서 찾아보세요:
-
+  3. `printer.cfg`를 클릭한 후 오른쪽 상단의 `DEVICES`를 클릭하세요.
     <table>
       <tr>
         <td>
-          - fluidd는 `{…}` 이며, 클릭하면 `printer.cfg`를 찾을 수 있습니다.
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_devices.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - mainsail은 `기계`이며, 클릭하면 `printer.cfg`를 찾을 수 있습니다.
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_devices.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
-    2. 파란색 ID를 복사하여 `printer.cfg` 파일에서 `[mcu]` 옵션을 찾아, 아래의 `serial:` 뒤에 조회한 `ID`를 입력합니다. 저장하고 재부팅하면 메인보드와 연결됩니다.
-    :::danger
-    * 아래의 설정된 ID는 예시입니다!!! 실제 조회한 `ID`를 엄격히 따르세요.
-    * 메인보드의 USB ID 형식은 다음과 같습니다:
-     ```
-    [mcu]  
-    serial: /dev/serial/by-id/usb-klipper_******_**********-****
-    ```
-    :::
+  4. `SERIAL`을 클릭한 후 새로 고침하세요.
+    <table>
+      <tr>
+        <td>
+          - fluidd의 새로 고침
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_refresh.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail의 새로 고침
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_refresh.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
-    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
-    
-    3. Klipper가 `ADC out of range`라는 경고를 출력하는 경우, 이는 정상적인 현상입니다. 열 침대와 온도센서를 메인보드에 연결하고, 노즐과 열 침대의 온도센서 핀을 구성한 후 저장하고 재부팅하면 됩니다.
+  5. ID를 복사합니다. 화살표로 가리키는 곳을 클릭하면 복사됩니다.
+    <table>
+      <tr>
+        <td>
+          - fluidd의 경우 `ttyAMC`가 존재하는지 확인하고 Path by ID가 있는지 확인하세요. 이 값이 USB ID입니다.
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_id.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail의 경우 `ttyAMC`가 존재하는지 확인하고 Path by ID가 있는지 확인하세요. 이 값이 USB ID입니다.
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_id.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+## USB ID 입력하기
+
+    1. `DEVICES`를 닫고 ID를 입력하세요.
+
+    :::danger 주의사항
+      * 구성 파일에서 다음 부분을 수정하세요:
+      ```
+      [mcu] 
+      serial: /tmp/klipper_host_mcu
+      ```  
+      수정된 내용은 다음과 같습니다:
+      ```
+      [mcu host] 
+      serial: /tmp/klipper_host_mcu
+      ```
+      * 다음 항목을 추가하세요:
+      ```
+      [mcu]
+      serial: <여기에는 방금 검색한 ID를 입력하세요>
+      ```
+      :::
+    <table>
+      <tr>
+        <td>
+          - fluidd에서 [MCU]를 찾습니다.
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail에서 [MCU]를 찾습니다.
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    2. ID를 구성 파일에 입력하세요.
+    :::tip
+
+    * ID를 입력한 후 오른쪽 상단의 `SAVE & RESTART`를 클릭하세요.
+    :::
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_save.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_save.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    3. Klipper에서 `ADC out of range`라는 메시지가 나타나면 이는 정상적인 현상입니다. 핫베드와 센서를 메인보드에 연결하고 헤드, 핫베드의 센서 핀을 구성한 후 다시 저장하고 재부팅하세요.
 
 :::danger
-주의: 문서에 포함된 모든 ID는 예시입니다. 실제 각 메인보드의 ID는 모두 다릅니다. 실제로 얻은 ID를 입력하세요.
+주의: 문서에서 나온 모든 ID는 예제입니다. 각 메인보드의 ID는 모두 다르므로 실제로 얻은 ID를 입력하세요.
 :::
 ---

@@ -56,28 +56,42 @@ endstop_pin: probe:z_virtual_endstop
 ```cfg
 [homing_override]
 axes: xyz
-set_position_z:10
+set_position_z: 10
 gcode:
-       G91
-       G1 Z10 F3000
-       G90
-        SET_PIN PIN=_probe_ready VALUE=0
-        ## _LIFT_Z
-       {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+    {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+    {% set e_target = printer.extruder.target %} # 保存当前温度
+    {% set fan_speed = printer.fan.speed %}      # 保存当前风扇速度
+    
+    {% if home_all or 'X' in params %}
+        G28 X
+    {% endif %}
 
-       {% if home_all or 'X' in params %}
-            G28 X
-       {% endif %}
+    {% if home_all or 'Y' in params %}
+        G28 Y
+    {% endif %}
 
-       {% if home_all or 'Y' in params %}
-            G28 Y
-            G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
-       {% endif %}
-
-       {% if home_all or 'Z' in params %}
-            G28 Z 
-            G1 Z10 F3000           
+    {% if home_all or 'Z' in params %}
+        G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
+        {% if e_target >= 150 or printer.extruder.temperature >= 150 %}
+            M106 S255 # 打开风扇
+            M109 S150 # 确保在150度归位Z
         {% endif %}
+        M106 S0       # 关闭风扇
+
+        G91
+        G1 Z5 F2000 # 防止喷嘴距离热床太近，提前拉开距离
+        G90
+
+        # 如果同时使用eddy加压力传感器取消下面注释
+        #SET_PIN PIN=_probe_ready VALUE=1 
+        G28 Z 
+        #SET_PIN PIN=_probe_ready VALUE=0
+        G1 Z10 F2000
+        
+        M109 S{e_target}  # 恢复温度
+        M106 S{fan_speed} # 恢复风扇速度
+    {% endif %}
+        
 
 [output_pin _probe_ready]
 pin: PA9 #En #使能引脚

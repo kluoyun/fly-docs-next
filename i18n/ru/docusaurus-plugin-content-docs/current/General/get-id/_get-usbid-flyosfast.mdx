@@ -1,59 +1,114 @@
 ## Поиск USB ID
-    1. В SSH введите команду `lsusb`, нажмите клавишу `Enter`. Если появляется `1d50:614e`, как показано на рисунке ниже, можно переходить к следующему шагу.
-    <ImageView image={require('@site/docs/General/get-id/img/614e.webp').default} size="80%" align="center" />
+1. Откройте браузер и в адресной строке введите IP-адрес главного устройства, например, мой IP-адрес главного устройства — `192.168.101.179`. Просто введите его и нажмите Enter.
+  <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-    2. `1d50:614e` принадлежит устройству, которое вы используете.  
-        Если команда `lsusb` показывает устройство, но не отображает `1d50:614e`, проверьте правильность режима переключателей на материнской плате, попробуйте пересобрать и записатьfirmware USB, а также попробуйте подключить к материнской плате питание 24В.
+2. Откройте веб-интерфейс главного устройства. В левом боковом меню найдите раздел конфигурации:
+  <table>
+    <tr>
+      <td>
+        - Для fluidd: `{…}`, нажмите, чтобы войти, и найдете файл `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - Для mainsail: «Машина», нажмите, чтобы войти, и найдете файл `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-    :::warning Внимание
-       Действия можно продолжать только после того, как будет найдено устройство с `1d50:614e`.
-    :::
-
-    3. В SSH введите следующую команду, нажмите клавишу `Enter`. Если все выполнено корректно, то появится строка с `синим ID`.
-    ```bash
-    ls /dev/serial/by-id/*
-    ```
-    :::warning Внимание
-    - Приведенный на изображении `ID` является примером, каждый материнская плата имеет уникальный `ID`. Используйте фактически полученный `ID`.  
-    - Если подключены несколько материнских плат, одновременно будут отображаться несколько ID. Выберите подходящий ID в соответствии с моделью `MCU` вашей материнской платы.
-    :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="center" />
----
-
-
-## Заполнение USB ID
-
-    1. Откройте веб-интерфейс верхнего уровня, найдите раздел конфигурации в боковой панели слева:
-
+  3. Нажмите на `printer.cfg`, затем нажмите справа сверху на «DEVICES»
     <table>
       <tr>
         <td>
-          - Для fluidd: `{…}`, щелкните для доступа к `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_devices.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - Для mainsail: `Машина`, щелкните для доступа к `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_devices.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
-    2. Скопируйте синий ID и найдите в файле `printer.cfg` опцию `[mcu]`. После параметра `serial:` укажите полученный `ID`, сохраните изменения и перезагрузите систему, чтобы подключиться к материнской плате.
-    :::danger
-    * Примеры ID внизу仅供参考! Пожалуйста, строго придерживайтесь формата, показанного на изображении ниже
-    * Формат USB ID материнской платы:
-     ```
-    [mcu]  
-    serial: /dev/serial/by-id/usb-klipper_******_**********-****
-    ```
-    :::
+  4. Нажмите на «SERIAL» и обновите страницу
+    <table>
+      <tr>
+        <td>
+          - Обновление fluidd
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_refresh.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - Обновление mainsail
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_refresh.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
-    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
-    
-    3. Если Klipper выводит сообщение об ошибке `ADC out of range`, это нормальное явление. Подключите нагревательный элемент и термодатчик к материнской плате и правильно настройте контакты датчиков для головки и нагревательного стола, затем сохраните и перезагрузите систему.
+  5. Скопируйте ID, нажав на указатель для копирования
+    <table>
+      <tr>
+        <td>
+          - Для fluidd убедитесь, что существует `ttyAMC` и Path by ID существует, это ваш USB ID
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_id.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - Для mainsail убедитесь, что существует `ttyAMC` и Path by ID существует, это ваш USB ID
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_id.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+## Заполнение USB ID
+
+    1. Закройте «DEVICES» и заполните ID
+
+    :::danger Важно знать
+      * Измените в файле конфигурации:
+      ```
+      [mcu] 
+      serial: /tmp/klipper_host_mcu
+      ```  
+      на
+      ```
+      [mcu host] 
+      serial: /tmp/klipper_host_mcu
+      ```
+      * Добавьте:
+      ```
+      [mcu]
+      serial: <вставьте здесь только что полученный ID>
+      ```
+      :::
+    <table>
+      <tr>
+        <td>
+          - В fluidd найдите [MCU]
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - В mainsail найдите [MCU]
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+
+    2. Заполните ID в конфигурации
+    :::tip
+
+    * После заполнения ID нажмите в правом верхнем углу на «SAVE & RESTART »
+    :::
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_save.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_save.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    3. Если Klipper показывает сообщение «ADC out of range», это нормально. Подключите нагревательный стол и термисторы к материнской плате и настройте выводы датчиков температуры для сопла и нагревательного стола, затем сохраните и перезагрузите.
 
 :::danger
-Внимание: Все ID в документации являются примерами, на каждой материнской плате ID различаются. Пожалуйста, используйте фактически полученные ID.
+Внимание: Все ID, указанные в документации, являются примерами. У каждой материнской платы ID различаются. Пожалуйста, используйте фактические полученные ID.
 :::
 ---

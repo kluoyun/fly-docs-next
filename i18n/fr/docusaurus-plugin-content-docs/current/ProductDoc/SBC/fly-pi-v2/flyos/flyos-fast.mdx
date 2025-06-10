@@ -3,236 +3,49 @@ sidebar_position: 1
 sidebar_label: Système de gravure FLYOS-FAST
 ---
 
-Fortement recommandé !!! Ce système est personnalisé en profondeur pour les imprimantes 3D par FLY !
 
-# Gravure du système FLYOS-FAST
-
-## Gravure du système
-
-Tutoriel de gravage du système FLYOS-FAST : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/flyos-fast/#introduction">tutoriel de gravage du système FLYOS-FAST</Button>
+import FASTFASLH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/DebugDoc/flyos-fast/_falsh.mdx';
 
 
-<br/>
-<br/>
-<br/>
 
 
-## Présentation du système
 
-* FlyOS-Fast est un système Linux allégé, spécialement conçu pour l'impression 3D, avec un démarrage rapide (seulement 30 secondes). Compatible avec toutes les plateformes supérieures Fly.
-* Noyau optimisé pour améliorer les performances temps réel de Klipper.
-* Système de fichiers optimisé pour éviter les dommages au système lors d'une coupure de courant directe.
-* Préinstallé avec des services comme Klipper, RRF, Mainsail, Fluidd, Moonraker, KlipperScreen.
-* Prise en charge de la bascule entre Klipper et RRF.
-* Prise en charge de l'activation en ligne entre Mainsail et Fluidd.
-* Prise en charge de l'impression via USB.
-* Avec le module KPPM, il est possible de reprendre une impression après une coupure de courant.
-* Prise en charge des paramètres prédéfinis tels que la langue par défaut de Fluidd et le nom d'imprimante par défaut.
-* Pour plus de fonctionnalités personnalisées OEM, comme le logo de démarrage, les fichiers de configuration préconfigurés ou la masquage des pages Mainsail, contactez-nous.
+# Gravure de l'image système
 
-## Préparation
+<FASTFASLH name="H5" />
 
-1. Télécharger l'image système
-    - Lien de téléchargement : [Image système Piv2](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/FlyOS-Fast-H5.exe/version/50907014/overview "Cliquez ici pour accéder au lien") (support uniquement Windows)  
-    - Lien de téléchargement : [Image système Piv2](https://g-ofpa1390.coding.net/public-artifacts/3D-Printers/flyos-fast/FlyOS-Fast-H5.7z/version/50907002/overview "Cliquez ici pour accéder au lien") (support Windows, MacOS, Linux)
+            
+## Installation de la carte système
 
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/flyos-fast_download.webp').default} size="90%" align="center" />
+<Tabs>
+    <TabItem value="usb" label="Schéma d'installation de M2WE sur PI-V2" default>
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="30%" align="center" />
+    </TabItem>
+    <TabItem value="can" label="Schéma d'installation de la carte TF sur PI-V2">
+        <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="30%" align="center" />
+    </TabItem>
+</Tabs>
 
+## Installation des antennes
 
-2. Télécharger l'outil de gravure. Le tutoriel utilisera `Rufus` en exemple. En pratique, d'autres outils peuvent être utilisés, comme `Etcher`, `Win32 Disk Imager`.
-    - Adresse de téléchargement de Rufus : [Cliquer pour télécharger en chinois](https://rufus.ie/zh/#download) ou [Cliquez pour télécharger en anglais](https://rufus.ie/en/#download) (support uniquement Windows).
-    - Adresse de téléchargement d'Etcher : [Cliquer pour télécharger](https://etcher.balena.io/#download-etcher) (support Windows, MacOS, Linux).
-    - Adresse de téléchargement de Win32 Disk Imager : [Cliquer pour télécharger](https://sourceforge.net/projects/win32diskimager/) (support uniquement Windows).
-
-3. Le tutoriel utilisera `FlyOS-Fast-H5.exe` en exemple.
-
-4. Décompresser le fichier image système pour obtenir le fichier `.img`.
-    - Double-cliquez ou ouvrez-le avec un clic droit sur `FlyOS-Fast-H5.exe`, attendez quelques secondes jusqu'à ce que la fenêtre suivante s'affiche (si le système affiche un avertissement de sécurité, choisissez « Plus d'informations » -> « Exécuter »).
-    - Vous pouvez choisir le dossier de décompression, puis cliquez sur le bouton `Extraire`, attendez que l'extraction soit terminée.
-    
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/ext1.webp').default} size="60%" align="center" />
-
-    - Après l'extraction, un fichier `FlyOS-Fast-H5-vx.x.x.img` sera généré dans le dossier de décompression. `x.x.x` représente le numéro de version du système.
-
-## Gravure de l'image
-
-    <Tabs>
-        <TabItem value="TF" label="Gravure vers carte TF" default>
-            ## Gravure vers carte TF
-            1. - La carte TF utilisée pour la gravure doit être supérieure à 4 Go, il est recommandé d'utiliser une carte SD SanDisk de 32 Go et classe 10 (les tests ont montré que de nombreuses cartes bon marché ne peuvent pas démarrer après la gravure).
-               - La carte TF utilisée pour la gravure doit être insérée dans un lecteur de carte SD, puis insérée dans l'ordinateur.
-            2. Ouvrir `Rufus`, sélectionner l'appareil. L'appareil sélectionné doit correspondre en capacité à la carte gravée insérée dans l'ordinateur.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            3. Sélectionner le fichier image, cliquez sur le bouton `Type de guide sélectionné` à droite et sélectionnez le fichier `.img` extrait.
-            4. Après avoir sélectionné le fichier image, `Type de guide sélectionné` deviendra le nom du fichier image.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            5. Cliquez sur le bouton `Démarrer`, si une fenêtre apparaît pour demander de supprimer les données du disque, cliquez sur `OK`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            6. Après la gravure, l'ordinateur émettra un signal sonore et la barre de progression indiquera `Prêt`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            7. Après la gravure, ne retirez pas immédiatement la carte gravée.
-            8. Ouvrez l'Explorateur de fichiers, vérifiez si un lecteur amovible ou une clé USB nommé `FlyOS-Conf` existe.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            9. Ouvrez `FlyOS-Conf`, si les deux fichiers suivants sont présents, cela signifie que la gravure a réussi.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            10. Parmi eux, `config.txt` est le fichier de configuration système, veuillez consulter la page suivante pour son contenu. Modifier le fichier de configuration.
-
-        </TabItem>
-        <TabItem value="M2WE" label="Gravure via USB vers M2WE">
-            ## Gravure via USB vers M2WE
-            1. Télécharger les pilotes :
-               - <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/Utils/zadig-2.7.exe">Pilote M2WE</Button>
-               - <Button variant="contained" disableElevation component="a" rel="noopener" href="https://cdn.mellow.klipper.cn/Utils/FLY-BOOT-Setup.msi">Outil de démarrage M2WE</Button>
-
-            2. Installer les pilotes :
-               - Ouvrir `Zadig`, cochez `List All Devices` dans le menu déroulant `Options`
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig.webp').default} size="80%" align="left" />
-            
-            3. Installez M2WE, puis appuyez sur le bouton `BOOT` sur la carte mère, et connectez l'ordinateur supérieur via un câble USB double-tête
-            
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot1.webp').default} size="70%" align="center" />
-            <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/piv2_boot2.webp').default} size="70%" align="center" />
-    
-            4. Ouvrir zadig
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig1.webp').default} size="80%" align="center" />
-        
-            5. Si tout se passe bien, `Zadig` affichera un `Device Inconnu #x` ou `USB Device(VID_1f3a_PID_efe8)`, sélectionnez-le
-        
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig2.webp').default} size="80%" align="center" />
-        
-            6. Vérifiez que l'ID USB correspond à celui de l'image ci-dessus, sinon sélectionnez un autre appareil
-            7. Dans le deuxième endroit, vous pouvez seulement sélectionner `WinUSB(vxxxxxxx)`, la version du pilote n'est pas importante
-            8. Cliquez sur `Installer le pilote` pour installer le pilote, **le pilote doit être installé une seule fois sur le même ordinateur**
-    
-            <ImageView image={require('@site/docs/General/fly-os/img/zadig3.webp').default} size="80%" align="center" />
-
-            9. Ouvrir le programme FLY-BOOT installé, cliquez sur `Vérifier le périphérique`, si les étapes précédentes sont correctement effectuées, un message apparaîtra indiquant que le périphérique est disponible
-            <ImageView image={require('@site/docs/General/fly-os/img/fly_boot1.webp').default} size="60%" align="center" />
-
-            10. Cliquez sur `Démarrer BOOT`, si tout va bien, un message apparaîtra indiquant que le BOOT est activé avec succès, attendez quelques secondes pour passer à l'étape suivante
-
-            <ImageView image={require('@site/docs/General/fly-os/img/fly_boot2.webp').default} size="60%" align="center" />
-            
-            11. Ouvrir `Rufus`, sélectionner l'appareil. L'appareil sélectionné doit correspondre en capacité à la carte gravée insérée dans l'ordinateur.  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            12. Sélectionner le fichier image, cliquez sur le bouton `Type de guide sélectionné` à droite et sélectionnez le fichier `.img` extrait.
-            13. Après avoir sélectionné le fichier image, `Type de guide sélectionné` deviendra le nom du fichier image.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            14. Cliquez sur le bouton `Démarrer`, si une fenêtre apparaît pour demander de supprimer les données du disque, cliquez sur `OK`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            15. Après la gravure, l'ordinateur émettra un signal sonore et la barre de progression indiquera `Prêt`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            16. Après la gravure, ne retirez pas immédiatement la carte gravée.
-            17. Ouvrez l'Explorateur de fichiers, vérifiez si un lecteur amovible ou une clé USB nommé `FlyOS-Conf` existe.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            18. Ouvrez `FlyOS-Conf`, si les deux fichiers suivants sont présents, cela signifie que la gravure a réussi.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            19. Parmi eux, `config.txt` est le fichier de configuration système, veuillez consulter la page suivante pour son contenu. Modifier le fichier de configuration
-
-        </TabItem>
-        <TabItem value="M2SD" label="Gravure via M2SD Burner vers M2WE ou carte TF">
-            ## Gravure via M2SD Burner vers M2WE ou carte TF
-            :::danger Remarques importantes
-                * Ce produit supporte USB 3.0
-                * Ce produit ne supporte pas l'utilisation simultanée de TF et M2WE
-                * Une fois que M2WE ou une carte SD est installée, il peut être formaté en la connectant à un port USB de l'ordinateur
-                * Ne pas installer NVME ou d'autres dispositifs, sinon cela pourrait endommager le dispositif !!!
-            :::
-            
-            1. Insérer M2WE ou une carte SD dans M2SD. Si une carte TF est utilisée pour la gravure, elle doit être supérieure à 4 Go, il est recommandé d'utiliser une carte SanDisk de 32 Go et classe 10 (les tests ont montré que de nombreuses cartes bon marché ne peuvent pas démarrer après la gravure)
-                - Installation de M2WE
-                <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd-1.webp').default} size="100%" align="left" />
-                - Installation de la carte SD
-                <ImageView image={require('@site/docs/General/fly-os/img/m2sd/m2sd.webp').default} size="100%" align="left" />
-
-            2. Ouvrir `Rufus`, sélectionner l'appareil. L'appareil sélectionné doit correspondre en capacité à la carte gravée insérée dans l'ordinateur.  
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash1.webp').default} size="40%" align="center" />
-    
-            3. Sélectionner le fichier image, cliquez sur le bouton `Type de guide sélectionné` à droite et sélectionnez le fichier `.img` extrait.
-            4. Après avoir sélectionné le fichier image, `Type de guide sélectionné` deviendra le nom du fichier image.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash2.webp').default} size="40%" align="center" />
-            
-            5. Cliquez sur le bouton `Démarrer`, si une fenêtre apparaît pour demander de supprimer les données du disque, cliquez sur `OK`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash3.webp').default} size="50%" align="center" />
-            
-            6. Après la gravure, l'ordinateur émettra un signal sonore et la barre de progression indiquera `Prêt`.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash4.webp').default} size="40%" align="center" />
-            
-            7. Après la gravure, ne retirez pas immédiatement la carte gravée.
-            8. Ouvrir l'Explorateur de fichiers, vérifiez si un lecteur amovible ou une clé USB nommé `FlyOS-Conf` existe.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash5.webp').default} size="60%" align="center" />
-            
-            9. Ouvrir `FlyOS-Conf`, si les deux fichiers suivants sont présents, cela signifie que la gravure a réussi.
-            
-            <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-            
-            10. Parmi eux, `config.txt` est le fichier de configuration système, veuillez consulter la page suivante pour son contenu. Modifier le fichier de configuration.
-
-        </TabItem>
-    </Tabs>
-
-## Configuration du WiFi
-
-    1. Utiliser `vscode` ou un autre éditeur de texte professionnel pour ouvrir `config.txt` (**Essayez d'éviter d'utiliser le bloc-notes intégré de Windows pour éditer le fichier de configuration**)
-    <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/flash6.webp').default} size="70%" align="center" />
-
-    2. Dans l'option `WIFI_SSID=""`, remplissez les `""` avec votre **nom de réseau WiFi**  
-       Dans l'option `WIFI_PASS="""`, remplissez les `""` avec votre **mot de passe WiFi**  
-       Enregistrez et fermez, faites sortir le lecteur amovible ou la clé USB nommé `FlyOS-Conf`.
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/osfast_wifi.webp').default} size="70%" align="center" />  
-
-## Démarrage de la station de travail
-
-    1. Avant de démarrer, assurez-vous que la **carte mémoire** ou **M2WE** est correctement installée sur la station de travail
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/tf.webp').default} size="70%" align="center" />
-    <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/m2we.webp').default} size="70%" align="center" />
-  
-    2. Installer l'antenne du module `M2WE` ou du module `2.4G WiFi`
+    1. Installer l'antenne pour le module `M2WE` ou `WiFi 2,4G`
     :::warning
-    * La station de travail FLY nécessite l'utilisation du module `M2WE` ou du module `2.4G WiFi`, sans quoi elle ne pourra pas utiliser le WiFi
-    * Notez que la station de travail ne prend pas en charge les noms de réseau WiFi en chinois, et ne prend pas en charge les réseaux WiFi 2.4G et 5G combinés
+    * Le PC supérieur nécessite l'utilisation du module `M2WE` ou `WiFi 2,4G`, sans quoi il ne sera pas possible d'utiliser le WiFi
+    * Veuillez noter que le PC supérieur ne prend pas en charge les noms de réseau WiFi en chinois et ne supporte pas le WiFi combiné 2,4G et 5G
     :::
-    * L'endroit marqué en rouge est l'interface de l'antenne WiFi
-    * L'interface WiFi est `ipex1`
-    * Assurez-vous d'installer l'antenne sur PI V2, sinon une faible puissance du signal peut entraîner une impossibilité de connexion au routeur
+    * L'endroit indiqué par la flèche rouge est l'interface de l'antenne WiFi
+    * L'interface de l'antenne WiFi est `ipex1`
+    * Veuillez installer l'antenne sur le M2WE, sinon, une faible qualité de signal peut entraîner une impossibilité de connexion au routeur
     <ImageView image={require('@site/docs/ProductDoc/SBC/fly-pi-v2/img/wifi.webp').default} size="80%" align="left" /> 
 
-    3. Alimentez la station de travail.  
-    **Ici, votre station de travail est déjà démarrée !!**  
-    Veuillez exécuter la prochaine étape : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">Connexion SSH à la station de travail</Button>
+    :::tip
+    - Une fois la carte système installée, vous pouvez passer à l'étape suivante : connectez-vous au PC supérieur via SSH
+    :::
 
+    2. Alimenter le PC supérieur.  
+    **Ici, votre PC supérieur est maintenant démarré !!!**  
+    Veuillez procéder à l'étape suivante : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/ssh">Connexion SSH au PC supérieur</Button>
 
 ## Autres options de configuration du système
 
-Pour modifier d'autres options de configuration du système, consultez : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/flyos-fast/config">Modification des options de configuration du système</Button>
+Pour modifier d'autres options de configuration du système, veuillez consulter : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/SBC/fly-pi-v2/flyos/os_config">Modification de la configuration du système</Button>

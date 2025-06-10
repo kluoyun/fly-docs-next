@@ -3,70 +3,96 @@ sidebar_position: 1
 ---
 
 # Introduction
-Le module de pression ALPS est une solution de détection de pression basée sur la conception ADS131M02, spécialement conçue pour l'autorégulation automatique de l'axe Z (Home) et le nivellement du lit par maillage des imprimantes 3D. Grâce à une détection de pression sensible et un traitement de signal en temps réel, le module peut percevoir précisément l'état de contact entre la tête d'impression et le lit, réalisant une précision de nivellement au millimètre près, éliminant les erreurs de calibration mécanique traditionnelle et améliorant significativement le taux de réussite de l'impression de la première couche.
+Le module de pression ALPS est une solution de détection de pression basée sur la conception ADS131M02, conçue spécialement pour l’auto-calibration Z (Home) et le nivellement du lit en nid d'abeille des imprimantes 3D. Grâce à une détection de pression de haute sensibilité et un traitement de signal en temps réel, le module peut percevoir avec précision l’état de contact entre la tête d'impression et le lit, permettant une précision de nivellement au millimètre, éliminant les erreurs dues aux méthodes de calibration mécaniques traditionnelles et améliorant sensiblement le taux de réussite de l'impression de la première couche.
 
-# Comparaison des paramètres
+# Comparatif de paramètres
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/csdb.webp').default} size="100%" align="center" />
 
-## Utilisation du module de pression APLS
+## Utilisation du module de pression ALPS
 
-### Recommandation d'utiliser la fonction d'essuyage
-Lors de l'utilisation du module de pression APLS, il est recommandé d'utiliser la fonction d'essuyage pour garantir la propreté de l'embout, ce qui améliore la précision et la stabilité du nivellement.
+### Recommandation d’utiliser la fonction de nettoyage
+Lors de l’utilisation du module de pression ALPS, il est recommandé d’utiliser la fonction de nettoyage pour garantir la propreté de l’embout, ce qui améliore la précision et la stabilité du nivellement.
 
-#### Schéma de câblage 4Pin XH2.54
-Le module peut être directement inséré dans l'interface UART de la carte mère ou connecté à l'interface UART d'une carte d'extension. Si une interface UART n'est pas disponible, deux broches peuvent être trouvées sur la carte mère, en veillant à la polarité positive et négative des fils.
+#### Schéma de câblage XH2.54 4Pin
+Le module peut être directement branché sur l’interface UART de la carte mère ou sur celle d’une carte d’extension. Si aucune interface UART n’est disponible, deux broches peuvent être trouvées sur la carte mère, en veillant à la polarité des fils d’alimentation.
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/uart1.webp').default} size="100%" align="center" />
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/uart.webp').default} size="100%" align="center" />
 
-### Remarques d'installation
-1. Assurez-vous que le module est installé solidement pour éviter tout contact défectueux pendant l'impression en raison des vibrations.
-2. Vérifiez que les connexions sont correctes pour éviter que le module ne fonctionne pas en raison d'erreurs de câblage.
-3. Avant la première utilisation, il est recommandé de réaliser plusieurs essais de nivellement pour s'assurer que la sensibilité et la précision du module correspondent aux attentes.
+### Remarques sur l'installation
+1. Assurez-vous que le module est bien fixé pour éviter tout contact défectueux pendant l’impression due aux vibrations.
+2. Vérifiez que les câblages sont corrects pour éviter que le module ne fonctionne pas en raison d'une mauvaise connexion.
+3. Avant de l'utiliser pour la première fois, il est conseillé de réaliser plusieurs tests de nivellement pour s'assurer que la sensibilité et la précision du module correspondent aux attentes.
 
 ## Affichage de l'état de la LED
-- **État d'alimentation** : La LED d'état encadrée en vert et rouge reste allumée en permanence, indiquant que le module fonctionne normalement.
-- **État de déclenchement** : La LED d'état encadrée en rouge clignote, indiquant que le module est dans un état de déclenchement.
+- **État d'alimentation** : La LED encadrée en vert et rouge clignote longuement, indiquant que le module fonctionne normalement.
+- **État déclenché** : La LED encadrée en rouge clignote, indiquant que le module est dans un état déclenché.
 <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/LED.webp').default} size="20%" align="center" />
 
 ### Dépannage de l'état de la LED
-- Si la LED n'est pas allumée, vérifiez que les connexions d'alimentation sont correctes.
-- Si la LED clignote continuellement, il pourrait y avoir un signal anormal détecté, vérifiez si le capteur est coincé par des objets ou endommagé.
+- Si la LED ne s'allume pas, vérifiez que les connexions d'alimentation sont correctes.
+- Si la LED clignote continuellement, il est possible que le module détecte un signal anormal ; vérifiez si le capteur est coincé ou endommagé par des corps étrangers.
 
 ## Guide de configuration
-Remplacez les sections `probe` et `home` du fichier de configuration existant par la configuration suivante :
+Remplacez les parties correspondantes des fichiers de configuration existants pour `probe` et `home`, et ajoutez la configuration suivante :
 
 ### Exemple de fichier de configuration
 Voici le contenu de la configuration recommandée, ajustez-le selon vos besoins :
 
+:::tip
+
+- Si vous souhaitez utiliser le module de pression ALPS comme limiteur Z, consultez la configuration ci-dessous
+
+:::
+```cfg
+[stepper_z]
+endstop_pin: probe:z_virtual_endstop
+# position_endstop: -0.5  
+```
+:::tip
+
+- Configuration de référence pour le module de pression ALPS
+
+:::
 
 ```cfg
 [homing_override]
 axes: xyz
-set_position_z:10
+set_position_z: 10
 gcode:
-       G91
-       G1 Z10 F3000
-       G90
-        SET_PIN PIN=_probe_ready VALUE=0
-        ## _LIFT_Z
-       {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+    {% set home_all = 'X' not in params and 'Y' not in params and 'Z' not in params %}
+    {% set e_target = printer.extruder.target %} # Sauvegarde de la température actuelle
+    {% set fan_speed = printer.fan.speed %}      # Sauvegarde de la vitesse du ventilateur
 
-       {% if home_all or 'X' in params %}
-            G28 X
-       {% endif %}
+    {% if home_all or 'X' in params %}
+        G28 X
+    {% endif %}
 
-       {% if home_all or 'Y' in params %}
-            G28 Y
-            G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
-       {% endif %}
+    {% if home_all or 'Y' in params %}
+        G28 Y
+    {% endif %}
 
-       {% if home_all or 'Z' in params %}
-       # Si vous utilisez également eddy avec un capteur de pression, décommentez la ligne suivante
-            #SET_PIN PIN=_probe_ready VALUE=1 
-            G28 Z 
-            #SET_PIN PIN=_probe_ready VALUE=0
-            G1 Z10 F3000           
+    {% if home_all or 'Z' in params %}
+        G0 X{printer.toolhead.axis_maximum.x / 2} Y{printer.toolhead.axis_maximum.y / 2} F6000
+        {% if e_target >= 150 or printer.extruder.temperature >= 150 %}
+            M106 S255 # Allume le ventilateur
+            M109 S150 # Assurez-vous de revenir à 150°C lors du home Z
         {% endif %}
+        M106 S0       # Éteint le ventilateur
+
+        G91
+        G1 Z5 F2000 # Éloigne la buse du lit avant le home Z
+        G90
+
+        # Si vous utilisez également Eddy avec le capteur de pression, décommentez la ligne suivante
+        #SET_PIN PIN=_probe_ready VALUE=1 
+        G28 Z 
+        #SET_PIN PIN=_probe_ready VALUE=0
+        G1 Z10 F2000
+        
+        M109 S{e_target}  # Restaure la température
+        M106 S{fan_speed} # Restaure la vitesse du ventilateur
+    {% endif %}
+        
 
 [output_pin _probe_ready]
 pin: PA9 #En #Broche d'activation
@@ -75,14 +101,14 @@ value:0
 
 [probe]
 pin: ^PA10 #out #Broche du capteur
-x_offset: 0                  # Décalage X - position relative du capteur par rapport à l'embout
-y_offset: 0               # Décalage Y - position relative du capteur par rapport à l'embout
-z_offset:0                # Décalage Z - position relative du capteur par rapport à l'embout
+x_offset: 0                  # Décalage X - position relative du capteur par rapport à la buse
+y_offset: 0               # Décalage Y - position relative du capteur par rapport à la buse
+z_offset:0                # Décalage Z - position relative du capteur par rapport à la buse
 speed: 8                 # Vitesse de nivellement
 samples: 3                   # Nombre d'échantillons
-samples_result: median       # Méthode de sélection des valeurs (par défaut médiane)
+samples_result: median       # Méthode de calcul (par défaut médiane)
 sample_retract_dist: 2     # Distance de retrait lors du nivellement
-samples_tolerance: 0.05      # Tolérance d'échantillonnage (remarque : des valeurs trop petites peuvent augmenter le nombre d'échantillons)
+samples_tolerance: 0.05      # Tolérance d'échantillonnage (attention à une valeur trop petite qui pourrait augmenter le nombre d'échantillons)
 samples_tolerance_retries: 3 # Nombre de tentatives en cas de dépassement de tolérance
 activate_gcode:
            G4 P500
@@ -92,14 +118,14 @@ deactivate_gcode:
 
 ```
 
-### Référence pour ajuster la valeur Z Offset
-Utilisez cette commande pour ajuster z-offset :
+### Référence pour l'ajustement de la valeur Z Offset
+Utilisez cette commande pour ajuster la valeur Z Offset :
 ```gcode
 PROBE_CALIBRATE
 ```
 
-- Avant d'ajuster la valeur `z-offset`, consultez le tutoriel Klipper sur [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
+- Avant d'ajuster la valeur de `z-offset`, consultez la documentation de Klipper pour le tutoriel [Paper Test](https://www.klipper3d.org/Bed_Level.html#the-paper-test).
 
 :::info Attention
-- Si vous souhaitez utiliser le module de pression comme limiteur d'axe Z, remplacez la configuration `endstop_pin` par : `endstop_pin: probe:z_virtual_endstop`
+- Si vous souhaitez utiliser le module de pression comme limiteur Z, remplacez la configuration `endstop_pin` par : `endstop_pin: probe:z_virtual_endstop`
 :::

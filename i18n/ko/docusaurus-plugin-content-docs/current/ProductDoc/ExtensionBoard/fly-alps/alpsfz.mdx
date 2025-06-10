@@ -5,25 +5,30 @@ sidebar_label: 모듈 트리거 값 조정 방법
 
 
 # 모듈 트리거 값 조정 방법
-<Button variant="contained" disableElevation component="a" rel="noopener" href="https://apps.microsoft.com/detail/9nblggh43hdm?launch=true&mode=full&hl=en&gl=hk&ocid=bingwebsearch">시리얼 툴 도우미 가져오기</Button>
 
-시리얼 툴을 사용하면 다음 명령어를 사용할 수 있습니다:
-`Klipper` 콘솔에서 "SET_PIN PIN=_probe_ready VALUE=1" 명령을 보내고, 트리거 지시등을 관찰하면서 작은 값부터 점차 증가시키며 지시등이 꺼지도록 임계값을 조정합니다. 아래 명령어를 입력합니다:
-```cfg
-SET_PIN PIN=_probe_ready VALUE=1
-```
-* USB 데이터 케이블로 모듈과 컴퓨터를 연결하고, 시리얼 툴 도우미를 열어 대응하는 포트 번호를 선택하고, 보드 속도는 115200으로 설정한 후 연결을 클릭합니다.
-<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-usb.webp').default} size="10%" align="left" />
-<ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-1.webp').default} size="100%" align="left" />
-시리얼 툴에서 다음 명령어를 사용하여 트리거 값을 조정합니다:
-```cfg
-set 트리거값
-```
-기본 트리거 값: 20000
-값이 작을수록 더 민감하고, 값이 클수록 덜 민감합니다.
-* 예: `set 20000`, 트리거 값을 20000으로 설정, 값이 작을수록 더 민감하고, 값이 클수록 덜 민감합니다.
-* 시리얼 툴에서 사용할 명령어:
+## 레벨링 모듈 열기
+    `Klipper` 콘솔에 다음 명령어를 보내서 `_probe_ready` 핀 값을 설정하고 트리거 지시등이 꺼질 때까지 임계값을 작게 조정합니다:
+    ```cfg
+    SET_PIN PIN=_probe_ready VALUE=1
+    ```
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/sewt_pin.webp').default} size="100%" align="left" />
 
-* 시리얼 전송 `v`, 실시간으로 abc 값 출력. a: 필터링 전; b: 필터링 후.
-* 시리얼 전송 `uv`, 출력 비활성화.
-* 시리얼 전송 `rt`, 현재 임계값 확인.
+
+## 압력 값 조정
+    <Button variant="contained" disableElevation component="a" rel="noopener" href="https://apps.microsoft.com/detail/9nblggh43hdm?launch=true&mode=full&hl=en&gl=hk&ocid=bingwebsearch">시리얼 도구 보조기 사용하기</Button>
+
+    * USB 데이터 케이블로 모듈과 컴퓨터를 연결한 후 시리얼 도구 보조기를 열고, 해당 포트 번호를 선택하고, 보드 속도를 115200으로 설정한 후 연결합니다.
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-usb.webp').default} size="10%" align="left" />
+    <ImageView image={require('@site/docs/ProductDoc/ExtensionBoard/fly-alps/img/apls-1.webp').default} size="100%" align="left" />
+    시리얼 도구에서 아래 명령어를 입력하여 트리거 값을 조정합니다:
+    ```cfg
+    set 트리거값
+    ```
+    기본 트리거 값: 20000
+    수치가 작을수록 더 민감하며, 수치가 클수록 덜 민감합니다.
+    * 예: `set 20000`, 트리거 값을 20000으로 설정합니다. 수치가 작을수록 더 민감하고, 클수록 덜 민감합니다.
+    * 시리얼 도구 명령어:
+
+    * 시리얼 전송 `v`, 실시간으로 abc 값 출력. a: 필터링 전; b: 필터링 후.
+    * 시리얼 전송 `uv`, 출력 중지.
+    * 시리얼 전송 `rt`, 현재 임계값 확인.

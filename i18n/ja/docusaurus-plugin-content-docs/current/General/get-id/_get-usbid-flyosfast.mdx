@@ -1,60 +1,114 @@
-## USB IDの検索
-    1. SSHで`lsusb`と入力し、`Enter`キーを押す。もし図に示されている`1d50:614e`が表示されたら、次のステップに進める。
-    <ImageView image={require('@site/docs/General/get-id/img/614e.webp').default} size="80%" align="center" /> 
+## USB IDを検索する
 
-    2. `1d50:614e`は今回使用するデバイスです。  
-       `lsusb`コマンドを入力するとデバイスが表示されるが、`1d50:614e`がない場合、マザーボードのダイアルモードが正しいか確認し、再度USBファームウェアを再コンパイルして焼付け、または24Vの電源供給を行ってみましょう。
+1. ブラウザを開き、URLバーに上位機のIPアドレスを入力します。例えば、私の上位機のIPアドレスが`192.168.101.179`の場合、それを直接入力してEnterキーを押すだけです。
+  <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-    :::warning 注意事項
-       `1d50:614e`デバイスが見つかった後でなければ、次のステップには進めないでください。
-    :::
+2. 上位機のWEBインターフェースを開き、左側のサイドバーにある設定オプションで以下の内容を探します：
+  <table>
+    <tr>
+      <td>
+        - fluiddでは: `{…}` をクリックすると、`printer.cfg`が見つかります
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsailでは: `マシン`をクリックすると、`printer.cfg`が見つかります
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-    3. SSHで以下のコマンドを入力し、`Enter`キーを押す。正常に動作している場合、以下のような`青いID`が表示されます。
-    ```bash
-    ls /dev/serial/by-id/*
-    ```
-    :::warning 注意事項
-    - 図に示されている`ID`は参考例であり、各マザーボードの`ID`は異なります。実際に入力して得た`ID`を使用してください。
-    - 複数のマザーボードを接続している場合は、複数のIDが同時に表示されることがありますので、自分のマザーボードの`MCUモデル`に基づいて適切なIDを選択してください。
-    :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/fasta_id.webp').default} size="80%" align="center" />
----
-
-
-## USB IDの入力
-
-    1. 上位機のWebインターフェースを開き、左側のサイドバーにある設定オプションから探します。
-
+  3. `printer.cfg`をクリックし、右上の`DEVICES`をクリックします
     <table>
       <tr>
         <td>
-          - fluiddの場合: `{…}` をクリックすると、`printer.cfg`を見つけることができます。
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_devices.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - mainsailの場合: `マシン`をクリックすると、`printer.cfg`を見つけることができます。
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_devices.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
+  4. `SERIAL`をクリックし、リフレッシュします
+    <table>
+      <tr>
+        <td>
+          - fluiddのリフレッシュ
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_refresh.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsailのリフレッシュ
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_refresh.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
 
-    2. 青いIDをコピーし、`printer.cfg`ファイル内の`[mcu]`オプションを見つけ、`serial:`の後に取得した`ID`を入力します。保存して再起動すると、マザーボードに接続できます。
-    :::danger
-    * 下記の配置のIDは参考例です！！！必ず図に示されている形式で`ID`を入力してください。
-    * マザーボードのUSB IDの形式は次の通りです:
-     ```
-    [mcu]  
-    serial: /dev/serial/by-id/usb-klipper_******_**********-****
-    ```
+  5. IDをコピーします。矢印の先をクリックすることでコピーできます
+    <table>
+      <tr>
+        <td>
+          - fluiddには`ttyAMC`が存在し、Path by IDが存在することを確認してください。これがUSBIDです
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_id.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsailには`ttyAMC`が存在し、Path by IDが存在することを確認してください。これがUSBIDです
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_id.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+## USB IDの入力
+
+    1. `DEVICES`を閉じてIDを入力します
+
+    :::danger 注意
+      * 設定ファイルで以下を変更してください:  
+      ```
+      [mcu] 
+      serial: /tmp/klipper_host_mcu
+      ```  
+      に変更して:
+      ```
+      [mcu host] 
+      serial: /tmp/klipper_host_mcu
+      ```
+      * 追加してください:
+      ```
+      [mcu]
+      serial: <ここに先ほど取得したIDを入力>
+      ```
+      :::
+    <table>
+      <tr>
+        <td>
+          - fluiddで[MCU]を見つけます
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsailで[MCU]を見つけます
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+
+    2. IDを設定に記入します
+    :::tip
+
+    * IDを入力したら右上の`SAVE & RESTART`をクリックしてください
     :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
-    
-    3. Klipperが`ADC out of range`と警告した場合、これは正常現象です。熱ベッドと温度センサーをマザーボードに接続し、ノズルや熱ベッドの温度センサピンを適切に設定してから保存して再起動してください。
+    <table>
+      <tr>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_save.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_save.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    3. Klipperが`ADC out of range`と表示された場合、これは正常な現象です。ヒートベッドやセンサーをメインボードに接続し、ヒーターとヒートベッドのセンサーピンを設定してから保存して再起動してください。
 
 :::danger
-注意: 文書中に登場するすべてのIDは例示です。実際のマザーボードごとにIDは異なるため、実際に取得したIDを使用してください。
+注意: ドキュメント中に登場するすべてのIDは例示です。実際の各メインボードのIDは異なりますので、実際に取得したIDを入力してください。
 :::
 ---

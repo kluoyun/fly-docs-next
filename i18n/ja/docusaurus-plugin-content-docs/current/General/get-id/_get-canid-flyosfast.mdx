@@ -1,23 +1,22 @@
-## CAN IDを検索する
-
-1. ブラウザを開き、URLバーにアップストリームマシンのIPアドレスを入力します。例えば、私のアップストリームマシンのIPアドレスが`192.168.101.179`であれば、それを入力してEnterキーを押すだけです。
+## CAN IDの検索
+1. ブラウザを開き、URLバーにPCのIPアドレスを入力します。例えば、私のPCのIPアドレスが`192.168.101.179`であれば、それを直接入力してEnterキーを押します
   <ImageView image={require('@site/docs/General/get-id/img/wed/ip.webp').default} size="80%" align="center" /> 
 
-2. アップストリームマシンのWEBインターフェースを開き、左側のサイドバーにある設定オプションを探します:
+2. PCのWEBインターフェースを開き、左側のサイドバーにある設定オプションを探します
   <table>
     <tr>
       <td>
-        - fluiddの場合: `{…}` をクリックすると、`printer.cfg`を見つけることができます。
+        - fluiddの場合: `{…}` をクリックすると、`printer.cfg`が見つかります
         <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
       </td>
       <td>
-        - mainsailの場合: `機械` をクリックすると、`printer.cfg`を見つけることができます。
+        - mainsailの場合: `マシン`をクリックすると、`printer.cfg`が見つかります
         <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
       </td>
     </tr>
   </table>
 
-3. `printer.cfg`をクリックし、右上の`DEVICES`をクリックしてください。
+  3. `printer.cfg`をクリックして開いた後、右上の`DEVICES`をクリックします
     <table>
       <tr>
         <td>
@@ -29,7 +28,7 @@
       </tr>
     </table>
 
-4. `CAN`をクリックして、リフレッシュしてください。
+  4. `CAN`をクリックしてリフレッシュします
     <table>
       <tr>
         <td>
@@ -43,34 +42,40 @@
       </tr>
     </table>
 
-5. IDをコピーします。矢印が指している部分をクリックしてください。
+  5. IDをコピーします。矢印の方向をクリックしてください
     <table>
       <tr>
         <td>
-          - fluiddでは最初の矢印が指しているものが`Klipper`かどうか確認し、そうであれば右側の矢印でコピーできます。
+          - fluiddでは、最初の矢印が指しているものが`Klipper`であることを確認し、それがそうであれば右側の矢印をクリックしてコピーします
           <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_canid.webp').default} size="100%" align="center" />
         </td>
         <td>
-          - mainsailでも最初の矢印が指しているものが`Klipper`かどうか確認し、そうであれば右側の矢印でコピーできます。
+          - mainsailでは、最初の矢印が指しているものが`Klipper`であることを確認し、それがそうであれば右側の矢印をクリックしてコピーします
           <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_canid.webp').default} size="100%" align="center" />
         </td>
       </tr>
     </table>
 
-## CAN IDを入力する
+## CAN IDの記入
 
-1. `DEVICES`を閉じてIDを入力します
-    :::danger 注意
-
-    * 最初の赤枠前の#は削除してください（スペースも含む）。そして`serial:`を`canbus_uuid:`に変更してください。
-    * FLYシステムのデフォルト設定には[MCU]が含まれる場合がありますが、下のIDが`serial: /tmp/klipper_host_mcu`の場合、`[MCU]`を`[mcu HOST]`に変更するか、この2行を削除してください。
-    * 下記の内容から`canbus_uuid:`をコピーできます。
-    :::
-
-    ```cfg
-    [mcu]
-    canbus_uuid:
+    1. `DEVICES`を閉じてIDを記入します
+    :::danger 注意事項
+    * 設定ファイル中の以下の内容を変更してください:  
     ```
+    [mcu] 
+    serial: /tmp/klipper_host_mcu
+    ```  
+    変更後は以下のようにしてください:
+    ```
+    [mcu host] 
+    serial: /tmp/klipper_host_mcu
+    ```
+    * 次のように追加してください:
+    ```
+    [mcu]
+    canbus_uuid: <ここに先ほど取得したIDを入力してください>
+    ```
+    :::
 
     <table>
       <tr>
@@ -85,10 +90,11 @@
       </tr>
     </table>
 
-2. IDを設定ファイルに記入します
-    :::tip 注意
 
-    * IDを入力したら右上の`SAVE & RESTART`をクリックしてください。
+    2. IDを設定ファイルに記入します
+    :::tip
+
+    * IDを記入したら右上の`SAVE & RESTART`をクリックしてください
     :::
 
     <table>
@@ -101,9 +107,9 @@
         </td>
       </tr>
     </table>
-3. Klipperが`ADC out of range`と表示された場合、これは正常な現象です。ヒートベッドとセンサーをメインボードに接続し、ノズルやヒートベッドのセンサーピンを適切に設定した後、保存して再起動してください。
+    3. Klipperから`ADC out of range`というメッセージが出た場合、これは正常な現象です。ヒートベッドとセンサをメインボードに接続し、ノズルやヒートベッドのセンサピンを設定してから再度保存して再起動してください。
 
 :::danger
-注意: 文書に記載されているすべてのIDは例示です。実際の各メインボードのIDは異なりますので、実際に入力したIDを使用してください。
+注意: 文書中に出てくるすべてのIDはサンプルです。実際の各メインボードには異なるIDが割り当てられていますので、実際に取得したIDを記入してください。
 :::
 ---
