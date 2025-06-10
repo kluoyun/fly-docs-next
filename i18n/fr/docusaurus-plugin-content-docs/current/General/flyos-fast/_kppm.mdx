@@ -1,16 +1,16 @@
 ## Configuration
 
-### Désactivation de l'extinction automatique en cas de coupure de courant
-    :::danger À savoir
-    - Il est nécessaire de désactiver l'extinction automatique en cas de coupure de courant, sinon la fonction de reprise après coupure ne pourra pas être utilisée.
-    - La fonction de reprise après coupure possède une fonctionnalité de sauvegarde de progression avant extinction automatique.
+### Désactiver l'extinction automatique lors d'une coupure de courant
+    :::danger Avertissement
+    - Il est nécessaire de désactiver l'extinction automatique lors d'une coupure de courant, sinon la fonction de reprise après panne ne pourra pas être utilisée.
+    - La fonction de reprise après panne comporte une fonctionnalité de sauvegarde des progrès suivie d'une extinction automatique.
     :::
 
-- Via la barre d'URL du navigateur, entrez l'adresse IP du périphérique, par exemple : `http://192.168.6.179`
+- À travers la barre d'adresse du navigateur, entrez l'adresse IP du périphérique, par exemple : `http://192.168.6.179`
 - Accédez à la page de configuration
     - Ouvrez l'adresse IP du périphérique dans le navigateur, par exemple : `http://192.168.1.2/`
-    - Dans Fluidid, cliquez sur l'image de gauche pour `désélectionner` -> `filtrer et masquer les fichiers et dossiers cachés`.
-    - Dans Mainsail, cliquez sur l'image de droite pour `sélectionner` -> `afficher les fichiers cachés`.
+    - Fluidd : décochez l'option indiquée à gauche dans la capture d'écran -> « Filtrer les fichiers et dossiers cachés ».
+    - Mainsail : cochez l'option indiquée à droite dans la capture d'écran -> « Afficher les fichiers cachés ».
     
     <table>
       <tr>
@@ -23,19 +23,19 @@
       </tr>
     </table>
 
-    - Vous verrez alors le dossier `.flyos-config`, entrez dans ce dossier pour trouver le fichier `sys-config.conf`.
+    - Vous verrez alors le dossier `.flyos-config`. Entrez dans ce dossier pour trouver le fichier `sys-config.conf`.
     - Le fichier `sys-config.conf` est un lien symbolique vers le fichier de configuration `config.txt` du disque amovible `FlyOS-Conf`.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
 
-    - Ouvrez le fichier `sys-config.conf` et trouvez les configurations `shutdown_pin_state` et `shutdown_pin=`.
+    - Ouvrez le fichier `sys-config.conf` et recherchez les configurations `shutdown_pin_state` et `shutdown_pin=`.
     - Ajoutez un `#` devant ces configurations.
-    - Ensuite, `Enregistrez` -> `Fermez` puis redémarrez.
+    - Ensuite, `Enregistrez` -> `Fermez` puis redémarrez le système.
     <ImageView image={require('@site/docs/General/flyos-fast/img/kppm.webp').default} size="90%" align="center" />
 
 ### Fichier de configuration plr.cfg
-    :::danger À savoir
-    * Remplacez les éléments suivants dans le fichier de configuration : (PINS)  
+    :::danger Avertissement
+    * Veuillez remplacer dans le fichier de configuration : (PINS)  
     * Par <code>{props.power_pine}</code>
 
     :::
@@ -44,54 +44,53 @@
     - Effacez tout son contenu, puis collez la configuration ci-dessous :
     - Le contenu du fichier de configuration est le suivant :
 
-
-
     ```cfg
     [mcu host]   
     serial: /tmp/klipper_host_mcu
     
     [power_loss_resume]
     power_pin: (PINS)
-    is_shutdown: True # Exécute-t-il une opération d'arrêt ? Défaut : activé
-    paused_recover_z: -2.0 # Si l'arrêt survient lors d'une pause d'impression, la distance de déplacement Z lors de la reprise d'impression, défaut : sans déplacement
+    is_shutdown: True # Exécuter ou non l'opération d'arrêt, activé par défaut
+    paused_recover_z: -2.0 # Si l'impression est en pause au moment de la coupure, la distance de déplacement Z pendant la reprise, par défaut sans mouvement
     start_gcode:
-        # G-code exécuté avant la reprise
-        # Tous les paramètres enregistrés avant la coupure peuvent être récupérés via {PLR}
+        # G-code exécuté avant de commencer la reprise
+        # Tous les paramètres sauvegardés avant la coupure peuvent être récupérés via {PLR}
         # Utilisez M118 {PLR} pour afficher tous les paramètres disponibles
-        M118 Début de la reprise: {PLR.print_stats.filename}
-        M118 Position d'interruption: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
-        M140 S{PLR.bed.target}      ; Réglage de la température du plateau chauffant
-        M104 S{PLR.extruder.target-10}  ; Réglage de la température de l'extrudeuse
-        M109 S{PLR.extruder.target-10}  ; Attente que l'extrudeuse atteigne la température définie
+        M118 Début de la reprise : {PLR.print_stats.filename}
+        M118 Position d'interruption : X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; Définir la température du lit chauffant
+        M104 S{PLR.extruder.target-10}  ; Définir la température de l'extrudeur
+        M109 S{PLR.extruder.target-10}  ; Attendre que l'extrudeur atteigne la température définie
         G91                             ; Coordonnées relatives
-        G1 Z2 F100                      ; Élévation de Z, préparation au zéro X,Y
+        G1 Z2 F100                      ; Soulever Z, préparer le retour à zéro X,Y
         G90                             ; Coordonnées absolues
-        G28 X Y                         ; Zéro XY
-        M140 S{PLR.bed.target}          ; Réglage de la température du plateau chauffant
-        M104 S{PLR.extruder.target}     ; Réglage de la température de l'extrudeuse
-        M190 S{PLR.bed.target}          ; Attente que le plateau chauffant atteigne la température définie
-        M109 S{PLR.extruder.target}     ; Attente que l'extrudeuse atteigne la température définie
-        M83                             ; Extrusion relative
+        G28 X Y                         ; Réinitialiser X et Y à zéro
+        M140 S{PLR.bed.target}          ; Définir la température du lit chauffant
+        M104 S{PLR.extruder.target}     ; Définir la température de l'extrudeur
+        M190 S{PLR.bed.target}          ; Attendre que le lit chauffant atteigne la température définie
+        M109 S{PLR.extruder.target}     ; Attendre que l'extrudeur atteigne la température définie
+        M83                             ; Mode d'extraction relatif
         # G1 E0.5 F400                  ; Extrusion légère
-    layer_count: 2 # Nombre de couches à imprimer avant l'exécution de layer_change_gcode
+    layer_count: 2 # Nombre de couches à imprimer avant d'exécuter layer_change_gcode
     layer_change_gcode:                
         # G-code à exécuter après avoir imprimé {layer_count} couches
         M118 Reprise de la vitesse d'impression
-        M106 S{PLR.fan_speed}             ; Activation du ventilateur d'extrusion
-        M220 S{PLR.move_speed_percent}    ; Définition du pourcentage de vitesse demandée
-        M221 S{PLR.extrude_speed_percent} ; Définition du pourcentage de vitesse d'extrusion demandé
+        M106 S{PLR.fan_speed}             ; Allumer le ventilateur de refroidissement
+        M220 S{PLR.move_speed_percent}    ; Définir le pourcentage de vitesse demandée
+        M221 S{PLR.extrude_speed_percent} ; Définir le pourcentage de vitesse d'extraction demandé
     shutdown_gcode:
         # G-code à exécuter avant l'extinction
-        M118 Faible tension du courant, extinction
+        M118 Alimentation faible, extinction
         # M112 ; Arrêt d'urgence
 
     ```
 
     :::warning Attention
 
-    - Les macros dans le fichier de configuration `start_gcode` ci-dessus doivent peut-être être modifiées en fonction des spécificités de votre machine.
-    - Notez que si vous utilisez `[homing_override]`, il est déconseillé de modifier arbitrairement les positions de mise à zéro dans `[homing_override]`. Aucune responsabilité ne sera prise en cas d'échec de la reprise après coupure due à cela.
-
+    - Le macro `start_gcode` dans le fichier de configuration ci-dessus peut nécessiter des ajustements selon les spécificités de votre machine.
+    - Notez que si vous utilisez `[homing_override]`, il est déconseillé de modifier arbitrairement les positions de repositionnement dans `[homing_override]`. Les échecs de reprise après panne ne seront pas pris en charge.
+    - Notez également que si vous utilisez `[gcode_macro _CLIENT_VARIABLE]`, veillez à rechercher la variable `variable_custom_park_dz` et à la définir sur 0.
+`
     :::
 
 - Enregistrez le fichier de configuration ci-dessus.
@@ -103,12 +102,12 @@
 
     ```
 
-- Cliquez sur le bouton en haut à droite pour enregistrer et redémarrer.
-- À ce stade, la fonction de reprise après coupure de Klipper est configurée.
+- Cliquez sur le bouton de sauvegarde en haut à droite puis redémarrez le système.
+- À ce stade, la fonction de reprise après panne de Klipper est configurée.
 
 ## Test
 
-- Imprimez un fichier quelconque pendant qu'un autre fichier est en cours d'impression, puis cliquez sur le bouton d'arrêt d'urgence pour simuler une coupure de courant.
-- Cliquez ensuite sur « Redémarrer le firmware », attendez que Klipper se connecte normalement.
-- Si une fenêtre de notification apparaît sur le site web ou dans KlipperScreen, cela signifie que la fonction de reprise après coupure fonctionne correctement.
-- Vous pouvez ensuite tester la situation réelle de coupure de courant.
+- Imprimez un fichier quelconque, et pendant l'impression, appuyez sur le bouton "Arrêt d'urgence" pour simuler une coupure de courant.
+- Appuyez ensuite sur "Redémarrage du firmware", attendez que Klipper se reconnecte normalement.
+- Si une fenêtre de notification apparaît sur le site web ou dans KlipperScreen, cela signifie que la fonction de reprise après panne fonctionne correctement.
+- Vous pouvez tester ultérieurement une situation réelle de coupure de courant.
