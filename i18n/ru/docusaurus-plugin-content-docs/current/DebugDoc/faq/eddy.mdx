@@ -1,0 +1,36 @@
+---
+sidebar_position: 8
+sidebar_label: Сборник проблем EDYY
+---
+
+# Часто задаваемые вопросы о EDDY
+
+:::danger Важно
+
+- Данный туториал содержит различные сообщения об ошибках EDDY и способы их решения.
+- Если у вас есть лучшие предложения, свяжитесь с нами.
+
+:::
+
+## Предупреждение `Error during homing z: Eddy current sensor error`
+
+    Метод 1:
+        * Данная ошибка требует нахождения в конфигурационном файле `printer.cfg` в самом низу строки `reg_drive_current =`, где нужно изменить стрелку на `+1` или `-1` после сохранения и перезапуска, затем выполнить тестирование.
+        * Примечание: `+1` или `-1` не означают ввод этих значений напрямую, а требуют вычислить и заменить указанные значения стрелки, например, вместо `15+1` или `15 -1` необходимо ввести только вычисленные значения, такие как `16` или `17`.
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/current.webp').default} size="100%" align="left" />
+    Метод 2:
+        * Если это не помогает, нужно изменить значение `z_offset:` в блоке `[probe_eddy_current fly_eddy_probe]` с дефолтного значения `1.0` на `2.0` или `2.5`, сохранить изменения и перезагрузить систему, затем выполнить тестирование.
+        * Примечание: Не повторяйте настройку параметра `z_offset:` в блоке `[probe_eddy_current fly_eddy_probe]`, максимальное значение не должно превышать `3`.
+        * Обратите внимание, что значение `z_offset:` настраивается в зависимости от дизайна вашего оборудования, здесь можно предоставить лишь рекомендации.
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/z_offset.webp').default} size="100%" align="left" />
+
+    Метод 3: 
+        * Можно заблокировать строку `i2c_speed: 4000000` в блоке `[probe_eddy_current fly_eddy_probe]`, добавив перед ней символ `#`, затем сохранить файл и перезагрузить систему, затем выполнить тестирование.
+        * Примечание: После блокировки и перезагрузки рекомендуется выполнить калибровку заново.
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/i2c_speed.webp').default} size="100%" align="left" />
+        * Если после нормальной установки z_offset больше 2.0, необходимо изменить параметры в файле eddypz.cfg
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/z_offset1.webp').default} size="100%" align="left" />
+
+## Предупреждение `!! probe_eddy_current sensor not in valid range`
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/valid_range.webp').default} size="100%" align="left" />
+    1. По какой-то причине, EDYY не будет использовать заданную высоту сканирования из других мест, таких как `[Horizontal_move_Z]` или `[bed_mesh]`.

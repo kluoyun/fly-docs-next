@@ -2,15 +2,15 @@
 
 ### 停電シャットダウンの無効化
     :::danger 注意
-    - 停電シャットダウンを無効にしないと、停電継続印刷が使用できません。
-    - 停電継続印刷には、進捗保存後に自動でシャットダウンする機能があります。
+    - 停電シャットダウンを無効にしないと、電源喪失継続印刷が使用できません。
+    - 電源喪失継続印刷には、進捗を保存後に自動的にシャットダウンする機能があります。
     :::
 
-- ブラウザのURLバーに入力してデバイスのIPアドレスにアクセスします。例: `http://192.168.6.179`
+- ブラウザのURLバーに入力してデバイスのIPアドレスにアクセスします。例：`http://192.168.6.179`
 - 設定ページに進む
-    - デバイスのIPアドレス (`http://192.168.1.2/`) をブラウザで開く
-    - FluidDでは左図のように「チェックを外す」->「隠しファイル・フォルダをフィルタリング」。
-    - MainSailでは右図のように「チェックを入れる」->「隠しファイルを表示」。
+    - デバイスIPアドレスをブラウザで開く（例：`http://192.168.1.2/`）
+    - FluidDでは図左のように「チェックを外す」 -> 「隠しファイルとフォルダをフィルタリング」。
+    - MainSailでは図右のように「チェックを入れる」 -> 「隠しファイルを表示」。
     
     <table>
       <tr>
@@ -23,26 +23,25 @@
       </tr>
     </table>
 
-    - これにより `.flyos-config` フォルダが見えるようになり、その中に `sys-config.conf` ファイルがあります。
-    - `sys-config.conf` ファイルは、移動可能なディスク `FlyOS-Conf` 内の設定ファイル `config.txt` のシンボリックリンクです。
+    - この時点で`.flyos-config`フォルダが見えます。このフォルダ内には`sys-config.conf`ファイルがあります。
+    - `sys-config.conf`ファイルは、可搬型ドライブ`FlyOS-Conf`内の設定ファイル`config.txt`のシンボリックリンクです。
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
 
-    - `sys-config.conf` ファイルを開き、`shutdown_pin_state` および `shutdown_pin=` という設定を見つける
-    - この設定の前に `#` を追加する
-    - その後、「保存」→「閉じる」して再起動する
+    - `sys-config.conf`ファイルを開き、`shutdown_pin_state`および`shutdown_pin=`の設定を探します
+    - これらの設定の前に`#`を追加します
+    - その後、「保存」 -> 「閉じる」して再起動してください
     <ImageView image={require('@site/docs/General/flyos-fast/img/kppm.webp').default} size="90%" align="center" />
 
 ### plr.cfg 設定ファイル
     :::danger 注意
-    * 設定ファイル内の: (PINS)  
-    * を <code>{props.power_pine}</code> に置き換える必要があります
+    * 設定ファイル内の(PINS)を置き換えてください
 
     :::
 
-    - プリンター設定ページで `plr.cfg` ファイルを探します。
-    - ファイルの中身を空にして、下記の設定を貼り付けます
-    - 設定ファイルの内容は次の通り:
+    - プリンター設定ページで`plr.cfg`ファイルを見つける。
+    - ファイルの中身をクリアにして、以下の設定を貼り付ける
+    - 設定ファイルの内容は次の通り：
 
     ```cfg
     [mcu host]   
@@ -50,50 +49,51 @@
     
     [power_loss_resume]
     power_pin: (PINS)
-    is_shutdown: True # シャットダウン操作を行うかどうか、デフォルトは有効
-    paused_recover_z: -2.0 # 停止時に一時停止していた場合のZ軸移動距離、デフォルトは移動しない
+    is_shutdown: True # シャットダウン操作を行うかどうか。デフォルトは有効
+    paused_recover_z: -2.0 # 停止時に一時停止していた場合の復旧時のZ軸移動距離。デフォルトは移動なし
     start_gcode:
-        # 続けて印刷開始前に実行されるGコード
+        # 続続打開始前に実行されるGコード
         # 停電前に保存されたすべてのパラメータは{PLR}で取得可能
-        # 使用方法: M118 {PLR}で利用可能なすべてのパラメータを出力
-        M118 印刷再開: {PLR.print_stats.filename}
-        M118 停止位置: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
-        M140 S{PLR.bed.target}      ; 熱ベッド温度を設定
-        M104 S{PLR.extruder.target-10}  ; エクストルーダー温度を設定
+        # 使用可能なすべてのパラメータを出力するためにはM118 {PLR}を使用
+        M118 続続打開始: {PLR.print_stats.filename}
+        M118 中断位置: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
+        M140 S{PLR.bed.target}      ; 熱ベッド温度の設定
+        M104 S{PLR.extruder.target-10}  ; エクストルーダー温度の設定
         M109 S{PLR.extruder.target-10}  ; エクストルーダー温度が設定値に達するまで待ちます
         G91                             ; 相対座標
-        G1 Z2 F100                      ; Z軸を上げてX,Y軸をリセット準備
+        G1 Z2 F100                      ; Z軸を上げてX,Y軸をゼロに戻す準備
         G90                             ; 絶対座標
-        G28 X Y                         ; X,Y軸をリセット
-        M140 S{PLR.bed.target}          ; 熱ベッド温度を設定
-        M104 S{PLR.extruder.target}     ; エクストルーダー温度を設定
+        G28 X Y                         ; X,Y軸をゼロにする
+        M140 S{PLR.bed.target}          ; 熱ベッド温度の設定
+        M104 S{PLR.extruder.target}     ; エクストルーダー温度の設定
         M190 S{PLR.bed.target}          ; 熱ベッドが設定温度に達するまで待ちます
         M109 S{PLR.extruder.target}     ; エクストルーダーが設定温度に達するまで待ちます
-        M83                             ; 相対的なエクストルーダー
+        M83                             ; 相対エクストルーダー
         # G1 E0.5 F400                  ; 少量押し出し
-    layer_count: 2 # 指定した層数でlayer_change_gcodeを実行
+    layer_count: 2 # 指定した層数後にlayer_change_gcodeが実行されます
     layer_change_gcode:                
-        # {layer_count}層印刷後に実行されるGコード
-        M118 再開印刷速度
-        M106 S{PLR.fan_speed}             ; 吹き出しファンをオンにする
-        M220 S{PLR.move_speed_percent}    ; 要求速度パーセントを設定
-        M221 S{PLR.extrude_speed_percent} ; 要求押出速度パーセントを設定
+        # {layer_count}層後に行われるGコード
+        M118 レイヤー変更: 恢復印刷速度
+        M106 S{PLR.fan_speed}             ; ファンをオンにする
+        M220 S{PLR.move_speed_percent}    ; 移動速度パーセントを設定
+        M221 S{PLR.extrude_speed_percent} ; エクストルーダー速度パーセントを設定
     shutdown_gcode:
         # シャットダウン前に実行されるGコード
-        M118 電源電圧低、シャットダウン
+        M118 電源電圧が低いのでシャットダウンします
         # M112 ; 緊急停止
 
     ```
 
     :::warning 注意
 
-    - 上記の設定ファイル内の `start_gcode` マクロは、機械の実際の状況に応じて修正する必要があります。
-    - `[homing_override]` を使用している場合は、[homing_override] 内で無作為にリファイン位置を設定しないでください。それによる停電継続印刷の失敗については責任を負いかねます。
-
+    - 上記設定ファイル内の`start_gcode`マクロは必要に応じて修正してください。具体的には機器の実際の状況に基づいて調整してください。
+    - 注意: `[homing_override]`を使用している場合、`[homing_override]`内で無作為にリセット位置を設定しないでください。その結果、電源喪失継続印刷が失敗しても責任は負いかねます。
+    - 注意: `[gcode_macro _CLIENT_VARIABLE]`を使用している場合、その中の`variable_custom_park_dz`を0に設定してください。
+`
     :::
 
 - 上記の設定ファイルを保存後
-- `printer.cfg` ファイルを開き、先頭に以下の内容を追加する:
+- `printer.cfg`ファイルを開き、ファイルの先頭に以下の内容を追加します：
 
     ```cfg
 
@@ -101,12 +101,12 @@
 
     ```
 
-- 右上の「保存」をクリックして再起動する
-- これでKlipperの停電継続印刷機能の設定は完了です。
+- 右上の「保存」ボタンをクリックして再起動します。
+- これで、Klipperの電源喪失継続印刷機能の設定は完了です。
 
 ## テスト
 
-- 任意のファイルを印刷し、印刷中に「緊急停止」ボタンをクリックして停電をシミュレーションする
-- 「ファームウェア再起動」を再度クリックして、Klipperが正常に接続されるのを待ちます
-- ページやKlipperScreenでポップアップが表示されれば、停電継続印刷機能が正常に動作しています
-- 後続は実際に停電した状況でのテストも可能です
+- 任意のファイルを印刷し、印刷中に「緊急停止」ボタンを押して電源喪失をシミュレートします。
+- 次に「ファームウェア再起動」をクリックし、Klipperが正常に接続されるのを待ちます。
+- もしウェブページまたはKlipperScreenでポップアップが表示されれば、電源喪失継続印刷機能が正常に動作しています。
+- 後ほど本物の電源喪失状況でのテストも可能です。

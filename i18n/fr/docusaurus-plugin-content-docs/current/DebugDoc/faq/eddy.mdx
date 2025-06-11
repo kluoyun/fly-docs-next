@@ -1,0 +1,35 @@
+---
+sidebar_position: 8
+sidebar_label: Questions fréquentes sur EDYY
+---
+
+# Problèmes fréquents EDDY
+
+:::danger À savoir
+
+- Ce tutoriel regroupe diverses erreurs d'EDDY et les méthodes de résolution correspondantes.
+- Si vous avez des suggestions améliorant la qualité, veuillez nous contacter.
+
+:::
+
+## Avertissement `Error during homing z: Eddy current sensor error`
+
+    Méthode 1 :
+        * Cette erreur nécessite de rechercher dans le fichier de configuration `printer.cfg`, à la fin, la ligne `reg_drive_current =`. Remplacez la flèche pointée par `+1` ou `-1` puis enregistrez et redémarrez, puis testez.
+        * Remarque : `+1` ou `-1` ne signifie pas que vous devez simplement taper ces valeurs mais les calculer correctement avant de remplacer la valeur pointée par la flèche. Ne saisissez pas des expressions comme `15+1` ou `15 -1`, mais uniquement les valeurs calculées, telles que `16` ou `17`.
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/current.webp').default} size="100%" align="left" />
+    Méthode 2 :
+        * Si cela ne fonctionne toujours pas, modifiez la valeur de `z_offset:` dans `[probe_eddy_current fly_eddy_probe]` pour l'augmenter (la valeur par défaut est `1.0`). Modifiez-la en `2.0` ou `2.5`, enregistrez et redémarrez, puis testez.
+        * Remarque : Veuillez ne pas configurer plusieurs fois la valeur `z_offset:` dans `[probe_eddy_current fly_eddy_probe]` et n'augmentez pas cette valeur au-delà de `3`.
+        * Notez que `z_offset:` doit être ajustée en fonction du design de votre machine ; ce qui est fourni ici n'est qu'une référence.
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/z_offset.webp').default} size="100%" align="left" />
+    Méthode 3 :
+        * Vous pouvez masquer la ligne `i2c_speed: 4000000` dans `[probe_eddy_current fly_eddy_probe]` en ajoutant un `#` devant, en enregistrant et en redémarrant, puis testez.
+        * Remarque : Après avoir masqué, il est recommandé de recalibrer.
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/i2c_speed.webp').default} size="100%" align="left" />
+        * Si le positionnement normal est effectué et que la valeur de `z_offset` est supérieure à `2.0`, modifiez les paramètres dans le fichier `eddypz.cfg`.
+            <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/z_offset1.webp').default} size="100%" align="left" />
+
+## Avertissement `!! probe_eddy_current sensor not in valid range`
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/edyy/valid_range.webp').default} size="100%" align="left" />
+    1. Pour une raison quelconque, EDYY ne prendra pas en compte les hauteurs de balayage définies ailleurs, comme dans `[Horizontal_move_Z]` ou `[bed_mesh]`.

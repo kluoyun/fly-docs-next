@@ -2,15 +2,15 @@
 
 ### Disable Power-off Shutdown
     :::danger Note
-    - Power-off shutdown must be disabled, otherwise the power-off resume function cannot be used.
-    - The power-off resume function has an automatic shutdown after saving progress feature.
+    - Power-off shutdown must be disabled, otherwise power-off resume printing cannot be used.
+    - The power-off resume printing has an automatic shutdown function after saving the progress.
     :::
 
 - Enter the device's IP address in the browser's address bar, for example: `http://192.168.6.179`
 - Access the configuration page
     - Open the device IP address in the browser, for example: `http://192.168.1.2/`
-    - In Fluidd, uncheck as shown in the left image below -> "Filter hidden files and folders".
-    - In Mainsail, check as shown in the right image below -> "Show hidden files".
+    - In Fluidd, uncheck the option shown on the left figure -> "Filter hidden files and folders".
+    - In Mainsail, check the option shown on the right figure -> "Show hidden files".
     
     <table>
       <tr>
@@ -24,13 +24,13 @@
     </table>
 
     - At this point, you can see the `.flyos-config` folder. Enter this folder to find the `sys-config.conf` file.
-    - The `sys-config.conf` file is a soft link to the `config.txt` configuration file in the portable disk `FlyOS-Conf`.
+    - The `sys-config.conf` file is a symbolic link to the `config.txt` file in the removable disk `FlyOS-Conf`.
 
     <ImageView image={require('@site/docs/DebugDoc/flyos-fast/img/config3.webp').default} size="60%" align="center" />
 
-    - Open the `sys-config.conf` file and locate the configurations `shutdown_pin_state` and `shutdown_pin=`.
-    - Add `#` before these configurations.
-    - Then `Save`, `Close`, and restart the system.
+    - Open the `sys-config.conf` file and locate the configurations `shutdown_pin_state` and `shutdown_pin=`
+    - Add `#` before these configurations
+    - Then save, close, and restart the system
     <ImageView image={require('@site/docs/General/flyos-fast/img/kppm.webp').default} size="90%" align="center" />
 
 ### plr.cfg Configuration File
@@ -41,8 +41,10 @@
     :::
 
     - In the printer configuration page, find the `plr.cfg` file.
-    - Empty the contents inside, then paste the configuration below into it.
+    - Empty the contents inside and paste the configuration below into it.
     - The content of the configuration file is as follows:
+
+
 
     ```cfg
     [mcu host]   
@@ -51,12 +53,12 @@
     [power_loss_resume]
     power_pin: (PINS)
     is_shutdown: True # Whether to execute shutdown operation, enabled by default
-    paused_recover_z: -2.0 # If paused during printing when power off, the Z-axis movement distance when resuming print, default is no movement
+    paused_recover_z: -2.0 # Z movement distance when resuming print from pause during shutdown, default is no movement
     start_gcode:
-        # G-code to execute before resuming print
+        # G-code executed before resuming print
         # All parameters saved before power-off can be accessed via {PLR}
         # Use M118 {PLR} to output all available parameters
-        M118 Starting resume: {PLR.print_stats.filename}
+        M118 Start resuming print: {PLR.print_stats.filename}
         M118 Interruption position: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
         M140 S{PLR.bed.target}      ; Set bed temperature
         M104 S{PLR.extruder.target-10}  ; Set extruder temperature
@@ -64,20 +66,20 @@
         G91                             ; Relative coordinates
         G1 Z2 F100                      ; Lift Z, prepare for X,Y reset
         G90                             ; Absolute coordinates
-        G28 X Y                         ; Reset XY
+        G28 X Y                         ; Reset X,Y
         M140 S{PLR.bed.target}          ; Set bed temperature
         M104 S{PLR.extruder.target}     ; Set extruder temperature
         M190 S{PLR.bed.target}          ; Wait for bed to heat up to set temperature
         M109 S{PLR.extruder.target}     ; Wait for extruder to heat up to set temperature
         M83                             ; Relative extrusion
-        # G1 E0.5 F400                  ; Extrude a little bit
-    layer_count: 2 # Resume printing after specified number of layers, execute layer_change_gcode
+        # G1 E0.5 F400                  ; Extrude a bit
+    layer_count: 2 # Resume print after specified number of layers, execute layer_change_gcode
     layer_change_gcode:                
         # G-code to execute after resuming {layer_count} layers
         M118 Resume print speed
-        M106 S{PLR.fan_speed}             ; Turn on cooling fan
+        M106 S{PLR.fan_speed}             ; Turn on material cooling fan
         M220 S{PLR.move_speed_percent}    ; Set requested speed percentage
-        M221 S{PLR.extrude_speed_percent} ; Set requested extrude speed percentage
+        M221 S{PLR.extrude_speed_percent} ; Set requested extrusion speed percentage
     shutdown_gcode:
         # G-code to execute before shutdown
         M118 Low voltage, shutting down
@@ -85,11 +87,12 @@
 
     ```
 
-    :::warning Notice
+    :::warning Note
 
-    - The `start_gcode` macro in the above configuration file may need to be modified based on the actual machine conditions.
-    - Note that if `[homing_override]` is used, do not arbitrarily set homing positions within `[homing_override]`. Any failure due to this will not be responsible.
-
+    - The `start_gcode` macro in the above configuration file may need to be modified according to the actual machine conditions.
+    - Note that if `[homing_override]` is used, do not arbitrarily set the homing position in `[homing_override]`. Any failure caused by this is not responsible.
+    - Note that if `[gcode_macro _CLIENT_VARIABLE]` is used, find `variable_custom_park_dz` and set it to 0
+`
     :::
 
 - After saving the above configuration file,
@@ -101,12 +104,12 @@
 
     ```
 
-- Click the save button in the top-right corner and restart. 
-- The Klipper power-off resume function has now been configured.
+- Click the "Save and Restart" button in the top right corner.
+- At this point, the Klipper power-off resume printing function has been configured.
 
 ## Testing
 
-- Print any file and click the `Emergency Stop` button during printing to simulate a power-off.
-- Click `Firmware Restart` again, wait for Klipper to connect normally.
-- If a pop-up prompt appears on the webpage or KlipperScreen, it indicates that the power-off resume function is working properly.
-- You can continue testing real power-off situations later.
+- Print any file, and click the "Emergency Stop" button during printing to simulate a power outage.
+- Click "Firmware Restart" again, wait for Klipper to connect normally.
+- If a pop-up prompt appears on the webpage or KlipperScreen, it indicates that the power-off resume printing function is working properly.
+- You can continue to test real power-outage situations later.
