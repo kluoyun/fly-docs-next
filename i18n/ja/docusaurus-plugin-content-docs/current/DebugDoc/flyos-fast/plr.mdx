@@ -1,81 +1,13 @@
 ---
 sidebar_position: 4
 ---
+import KPPM from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/flyos-fast/_kppm.mdx';
 
-# Klipper電源喪失継続印刷機能
 
-## 概要
+# Klipper電源遮断継続印刷機能
 
-- Klipperの電源喪失継続印刷機能とは、Klipperが電源を切った後に再度電源を入れると、Klipperの印刷状態を自動的に復元できる機能です。
-- この機能は安全シャットダウンモジュールとの連携が必要です。
-- 停電時にZ軸が移動する機種には適用されません。
+- Klipper電源遮断継続印刷機能は、Klipperが電源を切られても、再び電源が入った後にKlipperの印刷状態が自動的に復元できる機能です。
+- FLY上位機器では、C5メインボード以外はすべてKPPM電源遮断モジュールと組み合わせて使用する必要があります。
+- Z軸が電力遮断後に移動する機種には適用されません。
 
-## 設定
-
-### plr.cfg 設定ファイル
-
-- プリンター設定ページで「新規設定ファイル」を作成し、`plr.cfg` ファイルを作成します。
-- 設定ファイルの内容は以下の通りです：
-
-    ```cfg
-    [power_loss_resume]
-    # power_pin: PA0 # セーフティーシャットダウンモジュールのシャットダウンピン、下位機器のPA0ピンに接続
-    power_pin: host:gpiochip1/gpio21 # セーフティーシャットダウンモジュールのシャットダウンピン、上位機器のPA21ピンに接続
-    is_shutdown: True # シャットダウン操作を行うかどうか、デフォルトでは有効
-    paused_recover_z: -2.0 # 停止時に一時停止中だった場合の継続印刷時のZ軸移動距離、デフォルトでは移動しない
-    start_gcode:
-        # 継続印刷開始前に実行されるGコード
-        # 停電前に保存されたすべてのパラメータは{PLR}で取得可能
-        # M118 {PLR}ですべての利用可能なパラメータを出力可能
-        M118 継続印刷開始: {PLR.print_stats.filename}
-        M118 中断位置: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
-        M140 S{PLR.bed.target}      ; ホットベッド温度の設定
-        M104 S{PLR.extruder.target-10}  ; エクストルーダー温度の設定
-        M109 S{PLR.extruder.target-10}  ; エクストルーダー温度が設定温度に達するまで待ちます
-        G91                             ; 相対座標
-        G1 Z2 F100                      ; Z軸を上げてX,Yをゼロにする準備
-        G90                             ; 絶対座標
-        G28 X Y                         ; X,Y軸をリセット
-        M140 S{PLR.bed.target}          ; ホットベッド温度の設定
-        M104 S{PLR.extruder.target}     ; エクストルーダー温度の設定
-        M190 S{PLR.bed.target}          ; ホットベッドが設定温度に達するまで待ちます
-        M109 S{PLR.extruder.target}     ; エクストルーダーが設定温度に達するまで待ちます
-        M83                             ; 相対押し出し
-        # G1 E0.5 F400                  ; 少量押し出し
-    layer_count: 2 # 指定した層数分印刷後にlayer_change_gcodeを実行
-    layer_change_gcode:                
-        # {layer_count}層分印刷後に実行されるGコード
-        M118 印刷速度を復帰
-        M106 S{PLR.fan_speed}             ; ファンを起動
-        M220 S{PLR.move_speed_percent}    ; リクエスト速度のパーセントを設定
-        M221 S{PLR.extrude_speed_percent} ; リクエスト押し出し速度のパーセントを設定
-    shutdown_gcode:
-        # シャットダウン前に実行されるGコード
-        M118 電源電圧が低い、シャットダウンします
-        # M112 ; 緊急停止
-
-    ```
-
-    :::注意
-
-    - 上記の設定ファイル内の `start_gcode` マクロは、必要に応じて修正してください。具体的にはマシンの実際の状況に基づいて調整してください。
-
-    :::
-
-- 上記の設定ファイルを保存後、`printer.cfg` ファイルを開き、ファイルの先頭に以下を追加します：
-
-    ```cfg
-
-    [include plr.cfg]
-
-    ```
-
-- 右上の「保存」ボタンをクリックして再起動してください。
-- これでKlipperの電源喪失継続印刷機能の設定が完了しました。
-
-## テスト
-
-- 任意のファイルを印刷中に「緊急停止」ボタンをクリックして、停電をシミュレートします。
-- 再び「ファームウェア再起動」をクリックし、Klipperが正常に接続されるのを待ちます。
-- ページまたはKlipperScreenにポップアップが表示された場合、電源喪失継続印刷機能が正常に動作しています。
-- 後ほど本格的な停電状況でのテストも可能です。
+<KPPM power_pine="（機械に応じて置き換えてください）" />
