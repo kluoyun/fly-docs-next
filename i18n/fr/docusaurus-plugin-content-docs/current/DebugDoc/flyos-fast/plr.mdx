@@ -1,82 +1,13 @@
 ---
 sidebar_position: 4
 ---
+import KPPM from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/flyos-fast/_kppm.mdx';
 
-# Fonction de reprise d'impression après coupure de courant avec Klipper
 
-## Présentation
+# Fonction de reprise d'impression après coupure de courant de Klipper
 
-- La fonction de reprise d'impression après coupure de courant avec Klipper permet à l'imprimante de reprendre automatiquement l'état d'impression précédent après une panne de courant.
-- Cette fonction nécessite la configuration du module de mise hors tension sécurisé.
-- Non applicable aux modèles où l'axe Z se déplace en cas de coupure de courant.
+- La fonction de reprise d'impression après coupure de courant de Klipper consiste à permettre à Klipper de restaurer automatiquement son état d'impression une fois qu'il est à nouveau alimenté en électricité après une coupure.
+- Le logiciel FLY, à l'exception des cartes mères C5, doit être utilisé avec le module KPPM de coupure de courant.
+- Non compatible avec les modèles dont l'axe Z bouge en cas de coupure de courant. 
 
-## Configuration
-
-### Fichier de configuration plr.cfg
-
-- Dans la page de configuration de l'imprimante, créez un nouveau fichier de configuration nommé `plr.cfg`.
-- Le contenu du fichier de configuration est le suivant :
-
-    ```cfg
-    [power_loss_resume]
-    # power_pin: PA0 # Broche de mise hors tension du module de sécurité, connectée à PA0 sur le microcontrôleur inférieur
-    power_pin: host:gpiochip1/gpio21 # Broche de mise hors tension du module de sécurité, connectée à PA21 sur le microcontrôleur supérieur
-    is_shutdown: True # Exécuter ou non l'opération de mise hors tension, par défaut activé
-    paused_recover_z: -2.0 # Si l'impression était en pause lors de l'arrêt, distance de mouvement Z pendant la reprise, par défaut sans mouvement
-    start_gcode:
-        # G-code exécuté avant la reprise de l'impression
-        # Tous les paramètres enregistrés avant la coupure peuvent être récupérés via {PLR}
-        # Utilisez M118 {PLR} pour afficher tous les paramètres disponibles
-        M118 Début de la reprise : {PLR.print_stats.filename}
-        M118 Position d'interruption : X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
-        M140 S{PLR.bed.target}      ; Réglage de la température de la base chauffante
-        M104 S{PLR.extruder.target-10}  ; Réglage de la température de l'extrudeur
-        M109 S{PLR.extruder.target-10}  ; Attendre que l'extrudeur atteigne la température fixée
-        G91                             ; Coordonnées relatives
-        G1 Z2 F100                      ; Soulever Z, préparation au retour à zéro X,Y
-        G90                             ; Coordonnées absolues
-        G28 X Y                         ; Réinitialiser les axes X et Y
-        M140 S{PLR.bed.target}          ; Réglage de la température de la base chauffante
-        M104 S{PLR.extruder.target}     ; Réglage de la température de l'extrudeur
-        M190 S{PLR.bed.target}          ; Attendre que la base chauffante atteigne la température fixée
-        M109 S{PLR.extruder.target}     ; Attendre que l'extrudeur atteigne la température fixée
-        M83                             ; Mode d'extrusion relatif
-        # G1 E0.5 F400                  ; Extrusion légère
-    layer_count: 2 # Nombre de couches à imprimer avant d'exécuter layer_change_gcode
-    layer_change_gcode:                
-        # G-code à exécuter après avoir imprimé {layer_count} couches
-        M118 Redémarrage de l'impression
-        M106 S{PLR.fan_speed}             ; Activer le ventilateur d'extrusion
-        M220 S{PLR.move_speed_percent}    ; Réglage du pourcentage de vitesse demandée
-        M221 S{PLR.extrude_speed_percent} ; Réglage du pourcentage de vitesse d'extrusion demandée
-    shutdown_gcode:
-        # G-code exécuté avant la mise hors tension
-        M118 Tension basse, mise hors tension
-        # M112 ; Arrêt d'urgence
-
-    ```
-
-    :::tip Attention
-
-    - Le macro `start_gcode` ci-dessus peut nécessiter des ajustements en fonction des spécificités de votre machine.
-
-    :::
-
-- Enregistrez le fichier de configuration ci-dessus.
-- Ouvrez le fichier `printer.cfg`, ajoutez le contenu suivant au début du fichier :
-
-    ```cfg
-
-    [include plr.cfg]
-
-    ```
-
-- Cliquez sur "Enregistrer" en haut à droite puis redémarrez l'imprimante.
-- À ce stade, la fonction de reprise d'impression après coupure de courant avec Klipper est configurée.
-
-## Tests
-
-- Lancez l'impression d'un fichier quelconque et appuyez sur le bouton "Arrêt d'urgence" pendant l'impression pour simuler une coupure de courant.
-- Cliquez ensuite sur "Redémarrage du firmware", attendez que Klipper se reconnecte normalement.
-- Si une fenêtre de confirmation apparaît dans le navigateur ou KlipperScreen, cela signifie que la fonction de reprise d'impression après coupure de courant fonctionne correctement.
-- Vous pouvez ensuite tester la situation réelle de coupure de courant.
+<KPPM power_pine="（remplacer en fonction de la machine）" />

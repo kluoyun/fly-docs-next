@@ -1,85 +1,13 @@
 ---
 sidebar_position: 4
 ---
+import KPPM from '@site/docs/General/flyos-fast/_kppm.mdx';
+
 
 # Klipper断电续打功能
 
-## 概述
-
 - Klipper断电续打功能是指在Klipper断电后，再次上电后可以自动恢复Klipper的打印状态。
-- 该功能需配合 安全关机模块 使用。
+- FLY上位机除了C5主板其他都需要搭配KPPM断电模块一起使用
 - 不适用于停电后Z轴会发生位移的机型。
 
-## 配置
-
-### plr.cfg 配置文件
-
-- 在打印机配置页面中，点击新建配置文件，创建一个 `plr.cfg` 文件。
-- 配置文件内容如下：
-
-    ```cfg
-    [mcu host]   
-    serial: /tmp/klipper_host_mcu
-    
-    [power_loss_resume]
-    # power_pin: PA0 # 安全关机模块的关机引脚，接在下位机的PA0引脚
-    power_pin: host:gpiochip1/gpio21 # 安全关机模块的关机引脚，接在上位机的PA21引脚
-    is_shutdown: True # 是否执行关机操作, 默认为启用
-    paused_recover_z: -2.0 # 如果停机时为暂停打印，续打时Z移动距离, 默认为不移动
-    start_gcode:
-        # 开始续打前执行的gcode
-        # 断电前保存的所有参数均可通过{PLR}获取
-        # 可使用M118 {PLR}输出所有可用参数
-        M118 开始续打: {PLR.print_stats.filename}
-        M118 中断位置: X:[{PLR.POS_X}] Y:[{PLR.POS_Y}] Z:[{PLR.POS_Z}] E:[{PLR.POS_E}]
-        M140 S{PLR.bed.target}      ; 设置热床温度
-        M104 S{PLR.extruder.target-10}  ; 设置挤出头温度
-        M109 S{PLR.extruder.target-10}  ; 等待挤出头加热到设定温度
-        G91                             ; 相对坐标
-        G1 Z2 F100                      ; 抬升Z，准备X,Y归零
-        G90                             ; 绝对坐标
-        G28 X Y                         ; 归零XY
-        M140 S{PLR.bed.target}          ; 设置热床温度
-        M104 S{PLR.extruder.target}     ; 设置挤出头温度
-        M190 S{PLR.bed.target}          ; 等待热床加热到设定温度
-        M109 S{PLR.extruder.target}     ; 等待挤出头加热到设定温度
-        M83                             ; 相对挤出
-        # G1 E0.5 F400                  ; 挤出一点
-    layer_count: 2 # 续打指定层数后执行layer_change_gcode
-    layer_change_gcode:                
-        # 续打了{layer_count}层后要执行的gcode
-        M118 恢复打印速度
-        M106 S{PLR.fan_speed}             ; 开启吹料风扇
-        M220 S{PLR.move_speed_percent}    ; 设置请求速度百分比
-        M221 S{PLR.extrude_speed_percent} ; 设置请求挤出速度百分比
-    shutdown_gcode:
-        # 关机前执行的gcode
-        M118 电源电压低，关机
-        # M112 ; 紧急停止
-
-    ```
-
-    :::warning 注意
-
-    - 以上配置文件中的 `start_gcode` 宏，可能需要修改，具体根据机器实际情况修改。
-
-    :::
-
-- 保存上面的配置文件后
-- 打开 `printer.cfg` 文件，在文件最前面加入以下内容：
-
-    ```cfg
-
-    [include plr.cfg]
-
-    ```
-
-- 点击右上角保存并重启即可。
-- 至此，Klipper断电续打功能已经配置完成。
-
-## 测试
-
-- 打印任意一个文件，在打印过程中点击 `紧急停机` 按钮，模拟断电。
-- 再次点击 `固件重启` ，等待Klipper正常连接后。
-- 如果网页或者KlipperScreen出现弹窗提示，则表示断电续打功能正常。
-- 后续可继续测试真实断电情况。
+ <KPPM power_pine="（根据机器来替换）" />
