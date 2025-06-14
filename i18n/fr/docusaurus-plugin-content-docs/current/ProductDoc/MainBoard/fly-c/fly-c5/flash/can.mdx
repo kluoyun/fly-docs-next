@@ -6,17 +6,17 @@ sidebar_label: Flashage du firmware USB-CAN
 
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import GetCanbusUUID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/get-id/_get-canid-flyosfast.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/flyos-fast/_firmware_make_operate.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 
 # Flashage du firmware USB-CAN
 
 ## Connexion SSH à la station de travail
 
     :::danger Avertissement
-    - Avant de compiler le firmware, veillez à vous connecter à la station de travail via `wifi` en SSH.
+    - La compilation du firmware nécessite d'utiliser `WiFi pour se connecter via SSH à la station de travail`
     :::
 
- * Commencez par :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#connexion-ssh-via-wifi">connexion SSH via wifi</Button>  
+ * Commencez par :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#connexion-wifi-à-la-station-de-travail-via-ssh">connexion WiFi à la station de travail via SSH</Button>  
  ---
  <br/>
 
@@ -24,23 +24,24 @@ import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Ge
     <TabItem value="usb" label="Flashage du firmware USB-CAN" default>
     ### Flashage du firmware USB-CAN
     :::tip Astuce
-    - Dans le système FLYOS-FAST, un firmware USB-CAN précompilé est disponible, il n'est donc pas nécessaire de compiler manuellement le firmware. Exécutez les commandes ci-dessous pour effectuer le flashage.
-    - Vous pouvez également choisir de `compiler manuellement le firmware USB-CAN`, ce qui vous permettra de compiler votre propre firmware.
+    - Dans le système FLYOS-FAST, un firmware USB-CAN précompilé est disponible, il n'est donc pas nécessaire de compiler manuellement le firmware, exécutez simplement les commandes ci-dessous pour le flasher
+    - Vous pouvez également choisir de `compiler manuellement le firmware USB-CAN`, en compilant vous-même le firmware
     :::
 
-    * Sélectionnez attentivement en fonction de votre appareil, le système FLY utilise par défaut `1M`.
+    * Choisissez soigneusement en fonction de votre appareil, le taux par défaut dans le système FLY est `1M`
 
-    * Le système C5 utilise par défaut une vitesse de 1M, si vous avez besoin d'une vitesse de 500K, modifiez la vitesse `canbus_bitrate` dans la configuration du système.
+    * Le système C5 utilise par défaut un taux de 1M, si vous avez besoin de 500K, modifiez le taux de `canbus_bitrate` dans la configuration du système
 
-    * Cette commande flash le firmware USB-CAN en `1M`.
+    * Cette commande flash le firmware USB-CAN `1M`
     ```bash
     fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-1m.bin
     ```
-    * Cette commande flash le firmware USB-CAN en `500k`.
+    * Cette commande flash le firmware USB-CAN `500k`
     ```bash
     fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-500k.bin
     ```
-    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
+    <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
 
 
     </TabItem>
@@ -53,26 +54,28 @@ import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Ge
     
         <CAN />
     
-        * Appuyez sur `Q` pour afficher `Enregistrer la configuration`, puis appuyez sur `Y`
+        * Appuyez sur `Q`, puis appuyez sur `Y` lorsque vous voyez `Sauvegarde de la configuration`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * La configuration doit maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
+        * Maintenant, la configuration devrait être sauvegardée et vous êtes revenu à l'interface de ligne de commande
     
-        * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+        * Entrez `make -j4` pour commencer la compilation, cela prend un peu de temps
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
-        * Une sortie similaire indique que la compilation a réussi
+        * Si la sortie ressemble au contenu ci-dessous, la compilation a réussi
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
     ---
 
         ### Flashage du firmware
         :::tip
-        Exécutez les commandes suivantes pour flasher le firmware :
+        Exécutez la commande suivante pour flasher le firmware
         :::
         
             ```bash
             sudo fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
             ```
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb3.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
             </TabItem>
 </Tabs>
 ---

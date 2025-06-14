@@ -3,80 +3,81 @@ sidebar_position: 3
 sidebar_label: SSH 연결하기
 ---
 
-# 상위 컴퓨터 SSH 연결하기
+# 상위 컴퓨터 SSH 연결
 
 :::danger 주의
-- 상위 컴퓨터가 부트로더에 이미 번들된 경우 첫 번째 시작 시 반드시 `시리얼 포트를 통해 상위 컴퓨터 SSH에 연결`하세요.
-- 첫 번째 시작 시 전원 공급기와 Type-C 외에는 모든 선을 연결하지 마십시오!!
-- 펌웨어를 빌드할 때 편의를 위해 반드시 `Wi-Fi를 통해 상위 컴퓨터 SSH에 연결`하세요!
+- 만약 상위 컴퓨터가 번들을 설치한 후 처음 실행하는 경우, 반드시 `상위 컴퓨터에 대한 시리얼 포트 연결`을 사용해야 합니다.
+- 첫 실행 시, 전원 공급 및 Type-C 외에는 모든 선을 연결하지 마십시오!!
+- 펌웨어를 컴파일할 때는 반드시 `WiFi를 통해 상위 컴퓨터에 SSH 연결`을 사용하여 펌웨어 컴파일 및 번들을 쉽게 할 수 있습니다!
 :::
 
-* 연결을 시작하기 전에 아래 링크에서 SSH 소프트웨어를 다운로드하세요: <Button variant="contained" disableElevation component="a" rel="noopener" href="https://mobaxterm.mobatek.net/download-home-edition.html ">SSH 소프트웨어 다운로드</Button>. 오른쪽의 `Installer edition`을 선택하면 다운로드 가능합니다.
+* 연결 시작 전에 다음 링크에서 SSH 소프트웨어를 다운로드하세요:  
+<Button variant="contained" disableElevation component="a" rel="noopener" href="https://mobaxterm.mobatek.net/download-home-edition.html ">SSH 소프트웨어 다운로드</Button>  
+오른쪽의 `Installer edition`을 선택하면 다운로드 가능합니다.
 
 ---
 
 <Tabs>
-    <TabItem value="serial" label="시리얼 포트를 통해 상위 컴퓨터 SSH 연결하기" default>
-        ## 상위 컴퓨터 SSH에 시리얼 포트 사용하여 연결하기
+    <TabItem value="serial" label="시리얼 포트를 통한 상위 컴퓨터 SSH 연결" default>
+        ## 상위 컴퓨터 SSH 연결을 위한 시리얼 포트 사용
 
        :::tip 주의
-        - TF 카드 또는 M2WE가 올바르게 시스템으로 번들되고 FLY-C5에 올바르게 설치되었는지 확인하십시오.
-        - FLYOS-FAST 시스템의 기본 사용자 이름은 `root`, 기본 비밀번호는 `mellow`입니다.
+        - TF 카드 또는 M2WE가 올바른 시스템으로 번들되어 있고 FLY-C5에 정확히 설치되었는지 확인하십시오.
+        - FLYOS-FAST 시스템 기본 사용자 이름은 `root`, 기본 비밀번호는 `mellow`입니다.
        :::
 
-        * FLY-C5를 컴퓨터와 Type-C 데이터 케이블로 연결합니다.
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
+        * Type-C 데이터 케이블을 사용하여 FLY-C5와 컴퓨터를 연결합니다.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/c5_usb.webp').default} size="60%" align="center" />
 
-        * 보드가 컴퓨터와 정상적으로 연결되면 장치 관리자에서 CH340 포트를 볼 수 있습니다.
+        * 보드가 컴퓨터에 정상적으로 연결된 경우 장치 관리자를 열면 CH340 포트를 볼 수 있습니다.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        * `MobaXterm`을 열고 장치 관리자에서 본 CH340 포트를 선택하도록 설정합니다.
+        * `MobaXterm`을 열고 장치 관리자에서 본 포트를 선택하여 설정합니다.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        * 모든 것이 정상이라면 부팅 화면을 볼 수 있습니다.
+        * 문제가 없다면 부팅 화면을 볼 수 있습니다.
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial1.webp').default} size="60%" align="center" />  
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
 
-
-        * FLYOS-FAST는 빠른 부팅 속도를 가지고 있으므로 대부분의 경우 깨진 문자열을 볼 수 있습니다. 아래 그림과 같이 정상적인 현상이며 걱정하지 않으셔도 됩니다. **엔터 키를 몇 번 누르세요.**
+        * FLYOS-FAST는 부팅 속도가 빠르기 때문에 대부분의 경우 잡음과 같은 문자가 표시됩니다. 아래 그림과 같이 정상적인 현상이며 걱정하지 않으셔도 됩니다. **여러 번 Enter 키를 누르세요.**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
 
 
-        * 엔터 후 아래 그림과 같은 내용이 나타납니다.
+        * Enter 키를 누르면 아래와 같은 내용을 볼 수 있습니다.
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
 
-        * 계정 입력: `root`, Enter, 비밀번호 입력: `mellow`, Enter. 비밀번호는 표시되지 않으며 이는 정상적인 현상입니다.
+        * 계정 입력: `root`, Enter 키, 비밀번호 입력: `mellow`, Enter 키. 비밀번호 입력 시 표시되지 않으며 이는 정상적인 현상입니다.
 
         :::warning 주의 
-        - FLYOS-FAST 시스템 계정은 `root`, 비밀번호는 `mellow`입니다.
-        - FLYOS-FAST 시스템에는 유일한 계정인 `root`만 존재합니다!!
+        - FLYOS-FAST 시스템 계정은 `root`이고 비밀번호는 `mellow`입니다.
+        - FLYOS-FAST 시스템에는 오직 `root` 계정만 존재합니다!!
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
 
-        * IP를 확인하려면 SSH에서 명령어를 입력하세요: `ip a | grep inet`, 반환된 내용 중 라우터와 동일한 세그먼트의 IP를 찾아 접근할 수 있습니다.
+        * IP를 확인하려면 ssh에서 `ip a | grep inet`을 입력하고 Enter 키를 누릅니다. 반환된 내용에서 라우터와 동일한 세그먼트의 IP를 찾아 접근할 수 있습니다.
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
 
 
     </TabItem>
-    <TabItem value="net" label="Wi-Fi를 통해 상위 컴퓨터 SSH 연결하기" default>
-        ## 상위 컴퓨터 SSH에 Wi-Fi 사용하여 연결하기
+    <TabItem value="net" label="WiFi를 통한 상위 컴퓨터 SSH 연결" default>
+        ## WiFi를 통한 상위 컴퓨터 SSH 연결
        :::tip 주의
-        - 상위 컴퓨터 시스템이 정상적으로 시작되었는지 확인하십시오.
-        - FLYOS-FAST 시스템의 기본 사용자 이름은 `root`, 기본 비밀번호는 `mellow`입니다.
-        - Wi-Fi를 통해 상위 컴퓨터 SSH에 연결하는 전제 조건은: 상위 컴퓨터가 라우터에 연결되어 있으며, 상위 컴퓨터의 IP를 알고 있는 것입니다.
+        - 상위 컴퓨터 시스템이 이미 **정상적으로 시작되었는지** 확인하십시오.
+        - FLYOS-FAST 시스템 기본 사용자 이름은 `root`, 기본 비밀번호는 `mellow`입니다.
+        - WiFi를 통해 상위 컴퓨터 SSH에 연결하는 **전제 조건**은 **상위 컴퓨터가 라우터에 연결되었고, 상위 컴퓨터의 IP를 알고 있는 경우**입니다.
        :::
 
-        * FLY-C5를 컴퓨터와 Type-C 데이터 케이블로 연결합니다.
+        * Type-C 데이터 케이블을 사용하여 FLY-C5와 컴퓨터를 연결합니다.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/c5_usb.webp').default} size="60%" align="center" />
 
-        * MobaXterm을 열고 아래와 같이 설정하세요. `Remote host`란에는 시리얼 연결 시 확인한 상위 컴퓨터의 IP를 입력하거나 라우터 관리자 페이지에서 상위 컴퓨터의 IP를 확인할 수 있습니다.
+        * MobaXterm을 열고 아래와 같이 설정합니다. `Remote host`에 앞서 시리얼 연결 중 확인한 상위 컴퓨터의 IP를 입력하거나 라우터 관리자 페이지에서 상위 컴퓨터의 IP를 확인할 수 있습니다.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
 
@@ -84,27 +85,27 @@ sidebar_label: SSH 연결하기
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
 
-        * 첫 연결 시 아래 창이 나타날 수 있습니다. "Accept"를 클릭하면 됩니다.
+        * 첫 연결 시 아래 창이 나타날 수 있습니다. `Accept`를 클릭하면 됩니다.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
-        * 비밀번호 입력이 요청되면 상위 컴퓨터의 비밀번호를 입력하고 Enter를 누릅니다.
+        * 비밀번호 입력을 요청받습니다. 상위 컴퓨터 비밀번호를 입력하고 Enter 키를 누릅니다.
         :::tip
-        - 비밀번호는 표시되지 않습니다. 입력 후 바로 Enter를 눌러주세요.
+        - 비밀번호 입력 시 표시되지 않으며, 입력 후 바로 Enter 키를 눌러야 합니다.
         :::
         
-        **FLYOS-FAST** 시스템의 기본 사용자 이름은: `root`, 비밀번호는: `mellow`입니다.
+        **FLYOS-FAST** 시스템 기본 사용자 이름은 `root`, 비밀번호는 `mellow`입니다.
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
 
-        **아래 그림과 같은 창이 나타나면 사용자 비밀번호를 저장할지 묻는 팝업입니다. "No"를 클릭하세요.**
+        **아래와 같은 창이 나타나는 경우 사용자 비밀번호를 저장할지 묻는 팝업이므로 `No`를 클릭합니다.**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        * 아래 그림과 같은 화면이 나타나면 로그인 성공!
+        * 아래와 같은 창이 나타나면 로그인 성공!
 
         :::warning 주의 
-        - FLYOS-FAST 시스템 계정은 `root`, 비밀번호는 `mellow`입니다.
-        - FLYOS-FAST 시스템에는 유일한 계정인 `root`만 존재합니다!!
+        - FLYOS-FAST 시스템 계정은 `root`이고 비밀번호는 `mellow`입니다.
+        - FLYOS-FAST 시스템에는 오직 `root` 계정만 존재합니다!!
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />

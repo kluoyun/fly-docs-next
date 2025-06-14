@@ -1,38 +1,38 @@
 ---
 sidebar_position: 3
-sidebar_label: Подключение к ПК по SSH
+sidebar_label: SSH-подключение к хост-компьютеру
 ---
 
-# Подключение к ПК по SSH
+# Подключение к хост-компьютеру SSH
 
 :::danger Внимание
-- Если ваш ПК запущен впервые после записи образа, обязательно используйте `Подключение через последовательный порт к SSH на ПК`.
-- Во время первого запуска подключайте только питание и Type-C.
-- При компиляции прошивки используйте `Подключение через Wi-Fi к SSH на ПК`, чтобы упростить процесс компиляции и записи прошивки!
+- Если ваш хост-компьютер запущен впервые после записи образа, обязательно используйте `Подключение через последовательный порт к хост-компьютеру SSH`.
+- При первом запуске запрещено подключать любые провода, кроме питания и Type-C!!!
+- При компиляции прошивки обязательно используйте `Подключение через Wi-Fi к хост-компьютеру SSH`, чтобы упростить процесс компиляции и записи прошивки!
 :::
 
-* Перед началом подключения скачайте: <Button variant="contained" disableElevation component="a" rel="noopener" href="https://mobaxterm.mobatek.net/download-home-edition.html ">SSH-программное обеспечение</Button>. Выберите «Installer edition» справа для загрузки.
+* Перед началом подключения скачайте: <Button variant="contained" disableElevation component="a" rel="noopener" href="https://mobaxterm.mobatek.net/download-home-edition.html ">SSH-программное обеспечение</Button>. Выберите справа вариант `Installer edition`, чтобы скачать.
 
 ---
 
-<Tabs>
-    <TabItem value="serial" label="Подключение через последовательный порт к SSH на ПК" default>
-        ## Использование последовательного порта для подключения к SSH на ПК
 
-       :::tip Важно
-        - Убедитесь, что карта TF или M2WE записаны правильно и установлены на FLY-C5.
-        - По умолчанию для системы FLYOS-FAST имя пользователя — `root`, пароль — `mellow`.
+<Tabs>
+    <TabItem value="serial" label="Подключение через последовательный порт к хост-компьютеру SSH" default>
+        ## Использование последовательного порта для подключения к хост-компьютеру SSH
+
+       :::tip Внимание
+        - Убедитесь, что карта TF или M2WE записаны правильно и установлены корректно на FLY-C5.
+        - По умолчанию для системы FLYOS-FAST пользователь `root`, пароль `mellow`.
        :::
 
         * Используйте кабель Type-C для подключения FLY-C5 к компьютеру.
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/c5_usb.webp').default} size="60%" align="center" />
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
-
-        * Если материнская плата подключена нормально, откройте диспетчер устройств, и вы увидите порт CH340.
+        * Если подключение материнской платы к компьютеру работает нормально, откройте диспетчер устройств, и вы увидите порт CH340.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        * Откройте «MobaXterm» и выполните следующие настройки, выбрав ранее виденный порт в диспетчере устройств.
+        * Откройте `MobaXterm` и выполните следующие настройки, выбрав ранее виденный порт в диспетчере устройств.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
@@ -43,69 +43,69 @@ sidebar_label: Подключение к ПК по SSH
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
 
 
-        * Так как система FLYOS-FAST запускается быстро, скорее всего вы увидите мусор на экране, как показано ниже. Это нормально, не беспокойтесь, **нажмите несколько раз Enter**.
+        * Поскольку система FLYOS-FAST загружается быстро, скорее всего вы увидите нечитаемые символы, как показано на изображении ниже. Это нормально, не беспокойтесь — просто несколько раз нажмите клавишу Enter.
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
 
 
-        * После нажатия Enter вы увидите следующее содержимое.
+        * После нажатия Enter появится следующее содержимое.
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
 
-        * Введите логин: `root`, нажмите Enter, затем введите пароль: `mellow`, нажмите Enter. При вводе пароля ничего не будет отображаться — это нормально.
+        * Введите имя пользователя: `root`, нажмите Enter, затем введите пароль: `mellow`, нажмите Enter. При вводе пароля ничего не отображается — это нормальное поведение.
 
-        :::warning Важно 
-        - Для системы FLYOS-FAST логин — `root`, пароль — `mellow`.
-        - В системе FLYOS-FAST существует только один аккаунт — `root`.
+        :::warning Внимание 
+        - Для системы FLYOS-FAST пользователь `root`, пароль `mellow`.
+        - В системе FLYOS-FAST существует только один пользователь — `root`!!!
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
 
-        * Если нужно узнать IP, введите в ssh: `ip a | grep inet`, затем найдите IP в том же диапазоне, что и ваш роутер, чтобы получить доступ.
+        * Если нужно проверить IP, введите в SSH: `ip a | grep inet` и нажмите Enter. Найдите IP, совпадающий с вашим маршрутизатором, чтобы получить доступ.
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
 
 
     </TabItem>
-    <TabItem value="net" label="Подключение через Wi-Fi к SSH на ПК" default>
-        ## Использование Wi-Fi для подключения к SSH на ПК
-       :::tip Важно
-        - Убедитесь, что система ПК уже запущена нормально.
-        - По умолчанию для системы FLYOS-FAST логин — `root`, пароль — `mellow`.
-        - Предварительным условием для подключения через Wi-Fi является подключение ПК к роутеру и знание его IP-адреса.
+    <TabItem value="net" label="Подключение через Wi-Fi к хост-компьютеру SSH" default>
+        ## Использование Wi-Fi для подключения к хост-компьютеру SSH
+       :::tip Внимание
+        - Убедитесь, что система хост-компьютера уже запущена нормально.
+        - По умолчанию для системы FLYOS-FAST пользователь `root`, пароль `mellow`.
+        - Предпосылка для подключения через Wi-Fi к хост-компьютеру SSH — ваш хост-компьютер уже подключен к роутеру и вы знаете его IP.
        :::
 
         * Используйте кабель Type-C для подключения FLY-C5 к компьютеру.
 
-        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/c5.webp').default} size="40%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/img/c5_usb.webp').default} size="60%" align="center" />
 
-        * Откройте MobaXterm и установите настройки, как показано на картинке. В поле «Remote host» укажите IP-адрес ПК, который вы определили при подключении через последовательный порт, либо получите IP через интерфейс роутера.
+        * Откройте MobaXterm и установите настройки, как показано на рисунке. В поле `Remote host` укажите IP хост-компьютера, который вы узнали при подключении через последовательный порт, либо найдите IP через интерфейс администрирования роутера.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
 
-        **Важно: здесь в четвертом шаге введите логин ПК — `root`**
+        **Внимание: здесь в четвертом шаге введите имя пользователя хост-компьютера `root`.**
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
 
-        * При первом подключении появится окно, нажмите «Accept».
+        * При первом подключении появится окно, нажмите `Accept`.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
-        * Введите пароль, затем нажмите Enter.
+        * Система запросит пароль. Введите пароль хост-компьютера и нажмите Enter.
         :::tip
-        - Здесь вводимый пароль не отображается, просто нажмите Enter после ввода.
+        - При вводе пароля ничего не отобразится, просто нажмите Enter после ввода.
         :::
         
-        По умолчанию для системы FLYOS-FAST логин — `root`, пароль — `mellow`.
+        **По умолчанию для системы FLYOS-FAST имя пользователя: `root`, пароль: `mellow`.**
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
 
-        **Если появится окно с запросом сохранить пароль пользователя, нажмите «No».**
+        **Если появится окно, как показано ниже, он предупреждает о сохранении пароля пользователя. Нажмите `No`.**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        * Если появится следующий экран, подключение успешно завершено!
+        * Если появится следующее окно, подключение успешно!
 
-        :::warning Важно 
-        - Для системы FLYOS-FAST логин — `root`, пароль — `mellow`.
-        - В системе FLYOS-FAST существует только один аккаунт — `root`.
+        :::warning Внимание 
+        - Для системы FLYOS-FAST пользователь `root`, пароль `mellow`.
+        - В системе FLYOS-FAST существует только один пользователь — `root`!!!
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />

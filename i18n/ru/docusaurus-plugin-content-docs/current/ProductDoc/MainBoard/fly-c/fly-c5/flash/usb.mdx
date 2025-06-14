@@ -4,31 +4,31 @@ sidebar_label: Загрузка прошивки через USB
 ---
 
 
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/flyos-fast/_firmware_make_operate.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/get-id/_get-usbid-flyosfast.mdx';
 
 
 
-# Загрузка прошивки через USB
+# Компиляция прошивки через USB
 
 
-## Проверка переключателя
+## Проверка переключателей
 
     :::danger Важно
-    - При нормальной работе системы переключатель должен быть установлен в верхнее положение.
-    - При установке переключателя убедитесь, что он находится в крайнем верхнем положении, иначе подключение к нижнему устройству может не произойти!!!
+    - При нормальной работе системы переключатель должен быть установлен в положение "Вверх"
+    - При установке переключателя убедитесь, что он установлен до конца вверх, иначе может произойти неправильное подключение к нижнему устройству!!!
     :::
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
 
-## Подключение к верхнему устройству по SSH
+## Подключение по SSH к верхнему устройству
 
     :::danger Предупреждение
-    - Перед компиляцией прошивки необходимо подключиться к верхнему устройству через SSH с помощью Wi-Fi.
+    - Перед компиляцией прошивки необходимо подключиться к верхнему устройству через Wi-Fi по SSH
     :::
 
- * Сначала подключитесь: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#подключение-к-верхнему-устройству-по-ssh">Подключение к верхнему устройству по SSH</Button>  
+ * Сначала выполните: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#подключение-по-wifi-к-верхнему-устройству-ssh">Подключение по Wi-Fi к верхнему устройству SSH</Button>  
  ---
  <br/>
 
@@ -36,48 +36,17 @@ import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Gener
     <TabItem value="usb" label="Загрузка прошивки через USB" default>
     ### Загрузка прошивки через USB
         :::tip Совет
-        - В системе FLYOS-FAST уже предварительно скомпилирована одна USB-прошивка, поэтому нет необходимости повторно компилировать прошивку вручную. Просто выполните команду ниже для загрузки.
-        - Также можно выбрать ручную компиляцию USB-прошивки.
+        - В системе FLYOS-FAST заранее скомпилирована одна USB-прошивка, нет необходимости вручную компилировать прошивку, достаточно выполнить команду ниже для её загрузки
+        - Также можно выбрать «Ручную компиляцию USB-прошивки» и самостоятельно скомпилировать прошивку
         :::
 
         * Через SSH подключитесь к верхнему устройству и введите следующую команду
         ```bash
-        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723xx-128k-usb.bin
+        fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
         ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb1.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
     
-
-## Заполнение USB ID
-
-    1. Откройте веб-интерфейс верхнего устройства и найдите в боковой панели конфигурационные параметры:
-
-    <table>
-      <tr>
-        <td>
-          - Для fluidd: `{…}`, перейдите внутрь, чтобы найти `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
-        </td>
-        <td>
-          - Для mainsail: `Машина`, перейдите внутрь, чтобы найти `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
-        </td>
-      </tr>
-    </table>
-
-
-    2. Скопируйте синий ID и в файле `printer.cfg` найдите опцию `[mcu]`. После параметра `serial:` добавьте скопированный `ID`, сохраните изменения и перезагрузите устройство.
-    :::tip
-    * Ниже приведен пример добавления ID в конфигурации MCU:
-
-    ```
-    [mcu]
-    serial: /dev/serial/by-id/usb-Klipper_stm32h723xx_12345-if00
-    ```
-    :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
-    
-    3. Если Klipper выдает сообщение `ADC out of range`, это нормальное явление. Подключите нагревательный стол и термисторы к материнской плате и правильно настройте пины для головки и нагревательного стола, затем сохраните изменения и перезагрузите устройство.
 
     </TabItem>
 
@@ -88,15 +57,15 @@ import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Gener
     
         <USB />
     
-        * Нажмите клавишу `Q`, появится запрос `Save configuration`, нажмите `Y`
+        * Нажмите клавишу `Q`, чтобы появилось окно "Сохранить конфигурацию", затем нажмите клавишу `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * Сейчас должна сохраниться конфигурация, и вы вернетесь в командную строку
+        * Теперь конфигурация должна быть сохранена, и вы вернётесь в командную строку
     
-        * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+        * Введите `make -j4` для начала компиляции, процесс займёт некоторое время
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
-        * В конце вывода, если появится следующее содержимое, компиляция успешно завершена
+        * Если выводится следующий результат, то компиляция успешна
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
         ---
         
@@ -109,12 +78,14 @@ import GetUsbID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Gener
             ```bash
             fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
             ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
-
-        <GetUsbID />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb3.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
 
     </TabItem>
 </Tabs>
 ---
+
+<GetUsbID />
+
 
 <br/>

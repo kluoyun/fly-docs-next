@@ -2,9 +2,13 @@
 sidebar_position: 3
 ---
 
-# Erreurs liées au TMC
 
-## `Impossible de lire l'enregistrement IFCNT du bus série UART 'stepper_x' du tmc` ou `Impossible de lire l'enregistrement de bus série SPI 'stepper_x' du tmc`
+
+# Erreurs liées à TMC
+
+
+
+* `Impossible de lire l'enregistrement IFCNT du port UART TMC 'stepper_x'` ou `Impossible de lire l'enregistrement de l'enregistrement SPI TMC 'stepper_x'`
 
     1. Détails de l'erreur
 
@@ -12,20 +16,23 @@ sidebar_position: 3
 
     2. Cause de l'erreur
 
-        * Impossible de communiquer avec le pilote
+        * Impossibilité de communiquer avec le pilote
 
-    3. Méthodes principales pour résoudre le problème
+    3. Méthodes principales de résolution
 
-        * Vérifier si la configuration des broches UART du pilote correspondante est correcte
+        * Vérifiez si la configuration des broches UART du pilote correspondante est correcte
         * Les sauts UART sont-ils corrects ?
-        * Le pilote est-il alimenté ?
-        * Remplacer le pilote ou configurer la prise pour effectuer un diagnostic
-        * Si c'est un autre fabricant de pilotes, vous devez déterminer vous-même si les broches UART du pilote correspondent à celles de FLY. Les broches UART du pilote FLY sont la quatrième broche en partant du haut vers le bas.
+        * Le pilote dispose-t-il d'alimentation ?
+        * Remplacez le pilote ou configurez la prise en charge pour effectuer un diagnostic
+        * Si vous utilisez un autre pilote, vous devez déterminer si les broches UART du pilote sont compatibles avec FLY. Les broches UART du pilote FLY sont la quatrième broche en partant du haut à gauche
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/2209uart.webp').default} size="80%" align="center" />
-        * Si les broches UART de votre pilote sont sur la cinquième broche, vous pouvez résoudre cela avec les sauts mentionnés ci-dessous
+        * Si les broches UART de votre pilote sont sur la cinquième broche, vous pouvez résoudre le problème selon le saut ci-dessous
         <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/uart1.webp').default} size="80%" align="center" />
+---
+<br/>
+<br/>
 
-## `Le TMC XXXX signale une erreur : GSTAT : 00000001 reset=1(RAZ)`
+* `Le pilote TMC XXXX signale une erreur : GSTAT: 00000001 reset=1(Réinitialisation)`
 
     1. Détails de l'erreur
 
@@ -36,13 +43,16 @@ sidebar_position: 3
         * Réinitialisation du pilote
 
 
-    3. Méthodes principales pour résoudre le problème
+    3. Méthodes principales de résolution
 
-        * Les câbles d'alimentation ne sont pas bien connectés
-        * Le fil du moteur est coupé
-        * Vous pouvez connecter l'enveloppe métallique du moteur au GND de la carte mère ou de l'outil
+        * Les connexions d'alimentation sont mal branchées
+        * Le fil du moteur est sectionné
+        * Vous pouvez connecter la coque métallique du moteur au GND du contrôleur principal ou de la plaque de test
+---
+<br/>
+<br/>
 
-## `Le TMC 'extrudeur' signale une erreur : DRV_STATUS : c00d0103 otpw=1(Avertissement de surchauffe !)`
+* `Le pilote TMC 'extrudeur' signale une erreur : DRV_STATUS: c00d0103 otpw=1(Avertissement de surchauffe !)`
 
     1. Détails de l'erreur
 
@@ -51,16 +61,19 @@ sidebar_position: 3
     2. Cause de l'erreur
 
         * Le pilote est surchauffé !
-        * Ce n'est pas le moteur qui est surchauffé !
+        * Ce n'est pas le moteur qui surchauffe !
 
-    3. Méthodes principales pour résoudre le problème
+    3. Méthodes principales de résolution
 
-        * Réduire le courant de fonctionnement
+        * Diminuer le courant de fonctionnement
         * Supprimer le courant de maintien
-        * Vérifier si les résistances de mesure du pilote sont correctes
-        * Améliorer la dissipation thermique du pilote, par exemple en ajoutant un ventilateur
+        * Vérifiez si la résistance d'échantillonnage du pilote est correcte
+        * Améliorez la dissipation thermique du pilote, par exemple en ajoutant un ventilateur
+---
+<br/>
+<br/>
 
-## `Le TMC 'extrudeur' signale une erreur : DRV_STATUS : 601f1000 s2vsa=1(Courant court-circuité vers l'alimentation A!) csactual=31 ola=1(Charge ouverte A!) olb=1(Charge ouverte B!)`
+* `Le pilote TMC 'extrudeur' signale une erreur : DRV_STATUS: 601f1000 s2vsa=1(Courant court-circuit vers l'alimentation A!) csactual=31 ola=1(Charge ouverte A!) olb=1(Charge ouverte B!)`
 
     1. Détails de l'erreur
 
@@ -68,16 +81,19 @@ sidebar_position: 3
 
     2. Cause de l'erreur
 
-        * La vérification du courant du pilote est incorrecte
+        * Le courant du pilote est incorrectement vérifié
 
 
-    3. Méthodes principales pour résoudre le problème
+    3. Méthodes principales de résolution
         
-        * Vérifier si la résistance des deux bobines de l'entraînement du pas-à-pas est identique
-        * Vérifier si les fils internes du moteur de pas-à-pas ou des composants sont lâches ou en court-circuit
-        * Désactiver le mode silencieux
+        * Vérifiez si les valeurs de résistance des deux ensembles de bobines du moteur pas à pas sont identiques
+        * Vérifiez si les fils internes du moteur pas à pas ou des composants du moteur sont relâchés ou courts-circuités
+        * Désactivez le mode silencieux
+---
+<br/>
+<br/>
 
-## `Le TMC 'extrudeur' signale une erreur : DRV_STATUS : 00190060 s2vsb=1(Courant court-circuité vers l'alimentation B!) ola=1(Charge ouverte A!) cs_actual-25`
+* `Le pilote TMC 'extrudeur' signale une erreur : DRV_STATUS: 00190060 s2vsb=1(Courant court-circuit vers l'alimentation B!) ola=1(Charge ouverte A!) cs_actual-25`
 
     1. Détails de l'erreur
     
@@ -85,11 +101,15 @@ sidebar_position: 3
 
     2. Cause de l'erreur
 
-        * Connexion incorrecte ou le moteur lui-même a un problème
+        * Erreur de câblage ou problème du moteur lui-même
+        <ImageView image={require('@site/docs/DebugDoc/faq/img/tmc/motor_wiring.webp').default} size="60%" align="center" />
+---
+<br/>
+<br/>
 
-
-    3. Méthodes principales pour résoudre le problème
+    3. Méthodes principales de résolution
         
-        * Vérifier si la résistance des deux bobines de l'entraînement du pas-à-pas est identique
-        * Vérifier votre moteur de pas-à-pas et vos connexions
-        * Vérifier l'ordre des fils, s'il s'agit d'un groupe à gauche et d'un groupe à droite
+        * Vérifiez si les valeurs de résistance des deux ensembles de bobines du moteur pas à pas sont identiques
+        * Vérifiez votre moteur pas à pas et vos câblages
+        * Vérifiez l'ordre des fils du moteur, s'il est composé d'un groupe à gauche et d'un groupe à droite
+---

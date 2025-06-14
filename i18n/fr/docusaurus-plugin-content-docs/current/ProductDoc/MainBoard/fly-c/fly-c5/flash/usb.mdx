@@ -1,34 +1,35 @@
 ---
 sidebar_position: 3
-sidebar_label: Programmation de la mise en mémoire USB
+sidebar_label: Programmeur de firmware USB
 ---
 
 
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/flyos-fast/_firmware_make_operate.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import GetUsbID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/get-id/_get-usbid-flyosfast.mdx';
 
 
 
-# Programmation du firmware USB
+
+# Compilation du firmware USB
 
 
-## Vérification des dip-switches
+## Vérification des commutateurs
 
     :::danger À savoir
-    - Lors de l'utilisation normale, veuillez mettre le `dip-switch vers le haut`
-    - Lors du changement de dip-switch, veuillez le pousser complètement vers le haut, sinon il pourrait être impossible de connecter l'ordinateur inférieur !!!
+    - Lorsque vous l'utilisez normalement, veillez à ce que le `commutateur soit positionné vers le haut`
+    - Lorsque vous effectuez les changements de commutateur, assurez-vous qu'il est positionné complètement vers le haut, sinon il pourrait ne pas être possible de se connecter au sous-système !!!
     :::
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
 
-## Connexion SSH à l'ordinateur supérieur
+## Connexion SSH à la station de travail principale
 
     :::danger Avertissement
-    - La compilation du firmware doit être effectuée après une connexion `SSH via wifi à l'ordinateur supérieur`
+    - Avant de compiler le firmware, il est nécessaire d'utiliser `le wifi pour vous connecter via SSH à la station de travail principale`
     :::
 
- * Veuillez d'abord :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#connexion-ssh-via-wifi-a-lordinateur-superieur">connexion SSH via wifi à l'ordinateur supérieur</Button>  
+ * Commencez par : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#connexion-wifi-à-la-station-de-travail-principale-ssh">Connexion wifi à la station de travail principale SSH</Button>  
  ---
  <br/>
 
@@ -36,48 +37,17 @@ import GetUsbID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Gener
     <TabItem value="usb" label="Programmation du firmware USB" default>
     ### Programmation du firmware USB
         :::tip Astuce
-        - Dans le système FLYOS-FAST, un firmware USB est précompilé, il n'est donc pas nécessaire de compiler manuellement le firmware, exécutez simplement la commande ci-dessous pour le flasher
+        - Dans le système FLYOS-FAST, un firmware USB précompilé est disponible, il n'est donc pas nécessaire de compiler manuellement le firmware, exécutez simplement la commande ci-dessous pour le programmer
         - Vous pouvez également choisir de `compiler manuellement le firmware USB`, pour compiler le firmware vous-même
         :::
 
-        * Connectez-vous via SSH à l'ordinateur supérieur et entrez la commande suivante
+        * Connectez-vous via SSH à la station de travail principale et entrez la commande suivante
         ```bash
         fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
         ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb1.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
     
-    
-## Remplissage de l'ID USB
-
-    1. Ouvrez l'interface WEB de l'ordinateur supérieur, dans le menu de configuration du panneau latéral gauche, trouvez :
-
-    <table>
-      <tr>
-        <td>
-          - fluidd est : `{…}`, cliquez pour accéder à `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
-        </td>
-        <td>
-          - mainsail est : `machine`, cliquez pour accéder à `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
-        </td>
-      </tr>
-    </table>
-
-
-    2. Copiez l'ID bleu, puis dans le fichier `printer.cfg`, trouvez l'option `[mcu]`, et dans la ligne suivante `serial: `, insérez l'ID trouvé, sauvegardez et redémarrez pour vous connecter à la carte mère.
-    :::tip
-    * Remplacez l'ID ci-dessous dans la configuration MCU
-
-    ```
-    [mcu]
-    serial: /dev/serial/by-id/usb-Klipper_stm32h723xx_12345-if00
-    ```
-    :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
-    
-    3. Si Klipper affiche `ADC out of range`, cela est normal. Branchez la plaque chauffante et les capteurs thermiques sur la carte mère, configurez bien les broches des extrudeurs et de la plaque chauffante, puis sauvegardez et redémarrez.
 
     </TabItem>
 
@@ -88,33 +58,35 @@ import GetUsbID from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Gener
     
         <USB />
     
-        * Appuyez sur `Q` pour voir `Save configuration`, puis appuyez sur `Y`
+        * Appuyez sur `Q`, puis apparaît `Enregistrer la configuration`, appuyez alors sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+        * La configuration devrait maintenant être sauvegardée et vous êtes revenu à l'interface de ligne de commande
     
         * Entrez `make -j4` pour commencer la compilation, cela prendra un certain temps
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
-        * Enfin, si vous obtenez le contenu suivant, la compilation a réussi
+        * Si la sortie finale ressemble à ce qui suit, la compilation a réussi
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
         ---
         
-        ### Flashage du firmware
+        ### Programmation du firmware
         
         :::tip
-        Exécutez la commande suivante pour flasher le firmware
+        Exécutez la commande suivante pour programmer le firmware
         :::
         
             ```bash
             fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
             ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
-
-        <GetUsbID />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb3.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
 
     </TabItem>
 </Tabs>
 ---
+
+<GetUsbID />
+
 
 <br/>
