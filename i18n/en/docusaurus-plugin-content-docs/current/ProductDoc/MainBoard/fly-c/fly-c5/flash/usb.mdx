@@ -4,7 +4,7 @@ sidebar_label: USB Firmware Burning
 ---
 
 
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/flyos-fast/_firmware_make_operate.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import GetUsbID from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/get-id/_get-usbid-flyosfast.mdx';
 
@@ -15,9 +15,9 @@ import GetUsbID from '@site/i18n/en/docusaurus-plugin-content-docs/current/Gener
 
 ## Check DIP Switch
 
-    :::danger Note
-    - When using normally, please set the `DIP switch to up`.
-    - When switching the DIP switch, please push it all the way to the top; otherwise, you may not be able to connect to the lower-level machine!!!
+    :::danger Notice
+    - When in normal use, please set the `DIP switch to the up position`
+    - When switching the DIP switch, please fully push it upwards, otherwise it may fail to connect to the lower-level machine!!!
     :::
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
@@ -25,10 +25,10 @@ import GetUsbID from '@site/i18n/en/docusaurus-plugin-content-docs/current/Gener
 ## SSH Connection to Host Machine
 
     :::danger Warning
-    - Before firmware compilation, you need to use `WiFi to connect to the host machine via SSH`.
+    - Before firmware compilation, you need to use `WiFi to connect to the host machine SSH`
     :::
 
- * First, please: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#using-wifi-to-connect-to-the-host-machine-ssh">Use WiFi to connect to the host machine SSH</Button>  
+ * First, please: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#using-wifi-to-connect-to-the-host-machine-ssh">Use WiFi to Connect to the Host Machine SSH</Button>  
  ---
  <br/>
 
@@ -36,64 +36,33 @@ import GetUsbID from '@site/i18n/en/docusaurus-plugin-content-docs/current/Gener
     <TabItem value="usb" label="USB Firmware Burning" default>
     ### USB Firmware Burning
         :::tip Tip
-        - A USB firmware has been precompiled in the FLYOS-FAST system, so there is no need to manually compile the firmware. Just execute the following command to burn it.
-        - You can also choose to `manually compile the USB firmware`.
+        - A USB firmware has been precompiled in the FLYOS-FAST system, no need to manually compile the firmware, just execute the command below to burn it
+        - You can also choose to `Manually Compile USB Firmware` and compile the firmware yourself
         :::
 
         * Input the following command through SSH connection to the host machine
         ```bash
         fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
         ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb1.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
     
-
-## Fill in USB ID
-
-    1. Open the host machine's WEB interface, and find it in the configuration options on the left sidebar:
-
-    <table>
-      <tr>
-        <td>
-          - For fluidd: `{…}`, click to enter, and you can find `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
-        </td>
-        <td>
-          - For mainsail: `Machine`, click to enter, and you can find `printer.cfg`
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
-        </td>
-      </tr>
-    </table>
-
-
-    2. Copy the blue ID, and fill in the queried `ID` after the `serial:` option under the `[mcu]` section in the `printer.cfg` file. After saving and restarting, you can connect to the main board.
-    :::tip
-    * Replace the ID below with the ID in the MCU configuration.
-
-    ```
-    [mcu]
-    serial: /dev/serial/by-id/usb-Klipper_stm32h723xx_12345-if00
-    ```
-    :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
-    
-    3. If Klipper prompts `ADC out of range`, this is a normal phenomenon. Connect the heated bed and thermistor to the main board, configure the thermistor pins for the nozzle and heated bed, then save and restart.
 
     </TabItem>
 
-    <TabItem value="can" label="Manual Compilation of USB Firmware">
-    ## Manual Compilation of USB Firmware
+    <TabItem value="can" label="Manually Compile USB Firmware">
+    ## Manually Compile USB Firmware
 
         <MakeOperate/>
     
         <USB />
     
-        * Press `Q`, and when `Save configuration` appears, press `Y`
+        * Press `Q` key, a `Save configuration` message will appear, then press `Y` key
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * Now the configuration should have been saved, and you should have exited to the command line interface
+        * Now the configuration should be saved and returned to the command line interface
     
-        * Enter `make -j4` to start compiling, which takes some time
+        * Enter `make -j4` to start compiling, it takes some time
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
         * Finally, if the output is as follows, the compilation is successful
@@ -109,12 +78,14 @@ import GetUsbID from '@site/i18n/en/docusaurus-plugin-content-docs/current/Gener
             ```bash
             fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
             ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
-
-        <GetUsbID />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb3.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
 
     </TabItem>
 </Tabs>
 ---
+
+<GetUsbID />
+
 
 <br/>
