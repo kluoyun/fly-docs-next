@@ -36,7 +36,7 @@
         * 输入`lsusb`后什么反应都没有，这是系统问题这边无能为力，你需要更换系统或者使用确定正常的系统
         * 出现下方图片中的信息，请注意这只是参考。你只需要确定有出现`1d50:606f`即可
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f` 属于本次你要用到的设备。后面的提示你不需要管，因为系统问题可能会导致他显示不全或者干脆不显示
+    * `1d50:606f` 属于本次你要用到的设备
     * 如果有多个`1d50:606f`，建议排除一个，否则会影响后续烧录与固件连接，如`FLY MINI PAD`则建议使用板载UTOC不要使用其他CAN桥接设备
     * 如果没有，请自行检查数据线是否接好，固件有没有刷对。
 
@@ -66,9 +66,19 @@
 
 ### 将CAN的ID，填写到到配置里面
 
-    * 打开打印机网页界面，在左侧边栏的配置选项里找到：fluidd为：`{…}` ；mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+  <table>
+    <tr>
+      <td>
+        - fluidd为: `{…}` ，点击进去，即可找到 `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
     * 将查询到的UUID复制，填写到 `printer.cfg` 配置里的 `[mcu]` 节点的 `canbus_uuid: ` 。保存重启后即可连上主板。若Klipper提示固件需要更新，ADC报错等则代表Klipper已经连接上主板
     * 如果`Application:`显示Canboot则无法配置到配置里面，需要刷Klipper固件才能进行下一步
@@ -82,7 +92,10 @@
 
     * 下方是参考配置
         :::danger
-
+        ```
+        [mcu]
+        canbus_uuid: <这里替换为你刚刚查询到的ID>
+        ```
         * 下方是一个主板加一个工具版情况下的参考配置MCU ID方法
         * 如果是主板ID则一定是`[mcu]` 加上`canbus_uuid:`在加上你搜索到的ID
         * 如果是工具版则一定是`[mcu 工具版名字]` 加上`canbus_uuid:`在加上你搜索到的ID

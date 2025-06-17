@@ -1,4 +1,5 @@
 
+import LS from '@site/docs/General/dfu-flash/_usb1.mdx';
 
 
 ## 搜索USB教程
@@ -10,22 +11,8 @@
     * 请确保有连接好刷了USB固件的主板，并且确保连接上位机的数据线具有数据传输功能
 
 ## 搜索设备
-    * 请确保上位机可以正常联网，并确保下位机连接上位机的数据线具有数据传输功能。
-    * SSH连接连接到上位机后输入`lsusb`并且回车，如果出现下方图片中圈起来的信息，就可以进行下一步。
-        * 如果没有任何信息反馈，这是上位机的系统问题，这边无能为力，你需要更换确定正常的系统或者更换上位机。
-        * 提示没有`lsusb`指令，可以执行此命令安装
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * `1d50:6177` 属于本次你要用到的设备。
-        * 部分上位机可能因为系统问题，显示不全或者不显示。
-        * 如果输入`lsusb`指令能够显示设备，但是没有 `1d50:6177`，请尝试更换数据线，尝试将主板连接到上位机的其他USB口。
-    * 如果您的之前执行过上述步骤，并且成功烧录Klipper固件，主板运行正常，只是更新Klipper固件，请直接查看本页面右侧菜单栏中的`固件更新`章节。
 
-    :::warning 注意事项
-       必须在查询到`1d50:6177`设备之后，才能进行下一步
-    :::
+    <LS />
 
 ## 搜索USBID
 
@@ -44,15 +31,45 @@
 
 ### 将USB的ID，填写到到配置里面
 
-    * 打开打印机网页界面，在左侧边栏的配置选项里找到：fluidd为：`{…}` ；mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+  <table>
+    <tr>
+      <td>
+        - fluidd为: `{…}` ，点击进去，即可找到 `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsail为：`机器`，点击进去，即可找到 `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
-
-    * 将蓝色的ID复制，填写到 `printer.cfg` 配置里的 `[mcu]` 节点的 `serial: ` 。保存重启后即可连上主板。若Klipper提示 ``ADC out of range``为正常现象，将热床和热敏连接好，配置好喷头、热床的热敏引脚和输出引脚，再保存重启即可。
-
-            <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
-
-:::danger
 注意：文档中所出现的所有ID均为示例，实际每个主板的ID均不一致，请根据实际获取到的ID修改填写。
 :::
 
+## 填写USB ID
+
+    * 找到`[mcu]`，然后替换
+
+    :::danger 须知
+      * 请将配置文件中的:  
+      ```
+      [mcu]
+      serial: <这里替换为你刚刚查询到的ID>
+      ```
+      :::
+
+    * 参考
+    <table>
+      <tr>
+        <td>
+          - fluidd的参考
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail的参考
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg1.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    * 点击右上角的`SAVE & RESTART`点击后会自动保存并重启klipper
