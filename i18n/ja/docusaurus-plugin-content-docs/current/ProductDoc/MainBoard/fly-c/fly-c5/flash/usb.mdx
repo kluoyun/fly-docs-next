@@ -4,20 +4,21 @@ sidebar_label: USBファームウェア焼付け
 ---
 
 
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/flyos-fast/_firmware_make_operate.mdx';
+import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/get-id/_get-usbid-flyosfast.mdx';
+
 
 
 
 # USBファームウェアのコンパイル
 
 
-## ダイアルスイッチの確認
+## ディップスイッチの確認
 
     :::danger 注意
-    - 正常に使用する際は、`ダイアルスイッチを上方向に倒してください`
-    - ダイアルスイッチを操作する際には、しっかりと上方向に倒してください。そうでないと、下位機器と接続できない可能性があります！！！
+    - 通常使用時には、`ディップスイッチを上方向に倒してください`
+    - ディップスイッチを操作する際には、しっかりと`上方向に倒してください`。そうでないと、下位機器に接続できない可能性があります！！！
     :::
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/dip_switch.webp').default} size="60%" align="center" />
 
@@ -28,7 +29,7 @@ import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Gener
     - ファームウェアのコンパイル前には、`WiFiで上位機器にSSH接続する必要があります`
     :::
 
- * 最初に： <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#使用wifi接続して上位機器sshにアクセスする">WiFiで上位機器sshにアクセスする</Button>  
+ * 最初に：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#使用wifi接続して上位機器sshに接続">WiFiで上位機器sshに接続</Button>  
  ---
  <br/>
 
@@ -36,7 +37,7 @@ import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Gener
     <TabItem value="usb" label="USBファームウェア焼付け" default>
     ### USBファームウェア焼付け
         :::tip ヒント
-        - FLYOS-FASTシステムには事前にUSBファームウェアがコンパイルされていますので、手動でファームウェアをコンパイルする必要はありません。以下のコマンドを実行するだけで焼付けできます。
+        - FLYOS-FASTシステムでは事前にUSBファームウェアがコンパイルされていますので、手動でファームウェアをコンパイルする必要はありません。以下のコマンドを実行すると焼付けが可能です。
         - 手動でUSBファームウェアをコンパイルすることも可能です。
         :::
 
@@ -44,40 +45,9 @@ import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Gener
         ```bash
         fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usb.bin
         ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb1.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
     
-
-## USB IDの入力
-
-    1. 上位機器のWEBインターフェースを開き、左側のサイドバーの設定オプションから探します：
-
-    <table>
-      <tr>
-        <td>
-          - fluiddの場合： `{…}` をクリックすると、`printer.cfg` が見つかります。
-          <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
-        </td>
-        <td>
-          - mainsailの場合： `機械` をクリックすると、`printer.cfg` が見つかります。
-          <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
-        </td>
-      </tr>
-    </table>
-
-
-    2. 青色のIDをコピーし、`printer.cfg` ファイル内の `[mcu]` オプションの下にある `serial: ` 後に取得した `ID` を記入します。保存して再起動すると、メインボードに接続できます。
-    :::tip
-    * 下記のIDをMCU設定のIDで置き換えてください。
-
-    ```
-    [mcu]
-    serial: /dev/serial/by-id/usb-Klipper_stm32h723xx_12345-if00
-    ```
-    :::
-
-    <ImageView image={require('@site/docs/General/get-id/img/723id.webp').default} size="100%" align="center" />
-    
-    3. Klipperが `ADC out of range` と警告した場合、これは正常な現象です。ヒートベッドとセンサをメインボードに接続し、ヘッドやヒートベッドのセンサピンを正しく構成してから、保存して再起動してください。
 
     </TabItem>
 
@@ -88,33 +58,35 @@ import GetUsbID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Gener
     
         <USB />
     
-        * `Q` キーを押すと、`Save configuration` が表示されます。このとき `Y` キーを押します。
+        * `Q` キーを押すと「Save configuration」が表示され、その後に `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * 現在、設定が保存され、コマンドラインに戻っています
+        * 現在は設定が保存され、コマンドラインインターフェースに戻っています
     
-        * `make -j4` コマンドを入力してコンパイルを開始します。時間がかかります。
+        * コンパイルを開始するには `make -j4` を入力します。時間がかかります
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
-        * 最後に以下の出力が出ればコンパイル成功です。
+        * 最後に以下の内容が出力されたらコンパイル成功です
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
         ---
         
-        ### ファームウェアの焼付け
+        ### ファームウェア焼付け
         
         :::tip
-        以下のコマンドを実行してファームウェアを焼付けます
+        ファームウェアを焼付けるには、以下のコマンドを実行してください
         :::
         
             ```bash
             fly-flash -d c5 -h -f ~/klipper/out/klipper.bin
             ```
-        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/can.webp').default} size="80%" align="center" />
-
-        <GetUsbID />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb3.webp').default} size="80%" align="center" />
+        <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-c/fly-c5/flash/img/usb2.webp').default} size="80%" align="center" />
 
     </TabItem>
 </Tabs>
 ---
+
+<GetUsbID />
+
 
 <br/>
