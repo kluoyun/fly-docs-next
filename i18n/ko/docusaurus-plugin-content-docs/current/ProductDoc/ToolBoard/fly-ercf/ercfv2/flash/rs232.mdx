@@ -1,19 +1,18 @@
 ---
 sidebar_position: 4
-sidebar_label: RS232 펌웨어 플래시
-
+sidebar_label: RS232 펌웨어 프래싱
 ---
 
 import USBFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 
-# RS232 펌웨어 컴파일
+# RS232 펌웨어 빌드
 
-## 컴파일 시작
+## 빌드 시작
 
     <SSH />
 
@@ -21,14 +20,17 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * 마이크로컨트롤러 시작 시 설정할 GPIO 핀을 선택합니다. 입력: gpio17
+    * 마이크로컨트롤러 시작 시 설정할 GPIO 핀 선택, 입력: gpio17
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/can.webp').default} size="100%" align="center" />
-    * `Q` 키를 누르면 **설정 저장**이 나타납니다. 이때 `Y` 키를 누릅니다.
+    * `Q` 키를 누르면 **Save configuration**이 나타나고, 그 후 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아갑니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 다소 걸립니다.
+    * 이제 설정이 저장되었으며 명령줄 인터페이스로 돌아왔습니다.
+    * 아래 명령어를 입력하여 빌드를 시작합니다. 시간이 다소 소요됩니다.
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래의 내용이 출력되면 컴파일이 성공했습니다.
+    * 마지막에 다음 내용이 출력되면 빌드가 성공적으로 완료되었습니다.
 
         ```bash
         Linking out/klipper.elf
@@ -36,29 +38,30 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## 플래시 모드 진입
+## 프래싱 모드 진입
 
-    :::tip
+    :::팁
 
-    동그라미로 표시된 것이 `부트 버튼`입니다.
+    동그라미 표시된 것이 `BOOT` 버튼입니다.
 
     :::
 
-    * 부트 버튼을 누른 상태에서 보드가 완전히 전원이 끊긴 상태에서 데이터 전송용 케이블의 한쪽을 보드에, 다른 한쪽을 상위 기기(예: 컴퓨터)에 연결합니다.
+    * DFU 모드로 진입하기 위해서는 메인보드 전원을 완전히 차단한 상태에서 BOOT 버튼을 누른 채 데이터 전송이 가능한 데이터선을 메인보드와 상위 기기 사이에 연결해야 합니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/boot.webp').default} size="100%" align="center" />
 
-## 플래시 모드 진입 확인
+## 프래싱 모드 진입 확인
 
     <LS />
 
 
-## 펌웨어 플래시 
-
+## 펌웨어 프래싱
+    
     <USBFLASH />
     
 
 
-## 펌웨어 실행 확인
+## 펌웨어 정상 실행 확인
 
-    * 펌웨어가 정상적으로 시작하면 LED가 켜집니다.
+    * 펌웨어가 정상적으로 실행되면 LED가 점등됩니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.webp').default} size="100%" align="center" />
+

@@ -1,190 +1,188 @@
 ---
 sidebar_position: 3
-sidebar_label: Connexion SSH à la station de travail
+sidebar_label: Connexion SSH à l'ordinateur principal
 ---
 
 
 
-# Connexion à la station de travail via SSH
+# Connexion SSH à l'ordinateur principal
 
-* Il est possible d'utiliser **RS-232** ou **WiFi** pour se connecter à l'appareil.
-* Veuillez préparer à l'avance **MobaXterm_Personal** ou tout autre outil de terminal SSH.
-* Assurez-vous que la carte SD ou M2WE a été gravée avec un système compatible avec la station de travail.
-* **Si la station de travail ne démarre pas correctement, retirez les périphériques externes tels que les drivers, les limites, les ventilateurs, etc. !**
+* Vous pouvez utiliser **RS232** ou **WiFi** pour vous connecter à l'appareil
+* Veuillez préparer à l'avance **MobaXterm_Personal** ou d'autres outils de terminal SSH
+* Veuillez vous assurer que la carte SD ou M2WE est gravée avec **un système compatible avec l'ordinateur principal**
+* **Si l'ordinateur principal ne peut pas démarrer normalement, veuillez retirer les périphériques tels que le driver, les limites et les ventilateurs !!!!**
 
-:::tip Note
-- Si votre station de travail est en première utilisation, il est essentiel d'utiliser une **connexion RS-232 pour accéder au SSH de la station de travail**.
-- Lors de la compilation du firmware, veuillez utiliser une **connexion WiFi pour accéder au SSH de la station de travail**, afin de faciliter la compilation et le flashage du firmware !
-- Les opérations de connexion au SSH pour les systèmes `FLYOS-Armbian` et `FLYOS-FAST` diffèrent légèrement. Veuillez choisir le tutoriel correspondant en fonction du système gravé sur votre appareil !
+:::warning Attention
+- Si votre ordinateur principal est un premier démarrage, il est essentiel d'utiliser **la connexion RS232 pour accéder à SSH de l'ordinateur principal**
+- Lors de la compilation du firmware, il est impératif d'utiliser **la connexion WiFi pour accéder à SSH de l'ordinateur principal**, afin de faciliter la compilation et le flashage du firmware !
+- Les opérations de connexion à SSH pour le système `FLYOS-Armbian` et le système `FLYOS-FAST` diffèrent, veuillez choisir le tutoriel correspondant en fonction du système gravé sur votre appareil !!!
 :::
 
 <Tabs>
-    <TabItem value="serial" label="Connexion RS-232 pour le système FLYOS-Armbian" default>
-        ## Connexion RS-232 au SSH de la station de travail FLYOS-Armbian
+    <TabItem value="serial" label="Connexion RS232 au système FLYOS-Armbian" default>
+        ## Connexion RS232 au système FLYOS-Armbian via SSH
 
-        * Utilisez un câble USB Type-C pour connecter la station de travail FLY à l'ordinateur.
-        * Pour les autres stations de travail, veuillez consulter les méthodes de connexion spécifiques.
+        * Connectez l'ordinateur principal FLY à l'ordinateur via un câble USB Type-C
+        * Pour d'autres ordinateurs principaux, veuillez consulter les méthodes de connexion par vous-même !!!
 
-        * Port de la station FLY-Pi v2
+        * Port FLY-Pi v2
                 <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
-        * Si la carte mère est correctement connectée à l'ordinateur, vous verrez apparaître le port CH340 dans le Gestionnaire de périphériques.
+        * Si la connexion entre la carte mère et l'ordinateur fonctionne correctement, vous verrez le port CH340 dans le Gestionnaire de périphériques
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        * Ouvrez `MobaXterm` et effectuez les paramétrages suivants, en sélectionnant le port identifié précédemment dans le Gestionnaire de périphériques.
+        * Ouvrez `MobaXterm` et configurez-le comme suit, sélectionnez le port que vous avez vu dans le Gestionnaire de périphériques
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        * Si tout fonctionne correctement, vous verrez l'écran de démarrage.
+        * Si tout fonctionne correctement, vous verrez l'écran de démarrage
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.webp').default} size="60%" align="center" />
 
-        * Attendez quelques instants, et si vous voyez cet écran, cela signifie que le démarrage s'est effectué.
+        * Attendez quelques instants, si vous voyez cet écran, cela signifie que le démarrage est réussi
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.webp').default} size="60%" align="center" />
 
-        * **Si après plusieurs minutes, l'écran ne montre aucun affichage, appuyez plusieurs fois sur la touche Entrée.**
+        * **Si après plusieurs minutes, l'écran n'affiche rien comme ci-dessous, appuyez quelques fois sur la touche Entrée**
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.webp').default} size="60%" align="center" />
 
-        * **Après avoir appuyé sur Entrée, vous verrez le contenu suivant.**
+        * **Après avoir appuyé sur Entrée, vous verrez le contenu suivant**
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.webp').default} size="60%" align="center" />
 
-        :::tip
-        - À ce stade, vous êtes connecté en tant qu'utilisateur `root`. Veuillez entrer : `su fly` pour passer à un utilisateur normal avant de poursuivre les étapes suivantes !!!
+        :::warning
+        - À ce stade, vous êtes connecté en tant qu'utilisateur root, veuillez entrer : `su fly`, puis passez à un utilisateur normal pour effectuer les opérations suivantes !!!!
         :::
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-13.webp').default} size="60%" align="center" />
 
-        * Si vous souhaitez voir l'adresse IP, entrez `ip a | grep inet` dans le terminal SSH et cherchez l'adresse IP correspondante à votre routeur dans les résultats retournés.
+        * Si vous souhaitez voir l'adresse IP, entrez `ip a | grep inet` dans ssh, puis recherchez l'IP dans le même segment que votre routeur pour y accéder
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.webp').default} size="70%" align="center" />
 
     </TabItem>
-    <TabItem value="fast-serial" label="Connexion RS-232 pour le système FLYOS-FAST" default>
-        ## Connexion RS-232 au SSH de la station de travail FLYOS-FAST
+    <TabItem value="fast-serial" label="Connexion RS232 au système FLYOS-FAST" default>
+        ## Connexion RS232 au système FLYOS-FAST via SSH
 
-        * Utilisez un câble USB Type-C pour connecter la station de travail FLY à l'ordinateur.
-        * Pour les autres stations de travail, veuillez consulter les méthodes de connexion spécifiques.
+        * Connectez l'ordinateur principal FLY à l'ordinateur via un câble USB Type-C
+        * Pour d'autres ordinateurs principaux, veuillez consulter les méthodes de connexion par vous-même !!!
 
-        * Port de la station FLY-Pi v2
-                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
-        * Si la carte mère est correctement connectée à l'ordinateur, vous verrez apparaître le port CH340 dans le Gestionnaire de périphériques.
+        * Port FLY-Pi v2
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
+        * Si la connexion entre la carte mère et l'ordinateur fonctionne correctement, vous verrez le port CH340 dans le Gestionnaire de périphériques
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        * Ouvrez `MobaXterm` et effectuez les paramétrages suivants, en sélectionnant le port identifié précédemment dans le Gestionnaire de périphériques.
+        * Ouvrez `MobaXterm` et configurez-le comme suit, sélectionnez le port que vous avez vu dans le Gestionnaire de périphériques
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        * Si tout fonctionne correctement, vous verrez l'écran de démarrage.
+        * Si tout fonctionne correctement, vous verrez l'écran de démarrage
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial1.webp').default} size="60%" align="center" />  
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
 
 
-        * Comme le système FLYOS-FAST démarre rapidement, il est probable que vous voyiez des caractères illisibles, comme illustré ci-dessous. Cela est normal, donc n'inquiétez-vous pas, **appuyez simplement sur quelques touches de la barre d'espace.**
+        * Comme le système FLYOS-FAST démarre rapidement, il est probable que vous voyiez des codes incorrects, comme montré ci-dessous, c'est un phénomène normal, ne vous inquiétez pas, **appuyez quelques fois sur la touche Entrée**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
 
 
-        * **Après avoir appuyé sur Entrée, vous verrez le contenu suivant.**
+        * **Après avoir appuyé sur Entrée, vous verrez le contenu suivant**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
 
-        * Entrez le compte : `root`, puis appuyez sur Entrée, puis entrez le mot de passe : `mellow`, puis appuyez sur Entrée. Le mot de passe n'apparaîtra pas lors de la saisie, c'est normal.
+        * Entrez le compte : `root`, appuyez sur Entrée, puis entrez le mot de passe : `mellow`, appuyez sur Entrée. Le mot de passe n'est pas affiché, c'est normal  
 
-        :::tip Attention 
-        - Le compte utilisateur du système FLYOS-FAST est `root`, et le mot de passe est `mellow`.
-        - Le système FLYOS-FAST ne comporte qu'un seul compte : `root` !!!
+        :::warning Attention 
+        - Le compte du système FLYOS-FAST est `root`, le mot de passe est `mellow`
+        - Le système FLYOS-FAST n'a que le compte `root` !!!
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
 
-        * Si vous souhaitez voir l'adresse IP, entrez `ip a | grep inet` dans le terminal SSH et cherchez l'adresse IP correspondante à votre routeur dans les résultats retournés.
+        * Si vous souhaitez voir l'adresse IP, entrez `ip a | grep inet` dans ssh, puis recherchez l'IP dans le même segment que votre routeur pour y accéder
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
 
     </TabItem>
-    <TabItem value="net" label="Connexion WiFi pour le système FLYOS-Armbian" default>
-        ## Connexion WiFi au SSH de la station de travail FLYOS-Armbian
+    <TabItem value="net" label="Connexion WiFi au système FLYOS-Armbian" default>
+        ## Connexion WiFi au système FLYOS-Armbian via SSH
 
-        * Assurez-vous que le système de la station de travail fonctionne correctement.
-        * Assurez-vous d'avoir clairement identifié le nom d'utilisateur et le mot de passe de la station de travail. Le nom d'utilisateur par défaut pour FLYOS-Armbian est `fly`, et le mot de passe par défaut est `mellow`.
-        * La connexion WiFi au SSH de la station de travail nécessite que celle-ci soit déjà connectée à un routeur et que vous connaissiez son adresse IP.
+        * Assurez-vous que le système de l'ordinateur principal est déjà **démarré correctement**
+        * Assurez-vous de connaître **nom d'utilisateur et mot de passe de l'ordinateur principal**. Le nom d'utilisateur par défaut de FLYOS-Armbian est `fly`, et le mot de passe par défaut est `mellow`
+        * La condition préalable pour se connecter à SSH via WiFi est que votre **ordinateur principal est connecté au routeur, et vous savez l'IP de l'ordinateur principal**  
 
-        * Ouvrez MobaXterm et configurez-le comme indiqué ci-dessous, en remplissant l'adresse IP de la station de travail que vous avez obtenue via la connexion RS-232 ou consultée depuis le panneau administratif du routeur dans le champ `Remote host`.
+        * Ouvrez MobaXterm, configurez-le comme indiqué ci-dessous, dans la zone `Remote host`, saisissez l'IP de l'ordinateur principal que vous avez obtenu lors de la connexion RS232, ou consultez l'IP de l'ordinateur principal via le panneau de configuration du routeur
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
 
-        **Note : Dans cette étape 4, entrez le nom d'utilisateur de la station de travail.**
-        :::warning
-        - L'étape 4 consiste à entrer le nom d'utilisateur de la station de travail. Si vous utilisez un FLYOS-Armbian, entrez `fly`. Pour les autres stations de travail, entrez le nom d'utilisateur approprié selon vos besoins.
+        **Remarque : Dans cette étape 4, entrez le nom d'utilisateur de l'ordinateur principal**
+        :::tip
+        - Dans la quatrième étape, entrez le nom d'utilisateur de l'ordinateur principal. Pour un ordinateur principal FLY utilisant le système FLYOS-Armbian, entrez `fly`, pour d'autres ordinateurs principaux, entrez le nom d'utilisateur correct en fonction de vos besoins
         :::
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.webp').default} size="60%" align="center" />
 
-        * Lors de la première connexion, un message d'avertissement apparaîtra, cliquez sur `Accept`.
+        * Lors de la première connexion, une fenêtre de confirmation s'affichera, cliquez sur `Accept`
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
-        * Saisissez le mot de passe de la station de travail et appuyez sur Entrée.
-        :::warning
-        - Le mot de passe n'apparaîtra pas pendant la saisie, appuyez directement sur Entrée après l'avoir saisi.
+        * Saisissez le mot de passe, appuyez sur Entrée après avoir saisi le mot de passe de l'ordinateur principal
+        :::tip
+        - Ici, le mot de passe n'est pas affiché, appuyez directement sur Entrée après avoir saisi
         :::
         
-        Le nom d'utilisateur par défaut pour FLYOS-Armbian est : `fly`, et le mot de passe par défaut est : `mellow`.
+        Le nom d'utilisateur par défaut du système FLYOS-Armbian est : `fly`, et le mot de passe par défaut est : `mellow`
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.webp').default} size="60%" align="center" />
 
-        * Si un message d'alerte comme celui ci-dessous apparaît, cliquez sur `No` pour refuser la sauvegarde du mot de passe utilisateur.
+        **Si une fenêtre similaire à celle-ci apparaît, cette fenêtre demande si vous souhaitez enregistrer le mot de passe de l'utilisateur, cliquez sur `No`**
+
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        * Si vous voyez l'écran suivant, la connexion a réussi !
-
+        * Si vous voyez l'image suivante, cela signifie que la connexion est réussie !
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.webp').default} size="60%" align="center" />
 
 
     </TabItem>
-    <TabItem value="FAST-net" label="Connexion WiFi pour le système FLYOS-FAST" default>
-        ## Connexion WiFi au SSH de la station de travail FLYOS-FAST
+    <TabItem value="FAST-net" label="Connexion WiFi au système FLYOS-FAST" default>
+        ## Connexion WiFi au système FLYOS-FAST via SSH
 
-        * Assurez-vous que le système de la station de travail fonctionne correctement.
-        * Assurez-vous d'avoir clairement identifié le nom d'utilisateur et le mot de passe de la station de travail. Le nom d'utilisateur par défaut pour FLYOS-FAST est `fly`, et le mot de passe par défaut est `mellow`.
-        * La connexion WiFi au SSH de la station de travail nécessite que celle-ci soit déjà connectée à un routeur et que vous connaissiez son adresse IP.
+        * Assurez-vous que le système de l'ordinateur principal est déjà **démarré correctement**
+        * Assurez-vous de connaître **le nom d'utilisateur et le mot de passe de l'ordinateur principal**. Le nom d'utilisateur par défaut de FLYOS-FAST est `root`, et le mot de passe par défaut est `mellow`
+        * La condition préalable pour se connecter à SSH via WiFi est que votre **ordinateur principal est connecté au routeur, et vous savez l'IP de l'ordinateur principal**  
 
-        * Ouvrez MobaXterm et configurez-le comme indiqué ci-dessous, en remplissant l'adresse IP de la station de travail que vous avez obtenue via la connexion RS-232 ou consultée depuis le panneau administratif du routeur dans le champ `Remote host`.
+        * Ouvrez MobaXterm, configurez-le comme indiqué ci-dessous, dans la zone `Remote host`, saisissez l'IP de l'ordinateur principal que vous avez obtenu lors de la connexion RS232, ou consultez l'IP de l'ordinateur principal via le panneau de configuration du routeur
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
 
-        **Note : Dans cette étape 4, entrez le nom d'utilisateur de la station de travail.**
-        :::warning
-        - L'étape 4 consiste à entrer le nom d'utilisateur de la station de travail. Si vous utilisez un FLYOS-FAST, entrez `root`. Pour les autres stations de travail, entrez le nom d'utilisateur approprié selon vos besoins.
-        :::
+        **Remarque : Dans cette étape 4, entrez le nom d'utilisateur de l'ordinateur principal `root`**
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
 
-        * Lors de la première connexion, un message d'avertissement apparaîtra, cliquez sur `Accept`.
+        * Lors de la première connexion, une fenêtre de confirmation s'affichera, cliquez sur `Accept`即可
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
-        * Saisissez le mot de passe de la station de travail et appuyez sur Entrée.
-        :::warning
-        - Le mot de passe n'apparaîtra pas pendant la saisie, appuyez directement sur Entrée après l'avoir saisi.
+        * Saisissez le mot de passe, appuyez sur Entrée après avoir saisi le mot de passe de l'ordinateur principal
+        :::tip
+        - Ici, le mot de passe n'est pas affiché, appuyez directement sur Entrée après avoir saisi
         :::
         
-        Le nom d'utilisateur par défaut pour FLYOS-FAST est : `root`, et le mot de passe par défaut est : `mellow`.
+        Le nom d'utilisateur par défaut du système FLYOS-FAST est : `root`, et le mot de passe par défaut est : `mellow`
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
 
-        * Si un message d'alerte comme celui ci-dessous apparaît, cliquez sur `No` pour refuser la sauvegarde du mot de passe utilisateur.
+        **Si une fenêtre similaire à celle-ci apparaît, cette fenêtre demande si vous souhaitez enregistrer le mot de passe de l'utilisateur, cliquez sur `No`即可**
+
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        * Si vous voyez l'écran suivant, la connexion a réussi !
+        * Si vous voyez l'image suivante, cela signifie que la connexion est réussie !
 
-        :::tip Attention 
-        - Le compte utilisateur du système FLYOS-FAST est `root`, et le mot de passe est `mellow`.
-        - Le système FLYOS-FAST ne comporte qu'un seul compte : `root` !!!
+        :::warning Attention 
+        - Le compte du système FLYOS-FAST est `root`, le mot de passe est `mellow`
+        - Le système FLYOS-FAST n'a que le compte `root` !!!
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />

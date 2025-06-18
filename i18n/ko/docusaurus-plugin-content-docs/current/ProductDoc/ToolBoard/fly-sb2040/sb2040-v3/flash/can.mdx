@@ -1,10 +1,11 @@
 ---
-사이드바 위치: 3
-사이드바 레이블: CAN 펌웨어 프래싱
+sidebar_position: 3
+sidebar_label: CAN 펌웨어 프래싱
+
 ---
 
 import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,37 +21,39 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * **마이크로컨트롤러 시작 시 설정할 GPIO 핀 선택**, 입력: **!gpio5,!gpio19,!gpio24**
-    :::주의
-        `!gpio5,!gpio19,!gpio24`를 영문 입력 모드에서 입력해야 합니다.
+    * **마이크로컨트롤러 시작 시 설정할 GPIO 핀 선택**을 선택하고 입력: **!gpio5,!gpio19,!gpio24**
+    :::warning
+        `!gpio5,!gpio19,!gpio24`를 영문 입력 상태에서 입력하십시오.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.webp').default} size="100%" align="center" />
-    * `Q` 키를 누르면 **설정 저장**이 나타나고, 이때 `Y` 키를 누릅니다.
+    * `Q` 키를 누르면 **Save configuration**이 나타나고 이때 다시 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되었으며 명령줄 화면으로 돌아왔습니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 다소 걸립니다.
+    * 이제 설정이 저장되었고 명령줄 화면으로 돌아왔습니다.
+    * 아래 명령어를 입력하여 컴파일을 시작합니다. 시간이 다소 걸릴 수 있습니다.
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막에 아래 내용이 출력되면 컴파일 성공입니다.
+    * 마지막에 다음 내용이 출력되면 컴파일 성공입니다.
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
     <LS />
 
 ## 펌웨어 프래싱
 
-    * 펌웨어 프래싱 전에 XT30 데이터 케이블을 도구 보드를 UTOC 또는 브리지 펌웨어가 설치된 메인보드에 연결합니다. 아래는 참조 연결도입니다.
-    * 듀얼 스위치가 적절한 위치에 있는지 확인하십시오.
+    * 펌웨어를 프래싱하기 전에 XT30 데이터 케이블을 도구 보드를 UTOC 또는 브리지 펌웨어가 설치된 메인보드에 연결합니다. 참고 연결도를 아래 참조하세요.
+    * 스위치가 적절한 위치에 있는지 확인하십시오.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/sb2040v3_utoc.webp').default} size="80%" align="center" />
-    * CAN H와 CAN L의 저항값이 약 `60Ω`인지 절전 상태에서 멀티미터로 측정하는 것을 확인하십시오. 만약 `120Ω`라면 `120Ω` 스위치를 켜야 하고, `40Ω` 근처라면 스위치를 끄십시오.
+    * CAN H와 CAN L의 저항값이 약 `60Ω`인지 전압계로 측정하십시오. 만약 `120Ω`라면 `120Ω` 스위치를 켜야 하고, 약 `40Ω`라면 스위치를 끄십시오.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
-## 펌웨어 정상 실행 여부 확인
+## 펌웨어 정상 작동 여부 확인
 
-    * 펌웨어가 정상적으로 실행되면 LED가 켜집니다.
+    * 펌웨어가 정상적으로 시작되면 LED가 켜집니다.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.webp').default} size="100%" align="center" />
-

@@ -1,16 +1,16 @@
 ---
 sidebar_position: 4
-sidebar_label: RS232ファームウェアの書き込み
+sidebar_label: RS232ファームウェア書き込み
 ---
 
 import USBFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 
-# RS232 ファームウェアのコンパイル
+# RS232ファームウェアのコンパイル
 
 ## コンパイル開始
 
@@ -20,38 +20,40 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio5**
+    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio5,!gpio19,!gpio24**
     :::warning
-        英語入力モードで `!gpio5` を入力してください
+        `!gpio5,!gpio19,!gpio24`を英数入力モードで入力してください。
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
+    * `Q` キーを押して「Save configuration」が表示されたら、その後に `Y` キーを押す
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
-    <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に次の内容が出力されたらコンパイル成功です
+    * 現在、設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * 下記のコマンドを入力してコンパイルを開始します（時間がかかります）
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最後に以下のような出力が出ればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating uf2 file out/klipper.uf2
         ```
 
-
-## 書き込みモードに入る
+## フラッシュモードに入る
 
     :::tip
 
-    左側が `RESETボタン`、右側が `BOOTボタン` です
+    左側が`RESETボタン`、右側が`BOOTボタン`です。
 
     :::
 
     * DFUモードに入るには2つの方法があります
-    * 方法1：マザーボードが完全に電源オフの状態で、BOOTボタンを押し続けながらデータ転送用ケーブルをマザーボードとホストPCに接続します
-    * 方法2：データ転送用ケーブルをマザーボードとホストPCに接続した後、BOOTボタンを押し続けながらRSTボタンを押し、その後RSTボタンを離し最後にBOOTボタンも離します
+    * 方法1：マザーボードが完全に電源オフの状態で、BOOTボタンを押したまま、データ転送用ケーブルをマザーボードと上位機器に接続する
+    * 方法2：データ転送用ケーブルをマザーボードと上位機器に接続し、BOOTボタンを押したままRSTボタンを押して、その後RSTボタンを離し、最後にBOOTボタンも離す
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
-## 書き込みモードに入ったか確認
+## フラッシュモードに入ったか確認
 
     <LS />
 
@@ -62,7 +64,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
     
 
 
-## ファームウェアが起動したか確認
+## ファームウェアが正常に起動したか確認
 
     * ファームウェアが正常に起動するとLEDが点灯します
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro-v3/flash/img/led.webp').default} size="100%" align="center" />

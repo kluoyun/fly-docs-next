@@ -1,10 +1,10 @@
 ---
 sidebar_position: 2
-sidebar_label: Запись прошивки через USB
+sidebar_label: Прошивка через USB
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -22,30 +22,25 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для запуска компиляции, это займет некоторое время
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции (время может занять немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если выводится следующее содержимое, то компиляция успешна
-
+    * Если последним выводом будет:
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Проверка режима записи
+        то компиляция успешно завершена.
 
-    * Убедитесь, что хост-компьютер может нормально подключаться к сети, и убедитесь, что соединение между хост-компьютером и целевым устройством через USB имеет функцию передачи данных.
-    * После подключения к хост-компьютеру через SSH введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в круглые скобки на изображении ниже, можно переходить к следующему шагу.
-        * Если нет никакого ответа, это проблема системы хост-компьютера, и мы не можем помочь. Вам нужно заменить рабочую систему или заменить хост-компьютер.
-        * Если сообщается об отсутствии команды `lsusb`, выполните следующую команду для установки:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * ID, показанный в красном прямоугольнике, может служить ориентиром, но он не является фиксированным — он может изменяться. Суффикс `stm32h723xx` после `OpenMoko, Inc.` имеет диагностическое значение, где `XX` означает переменную часть.
-        * Некоторые хост-компьютеры могут из-за проблем с системой показывать недостаточно информации или вообще ничего.
+## Проверка режима прошивки
 
-## Запись прошивки
+    <LS />
+
+## Загрузка прошивки
     
     <CANBOOT />

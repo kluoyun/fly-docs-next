@@ -1,17 +1,16 @@
 ---
 sidebar_position: 3
-sidebar_label: Компиляция и запись прошивки для CAN
-
+sidebar_label: Компиляция и запись прошивки CAN
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# Компиляция прошивки для CAN
+# Компиляция прошивки CAN
 
 ## Начало компиляции
 
@@ -21,32 +20,35 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Выберите GPIO пины, которые нужно установить при старте микроконтроллера, введите: !gpio13 Обратите внимание, что восклицательный знак должен быть заглавным
+    * Выберите GPIO пины для установки при старте микроконтроллера, введите: `!gpio13`. Обратите внимание, что `!` пишется большими буквами
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/can.webp').default} size="100%" align="center" />
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите клавишу `Y`
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите клавишу `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
-    * Введите `make -j4` для начала компиляции, это займет некоторое время
+    * Теперь должна быть сохранена конфигурация и вы вернулись к командной строке
+    * Введите следующую команду для начала компиляции (время может занять немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * В конце вывода следующего содержимого означает успешную компиляцию:
-
+    * Если вывод последней строки содержит:
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
+        то компиляция успешно завершена.
     <LS />
 
 
 ## Запись прошивки
 
-    * Перед записью прошивки подключите плату инструментов к UTOC или материнской плате с прошивкой моста через XT30 кабель, ниже приведен пример соединения
+    * Перед записью прошивки подключите инструментальную плату к UTOC или материнской плате с прошивкой моста через XT30 кабель. Ниже приведена схема подключения
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/sht36pro_utoc.webp').default} size="80%" align="left" />
-    * Убедитесь, что перед питанием CAN H и CAN L имеют сопротивление около `60Ом`. Если показывает `120Ом`, подключите переходник `120Ом`, если около `40Ом`, удалите переходник
+    * Убедитесь, что сопротивление между CAN H и CAN L измеряется около `60 Ом` в отключенном состоянии. Если показатель составляет `120 Ом`, подключите переходник `120 Ом`; если около `40 Ом`, снимите переходник
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/120.webp').default} size="80%" align="center" />
 
     <CANFLASH />
 
 ## Проверка запуска прошивки
 
-    * Если прошивка успешно запущена, светодиод будет постоянно гореть
+    * Если прошивка успешно запущена, светодиоды будут постоянно гореть
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/led.webp').default} size="70%" align="center" />

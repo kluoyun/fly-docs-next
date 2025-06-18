@@ -1,17 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: Flashage du firmware USB vers CAN
+sidebar_label: Programme de la mise à jour du firmware CAN via le pont USB
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Flashage du firmware USB vers CAN
+# Programme de la mise à jour du firmware CAN via le pont USB
 
 ## Démarrer la compilation
 
@@ -21,41 +21,36 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Appuyez sur la touche `Q`, une fois que vous voyez **Save configuration**, appuyez ensuite sur `Y`
+    * Appuyez sur la touche `Q`, puis apparaît **Enregistrer la configuration**, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Vous devriez maintenant avoir enregistré la configuration et être revenu à l'interface de ligne de commande
+    * Entrez la commande ci-dessous pour démarrer la compilation, elle peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale est similaire au texte suivant, la compilation a réussi
+    * Une sortie similaire à celle-ci indique que la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Entrer en mode de flashage
+
+## Entrer en mode de mise à jour
 
     :::tip Astuce
-        Les D7 sortis après le 1er septembre 2024 sont déjà préchargés avec le firmware Katapult.
+        Les D7 sortis après le 1er septembre 2024 sont déjà préinstallés avec le firmware Katapult.
     :::
-    * Connectez la carte mère au PC via un câble Type-C, puis **appuyez deux fois sur le bouton reset**, vous verrez un clignotement des LEDs sur la carte mère.
+    * Connectez la carte mère à l'ordinateur principal via un câble USB Type-C, puis **appuyez deux fois sur le bouton reset**, à ce moment-là une LED clignotera sur la carte mère.
     :::warning Avertissement
-       * Si les LEDs ne clignotent pas, veuillez reflasher le firmware Katapult :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#entrer-en-mode-de-flashing-dfu">Reflasher le firmware Katapult</Button>
-       * Si les LEDs ne clignotent toujours pas, veuillez exécuter à nouveau l'étape de reflashage du firmware Katapult avant de continuer
+       * Si la LED ne clignote pas, rechargez le firmware Katapult :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#entrer-en-mode-de-mise-a-jour-dfu">Recharger le firmware Katapult</Button>
+       * Si la LED ne clignote toujours pas, réessayez les étapes après avoir rechargé le firmware Katapult.
     :::
-
+    
     <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
-## Vérifier si le mode de flashage est activé
+## Vérifier si le mode de mise à jour est activé
 
-    * Assurez-vous que votre PC est connecté à Internet et que le câble de connexion entre le PC et la carte mère permet la transmission de données.
-    * Connectez-vous via SSH à votre PC et tapez `lsusb` puis appuyez sur Entrée, si vous voyez les informations encerclées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème du système du PC, nous ne pouvons rien faire, vous devez changer de système confirmé fonctionnel ou remplacer le PC.
-        * Si vous recevez un message indiquant qu'il n'y a pas de commande `lsusb`, vous pouvez installer cette commande en exécutant :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * L'ID affiché en rouge peut servir de référence mais il n'est pas fixe, le suffixe `OpenMoko, Inc. stm32f072xx` contient des éléments de jugement, où `XX` signifie qu'il est variable.
-        * Certaines machines peuvent ne pas afficher correctement ou ne pas afficher du tout en raison de problèmes systèmes.
+    <LS />
 
 ## Flasher le firmware
 

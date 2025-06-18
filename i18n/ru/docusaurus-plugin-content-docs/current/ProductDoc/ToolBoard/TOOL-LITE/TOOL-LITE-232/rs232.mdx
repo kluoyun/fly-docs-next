@@ -1,18 +1,18 @@
 ---
 sidebar_position: 4
-sidebar_label: Компиляция и прошивка прошивки RS232
+sidebar_label: Компиляция и запись прошивки RS232
 ---
 
 import USBFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 
-    ## Схема подключения KF
+    ## Схема подключения через KF
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/kf2.webp').default} size="50%" align="left" />
-    ## Схема подключения XT30
+    ## Схема подключения через XT30
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/xt301.webp').default} size="50%" align="left" /> 
 # Компиляция прошивки RS232
 
@@ -24,23 +24,28 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Выберите **GPIO пины для установки при старте микроконтроллера**, введите: **!gpio18**
+    * Выберите **GPIO pins для установки при старте микроконтроллера**, введите: **!gpio18**
     :::warning
-        Введите `!gpio18` в английской раскладке клавиатуры
+        Пожалуйста, вводите `!gpio18` в режиме английской раскладки клавиатуры.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/rs232.webp').default} size="100%" align="center" />
-    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Сохранение конфигурации**, затем нажмите клавишу `Y`
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, это займет некоторое время
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
-    * Если последний вывод содержит следующее, то компиляция успешна
-       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+    * Теперь должна быть сохранена конфигурация и вы вернетесь к командной строке
+    * Введите следующую команду для начала компиляции, процесс может занять некоторое время
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если вывод содержит следующее содержимое, то компиляция успешно завершена
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
 
 
-
-
-## Переключение в режим прошивки
+## Переключение в режим записи
 
     :::tip
 
@@ -48,15 +53,23 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     :::
 
-    * При полностью отключенном инструментальном щите, удерживайте кнопку `BOOT`, используйте USB Type-C кабель с функцией передачи данных, чтобы подключить **инструментальный щит** к **USB порту хост-компьютера**, после правильного подключения отпустите кнопку `BOOT`
+    * При полном отключении питания инструментальной платы удерживайте кнопку `BOOT`, используйте TypeC кабель с функцией передачи данных, подключите **инструментальную плату** к **USB-порту вашего компьютера**, после правильного подключения отпустите кнопку `BOOT`
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="80%" align="center" />
 
-## Проверка входа в режим прошивки
+## Проверка входа в режим записи
+    * Убедитесь, что ваш компьютер подключен к сети и данные кабеля между устройством и компьютером работают корректно.
+    * После SSH-подключения к компьютеру введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в круглые скобки на изображении ниже, можно переходить к следующему шагу.
+        * Если никакой информации не отображается, это проблема системы компьютера, мы не можем помочь. Вам нужно заменить рабочую систему или компьютер.
+        * Если нет команды `lsusb`, выполните эту команду для установки
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * Следует учитывать, что после `OpenMoko, Inc. rp2040` последующий суффикс имеет значение `XX`, где `XX` является переменной.
+        * На некоторых компьютерах может отсутствовать или отображаться неполностью из-за системных проблем.
 
-    <LS />
 
-
-## Прошивка прошивки RS232 
+## Запись прошивки RS232
     
     <USBFLASH />
     
@@ -64,6 +77,5 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
 ## Проверка запуска прошивки
 
-    * Если прошивка успешно запущена, то **LED загорится**
+    * Если прошивка успешно запущена, то показанное на рисунке ниже светодиод **загорится**
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
-

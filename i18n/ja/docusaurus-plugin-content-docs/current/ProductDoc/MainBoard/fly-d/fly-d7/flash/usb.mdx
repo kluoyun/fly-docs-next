@@ -1,15 +1,15 @@
 ---
 sidebar_position: 2
-sidebar_label: USBファームウェアの焼込み
+sidebar_label: USBファームウェア焼込み
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_usb.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
-import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
 
 # USB ファームウェアのコンパイル
 
@@ -22,10 +22,13 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
+    * `Q` キーを押して「**Save configuration**」が表示されたら、その後に `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * これで設定が保存され、コマンドラインに戻ります
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 現在は設定が保存され、コマンドラインに戻っています
+    * 下記のコマンドを入力してコンパイルを開始します。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * 最後に以下のような出力が出ればコンパイル成功です
 
@@ -33,32 +36,24 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+
 ## フラッシュモードに入る
 
-    :::tip 注意 ::
-        2024年9月1日以降に出荷されたD7はKatapultファームウェアが既に焼込まれています
+    :::tip ヒント
+        2024年9月1日以降に出荷されたD7には既にKatapultファームウェアが刷られています
     :::
-    * 主基板を上位機にTypeCケーブルで接続し、**resetボタンをダブルクリック**します。この時、主基板にはLEDが点滅します。
-    :::warning 警告 ::
-       * LEDが点滅しない場合、katapultファームウェアの再焼込みが必要です: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#進入dfu燒錄模式">katapultファームウェアの焼込み</Button>
-       * LEDが点滅しない場合、katapultファームウェアの焼込み後、再度次の手順を実行してください
+    * 主基板を上位機器にTypeCケーブルで接続し、**リセットボタンをダブルクリック**すると、主基板にLEDが点滅します。
+    :::warning 警告
+       * LEDが点滅しない場合、katapultファームウェアの再焼込みが必要です:<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#進入dfu燒錄模式">katapultファームウェアの焼込み</Button>
+       * LEDが点滅しない場合、katapultファームウェアの焼込み後、再度この手順を実行してください
     :::
 
     <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
 
-## 焼込みモードに入ったか確認
+## フラッシュモードに入ったかどうかの確認
 
-    * 上位機が正常にネットワーク接続でき、下位機と接続されているデータ線がデータ転送機能を持っていることを確認してください。
-    * SSHで上位機に接続し、`lsusb` と入力してエンターキーを押します。もし下の画像で囲まれた情報が表示されたら、次の手順に進んでください。
-        * 何も情報が返ってこない場合、これは上位機のシステムの問題です。解決できませんので、正常なシステムに変更するか、上位機を交換してください。
-        * `lsusb` コマンドがない場合、以下のコマンドでインストールできます
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * 赤枠内のIDは参考値ですが、**固定ではありません。可変です**。`OpenMoko, Inc. stm32f072xx` の後ろの `XX` は可変を意味します。
-        * 部分的な上位機ではシステムの問題により、完全に表示されない場合があります。
+    <LS />
 
 ## ファームウェアの焼込み
-    
-    <CANBOOT />
+
+    <Katapult />

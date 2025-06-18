@@ -1,18 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: USB로 CAN 펌웨어 업데이트
-
+sidebar_label: USB 통신을 이용한 CAN 펌웨어 쓰기
 ---
 
 import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB로 CAN 펌웨어 업데이트
+# USB 통신을 이용한 CAN 펌웨어 쓰기
 
 ## 펌웨어 빌드 시작
 
@@ -22,33 +21,28 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * 마이크로컨트롤러 시작 시 설정할 GPIO 핀 선택, 입력: gpio8
+    * 마이크로 컨트롤러 시작 시 설정할 GPIO 핀 선택, 입력: gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/can.webp').default} size="100%" align="center" />
-    * `Q` 키 누르면 **Save configuration**이 나타나고 그 후에 `Y` 키 누름
+    * `Q` 키를 누르면 **Save configuration** 메시지가 나타나고, 그 후 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되었으며 명령줄 인터페이스로 돌아왔습니다
-    * `make -j4` 입력하여 빌드 시작, 시간이 다소 걸립니다
+    * 이제 설정이 저장되었으며 명령줄 인터페이스로 돌아왔습니다.
+    * 아래 명령어를 입력하여 빌드를 시작합니다. 시간이 다소 소요됩니다.
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 아래와 같은 내용이 출력되면 빌드 성공입니다.
+    * 최종적으로 다음 내용이 출력되면 빌드 성공입니다.
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
 ## 부트로더 모드 확인
-    * 상위 컴퓨터가 정상적으로 연결되어 있는지 확인하고, 하위 컴퓨터와 연결된 데이터선이 데이터 전송 기능을 가지고 있는지 확인하세요.
-    * 상위 컴퓨터에 SSH 접속 후 `lsusb` 입력 및 Enter, 아래 이미지에서 동그라미 처리된 정보가 나타나면 다음 단계로 진행 가능합니다.
-        * 아무런 정보가 반응하지 않으면 상위 컴퓨터의 시스템 문제일 수 있으므로, 정상적인 시스템으로 교체하거나 상위 컴퓨터를 교체해야 합니다.
-        * `lsusb` 명령이 없다는 메시지가 나오면 다음 명령어로 설치 가능:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * 빨간색 박스 안에 표시된 id는 참고용이며 고정되지 않고 변동될 수 있습니다. `OpenMoko, Inc. rp2040` 이후의 접두사 `XX`는 가변적입니다.
-        * 일부 상위 컴퓨터는 시스템 문제로 완전히 표시되지 않을 수 있거나 전혀 표시되지 않을 수 있습니다.
 
-## 펌웨어 업데이트
+    <LS />
+
+## 펌웨어 쓰기
 
 
     <CANBOOT />

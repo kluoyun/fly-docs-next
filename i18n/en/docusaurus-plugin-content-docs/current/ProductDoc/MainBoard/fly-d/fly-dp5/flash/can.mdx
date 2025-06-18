@@ -1,17 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: USB Bridge CAN Firmware Burning
+sidebar_label: USB Bridge to CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB Bridge CAN Firmware Burning
+# USB Bridge to CAN Firmware Burning
 
 ## Start Compilation
 
@@ -21,29 +21,24 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Press the `Q` key, and when **Save configuration** appears, press `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Press `Q`, a **Save configuration** prompt will appear, then press `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * Now the configuration should be saved and you should have exited to the command line interface
-    * Enter `make -j4` to start compiling, it may take some time
+    * Enter the following command to start compiling, it takes some time
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following content is output at the end, compilation is successful
+    * If the output is as follows, compilation is successful
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Confirm Whether in Burning Mode
 
-    * Ensure that the host machine can connect to the network normally and that the data cable connecting the lower-level machine to the host machine has data transfer functionality.
-    * After connecting to the host machine via SSH, enter `lsusb` and press Enter. If the information circled in the image below appears, you can proceed to the next step.
-        * If there is no feedback at all, this indicates a problem with the host machine's system, and we are unable to help. You need to replace it with a confirmed normal system or replace the host machine.
-        * If the instruction `lsusb` is not found, you can execute the following command to install it:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * The ID displayed in the red box can be used as a reference but is not fixed; the suffix `stm32f072xx` after `OpenMoko, Inc.` has judgment basis, where `XX` means variable.
-        * Some host machines may display incomplete or no information due to system problems.
+## Confirm if in Burning Mode
+
+    <LS />
 
 ## Burn Firmware
 

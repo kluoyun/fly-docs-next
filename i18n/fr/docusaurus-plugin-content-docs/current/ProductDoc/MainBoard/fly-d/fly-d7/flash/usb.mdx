@@ -1,16 +1,15 @@
 ---
 sidebar_position: 2
-sidebar_label: Programmeur USB
-
+sidebar_label: Flashage du firmware USB
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_usb.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
-import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
 
 # Compilation du firmware USB
 
@@ -23,43 +22,38 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Appuyez sur la touche `Q`, puis apparaît **Enregistrer la configuration**, appuyez à ce moment sur `Y`
+    * Appuyez sur `Q`, apparaîtra **Save configuration**, appuyez ensuite sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * La configuration est maintenant enregistrée et vous êtes revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, le temps peut être long
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez la commande ci-dessous pour commencer la compilation, cela prendra un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie ci-dessous est affichée, cela signifie que la compilation a réussi
+    * Si la sortie finale est similaire à ce qui suit, la compilation a réussi :
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Entrer en mode de programmation
+
+## Entrer en mode de flashage
 
     :::tip Astuce
         Les D7 sortis après le 1er septembre 2024 sont déjà équipés du firmware Katapult.
     :::
-    * Connectez la carte mère au PC avec un câble Type-C, puis **appuyez deux fois sur le bouton reset**, une LED clignotera alors sur la carte mère.
+    * Connectez la carte mère à l'ordinateur via un câble Type-C, puis **appuyez deux fois sur le bouton reset**, une LED clignotera sur la carte mère.
     :::warning Avertissement
-       * Si aucune LED ne clignote, veuillez réessayer la mise à jour du firmware Katapult :<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#entrer-en-mode-de-programmation-dfu">Mise à jour du firmware Katapult</Button>
-       * Si aucune LED ne clignote, effectuez d'abord la mise à jour du firmware Katapult avant d'exécuter l'étape suivante.
+       * Si aucune LED ne clignote, veuillez reflasher le firmware Katapult : <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#entrer-en-mode-de-flashage">Flasher le firmware Katapult</Button>
+       * Si aucune LED ne clignote, veuillez réessayer après avoir flashé le firmware Katapult.
     :::
 
     <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
 
-## Vérifier si le mode de programmation est activé
+## Vérifier si le mode de flashage est activé
 
-    * Assurez-vous que votre PC est connecté à Internet correctement et que le câble de connexion entre la machine inférieure et la machine supérieure possède une fonction de transmission de données.
-    * Connectez-vous via SSH à votre PC et entrez `lsusb` puis appuyez sur Entrée, si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème du système du PC, nous ne pouvons rien faire de plus, vous devez changer de système confirmé comme fonctionnel ou remplacer le PC.
-        * Si l'instruction `lsusb` n'est pas reconnue, vous pouvez installer la commande suivante :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * L'ID affiché dans la zone rouge peut être utilisé comme référence mais n'est pas **fixe** ; le suffixe `OpenMoko, Inc. stm32f072xx` est pertinent, où `XX` est variable.
-        * Certains PC peuvent ne pas afficher correctement ou ne pas afficher du tout en raison de problèmes systèmes.
+    <LS />
 
-## Programme du firmware
-    
-    <CANBOOT />
+## Flasher le firmware
+
+    <Katapult />

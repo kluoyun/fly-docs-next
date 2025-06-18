@@ -1,18 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: Прошивка CAN-моста через USB
-
+sidebar_label: Запись прошивки CAN через USB-мост
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Прошивка CAN-моста через USB
+# Запись прошивки CAN через USB-мост
 
 ## Начало компиляции
 
@@ -22,42 +21,37 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Теперь конфигурация сохранена, и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции (время может занять较多):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если выводится следующее содержимое, компиляция успешна
+    * Если вывод содержит следующие строки, то компиляция успешно завершена:
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Переход в режим прошивки
 
-    :::tip Подсказка
-        После 1 сентября 2024 года D7 уже прошит Katapult-прошивкой
+## Переключение в режим записи
+
+    :::tip Совет
+        После 1 сентября 2024 года出厂ные D7 уже имеют записанную прошивку Katapult
     :::
-    * Подключите материнскую плату к хост-компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на материнской плате загорится мигающий светодиод.
+    * Подключите основную плату к компьютеру с помощью Type-C кабеля, затем **дважды нажмите кнопку reset**, при этом на плате загорится мигающий светодиод.
     :::warning Предупреждение
-       * Если светодиод не мигает, повторите прошивку katapult-прошивки: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#enter-dfu-flash-mode">Прошить katapult-прошивку</Button>
-       * Если светодиод не мигает, после прошивки katapult-прошивки выполните следующий шаг
+       * Если светодиод не горит, перепишите прошивку Katapult: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/bl#вход_в_dfu_режим">Записать прошивку Katapult</Button>
+       * Если светодиод не горит, выполните запись прошивки Katapult, а затем повторите шаг
     :::
-
+    
     <ImageView image={require('@site//docs/ProductDoc/MainBoard/fly-d/fly-d7/flash/img/d7_dfu.webp').default} size="50%" align="center" />
-## Проверка входа в режим прошивки
+## Проверка входа в режим записи
 
-    * Убедитесь, что хост-компьютер подключен к сети и что кабель данных между хост-компьютером и целевым устройством функционирует корректно.
-    * Подключитесь к хост-компьютеру через SSH и введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в красном круге на изображении ниже, можно переходить к следующему шагу.
-        * Если нет никакого ответа, это проблема системы хост-компьютера, и мы не можем помочь. Вам необходимо заменить рабочую систему или заменить хост-компьютер.
-        * Если отсутствует команда `lsusb`, установите ее с помощью следующей команды:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * ID, показанный в красном прямоугольнике, может служить ориентиром, но он **не является фиксированным**, а изменяемым. Следующая часть `OpenMoko, Inc. stm32f072xx` имеет переменный суффикс `XX`.
-        * На некоторых хост-компьютерах из-за системных проблем может отсутствовать отображение или частичное отображение.
+    <LS />
 
-## Загрузка прошивки
+## Запись прошивки
 
     <CANBOOT />

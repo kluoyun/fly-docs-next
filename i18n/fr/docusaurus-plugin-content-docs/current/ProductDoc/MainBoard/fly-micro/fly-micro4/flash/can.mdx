@@ -1,17 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: flash-de-firmware-usb-vers-can
+sidebar_label:.flash de la mise à jour du firmware USB vers CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# flash-de-firmware-usb-vers-can
+# flash de la mise à jour du firmware USB vers CAN
 
 ## Début de la compilation
 
@@ -23,32 +23,26 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     * Sélectionnez les broches GPIO à configurer au démarrage du microcontrôleur, entrez : gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/can.webp').default} size="100%" align="center" />
-    * Appuyez sur `Q`, une fois que vous voyez **Enregistrer la configuration**, appuyez à nouveau sur `Y`
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, puis appuyez sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Vous devriez maintenant avoir enregistré la configuration et être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * La configuration est maintenant sauvegardée et vous êtes revenu à l'interface de ligne de commande
+    * Entrez la commande ci-dessous pour commencer la compilation, cela prendra un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Une sortie similaire ci-dessous indique que la compilation a réussi
+    * Si la sortie finale contient les lignes suivantes, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
-## Vérification de l'entrée en mode de flash
+## Vérification du mode de flash
 
-    * Assurez-vous que l'ordinateur principal est correctement connecté à Internet et que le câble de communication entre l'ordinateur principal et l'ordinateur secondaire possède la fonction de transmission de données.
-    * Connectez-vous via SSH à l'ordinateur principal et entrez `lsusb` puis appuyez sur Entrée. Si vous voyez des informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème du système de l'ordinateur principal, nous ne pouvons rien faire à ce sujet. Vous devez remplacer par un système confirmé comme fonctionnant ou changer d'ordinateur principal.
-        * Si l'erreur indique qu'il n'y a pas de commande `lsusb`, exécutez cette commande pour l'installer :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * Les ID affichés dans la zone rouge peuvent être utilisés comme référence mais ne sont pas fixes, le suffixe `OpenMoko, Inc. rp2040` après `XX` est une indication variable.
-        * Certains ordinateurs principaux peuvent ne pas afficher correctement en raison de problèmes liés au système.
+    <LS />
 
-## Flashage du firmware
+## Flash du firmware
 
 
     <CANBOOT />

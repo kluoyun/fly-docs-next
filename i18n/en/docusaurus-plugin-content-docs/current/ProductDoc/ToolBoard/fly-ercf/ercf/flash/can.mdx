@@ -4,7 +4,7 @@ sidebar_label: CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,36 +20,39 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Select GPIO pins to set at micro-controller startup, enter: gpio17
+    * Select GPIO pins to set at micro-controller startup, input: gpio17
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/can.webp').default} size="100%" align="center" />
-    * Press `Q` key, **Save configuration** will appear, then press `Y` key
+    * Press `Q` key, a **Save configuration** prompt will appear, then press `Y` key
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and you should exit to the command line interface
-    * Enter `make -j4` to start compilation, it takes some time
+    * Now the configuration should be saved and exited to the command line interface
+    * Enter the following command to start compiling, it takes some time
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following content is output, the compilation is successful
+    * The final output indicating success is as follows:
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
-## Search for Device
+## Search for Devices
 
     <LS />
 
+
 ## Burn Firmware
 
-    * Before burning the firmware, use an XT30 data cable to connect the tool board to the UTOC or the motherboard that has been flashed with the bridge firmware, the reference wiring diagram is below
+    * Before burning the firmware, connect the tool board to UTOC or the main board with bridge firmware using an XT30 data cable, refer to the wiring diagram below
         <ImageView image={require('@site/docs/General/get-id/img/utoc.webp').default} size="80%" align="left" />
-    * Please ensure that the resistance between CAN H and CAN L is about `60Ω` when measured with a multimeter under power-off condition, if it is `120Ω`, a `120Ω` jumper needs to be connected, if it is about `40Ω`, the jumper needs to be removed
+    * Please ensure that the resistance between CAN H and CAN L is around `60Ω` when measuring with a multimeter in a power-off state; if it is `120Ω`, connect a `120Ω` jumper; if it is around `40Ω`, remove the jumper
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## Confirm Whether the Firmware Starts
+## Confirm Firmware Startup
 
-    * If the firmware starts normally, the LED will light up
+    * If the firmware starts up normally, the LED will light up
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.webp').default} size="100%" align="center" />
-
 

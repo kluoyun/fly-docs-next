@@ -1,10 +1,10 @@
 ---
 sidebar_position: 4
-sidebar_label: Загрузка прошивки RS232
+sidebar_label: Прошивка RS232
 ---
 
 import USBFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,17 +20,20 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Выберите **GPIO pins для установки при старте микроконтроллера**, введите: **!gpio5**
+    * Выберите **GPIO pins для установки при старте микроконтроллера**, введите: **!gpio5,!gpio19,!gpio24**
     :::warning
-        Пожалуйста, вводите `!gpio5` в режиме английской раскладки клавиатуры.
+        Введите `!gpio5,!gpio19,!gpio24` в английской раскладке.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите клавишу `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь должна быть сохранена конфигурация и вы вернулись к командной строке
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Теперь должна быть сохранена конфигурация и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции, процесс может занять некоторое время
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если последний вывод содержит следующее, то компиляция успешно завершена
+    * Если последний вывод содержит следующее, компиляция успешно завершена
 
         ```bash
         Linking out/klipper.elf
@@ -38,20 +41,20 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Переключение в режим загрузки
+## Переключение в режим прошивки
 
     :::tip
 
-    Слева находится кнопка **RESET**, справа — **BOOT**
+    Слева — кнопка `RESET`, справа — кнопка `BOOT`
 
     :::
 
     * Есть два способа переключиться в DFU-режим
-    * Первый: полностью отключите питание платы, удерживая кнопку BOOT, подключите шнур данных к материнской плате и компьютеру
-    * Второй: подключите шнур данных к материнской плате и компьютеру, удерживайте кнопку BOOT, затем нажмите кнопку RST, отпустите кнопку RST, затем отпустите кнопку BOOT
+    * Первый: полностью отключите питание платы, удерживая кнопку BOOT, подключите переходник с данными к плате и компьютеру
+    * Второй: подключите переходник с данными к плате и компьютеру, удерживая кнопку BOOT, нажмите кнопку RST, затем отпустите кнопку RST, а затем кнопку BOOT
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Проверка успешного перехода в режим загрузки
+## Проверка попадания в режим прошивки
 
     <LS />
 

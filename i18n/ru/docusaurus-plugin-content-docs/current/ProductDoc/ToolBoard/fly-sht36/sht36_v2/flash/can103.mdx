@@ -1,11 +1,10 @@
 ---
 sidebar_position: 4
 sidebar_label: Компиляция и запись прошивки версии 103 для CAN
-
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/103/_can.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -23,32 +22,34 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     * Выберите **GPIO pins to set at micro-controller startup**, введите: !PC13 (обратите внимание на заглавные буквы)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/103.webp').default} size="100%" align="center" />
-    * Нажмите `Q`, появится **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Теперь конфигурация должна быть сохранена, и вы должны вернуться к командной строке
-    * Введите `make -j4` для начала компиляции, это займет некоторое время
+    * Введите следующую команду для начала компиляции (время займет немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если последним выводом будет следующее, то компиляция успешна:
-
+    * Если последний вывод содержит:
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+        то компиляция успешно завершена.
 
     <LS />
 
 ## Запись прошивки
 
-    * Перед записью прошивки используйте провод XT30 для подключения инструментальной платы к UTOC или материнской плате с прошивкой моста, ниже приведен пример соединения
+    * Перед записью прошивки используйте провод XT30 для подключения инструментальной платы к UTOC или материнской плате с прошивкой моста, ниже приведен пример схемы подключения
     * Убедитесь, что переключатели установлены правильно
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * Убедитесь, что перед питанием измеряется сопротивление между CAN H и CAN L приблизительно `60 Ом`; если `120 Ом`, установите резистор `120 Ом`; если около `40 Ом`, удалите резистор
+    * Убедитесь, что перед питанием CAN H и CAN L имеют сопротивление около `60 Ом`. Если оно равно `120 Ом`, подключите переходник `120 Ом`, если около `40 Ом`, удалите переходник
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
 ## Проверка запуска прошивки
 
-    * Если прошивка успешно запущена, светодиоды загорятся
+    * Если прошивка успешно запущена, светодиод должен загореться
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.webp').default} size="70%" align="center" />
-

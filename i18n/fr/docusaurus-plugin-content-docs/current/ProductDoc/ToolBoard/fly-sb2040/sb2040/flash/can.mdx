@@ -4,7 +4,7 @@ sidebar_label: Flashage du firmware CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,18 +20,21 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Sélectionnez les broches GPIO à configurer au démarrage du microcontrôleur, entrez : gpio24
+    * Sélectionner les broches GPIO à configurer au démarrage du micro-contrôleur, entrer : gpio24
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/can.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, une fenêtre **Save configuration** apparaît, appuyez alors sur `Y`
+    * Appuyer sur la touche `Q`, apparaît **Save configuration**, puis appuyer sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration doit maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * La configuration doit maintenant être enregistrée et vous êtes revenu à l'interface de commande
+    * Entrer la commande suivante pour commencer la compilation, cela peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * Si la sortie finale ressemble au texte ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
     <LS />
@@ -39,14 +42,14 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
 ## Flashage du firmware
 
-    * Avant de flasher le firmware, connectez la carte d'outil à UTOC ou à une carte mère flashed avec le firmware bridge via un câble XT30. Voici un schéma de raccordement de référence
+    * Avant de flasher le firmware, connectez la carte d'outil via une ligne de données XT30 à UTOC ou à une carte mère flashed avec le firmware bridge. Voici un schéma de raccordement de référence
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/sb2040_utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en utilisant un multimètre en hors tension. Si elle est de `120Ω`, connectez une résistance de `120Ω`. Si elle est d'environ `40Ω`, retirez la résistance
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` lorsqu'il n'y a pas d'alimentation (si elle est de `120Ω`, connectez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## Vérification du bon démarrage du firmware
+## Vérification du démarrage du firmware
 
     * Si le firmware démarre correctement, la LED s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/led.webp').default} size="50%" align="center" />

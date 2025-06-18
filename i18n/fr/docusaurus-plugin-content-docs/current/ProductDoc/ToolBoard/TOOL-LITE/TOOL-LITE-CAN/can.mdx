@@ -4,7 +4,7 @@ sidebar_label: Compilation et écriture du firmware CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,55 +20,57 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Sélectionnez **GPIO pins to set at micro-controller startup**, entrez : **!gpio18**
-    :::warning
-        Veuillez entrer `!gpio18` en mode d'entrée anglaise.
+    * Sélectionnez **GPIO pins à configurer au démarrage du micro-contrôleur**, entrez : **!gpio18**
+    :::avertissement
+        Veuillez entrer `!gpio18` en mode de saisie anglaise.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/can.webp').default} size="95%" align="center" />
-    * **Vérifiez que cela correspond à l'image ci-dessus, assurez-vous qu'il est identique avant de passer à l'étape suivante.**
-    * Appuyez sur la touche `Q`, puis apparaîtra **Save configuration**, appuyez ensuite sur `Y`
+    * **Vérifiez que cela correspond à l'image ci-dessus pour être sûr qu'il soit identique avant d'aller plus loin**
+    * Appuyez sur la touche `Q`, puis sur `Y` pour sauvegarder la configuration
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande.
-    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps.
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de commande
+    * Entrez la commande suivante pour commencer la compilation, qui prend un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale contient les lignes suivantes, la compilation a réussi.
+    * Si la sortie finale est similaire à ce qui suit, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
-
 ---
 
-## Configuration de l'hôte
-    :::warning
-        Si votre hôte est un hôte **FLY**, vous n'avez pas besoin d'exécuter l'étape de **Configuration de l'hôte**.
+## Configuration de l'ordinateur principal
+    :::avertissement
+        Si votre ordinateur principal est un **FLY**, vous n'avez pas besoin d'exécuter cette étape de **configuration de l'ordinateur principal**.
     :::
 
-    :::warning
-       Si votre hôte est un hôte **non FLY**, veuillez exécuter les étapes suivantes.
+    :::avertissement
+       Si votre ordinateur principal est un **non-FLY**, veuillez exécuter les étapes suivantes.
     :::
 
-    ### Vérifier si l'hôte supporte CAN
+    ### Vérification de la prise en charge CAN de l'ordinateur principal
 
-    * Si c'est un hôte **FLY**, vous n'avez pas besoin d'exécuter cette opération.
-    * Si votre système est `Ubuntu`, vous avez besoin de `Configuration CAN0 Ubuntu`, ce document n'a pas encore été mis à jour.
-    * Entrez la commande ci-dessous pour vérifier si le système supporte CAN.
+    * Si c'est un **ordinateur principal FLY**, vous n'avez pas besoin d'exécuter cette opération
+    * Si votre système est `Ubuntu`, vous devez configurer **CAN0** pour Ubuntu, cette documentation n'a pas encore été mise à jour
+    * Entrez la commande suivante pour vérifier si le noyau du système prend en charge CAN
     ```bash
     sudo modprobe can && echo "Votre noyau supporte CAN" || echo "Votre noyau ne supporte pas CAN"
     ```
-    * Après avoir entré la commande ci-dessus, si votre noyau supporte CAN, il retournera : `Votre noyau supporte CAN` ; sinon, il retournera : `Votre noyau ne supporte pas CAN`.
-    :::tip
-        Si vous obtenez `Votre noyau supporte CAN`, vous pouvez passer à l'étape suivante pour configurer CAN0. Si vous obtenez `Votre noyau ne supporte pas CAN`, veuillez changer de système d'exploitation pour l'hôte ou changer l'hôte !
+    * Après avoir entré cette commande, si votre noyau prend en charge CAN, il retournera : `Votre noyau supporte CAN`. Sinon, il retournera : `Votre noyau ne supporte pas CAN`.
+    :::astuce
+        Si le résultat est `Votre noyau supporte CAN`, vous pouvez passer à la configuration de CAN0. Si le résultat est `Votre noyau ne supporte pas CAN`, veuillez changer de système ou remplacer votre ordinateur principal !
     :::
    
-   ### Configurer CAN0
+   ### Configuration de CAN0
 
-    * Cette commande remplace la configuration système CAN0 existante, une redémarrage est nécessaire après son exécution.
-    * Veuillez choisir l'une des options suivantes en fonction de vos besoins réels (La vitesse CAN par défaut de Klipper est de 1M, il est recommandé d'utiliser la vitesse de 1M).
+    * Cette commande remplace la configuration système précédente de CAN0, il est nécessaire de redémarrer après son exécution
+    * Choisissez l'une des options suivantes en fonction de vos besoins (**Le taux par défaut de Klipper est de 1M, il est recommandé d'utiliser un taux de 1M**)
 
-    :::warning
-        Pour une vitesse de 1M, entrez la commande suivante
+    :::avertissement
+        Pour un taux de 1M, entrez la commande suivante
     :::
 
     ```bash
@@ -82,8 +84,8 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
     EOF
     ```
 
-    :::warning
-        Pour une vitesse de 500K, entrez la commande suivante
+    :::avertissement
+        Pour un taux de 500K, entrez la commande suivante
     :::
 
     ```bash
@@ -103,24 +105,32 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
     sudo reboot
     ```
 
-## Recherche d'appareils
-
-    <LS />
+## Vérification du mode de mise à jour
+    * Assurez-vous que l'ordinateur principal peut se connecter normalement à Internet et que le câble de données reliant la carte inférieure à l'ordinateur principal possède une fonction de transmission de données.
+    * Connectez-vous via SSH à l'ordinateur principal et entrez `lsusb` puis appuyez sur Entrée. Si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est retournée, il s'agit d'un problème du système de l'ordinateur principal, nous ne pouvons rien faire. Vous devez changer de système fonctionnel ou remplacer l'ordinateur principal.
+        * Si le message indique que la commande `lsusb` n'est pas trouvée, vous pouvez installer cette commande en exécutant :
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * Le suffixe `OpenMoko, Inc. Geschwister Schneider CAN adapter` peut servir de critère de jugement.
+        * Certains ordinateurs principaux peuvent afficher des informations incomplètes ou ne pas afficher du tout en raison de problèmes du système.
 
 
 ## Écriture du firmware
-    * Avant d'écrire le firmware, connectez la carte d'outil au UTOC ou à la carte mère flashée avec le firmware bridge en utilisant un câble XT30. Voici un schéma de raccordement de référence.
-    * Veuillez vérifier si les commutateurs sont positionnés correctement.
+    * Avant d'écrire le firmware, connectez la carte d'outil avec une ligne de données XT30 à UTOC ou à une carte mère flashée avec le firmware de pont. Voici un schéma de câblage de référence
+    * Vérifiez que les interrupteurs sont bien positionnés
     ## Schéma de l'interface KF
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/KF.webp').default} size="80%" align="left" />
     ## Schéma de l'interface XT30
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/xt30.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant l'alimentation, si elle est de `120Ω`, connectez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance.
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` lorsqu'elle est mesurée avec un multimètre en décharge. Si elle est de `120Ω`, connectez un saut de `120Ω`. Si elle est d'environ `40Ω`, retirez le saut
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/120r.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
 ## Vérification du démarrage du firmware
 
-    * Si le firmware démarre normalement, la LED s'allumera.
+    * Si le firmware démarre correctement, la LED s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

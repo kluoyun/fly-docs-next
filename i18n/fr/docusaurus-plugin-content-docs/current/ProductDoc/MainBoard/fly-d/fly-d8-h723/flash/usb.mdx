@@ -1,11 +1,10 @@
 ---
 sidebar_position: 2
-sidebar_label: Programmeur USB
-
+sidebar_label: Flashage du firmware USB
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -23,32 +22,25 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Appuyez sur la touche `Q`, apparaît **Save configuration**, appuyez ensuite sur `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Appuyez sur `Q`, puis sur `Y` lorsque vous voyez **Save configuration**
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Entrez la commande ci-dessous pour démarrer la compilation, qui prend un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au contenu suivant, la compilation a réussi
+    * Si la sortie finale contient les lignes suivantes, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
+## Vérifier si le mode de flashage est activé
 
-## Vérifier si le mode de programmation est activé
+    <LS />
 
-    * Assurez-vous que l'ordinateur hôte est correctement connecté à Internet et que le câble de communication entre l'ordinateur hôte et l'appareil cible possède une fonction de transmission de données.
-    * Connectez-vous via SSH à l'ordinateur hôte puis tapez `lsusb` et appuyez sur Entrée. Si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème du système de l'ordinateur hôte, nous ne pouvons rien faire. Vous devez changer de système confirmé comme étant fonctionnel ou remplacer l'ordinateur hôte.
-        * Si la commande `lsusb` n'est pas trouvée, vous pouvez installer cette commande en exécutant :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * Les ID affichés dans les cadres rouges peuvent servir de référence mais ils ne sont pas fixes, `OpenMoko, Inc. stm32h723xx` le suffixe `XX` indique qu'il peut varier.
-        * Certains ordinateurs hôtes peuvent ne pas afficher les informations complètes ou ne rien afficher du tout en raison de problèmes systèmes.
-
-## Programmation du firmware
-
+## Flasher le firmware
+    
     <CANBOOT />

@@ -1,16 +1,16 @@
 ---
 sidebar_position: 3
-sidebar_label: Программирование CAN-прошивки
+sidebar_label: Прошивка CAN-программного обеспечения
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# Программирование CAN-прошивки
+# Компиляция CAN-программного обеспечения
 
 ## Начало компиляции
 
@@ -20,21 +20,24 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Выберите **GPIO пины, установленные при старте микроконтроллера**, введите: **!gpio5,!gpio19,!gpio24**
-    :::warning
+    * Выберите **GPIO пины для установки при старте микроконтроллера**, введите: **!gpio5,!gpio19,!gpio24**
+    :::предупреждение
         Пожалуйста, вводите в режиме английской раскладки клавиатуры `!gpio5,!gpio19,!gpio24`
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.webp').default} size="100%" align="center" />
-    * Нажмите `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите клавишу `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернулись к командной строке
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться к командной строке
+    * Введите следующую команду для начала компиляции (время может занять длительное):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если последний вывод содержит следующее, то компиляция успешна:
+    * Если вывод содержит следующие строки, то компиляция успешна:
 
         ```bash
-        Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Связывание out/klipper.elf
+        Создание файла bin out/klipper.bin
         ```
 
     <LS />
@@ -42,10 +45,10 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
 ## Запись прошивки
 
-    * Перед записью прошивки подключите плату инструментов к UTOC или материнской плате с прошивкой моста с помощью кабеля XT30. Ниже приведен пример схемы подключения
+    * Перед записью прошивки используйте кабель XT30 для подключения инструментальной платы к UTOC или материнской плате с прошивкой моста, ниже приведен пример соединительной схемы
     * Убедитесь, что переключатели установлены правильно
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/sb2040v3_utoc.webp').default} size="80%" align="center" />
-    * Убедитесь, что сопротивление между CAN H и CAN L измеряется вольтметром около `60 Ом`. Если показывает `120 Ом`, включите переключатель на `120 Ом`. Если около `40 Ом`, отключите переключатель
+    * Убедитесь, что перед питанием измеряется сопротивление между CAN H и CAN L на уровне около `60 Ом`. Если показатель равен `120 Ом`, то переключатель для `120 Ом` должен быть включен. Если около `40 Ом`, то переключатель должен быть выключен
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />

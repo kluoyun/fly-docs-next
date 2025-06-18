@@ -1,10 +1,10 @@
 ---
 sidebar_position: 4
-sidebar_label: Compilation et flashage du firmware RS232
+sidebar_label: Compilation et écriture du firmware RS232
 ---
 
 import USBFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -24,45 +24,58 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Sélectionnez **GPIO pins à définir au démarrage du microcontrôleur**, entrez : **!gpio18**
+    * Sélectionnez **GPIO pins to set at micro-controller startup**, entrez : **!gpio18**
     :::warning
-        Veuillez entrer `!gpio18` en mode d'entrée anglaise
+        Veuillez entrer `!gpio18` en mode d'entrée anglaise.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/rs232.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, appuyez ensuite sur `Y`
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * La configuration doit maintenant être enregistrée et vous devez être revenu à l'interface de ligne de commande
-    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
+    * La configuration devrait maintenant être sauvegardée et vous êtes revenu à l'interface de commande
+    * Entrez la commande ci-dessous pour démarrer la compilation, cela prend un certain temps
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * Si la sortie finale est comme ci-dessous, la compilation a réussi
-       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
 
 
-
-
-## Entrer en mode de flashage
+## Entrer en mode de mise à jour
 
     :::tip
 
-    L'indicateur pointé par la flèche est le bouton `BOOT`
+    La flèche indique le bouton **BOOT**
 
     :::
 
-    * Le boîtier doit être complètement déconnecté avant d'appuyer sur le bouton `BOOT`. Utilisez un câble de données avec fonction de transfert de données USB-C pour connecter le boîtier à l'interface USB de votre ordinateur hôte. Après une connexion correcte à l'ordinateur hôte, relâchez le bouton `BOOT`
+    * Lorsque la carte d'outil est complètement déconnectée de l'alimentation, appuyez sur le bouton **BOOT**, utilisez un câble de données fonctionnel de type C, reliez la **carte d'outil** à l'**interface USB de votre ordinateur**, une fois correctement connecté, relâchez le bouton **BOOT**
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="80%" align="center" />
 
-## Vérifier si le mode de flashage est activé
+## Vérifier si le mode de mise à jour est activé
+    * Assurez-vous que votre ordinateur peut se connecter normalement à Internet et que le câble de connexion entre la station inférieure et la station supérieure a la fonction de transmission de données.
+    * Connectez-vous via SSH à votre ordinateur et tapez `lsusb` puis appuyez sur Entrée, si l'information entourée dans l'image ci-dessous apparaît, vous pouvez passer à l'étape suivante.
+        * Si aucune information n'est retournée, c'est un problème avec le système de votre ordinateur, nous ne pouvons rien faire, vous devez changer vers un système confirmé ou remplacer votre ordinateur.
+        * Si la commande `lsusb` n'existe pas, vous pouvez installer cette commande avec :
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * Le suffixe `OpenMoko, Inc. rp2040` après `XX` est un critère de jugement.
+        * Certaines stations supérieures peuvent afficher incomplètement ou ne pas afficher du tout en raison de problèmes systèmes.
 
-    <LS />
 
-
-## Flasher le firmware RS232 
+## Écriture du firmware RS232
     
     <USBFLASH />
     
 
 
-## Vérifier si le firmware est démarré
+## Vérification du démarrage du firmware
 
-    * Si le firmware démarre normalement, l'**LED s'allumera**
+    * Si le firmware démarre correctement, l'**LED s'allumera** comme montré ci-dessous
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

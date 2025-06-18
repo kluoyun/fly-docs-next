@@ -1,17 +1,17 @@
 ---
 sidebar_position: 3
-sidebar_label: Запись прошивки USB-CAN моста
+sidebar_label: Загрузка прошивки USB-моста для CAN
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Запись прошивки USB-CAN моста
+# Загрузка прошивки USB-моста для CAN
 
 ## Начало компиляции
 
@@ -21,31 +21,26 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится запрос **Save configuration**, затем нажмите `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс может занять длительное время
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции (время займет немного)
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод последних строк содержит следующее, компиляция успешно завершена
+    * В конце вывода, если появится следующее содержимое, компиляция успешна
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Проверка режима записи
 
-    * Убедитесь, что хост-компьютер подключен к сети и работает корректно, а также что кабель данных между хост-компьютером и целевым устройством поддерживает передачу данных.
-    * Подключитесь по SSH к хост-компьютеру и введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в красный контур на изображении ниже, можно переходить к следующему шагу.
-        * Если нет никакого ответа, это проблема с операционной системой хост-компьютера, и мы не можем помочь вам. Вам нужно заменить операционную систему или хост-компьютер.
-        * Если отсутствует команда `lsusb`, установите её с помощью следующей команды:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * ID, показанный в красном контуре, является справочной информацией, но не фиксированной величиной. Последовательность символов `OpenMoko, Inc. stm32f072xx` после префикса имеет значение, где `XX` означает переменную часть.
-        * Некоторые хост-компьютеры могут из-за проблем с операционной системой показывать данные неполностью или вообще не показывать их.
+## Проверка режима загрузки
 
-## Запись прошивки
+    <LS />
+
+## Загрузка прошивки
 
 
     <CANBOOT />

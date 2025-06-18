@@ -1,21 +1,21 @@
 ---
 sidebar_position: 2
-sidebar_label: Прошивка через USB
+sidebar_label: Загрузка прошивки через USB
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
-import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Компиляция прошивки через USB
+# Компиляция прошивки для USB
 
     :::tip
 
-    * Встроенная в Micro4 прошивка через USB уже предварительно записана, повторная запись не требуется
+    * Для Micro4 прошивка для USB уже предварительно установлена, повторная перезаливка не требуется
 
     :::
 
@@ -27,33 +27,26 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Выберите GPIO пины для установки при старте микроконтроллера, введите: gpio8
+    * Выберите GPIO пины для настройки при старте микроконтроллера, введите: gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/usb.webp').default} size="100%" align="center" />
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+    * Введите следующую команду для начала компиляции (процесс может занять некоторое время):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее содержимое, компиляция успешно завершена
-
+    * В конце вывода должно быть:
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
-## Проверка режима записи
+## Проверка режима загрузки
 
-    * Убедитесь, что хостовая система подключена к сети и шнур данных, соединяющий устройство нижнего уровня с хостом, имеет функцию передачи данных.
-    * После подключения через SSH к хостовой системе введите `lsusb` и нажмите Enter. Если появляется информация, заключенная в круглые скобки на изображении ниже, можно переходить к следующему шагу.
-        * Если нет никакого ответа, это проблема системы хостовой системы, мы бессильны, вам нужно заменить исправную систему или заменить хостовую систему.
-        * Если отсутствует команда `lsusb`, выполните эту команду для установки:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * Отображаемый id в красной рамке может служить для справки, но он не является фиксированным — он может изменяться. Затем缀ается суждение, что после `OpenMoko, Inc. rp2040` последовательность `XX` означает переменную.
-        * Некоторые хостовые системы могут показывать неполные данные или вообще ничего из-за системных проблем.
+    <LS />
 
-## Запись прошивки
-
+## Заливка прошивки
+    
     <CANBOOT />

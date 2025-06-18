@@ -1,10 +1,10 @@
 ---
 sidebar_position: 4
-sidebar_label: Compilation et flashage du firmware RS232
+sidebar_label: Compilation et écriture du firmware RS232
 ---
 
 import USBFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,45 +20,50 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Sélectionnez **GPIO pins à définir au démarrage du micro-contrôleur**, entrez : **!gpio5**
-    :::warning
-        Veuillez entrer `!gpio5` en mode d'entrée anglaise.
+    * Sélectionnez **GPIO pins à configurer au démarrage du micro-contrôleur**, entrez : **!gpio5**
+    :::avertissement
+        Veuillez entrer `!gpio5` en mode de saisie anglaise.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
+    * Appuyez sur la touche `Q`, puis apparaît **Enregistrer la configuration**, appuyez ensuite sur `Y`
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Vous devriez maintenant avoir enregistré la configuration et être revenu à l'interface de ligne de commande
-    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
-    * Si la sortie finale ressemble au contenu ci-dessous, la compilation a réussi
-       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+    * La configuration devrait maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
+    * Entrez la commande ci-dessous pour commencer la compilation, le processus peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Si la sortie finale ressemble au texte suivant, la compilation a réussi
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
 
 
+## Entrer en mode d'écriture
 
+    :::astuce
 
-## Entrer en mode de flashage
-
-    :::tip
-
-    La flèche indique le bouton **BOOT**
+    L'icône pointée par les flèches correspond au bouton **BOOT**
 
     :::
 
-    * Avec la carte outil complètement débranchée, maintenez le bouton **BOOT**, connectez-la à l'aide d'un câble de données TypeC avec fonctionnalité de transfert de données, au port USB de votre ordinateur hôte, une fois correctement connectée, relâchez le bouton **BOOT**
+    * Le circuit imprimé doit être complètement déconnecté lorsqu'on appuie sur le bouton **BOOT**, puis connectez-le via une ligne de données utilisable avec un câble USB Type-C, et reliez le circuit imprimé à l'interface USB de votre ordinateur de contrôle. Après une bonne connexion, relâchez le bouton **BOOT**
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/boot.webp').default} size="80%" align="center" />
 
-## Vérifier si le mode de flashage est activé
+## Vérifier si le mode d'écriture est activé
 
     <LS />
 
 
-## Flasher le firmware RS232
+## Écrire le firmware RS232
     
     <USBFLASH />
     
 
 
-## Vérifier si le firmware a démarré
+## Vérifier si le firmware est démarré
 
-    * Si le firmware a démarré correctement, l'**LED s'allumera**
+    * Si le firmware démarre correctement, la LED indiquée ci-dessous s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />

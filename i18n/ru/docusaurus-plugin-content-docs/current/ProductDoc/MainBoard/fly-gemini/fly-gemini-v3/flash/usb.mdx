@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: Загрузка прошивки через USB
+sidebar_label: Запись прошивки через USB
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_usb.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Компиляция прошивки
+# Компиляция прошивки через USB
 
 ## Начало компиляции
 
@@ -22,24 +22,29 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Нажмите клавишу `Q`, появится предложение **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, чтобы появилось предложение **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции (время может занять немного)
+    * Введите следующую команду для начала компиляции (процесс может занять некоторое время)
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * В конце вывода следующего содержимого означает успешную компиляцию
+    * Если последний вывод содержит следующее, компиляция успешно завершена
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Загрузка прошивки
+
+## Запись прошивки
 
 :::tip
-Выполните следующую команду для загрузки прошивки
+Для записи прошивки выполните следующую команду
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/flashdone_jumper.webp').default} size="90%" align="center" />

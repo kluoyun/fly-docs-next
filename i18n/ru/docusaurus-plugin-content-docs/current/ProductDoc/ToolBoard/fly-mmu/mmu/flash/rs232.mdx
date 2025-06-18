@@ -1,16 +1,16 @@
 ---
 sidebar_position: 4
-sidebar_label: Программирование прошивки через RS232
+sidebar_label: Прошивка RS232
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_rs232.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_rs232.mdx';
 
-# Программирование прошивки RS232
+# Компиляция прошивки RS232
 
 ## Начало компиляции
 
@@ -20,14 +20,17 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Выберите GPIO пины для установки при старте микроконтроллера, введите: !PA15 (обратите внимание, что восклицательный знак должен быть заглавным)
+    * Выберите GPIO пины для установки при старте микроконтроллера, введите: !PA15 (обратите внимание, что это заглавная буква)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/rs232.webp').default} size="100%" align="center" />
-    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь должна быть сохранена конфигурация и вы вернулись к командной строке
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Теперь конфигурация должна быть сохранена и вы вернетесь к командной строке
+    * Введите следующую команду для начала компиляции (время займет немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующий текст, компиляция успешно завершена
+    * Если вывод содержит следующие строки, компиляция успешно завершена:
 
         ```bash
         Linking out/klipper.elf
@@ -35,46 +38,46 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## Переключение в режим программирования
+## Переключение в режим прошивки
 
     :::tip
 
-    Справа находится кнопка `RESET`, слева — кнопка `BOOT`
+    Сверху находится кнопка `RESET`, снизу — кнопка `BOOT`.
 
     :::
 
-    * Есть два способа переключиться в режим DFU
-    * Первый: полностью отключите питание платы, удерживайте кнопку BOOT, затем подключите шину данных к материнской плате и компьютеру
-    * Второй: подключите шину данных к материнской плате и компьютеру, удерживайте кнопку BOOT, нажмите кнопку RST, отпустите кнопку RST, затем отпустите кнопку BOOT
+    * Есть два способа перейти в DFU-режим
+    * Первый: полностью отключите питание материнской платы, удерживая кнопку BOOT, подключите USB-кабель к материнской плате и ПК
+    * Второй: подключите USB-кабель к материнской плате и ПК, удерживайте кнопку BOOT, затем нажмите кнопку RST, отпустите кнопку RST, затем отпустите кнопку BOOT
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.webp').default} size="100%" align="center" />
 
-## Проверка входа в режим программирования
+## Проверка входа в режим прошивки
 
     <LS />
 
 
-## Загрузка прошивки 
+## Прошивка прошивки 
 
     <Katapult />
     
-    3. Загрузка прошивки
+    3. Прошивка прошивки
     
         ```bash
         sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/kliper/out/klipper.bin
         ```
 
-    4. При появлении текста ``File downloaded successfully`` на изображении указателем, загрузка прошивки успешна
+    4. При появлении содержимого на стрелке, указанной на изображении ``File downloaded successfully``, прошивка завершена успешно
 
         <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
     :::tip
 
-    После завершения загрузки прошивки необходимо полностью отключить питание платы.
+    После завершения прошивки необходимо полностью отключить электропитание материнской платы.
 
     :::
 
 ## Проверка запуска прошивки
 
-    * Если прошивка успешно запущена, светодиоды должны загореться
+    * Если прошивка запущена нормально, светодиоды должны загореться
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />
 

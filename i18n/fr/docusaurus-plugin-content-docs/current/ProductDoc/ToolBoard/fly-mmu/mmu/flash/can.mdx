@@ -1,18 +1,18 @@
 ---
 sidebar_position: 3
-sidebar_label: CAN固件烧录
+sidebar_label: Flashage du firmware CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_can.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# CAN 固件编译
+# Compilation du firmware CAN
 
-## 开始编译
+## Démarrer la compilation
 
     <SSH />
 
@@ -20,33 +20,34 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Sélectionnez les broches GPIO à configurer au démarrage du microcontrôleur, entrez :!PA15  Veuillez noter que le ! est en majuscule
+    * Sélectionnez les broches GPIO à configurer au démarrage du micro-contrôleur, entrez : !PA15 (remarque : il s'agit d'une majuscule)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/can.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, appuyez ensuite sur `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de commande
+    * Entrez la commande ci-dessous pour commencer la compilation, le processus peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au texte suivant, la compilation a réussi
+    * Une sortie similaire à celle-ci indique que la compilation a réussi :
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Recherche d'appareils
+## Recherche des appareils
 
     <LS />
 
 
-## Écriture du firmware
+## Flashage du firmware
 
-    * Avant d'écrire le firmware, connectez le panneau d'outils à UTOC ou à une carte mère avec du firmware de pont, ci-dessous se trouve un schéma de câblage de référence
-    * Vérifiez si les commutateurs sont configurés correctement
+    * Avant de flasher le firmware, connectez la carte d'outils à UTOC ou à une carte mère flashée avec le firmware bridge en utilisant un câble XT30, voir la figure de raccordement ci-dessous
+    * Vérifiez que les interrupteurs sont bien positionnés
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/can_mode.webp').default} size="90%" align="center" />
-    * Connectez-vous à UTOC par référence
+    * Raccordement à UTOC :
         <ImageView image={require('@site/docs/General/get-id/img/utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en utilisant un multimètre en mode coupé, si elle est de `120Ω`, connectez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` lorsqu'il n'y a pas de courant, si elle est de `120Ω`, connectez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
@@ -55,3 +56,4 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     * Si le firmware démarre correctement, la LED s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />
+

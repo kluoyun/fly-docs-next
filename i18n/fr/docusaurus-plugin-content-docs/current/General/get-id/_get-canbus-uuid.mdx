@@ -1,87 +1,101 @@
-## Configuration CAN et recherche d'ID
+## Configuration CAN et Recherche d'ID
 
-* Si vous avez besoin d'utiliser CAN, veillez à ce que votre ordinateur de contrôle ait été correctement configuré pour CAN.
+* Si vous avez besoin d'utiliser CAN, assurez-vous que votre ordinateur de contrôle a été configuré pour CAN.
 
 ---
 
-:::danger À savoir
+:::danger Avertissement
 
 Assurez-vous que la carte mère est correctement connectée à l'ordinateur avant d'effectuer les opérations suivantes.
 
 :::
 
-
 :::warning
 
-Veuillez vous assurer que le réseau CAN de l'ordinateur de contrôle, le taux de transmission de la carte mère avec pont CAN et le taux de transmission de la carte d'outil CAN sont entièrement identiques.
+Veuillez vous assurer que le réseau CAN de l'ordinateur de contrôle, le taux de transmission de la carte mère via le pont CAN et le taux de transmission de la carte d'outil CAN sont entièrement cohérents.
 
 :::
 
 ### Remarques avant la recherche d'appareils
 
-    * Avant de rechercher les ID CAN, assurez-vous de [vous connecter via SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder").
-    * Veuillez noter qu'il est nécessaire d’utiliser une connexion réseau pour accéder à SSH et non une connexion série.
-    * Assurez-vous d’avoir correctement connecté la UTOC ou flashé la carte mère avec le firmware de pont CAN, et que le câble de connexion à l’ordinateur de contrôle possède une fonction de transmission de données.
+    * Avant de rechercher les ID CAN, veuillez d'abord [vous connecter à SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder").
+    * Veuillez noter qu'il est nécessaire de vous connecter en réseau à SSH plutôt qu'en utilisant une connexion série.
+    * Assurez-vous d'avoir connecté correctement la UTOC ou flasher la carte mère avec le firmware CAN Bridge, et vérifiez que le câble de connexion avec l'ordinateur de contrôle a la capacité de transfert de données.
 
-### Recherche d’appareils
+### Recherche d'appareils
 
-    * Maintenant que vous êtes connecté correctement à l'ordinateur de contrôle, vous pouvez entrer la commande `lsusb` pour rechercher des appareils. Vous obtiendrez l'une des situations suivantes :
-        * Si la commande `lsusb` indique qu’il n'y a pas d'instruction `ls`, vous pouvez entrer la commande ci-dessous pour installer l'instruction :
+    * Maintenant que vous êtes correctement connecté à l'ordinateur de contrôle, vous pouvez entrer la commande `lsusb` pour rechercher des appareils. Vous rencontrerez l'une des situations suivantes :
+        * Si vous entrez `lsusb` et obtenez un message indiquant que la commande `ls` n'est pas trouvée, vous pouvez entrer la commande ci-dessous pour installer la commande :
             ```bash
             sudo apt-get install usbutils
             ```
-        * Si la commande `lsusb` ne produit aucune réaction, il s'agit d'un problème système ; nous ne pouvons rien faire dans ce cas. Vous devez changer de système ou utiliser un système fonctionnel confirmé.
-        * Si des informations apparaissent comme sur l'image ci-dessous, cela ne fait que servir de référence. Il suffit de vérifier que `1d50:606f` apparaît.
+        * Si vous entrez `lsusb` et ne recevez aucune réponse, il s'agit d'un problème du système ; nous ne pouvons rien faire à ce sujet. Vous devez changer de système ou utiliser un système fonctionnel.
+        * Si vous obtenez des informations comme celles de l'image ci-dessous, notez que cela n'est qu'une référence. Il suffit de vérifier qu'il y a bien `1d50:606f`.
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f` appartient au périphérique que vous utiliserez. Les indications suivantes peuvent être ignorées car les problèmes du système peuvent entraîner une affichage incomplet ou même l'absence totale d'affichage.
-    * Si plusieurs appareils `1d50:606f` apparaissent, il est recommandé d'en exclure un, car cela pourrait affecter les étapes ultérieures de gravage et la connexion au firmware. Par exemple, si vous utilisez un `FLY MINI PAD`, il est conseillé d'utiliser le UTOC embarqué plutôt que d'autres dispositifs de pont CAN.
-    * Si aucun appareil n'apparaît, veuillez vérifier que le câble de connexion est bien branché et que le firmware a bien été flashé.
+    * `1d50:606f` appartient au périphérique que vous utiliserez cette fois-ci.
+    * Si plusieurs `1d50:606f` apparaissent, il est recommandé d'exclure l'un d'eux, car cela pourrait affecter la gravure et la connexion du firmware ultérieurement, par exemple, si vous utilisez `FLY MINI PAD`, il est conseillé d'utiliser le UTOC embarqué et non d'autres appareils de pont CAN.
+    * Si aucun appareil n'est détecté, veuillez vérifier si les câbles sont bien branchés et si le firmware a été correctement flashé.
 
-:::warning Remarque importante
-Vous ne pouvez rechercher l'ID CAN que si `1d50:606f` apparaît.
+:::warning Attention
+Vous ne pouvez rechercher les ID CAN que si vous avez détecté `1d50:606f`.
+
 :::
 
 ### Recherche de l'ID CAN
 
-    * Entrez la commande suivante pour rechercher l'ID :
+    * Entrez la commande ci-dessous pour rechercher l'ID :
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * Si un ID apparaît et que l'indication finale `Application:` montre `Klipper`, cela signifie que cet ID peut être utilisé directement.
-    * Si un ID apparaît et que l'indication finale `Application:` montre `CANBOOT` ou `Katapult`, cela signifie que vous devez flasher le firmware avant de pouvoir l’utiliser.
+    * Si un ID apparaît et que l'application affichée après le dernier caractère `Application:` est `Klipper`, cela signifie que cet ID peut être utilisé directement.
+    * Si un ID apparaît et que l'application affichée après le dernier caractère `Application:` est `CANBOOT` ou `Katapult`, cela signifie que vous devez mettre à jour le firmware pour pouvoir l'utiliser.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
 
-### Références pour les problèmes liés à CAN
+### Collection de problèmes liés à CAN
 
-    :::danger À savoir
+    :::danger Avertissement
 
-    * Si vous ne trouvez pas d'ID CAN, consultez le document ci-dessous.
-    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">Références pour les problèmes liés à CAN</Button>
+    * Si vous ne trouvez pas l'ID CAN, consultez le document suivant :
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">Collection de problèmes liés à CAN</Button>
 
     :::
 
-### Remplissez l'ID CAN dans la configuration
+### Remplir l'ID CAN dans la configuration
 
-    * Ouvrez l'interface web de l'imprimante, dans le menu de configuration situé dans la barre latérale gauche, recherchez : fluidd `{...}` ; mainsail `Machine`, puis cliquez dessus pour accéder à `printer.cfg`.
+  <table>
+    <tr>
+      <td>
+        - Pour fluidd : `{…}`, cliquez pour accéder à `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - Pour mainsail : `machine`, cliquez pour accéder à `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * Copiez l'UUID obtenu et insérez-le dans la section `[mcu]` de la configuration `printer.cfg` sous la clé `canbus_uuid:`. Après avoir enregistré et redémarré, vous pourrez connecter la carte mère. Si Klipper affiche un message demandant une mise à jour du firmware ou des erreurs ADC, cela signifie que Klipper est connecté à la carte mère.
-    * Si `Application:` affiche `Canboot`, il ne peut pas être configuré dans la configuration. Vous devez d'abord flasher le firmware Klipper pour passer à l'étape suivante.
+    * Copiez l'UUID trouvé et collez-le dans la configuration de `[mcu]` sous la clé `canbus_uuid:` dans le fichier `printer.cfg`. En sauvegardant et redémarrant, vous pourrez connecter la carte mère. Si Klipper indique qu'une mise à jour du firmware est nécessaire, des erreurs ADC, etc., cela signifie que Klipper est connecté à la carte mère.
+    * Si `Application:` affiche Canboot, il ne peut pas être configuré dans la configuration. Vous devez mettre à jour le firmware Klipper pour passer à l'étape suivante.
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        Attention : Tous les IDs mentionnés dans le document ne sont que des exemples. Chaque carte mère a un ID différent, veuillez donc remplacer par l'ID obtenu réellement.
+        Attention : Tous les ID mentionnés dans le document sont des exemples. Chaque carte mère possède un ID unique. Veuillez modifier et remplir en fonction de l'ID réellement obtenu.
 
         :::
 
     * Voici une configuration de référence :
         :::danger
-
-        * Ci-dessous se trouve une configuration de référence pour un scénario avec une seule carte mère et une seule carte d'outil.
-        * Si c'est l'ID de la carte mère, il faut toujours ajouter `[mcu]` suivi de `canbus_uuid:` puis l'ID obtenu.
-        * Si c'est l'ID de la carte d'outil, il faut toujours ajouter `[mcu nom_de_l'outil]` suivi de `canbus_uuid:` puis l'ID obtenu.
+        ```
+        [mcu]
+        canbus_uuid: <remplacez ceci par l'ID que vous avez trouvé>
+        ```
+        * Ci-dessous est une méthode de configuration de l'ID MCU pour une carte mère et une carte d'outil dans un cas de référence.
+        * Si c'est l'ID de la carte mère, il doit toujours être `[mcu]` suivi de `canbus_uuid:` puis de l'ID trouvé.
+        * Si c'est l'ID de la carte d'outil, il doit toujours être `[mcu nom_de_l'outil]` suivi de `canbus_uuid:` puis de l'ID trouvé.
         :::
         <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />
+

@@ -4,25 +4,25 @@ sidebar_label: USBファームウェアの焼付け
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb1.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 
 
-# USBファームウェアのビルド
+# USBファームウェアのコンパイル
 
     :::tip
 
-    * MMUに事前に焼付けられたCAN接続のKatapultファームウェア
-    * USBファームウェアを焼付ける場合はUSB用のKatapultファームウェアを焼付ける必要があります
-    * 一度焼付けたら再度焼付ける必要はありません
+    * MMUは工場出荷時にCAN接続用のKatapultファームウェアがプリロードされています
+    * USBファームウェアを使用する場合、USBのKatapultファームウェアを焼付けが必要です
+    * 一度焼付けすれば再度焼付けの必要はありません
     * <Button variant="contained" disableElevation component="a" rel="noopener" href="./bl">Katapultファームウェアの焼付け</Button>
 
     :::
 
-## ビルド開始
+## コンパイル開始
 
     <SSH />
 
@@ -30,31 +30,35 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * microコントローラー起動時に設定するGPIOピンを選択します。入力：!PA15 请注意!は大文字です
+    * マイクロコントローラー起動時に設定するGPIOピンを選択します。入力：!PA15 （!は大文字）
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/usb.webp').default} size="100%" align="center" />
     * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っています
-    * `make -j4` を入力してビルドを開始します。時間がかかります
+    * 現在、設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * 下記のコマンドを入力してコンパイルを開始します（時間がかかります）
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に次の内容が出力されたらビルド成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 焼付けモードの確認
+## 燃料モードへの移行確認
 
 
     <LS />
 
 
 ## ファームウェアの焼付け
-    
+
     <Katapult />
 
-## ファームウェアの起動確認
+## ファームウェアが正常に起動したかどうかの確認
 
     * ファームウェアが正常に起動するとLEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />
+

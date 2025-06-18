@@ -4,7 +4,7 @@ sidebar_label: CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,18 +20,21 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Select GPIO pins to set at micro-controller startup, input: !gpio20 (note that ! is uppercase)
+    * Select GPIO pins to set at micro-controller startup, input: `!gpio20` Please note that `!` is uppercase
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/can.webp').default} size="100%" align="center" />
-    * Press `Q`, then **Save configuration** will appear, press `Y` again at this time
+    * Press `Q` key, and when **Save configuration** appears, press `Y` key again
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and you should exit to the command line interface
-    * Input `make -j4` to start compilation, it takes a while
+    * Now the configuration should be saved and you should have exited to the command line interface
+    * Enter the following command to start compiling, it takes a bit of time
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the output below appears, the compilation is successful
+    * Finally, if the output below appears, the compilation is successful
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
     <LS />
@@ -39,15 +42,15 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
 ## Burn Firmware
 
-    * Before burning the firmware, connect the tool board to UTOC or the main board flashed with bridge firmware using an XT30 data cable. Below is the reference wiring diagram
-    * Please check if the DIP switches are set correctly
+    * Before burning the firmware, use an XT30 data cable to connect the tool board to UTOC or the mainboard with bridge firmware installed. Below is the reference wiring diagram
+    * Please check whether the DIP switch is set correctly
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * Please ensure that the resistance between CAN H and CAN L measured with a multimeter in power-off condition is around `60Ω`. If it is `120Ω`, add a `120Ω` jumper; if it is around `40Ω`, remove the jumper
+    * Please ensure that the resistance between CAN H and CAN L is around `60Ω` in a power-off state. If it is `120Ω`, you need to connect a `120Ω` jumper wire. If it is around `40Ω`, you need to remove the jumper wire
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## Confirm Firmware Startup
+## Confirm Whether the Firmware Has Started
 
-    * If the firmware starts up normally, the LED will light up
+    * If the firmware starts normally, the LED will light up
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.webp').default} size="100%" align="center" />

@@ -1,28 +1,17 @@
-## USB 가이드 검색
+import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb1.mdx';
+
+
+## USB 교육 자료 검색
 
 ## 장치 검색 전 주의사항
 
-    * USB ID를 검색하기 전에 [SSH 연결하기](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하여 이동")를 참고하세요.
-    * 네트워크를 통해 SSH에 로그인하고 시리얼 포트를 사용하지 않았는지 확인하십시오.
-    * USB 펌웨어가 설치된 보드와 데이터 전송 기능을 가진 상위 컴퓨터의 데이터 케이블이 제대로 연결되었는지 확인하십시오.
+    * USB ID를 검색하기 전에 먼저 [SSH 연결](/docs/DebugDoc/BasicTutorial/index.mdx "클릭하여 이동")을 수행하세요.
+    * 네트워크를 통해 SSH에 로그인했는지 확인하세요 (시리얼 포트로 로그인하지 않았는지 확인).
+    * USB 펌웨어가 설치된 메인보드와 데이터 전송 기능이 있는 상위기기를 정확히 연결했는지 확인하세요.
 
 ## 장치 검색
-    * 상위 컴퓨터가 정상적으로 인터넷에 연결되어 있고, 하위 컴퓨터와 상위 컴퓨터를 연결하는 데이터 케이블이 데이터 전송 기능을 가지고 있는지 확인하십시오.
-    * SSH를 상위 컴퓨터에 연결한 후 `lsusb` 명령어를 입력하고 Enter를 누릅니다. 아래 이미지에서 빨간색으로 표시된 정보가 나타나면 다음 단계로 진행할 수 있습니다.
-        * 아무런 정보가 반영되지 않으면, 상위 컴퓨터의 시스템 문제입니다. 정상적인 시스템으로 교체하거나 상위 컴퓨터를 교체해야 합니다.
-        * `lsusb` 명령어를 실행했는데도 관련 명령어가 없다고 나온다면, 아래 명령어로 설치할 수 있습니다:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * `1d50:6177`는 이번에 사용할 장치입니다.
-        * 일부 상위 컴퓨터는 시스템 문제로 인해 정보를 완전히 표시하지 못하거나 표시하지 않을 수 있습니다.
-        * `lsusb` 명령어를 입력했을 때 장치가 표시되지만 `1d50:6177`이 나타나지 않는 경우, 데이터 케이블을 바꿔보고 보드를 다른 USB 포트에 연결해보세요.
-    * 위 단계를 수행하고 Klipper 펌웨어를 성공적으로 번들한 후 보드가 정상적으로 작동하는 경우, Klipper 펌웨어 업데이트만 하고 싶다면 이 페이지 오른쪽 메뉴에서 `펌웨어 업데이트` 섹션을 참조하세요.
 
-    :::warning 주의사항
-       반드시 `1d50:6177` 장치를 찾은 후 다음 단계로 진행하셔야 합니다.
-    :::
+    <LS />
 
 ## USBID 검색
 
@@ -30,24 +19,56 @@
     ls /dev/serial/by-id/*
     ```
 
-    * 아래 명령어를 입력하고 Enter를 누릅니다. 모든 것이 정상이라면 파란색 ID가 한 줄 나타납니다. (아래는 예시입니다)
+    * 아래 명령어를 입력하고 Enter를 누릅니다. 문제가 없다면 아래 색상이 파란색으로 표시되는 ID가 나타납니다. (아래는 예시입니다.)
     <ImageView image={require('@site/docs/General/get-id/img/usb-id.webp').default} size="80%" align="left" />
-    * 아래 명령어를 입력했는데 ID가 나오지 않고 `lsusb`에는 장치가 있다면 상위 컴퓨터나 상위 컴퓨터 시스템을 교체하십시오.
+    * 아래 명령어를 입력했지만 ID가 나타나지 않으며, `lsusb`에는 장치가 보인다면 상위기기를 교체하거나 상위기기 시스템을 변경하세요.
+
 
 :::warning 주의사항
-여러 개의 ID가 나타난 경우, 보드의 **MCU** 모델에 따라 해당 ID를 선택하십시오.
+여러 개의 ID가 나타난 경우, 각각의 메인보드 **MCU** 모델에 맞는 ID를 선택하세요.
 :::
 
 ### USB ID를 설정 파일에 입력
 
-    * 프린터 웹 인터페이스를 열고 좌측 사이드바의 설정 옵션에서 fluidd일 경우 `{…}`; mainsail일 경우 `기계`, 클릭하여 `printer.cfg`를 찾습니다.
+  <table>
+    <tr>
+      <td>
+        - fluidd의 경우: `{…}`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsail의 경우: `장비`를 클릭하면 `printer.cfg`를 찾을 수 있습니다.
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
-
-    * 파란색 ID를 복사하여 `[mcu]` 노드의 `serial:`에 입력합니다. 저장 및 재부팅 후 보드와 연결됩니다. Klipper가 `ADC out of range`를 경고하는 경우 정상적인 현상이며, 열판과 온도 센서를 잘 연결하고 노즐, 열판의 온도 센서 핀과 출력 핀을 구성한 후 다시 저장하고 재부팅하면 됩니다.
-
-            <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
-
-:::danger
-주의: 문서에서 언급된 모든 ID는 예제입니다. 실제 각 보드의 ID는 모두 다르므로 실제로 얻은 ID를 반영하여 수정해야 합니다.
+참고: 문서에서 나타나는 모든 ID는 예시입니다. 실제 각 메인보드의 ID는 모두 다릅니다. 실제로 얻은 ID로 수정하여 입력하세요.
 :::
+
+## USB ID 입력
+
+    * `[mcu]`를 찾아서 대체하세요.
+
+    :::danger 주의사항
+      * 설정 파일에서 다음 내용을:
+      ```
+      [mcu]
+      serial: <위에서 검색한 ID로 대체>
+      ```
+      :::
+
+    * 참고:
+    <table>
+      <tr>
+        <td>
+          - fluidd의 예제
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsail의 예제
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg1.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    * 오른쪽 위의 `SAVE & RESTART`를 클릭하면 자동으로 저장되고 klipper가 재시작됩니다.

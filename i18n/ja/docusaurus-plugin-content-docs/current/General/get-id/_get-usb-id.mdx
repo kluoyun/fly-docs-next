@@ -1,28 +1,17 @@
+import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb1.mdx';
+
+
 ## USBチュートリアルの検索
 
-## デバイスを検索する前の注意事項
+## デバイス検索前の注意事項
 
     * USB IDを検索する前に、まず[SSHに接続](/docs/DebugDoc/BasicTutorial/index.mdx "クリックしてジャンプ")してください
-    * シリアルポートではなくネットワーク経由でSSHに接続していることを確認してください
-    * 刷り込み済みのUSBファームウェアが搭載されたメインボードが接続されており、上位機とのデータ転送機能を持つデータケーブルを使用していることを確認してください
+    * SSHにネットワーク経由でログインしていることを確認してください（シリアルポートでのログインではありません）
+    * 刷り込み済みのマザーボードが接続されており、データ転送機能を持つ上位機とのデータケーブルが接続されていることを確認してください
 
 ## デバイスの検索
-    * 上位機が正常にインターネットに接続できており、下位機が上位機に接続されたデータケーブルにデータ転送機能があることを確認してください。
-    * SSHで上位機に接続したら、コマンドラインに`lsusb`と入力してエンターキーを押します。図中の丸で囲まれた情報が出力された場合、次のステップに進んでください。
-        * 何も情報が返ってこない場合は、上位機のシステムに問題があります。この場合、正常なシステムに変更したり、上位機を交換してください。
-        * `lsusb`コマンドがないというメッセージが出た場合は、以下のコマンドを実行してインストールできます
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * `1d50:6177`は今回使用するデバイスです。
-        * 一部の上位機はシステムの問題により、完全に表示されないか全く表示されないことがあります。
-        * `lsusb`コマンドでデバイスが表示されるが、`1d50:6177`が表示されない場合は、データケーブルを交換し、メインボードを上位機の他のUSBポートに接続してみてください。
-    * 前述の手順を実行し、Klipperファームウェアを正常に焼込めており、メインボードが正常に動作しているが、Klipperファームウェアを更新するだけの場合、右側のメニューにある「ファームウェア更新」セクションをご覧ください。
 
-    :::warning 注意
-       `1d50:6177`デバイスが検出された後で初めて次のステップに進んでください
-    :::
+    <LS />
 
 ## USBIDの検索
 
@@ -30,24 +19,56 @@
     ls /dev/serial/by-id/*
     ```
 
-    * 下記のコマンドを入力してエンターキーを押します。すべて正常であれば、青色のIDが一行表示されます。（以下は例です）
+    * 下記のコマンドを入力してエンターキーを押します。すべて正常であれば、青いIDが一行表示されます。（以下は例です）
     <ImageView image={require('@site/docs/General/get-id/img/usb-id.webp').default} size="80%" align="left" />
-    * 下記のコマンドを入力してもIDが出力されない場合、`lsusb`にはデバイスが表示されているが、上位機または上位機のシステムを交換してください
+    * 下記のコマンドを入力してもIDが出力されず、`lsusb`にはデバイスがある場合は、上位機または上位機システムを交換してください
+
 
 :::warning 注意
-複数のIDが表示された場合、MCUモデルに基づいて対応するIDを選択してください。
+複数のIDが表示された場合、あなたのマザーボードの**MCU**モデルに基づいて対応するIDを選択してください。
 :::
 
-### USBのIDを設定ファイルに入力する
+### USBのIDを設定ファイルに記入する
 
-    * プリンターのWebインターフェースを開き、左側のサイドバーの設定オプションで、fluiddでは`{…}`、mainsailでは`マシン`をクリックすると、`printer.cfg`を見つけることができます。
+  <table>
+    <tr>
+      <td>
+        - fluiddの場合: `{…}` に移動すると `printer.cfg` が見つかります
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsailの場合: `機器` に移動すると `printer.cfg` が見つかります
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
-
-    * 青色のIDをコピーし、`printer.cfg`設定ファイル内の`[mcu]`セクションの`serial:`に入力します。保存して再起動すると、メインボードに接続できます。Klipperが`ADC out of range`と表示するのは正常現象です。ヒータやセンサーを正しく接続し、ノズルやヒーターの温度センサおよび出力ピンを適切に設定してから、再度保存して再起動してください。
-
-            <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
-
-:::danger
-注意：文中に登場するすべてのIDは例示であり、実際の各メインボードのIDは異なりますので、実際の取得したIDに基づいて修正してください。
+注意: ドキュメントに含まれるすべてのIDは例示であり、実際の各マザーボードのIDは異なりますので、実際に取得したIDに基づいて修正・記入してください。
 :::
+
+## USB IDの記入
+
+    * `[mcu]` を探して置き換えます
+
+    :::danger 注意点
+      * 設定ファイルで次の内容を置き換えてください:
+      ```
+      [mcu]
+      serial: <ここに先ほど検索したIDを入力>
+      ```
+      :::
+
+    * 参考資料
+    <table>
+      <tr>
+        <td>
+          - fluiddの参考
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - mainsailの参考
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg1.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    * 右上の`SAVE & RESTART`をクリックすると、自動的に保存されKlipperが再起動します

@@ -1,10 +1,10 @@
 ---
 sidebar_position: 4
-sidebar_label: RS232ファームウェアのコンパイルとフラッシュ
+sidebar_label: RS232ファームウェアのコンパイルと書き込み
 ---
 
 import USBFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,11 +12,11 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     ## KF接線の図
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/kf2.webp').default} size="50%" align="left" />
-    ## XT30接線図
+    ## XT30接線の図
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/xt301.webp').default} size="50%" align="left" /> 
 # RS232ファームウェアのコンパイル
 
-## コンパイル開始
+## コンパイルの開始
 
     <SSH />
 
@@ -24,39 +24,52 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio18**
+    * **GPIO pinsをmicro-controller起動時に設定する**を選択し、入力：**!gpio18**
     :::warning
-        `!gpio18`を入力する際は英語入力モードで入力してください。
+        英数入力で`!gpio18`を入力してください。
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/rs232.webp').default} size="100%" align="center" />
-    * `Q` キーを押すと **設定の保存** が表示され、その後 `Y` キーを押します
+    * `Q`キーを押すと**Save configuration**が表示され、その際に`Y`キーを押す
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 現在設定が保存され、コマンドラインインターフェースに戻ったはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかることがあります
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
-    * 最後に以下のような出力が出ればコンパイル成功です
-       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+    * 現在、設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * 下記のコマンドを入力してコンパイルを開始します。時間がかかります
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最後に以下の内容が出力されたらコンパイル成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
 
 
-
-
-## フラッシュモードに入る
+## 書き込みモードに入る
 
     :::tip
 
-    矢印で示したのが`BOOTボタン`です。
+    矢印が指しているのが`BOOTボタン`です。
 
     :::
 
-    * ツールボードは**完全に電源を切った状態**で、**BOOTボタン**を押しながら、データ転送機能付きのTypeCケーブルを使用して、**ツールボード**を**ホストPCのUSBポート**に接続します。正しく接続されたら、**BOOTボタン**を放します
+    * ツールボードが**完全に電源を切った状態**で、**BOOTボタン**を押しながら、データ転送機能付きのTypeCケーブルを使用して、**ツールボード**を**上位機器のUSBポート**に接続します。正しい接続が確認できたら、**BOOTボタン**を放します。
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/boot.webp').default} size="80%" align="center" />
 
-## フラッシュモードに入ったか確認
+## 書き込みモードに入ったかどうかの確認
+    * 上位機器が正常にネットワークに接続されており、下位機器と接続されているデータケーブルがデータ転送機能を持っていることを確認してください。
+    * SSHで上位機器に接続後、`lsusb`を入力してエンターキーを押します。もし下の画像で囲まれた情報が表示された場合、次のステップに進んでください。
+        * 何も情報が返ってこない場合、これは上位機器のシステム問題であり、こちらでは対応できません。正常なシステムや上位機器を交換してください。
+        * `lsusb`コマンドがないと表示される場合は、以下のコマンドでインストールできます
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * `OpenMoko, Inc. rp2040`の後ろのサフィックス`XX`は可変です。
+        * 一部の上位機器はシステムの問題により、完全に表示されないか、全く表示されません。
 
-    <LS />
 
-
-## RS232ファームウェアのフラッシュ
+## RS232ファームウェアの書き込み
     
     <USBFLASH />
     
@@ -64,5 +77,6 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
 ## ファームウェアの起動確認
 
-    * ファームウェアが正常に起動した場合、以下の画像にある**LEDが点灯します**
+    * ファームウェアが正常に起動した場合、下図のように**LEDが点灯します**
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />
+

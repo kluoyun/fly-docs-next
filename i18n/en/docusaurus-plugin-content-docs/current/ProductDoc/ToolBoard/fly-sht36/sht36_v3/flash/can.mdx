@@ -4,7 +4,7 @@ sidebar_label: CAN Firmware Compilation and Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -25,17 +25,20 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
         Please enter `!gpio5` in English input mode.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/can.webp').default} size="100%" align="center" />
-    * **Please check against the above figure to ensure consistency with the figure, then proceed to the next step**
-    * Press `Q`, a **Save configuration** prompt will appear, then press `Y`
+    * **Please check against the above picture to ensure it is consistent with the picture, then proceed to the next step**
+    * Press `Q`, a **Save configuration** message will appear, press `Y` again at this time
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * Now the configuration should be saved and you should have exited to the command line interface
-    * Enter `make -j4` to start compiling, it may take some time
+    * Enter the following command to start compiling, it takes some time
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Finally, output the following content indicating successful compilation
+    * If the output below appears, compilation is successful
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 ---
 
@@ -45,29 +48,29 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
     :::
 
     :::warning
-       If your host machine is a **non-FLY** host machine, please execute the following steps
+       If your host machine is a **non-FLY** host machine, please execute the following steps.
     :::
 
-    ### Check if the host machine supports CAN
+    ### Check if the Host Machine Supports CAN
 
-    * If it is a **FLY host machine**, this operation is not required
-    * If your system is `Ubuntu`, you need to configure **Ubuntu CAN0**, this document has not been updated yet
+    * If it is a **FLY host machine**, this operation is not required.
+    * If your system is `Ubuntu`, you need to configure `Ubuntu CAN0`, this document has not been updated yet.
     * Enter the following command to check if the system supports CAN
     ```bash
     sudo modprobe can && echo "Your kernel supports CAN" || echo "Your kernel does not support CAN"
     ```
-    * After entering the above command, if your kernel supports CAN, it will return: `Your kernel supports CAN`; otherwise, it will return: `Your kernel does not support CAN`.
+    * After entering the above command, if your kernel supports CAN, it will return: `Your kernel supports CAN`; if not supported, it will return: `Your kernel does not support CAN`.
     :::tip
-        If it returns `Your kernel supports CAN`, you can proceed to configure CAN0; if it returns `Your kernel does not support CAN`, please replace your host machine system or switch to another host machine!
+        If it returns `Your kernel supports CAN`, you can proceed to the next step to configure CAN0. If it returns `Your kernel does not support CAN`, please replace your host machine system or replace the host machine!
     :::
    
    ### Configure CAN0
 
-    * This command overwrites the original CAN0 configuration of the system, and the system needs to be restarted after execution
-    * Please choose one according to the actual situation (**Klipper default CAN speed is 1M, it is recommended to use 1M speed**)
+    * This command overwrites the original CAN0 configuration of the system, and the system needs to be restarted after execution.
+    * Please choose one according to the actual situation (**Klipper default CAN rate is 1M, it is recommended to use 1M rate**)
 
     :::warning
-        For 1M speed, enter the following command
+        For 1M rate, enter the following command
     :::
 
     ```bash
@@ -82,7 +85,7 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
     ```
 
     :::warning
-        For 500K speed, enter the following command
+        For 500K rate, enter the following command
     :::
 
     ```bash
@@ -106,11 +109,11 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
 
 ## Burn Firmware
-         
-    * Before burning the firmware, connect the tool board to UTOC or the mainboard flashed with bridge firmware using an XT30 data cable. Below is the reference wiring diagram
-    * Please pay attention to whether the DIP switches are set correctly
+
+    * Before burning the firmware, connect the tool board to UTOC or the main board flashed with bridge firmware using an XT30 data cable, and refer to the wiring diagram below
+    * Please pay attention to whether the DIP switch is set to the corresponding position
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/sht36v3_utoc.webp').default} size="80%" align="left" />
-    * Please ensure that the resistance between CAN H and CAN L is around `60Ω` when measured with a multimeter in a power-off state; if it is `120Ω`, you need to connect a `120Ω` jumper; if it is around `40Ω`, you need to remove the jumper
+    * Please ensure that the resistance value between CAN H and CAN L is around `60Ω` when powered off; if it is `120Ω`, you need to connect a `120Ω` jumper wire; if it is around `40Ω`, you need to remove the jumper wire
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
@@ -119,3 +122,5 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     * If the firmware starts up normally, the LED will light up
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />
+
+---

@@ -4,10 +4,9 @@ sidebar_label: Запись прошивки CAN через USB-мост
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
-
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
@@ -21,12 +20,15 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, это займет некоторое время
+    * Введите следующую команду для начала компиляции, процесс может занять некоторое время
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если последний вывод содержит следующее, компиляция успешно завершена:
+    * В конце вывода следующие строки означают успешную компиляцию
 
         ```bash
         Linking out/klipper.elf
@@ -35,18 +37,8 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
 ## Проверка режима записи
 
-    * Убедитесь, что компьютер верхнего уровня подключен к сети и шнур данных, соединяющий компьютер верхнего уровня с нижним уровнем, имеет функцию передачи данных.
-    * Подключитесь к компьютеру верхнего уровня через SSH и введите команду `lsusb` и нажмите Enter. Если появляется информация, выделенная на рисунке ниже, можно переходить к следующему шагу.
-        * Если никакой информации не отображается, это может быть проблема системы компьютера верхнего уровня, мы бессильны. Вам нужно заменить рабочую систему или компьютер верхнего уровня.
-        * Если появляется сообщение об отсутствии команды `lsusb`, выполните эту команду для установки:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * ID, выделенный красным框ом, может служить ориентиром, но он **не является фиксированным** (ID может изменяться). Следующая часть `OpenMoko, Inc. stm32f407xx` указывает на то, что суффикс имеет переменную природу.
-        * Некоторые компьютеры верхнего уровня могут из-за системной проблемы отображать информацию неполностью или вообще не отображать.
+    <LS />
 
 ## Запись прошивки
-
-
-    <CANBOOT />
+    
+    <CANFLASH />

@@ -1,11 +1,11 @@
 ---
 sidebar_position: 3
-sidebar_label: CAN 펌웨어 컴파일 및 플래싱
+sidebar_label: CAN 펌웨어 컴파일 및 플래시
 
 ---
 
 import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -21,54 +21,58 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * **GPIO 핀을 마이크로컨트롤러 시작 시 설정할 것 선택**, 입력: **!gpio5**
+    * **micro-controller 시작 시 설정할 GPIO 핀 선택**, 입력: **!gpio5**
     :::warning
-        `!gpio5`를 입력할 때는 영문 입력 상태에서 입력해야 합니다.
+        `!gpio5`를 입력하기 전에 반드시 영문 입력 상태로 변환하시기 바랍니다.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/can.webp').default} size="100%" align="center" />
-    * **위의 이미지를 확인하고 일치하는지 반드시 확인한 후 다음 단계로 진행**
-    * `Q` 키를 누르면 **설정 저장**이 표시되며, 이때 `Y` 키를 누릅니다.
+    * **위의 이미지와 동일한지 반드시 확인 후 다음 단계로 진행하시기 바랍니다**
+    * `Q` 키를 누르면 **Configuration 저장**이 표시되고, 이때 `Y` 키를 누릅니다
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 이제 설정이 저장되었고 명령줄 인터페이스로 돌아왔습니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 다소 걸립니다.
+    * 이제 설정이 저장되었으며 명령행 화면으로 돌아왔습니다
+    * 아래 명령어를 입력하여 컴파일을 시작합니다 (시간이 다소 걸립니다)
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 아래와 같은 내용이 출력되면 컴파일이 성공적으로 완료되었습니다.
+    * 최종적으로 아래 내용이 출력되면 컴파일 성공입니다
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 ---
 
 ## 상위 기기 설정
+
     :::warning
-        상위 기기가 **FLY** 상위 기기라면 `상위 기기 설정`은 생략하십시오.
+        만약 상위 기기가 **FLY** 상위 기기라면 **상위 기기 설정**은 실행하지 않으셔도 됩니다.
     :::
 
     :::warning
-       상위 기기가 **FLY가 아닌** 상위 기기라면 아래 단계를 수행하십시오.
+        만약 상위 기기가 **FLY** 상위 기기가 아니라면 아래 단계를 수행하시기 바랍니다.
     :::
 
     ### CAN 지원 여부 확인
 
-    * **FLY 상위 기기**인 경우 이 단계는 생략하십시오.
-    * 시스템이 `Ubuntu`라면 `Ubuntu CAN0 구성`은 아직 업데이트되지 않았습니다.
-    * 아래 명령어를 입력하여 시스템이 CAN을 지원하는지 확인합니다.
+    * 만약 **FLY 상위 기기**라면 이 단계는 생략하십시오
+    * 시스템이 `Ubuntu`인 경우 **Ubuntu CAN0 구성**이 필요하며, 해당 문서는 아직 업데이트되지 않았습니다
+    * 아래 명령어를 입력하여 시스템이 CAN을 지원하는지 확인합니다
     ```bash
-    sudo modprobe can && echo "커널이 CAN을 지원합니다." || echo "커널이 CAN을 지원하지 않습니다."
+    sudo modprobe can && echo "Kernel은 CAN을 지원합니다" || echo "Kernel은 CAN을 지원하지 않습니다"
     ```
-    * 위 명령어를 입력한 후, 커널이 CAN을 지원하면 `커널이 CAN을 지원합니다.`라는 메시지가 반환됩니다. 그렇지 않으면 `커널이 CAN을 지원하지 않습니다.`라는 메시지가 반환됩니다.
+    * 위 명령어를 입력하면 Kernel이 CAN을 지원하면 `Kernel은 CAN을 지원합니다`가, 지원하지 않으면 `Kernel은 CAN을 지원하지 않습니다`가 반환됩니다.
     :::tip
-        만약 `커널이 CAN을 지원합니다.`라는 메시지가 나타난다면 다음 단계로 넘어갈 수 있습니다. 그렇지 않다면 상위 기기 시스템을 교체하거나 상위 기기를 교체하십시오!
+        만약 `Kernel은 CAN을 지원합니다`가 반환되었다면 다음 단계로 진행할 수 있습니다. 그렇지 않다면 상위 기기 시스템을 교체하거나 상위 기기를 교체해 주세요!
     :::
-   
+
    ### CAN0 구성
 
-    * 이 명령은 기존의 CAN0 구성이 덮어쓰여지며 구성이 완료된 후 시스템 재시작이 필요합니다.
-    * Klipper 기본 CAN 속도는 1M이며, 권장 속도는 1M입니다.
+    * 이 명령어는 기존의 CAN0 구성 정보를 덮어씁니다. 명령어 실행 후 시스템 재부팅이 필요합니다
+    * Klipper 기본 CAN 속도는 1M이며, 권장 속도는 1M입니다
 
     :::warning
-        1M 속도 사용 시 아래 명령어 입력
+        1M 속도 사용 시 아래 명령어를 입력하세요
     :::
 
     ```bash
@@ -76,14 +80,14 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
         allow-hotplug can0
         iface can0 can static
             bitrate 1000000
-            up ifconfig $IFACE txqueuelen 1024
+            up ifconfig \$IFACE txqueuelen 1024
             pre-up ip link set can0 type can bitrate 1000000
             pre-up ip link set can0 txqueuelen 1024
     EOF
     ```
 
     :::warning
-        500K 속도 사용 시 아래 명령어 입력
+        500K 속도 사용 시 아래 명령어를 입력하세요
     :::
 
     ```bash
@@ -91,13 +95,13 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
     allow-hotplug can0
     iface can0 can static
         bitrate 500000
-        up ifconfig $IFACE txqueuelen 1024
+        up ifconfig \$IFACE txqueuelen 1024
         pre-up ip link set can0 type can bitrate 500000
         pre-up ip link set can0 txqueuelen 1024
     EOF
     ```
 
-    * 시스템 재시작
+    * 시스템 재부팅
 
     ```bash
     sudo reboot
@@ -106,19 +110,19 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
     <LS />
 
 
-## 펌웨어 플래싱
+## 펌웨어 플래시
 
-    * 펌웨어 플래싱 전에 XT30 데이터선을 통해 도구 보드를 UTOC 또는 브리지 펌웨어가 설치된 메인보드에 연결하십시오. 아래는 참조 연결도입니다.
-    * 다이얼 스위치가 정확한 위치에 있는지 확인하십시오.
+    * 펌웨어 플래시 전에 XT30 데이터 케이블을 도구 보드를 UTOC 또는 Bridge 펌웨어가 설치된 메인 보드에 연결합니다. 아래는 참조 연결도입니다
+    * 다이얼 스위치가 해당 위치에 있는지 반드시 확인하시기 바랍니다
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/sht36v3_utoc.webp').default} size="80%" align="left" />
-    * CAN H와 CAN L의 저항값이 전원이 꺼진 상태에서 만능계로 측정되었을 때 약 `60Ω`인지 확인하십시오. 만약 `120Ω`라면 `120Ω` 점퍼를 연결해야 하며, `40Ω` 정도라면 점퍼를 제거하십시오.
+    * CAN H와 CAN L의 저항값을 전원을 끈 상태에서 멀티미터로 측정했을 때 약 **60Ω** 정도인지 확인해야 합니다. 만약 **120Ω**라면 **120Ω** 점퍼를 연결하고, **40Ω** 정도라면 점퍼를 제거해야 합니다
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
-## 펌웨어 실행 확인
+## 펌웨어 정상 작동 여부 확인
 
-    * 펌웨어가 정상적으로 실행되면 LED가 켜집니다.
+    * 펌웨어가 정상적으로 시작되면 LED가 점등됩니다
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />
 
 ---
