@@ -1,18 +1,18 @@
 ---
 sidebar_position: 3
-sidebar_label: CAN固件烧录
+sidebar_label: Programmation de la firmware CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# CAN 固件编译
+# Compilation de la firmware CAN
 
-## 开始编译
+## Démarrer la compilation
 
     <SSH />
 
@@ -20,36 +20,39 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Sélectionner les broches GPIO à configurer au démarrage du microcontrôleur, entrez : gpio17
+    * Choisir les broches GPIO à configurer au démarrage du microcontrôleur, entrer : gpio17
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/can.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
+    * Appuyer sur la touche `Q`, apparaît **Save configuration**, puis appuyer sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être enregistrée et vous êtes revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * La configuration est maintenant sauvegardée et vous êtes revenu à l'interface de ligne de commande
+    * Entrez la commande ci-dessous pour commencer la compilation, cela prend un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au texte ci-dessous, la compilation a réussi
+    * Si la sortie finale ressemble à ceci, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
-## Rechercher l'appareil
+## Recherche d'appareils
 
     <LS />
 
 
-## Brûler le firmware
+## Programme de la firmware
 
-    * Avant de brûler le firmware, connectez la carte de l'outil à UTOC ou à la carte mère avec firmware bridge en utilisant un câble XT30, voir ci-dessous pour le schéma de câblage
-    * Vérifiez que les interrupteurs sont correctement positionnés
+    * Avant de programmer la firmware, connectez le boîtier outil à UTOC ou à une carte mère flashée avec la firmware bridge à l'aide d'un câble XT30, voir ci-dessous le schéma de raccordement
+    * Vérifiez que les commutateurs sont bien positionnés
         <ImageView image={require('@site/docs/General/get-id/img/utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant le courant, si elle est de `120Ω`, connectez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant le courant (si elle est de `120Ω`, connectez une résistance de `120Ω`, si elle est d'environ `40Ω`, retirez la résistance)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
-## Vérifier si le firmware est démarré
+## Vérification du bon démarrage de la firmware
 
-    * Si le firmware démarre normalement, la LED s'allumera
+    * Si la firmware démarre correctement, la LED s'allumera
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercfv2/flash/img/led.webp').default} size="100%" align="center" />

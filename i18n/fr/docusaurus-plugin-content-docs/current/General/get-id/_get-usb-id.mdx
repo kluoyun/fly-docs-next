@@ -1,28 +1,17 @@
-## Rechercher des tutoriels USB
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb1.mdx';
 
-## Consignes avant de rechercher l'appareil
 
-    * Avant de rechercher l'ID USB, veillez à [vous connecter via SSH](/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder").
-    * Veuillez vous assurer que la connexion SSH est effectuée via le réseau et non via un port série.
-    * Assurez-vous d'avoir correctement connecté la carte mère flashée avec le firmware USB, et que le câble de données utilisé pour connecter la carte mère à l'ordinateur dispose bien de la fonctionnalité de transmission de données.
+## Recherche de tutoriels USB
 
-## Recherche de l'appareil
-    * Assurez-vous que l'ordinateur principal peut se connecter normalement à Internet et que le câble de données reliant la carte mère à l'ordinateur possède bien la fonctionnalité de transmission de données.
-    * Après avoir établi une connexion SSH sur l'ordinateur principal, entrez la commande `lsusb` puis appuyez sur Entrée. Si les informations entourées dans l'image ci-dessous apparaissent, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est renvoyée, il s'agit d'un problème du système de l'ordinateur principal. Nous ne pouvons rien faire à ce sujet. Vous devez soit remplacer par un système confirmé comme fonctionnel, soit changer d'ordinateur principal.
-        * Si vous obtenez un message indiquant qu'il n'y a pas de commande `lsusb`, vous pouvez installer cette commande en exécutant :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * L'identifiant `1d50:6177` correspond à l'appareil que vous allez utiliser lors de cette opération.
-        * Certains ordinateurs principaux peuvent afficher incorrectement ou ne pas afficher du tout en raison de problèmes liés au système.
-        * Si la commande `lsusb` affiche l'appareil mais pas `1d50:6177`, essayez de changer de câble de données et de connecter la carte mère à une autre prise USB sur l'ordinateur principal.
-    * Si vous avez suivi les étapes ci-dessus précédemment et que la mise à jour du firmware Klipper a été effectuée avec succès, et que la carte mère fonctionne normalement, mais que vous souhaitez simplement mettre à jour le firmware Klipper, consultez la section `Mise à jour du firmware` du menu de droite de cette page.
+## Précautions avant la recherche du périphérique
 
-    :::warning Remarque
-       Vous devez impérativement trouver l'appareil `1d50:6177` avant de poursuivre.
-    :::
+    * Avant de rechercher l'ID USB, connectez-vous d'abord à SSH [/docs/DebugDoc/BasicTutorial/index.mdx "cliquez pour accéder"]
+    * Veuillez vous assurer que vous êtes connecté via le réseau à SSH et non via un port série
+    * Assurez-vous d'avoir correctement branché la carte mère flashée avec le firmware USB et que le câble de connexion vers l'ordinateur dispose des fonctionnalités de transmission de données
+
+## Recherche du périphérique
+
+    <LS />
 
 ## Recherche de l'ID USB
 
@@ -30,25 +19,54 @@
     ls /dev/serial/by-id/*
     ```
 
-    * Entrez la commande ci-dessous et appuyez sur Entrée. Si tout se passe bien, un identifiant bleu apparaîtra (l'exemple ci-dessous est donné à titre indicatif).
+    * Entrez la commande ci-dessous et appuyez sur Entrée. Si tout se passe bien, une ligne bleue contenant l'ID apparaîtra (l'exemple ci-dessous est indicatif).
     <ImageView image={require('@site/docs/General/get-id/img/usb-id.webp').default} size="80%" align="left" />
-    * Si aucune ID n'apparaît après l'entrée de la commande ci-dessus, mais que `lsusb` affiche un appareil, essayez de changer d'ordinateur principal ou de système d'exploitation sur l'ordinateur principal.
+    * Si aucune ID n'apparaît après l'entrée de la commande ci-dessous, mais que `lsusb` affiche des appareils, veuillez changer l'ordinateur ou le système d'exploitation de l'ordinateur
 
-
-:::warning Remarque
-Si plusieurs ID apparaissent, choisissez celui correspondant au modèle de MCU de votre carte mère.
+:::warning Remarque importante
+Si plusieurs IDs apparaissent, choisissez celui correspondant au modèle de MCU de votre carte mère.
 :::
 
-### Inscription de l'ID USB dans la configuration
+### Remplissez l'ID USB dans la configuration
 
-    * Ouvrez l'interface web de l'imprimante, trouvez dans le menu latéral gauche l'option de configuration : fluidd `{…}` ; mainsail `machine`, cliquez dessus pour accéder à `printer.cfg`.
+  <table>
+    <tr>
+      <td>
+        - Pour fluidd : `{…}`, cliquez pour accéder à `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - Pour mainsail : `machine`, cliquez pour accéder à `printer.cfg`
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
+Remarque : Tous les IDs mentionnés dans le document sont indicatifs, chaque carte mère a un ID unique, veuillez remplacer par l'ID réellement obtenu.
 
-    * Copiez l'identifiant bleu et insérez-le dans le champ `serial:` du nœud `[mcu]` dans la configuration `printer.cfg`. Redémarrez après sauvegarde pour connecter la carte mère. Si Klipper affiche ``ADC out of range``, c'est un phénomène normal. Connectez bien la plaque chauffante et les capteurs thermiques, configurez les broches thermiques et de sortie pour la buse et la plaque chauffante, puis sauvegardez et redémarrez.
+## Remplir l'ID USB
 
-            <ImageView image={require('@site/docs/General/get-id/img/cfg-usb-id.webp').default} size="50%" align="left" />
+    * Trouvez `[mcu]`, puis remplacez
 
-:::danger Attention
-Remarque : Tous les IDs mentionnés dans le document sont des exemples. Chaque carte mère a un ID unique. Veuillez modifier et remplir avec l'ID réellement obtenu.
-:::
+    :::danger Avertissement
+      * Remplacez dans le fichier de configuration :
+      ```
+      [mcu]
+      serial: <remplacez par l'ID que vous avez trouvé>
+      ```
+      :::
+
+    * Référence
+    <table>
+      <tr>
+        <td>
+          - Référence pour fluidd
+          <ImageView image={require('@site/docs/General/get-id/img/wed/fluidd_cfg1.webp').default} size="100%" align="center" />
+        </td>
+        <td>
+          - Référence pour mainsail
+          <ImageView image={require('@site/docs/General/get-id/img/wed/mainsail_cfg1.webp').default} size="100%" align="center" />
+        </td>
+      </tr>
+    </table>
+    * Cliquez sur le bouton en haut à droite `SAVE & RESTART`. Le fichier sera automatiquement sauvegardé et klipper redémarrera automatiquement.

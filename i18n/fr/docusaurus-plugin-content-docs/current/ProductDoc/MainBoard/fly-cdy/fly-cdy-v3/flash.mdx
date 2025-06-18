@@ -1,27 +1,30 @@
 ---
 sidebar_position: 2
-sidebar_label: Compilation et flashage du firmware
+sidebar_label: Compilation et écriture du firmware
 ---
+
+
+
 
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import PcDfuFlash from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
-import HostDfuFlash from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
 import UTOC from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
 
-# Compilation et flashage du firmware
+# Compilation et écriture du firmware
 
     :::tip
 
-    * CDV utilise par défaut la carte SD pour le flashage du firmware
-    * Préparez une carte SD d'une capacité inférieure ou égale à `32G`
-    * Les cartes SD de marque non officielle peuvent entraîner un échec du flashage, il est recommandé d'utiliser les cartes SD recommandées ci-dessous pour mettre à jour le firmware
-    * La vitesse de transmission de la carte SD doit être de classe `10` ou supérieure, il est conseillé d'utiliser des cartes SD de marque SanDisk, par exemple
+    * CDV utilise par défaut une carte TF pour l'écriture du firmware
+    * Préparez une carte TF d'une capacité ne dépassant pas `32G`
+    * Les cartes mémoire de marque non officielle peuvent provoquer un échec de l'écriture, il est préférable d'utiliser les cartes TF recommandées ci-dessous pour mettre à jour le firmware
+    * La vitesse de transmission de la carte TF doit être de classe `10` ou supérieure, il est conseillé d'utiliser des cartes TF de marque SanDisk, etc.
 
     :::
 
@@ -37,26 +40,32 @@ import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Appuyez sur `Q` pour afficher **Save configuration**, puis appuyez sur `Y`
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, puis appuyez sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Appuyez sur la touche `Q`, apparaît **Save configuration**, puis appuyez sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
-    * Tapez `make -j4` pour commencer la compilation, cela prendra un certain temps
+    * Entrez la commande suivante pour démarrer la compilation, elle peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au texte suivant, la compilation a réussi
+    * Si la sortie finale ressemble au texte ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+
         
-    * L'image ci-dessous montre un exemple de compilation réussie
+    * L'image ci-dessous montre un exemple de réussite de la compilation
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
 
-## Flashage du firmware
+## Écriture du firmware
 
-:::danger À noter
-* Le firmware BL préinstallé sur le CDV est destiné au flashage via la carte SD
+:::danger À savoir
+* Le firmware BL pré-inscrit sur CDV est celui destiné à l'écriture via TF
 :::
 
     <TF />

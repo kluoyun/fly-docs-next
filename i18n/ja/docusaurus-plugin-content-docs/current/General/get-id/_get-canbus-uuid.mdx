@@ -1,54 +1,54 @@
 ## CAN設定とID検索
 
-* CANを使用する場合は、上位機がCAN設定を行っていることを確認してください。
+* CANを使用する必要がある場合は、上位機にCAN設定があることを確認してください
 
 ----
 
 :::danger 注意事項
 
-マザーボードが上位機に接続された状態で次の操作を実行してください。
+マザーボードが上位機に接続されていることを確認してから次の操作を行ってください
 
 :::
 
 
 :::warning
 
-上位機のcanネットワーク、ブリッジボードのCANレート、CANツールボードのレートが完全に一致していることを確認してください。
+上位機のcanネットワーク、ブリッジマザーボードのCANレート、CANツールボードのレートが完全に一致していることを確認してください
 
 :::
 
-### 設備検索前の注意事項
+### 設備を検索する前の注意事項
 
-    * CAN IDを検索する前に、[SSHに接続](/docs/DebugDoc/BasicTutorial/index.mdx "クリックしてジャンプ")してください
+    * CAN IDを検索する前に、まず[SSHに接続する](/docs/DebugDoc/BasicTutorial/index.mdx "クリックしてジャンプ")してください
     * ネットワーク経由でSSHにログインしていることを確認してください（シリアルポートでのログインではありません）
-    * UTOCを使用しているか、CANブリッジファームウェアが刷られているマザーボードが接続され、上位機とのデータ転送が可能なデータラインを使用していることを確認してください
+    * UTOCが接続されているか、またはCANブリッジファームウェアが刷られているマザーボードが接続されており、上位機とのデータ転送が可能なデータラインを持っていることを確認してください
 
-### 設備の検索
+### 設備を検索する
 
-    * 正常な上位機にログインしたら、`lsusb`コマンドを入力してデバイスを検索します。以下のいずれかの状況が発生します。
-        * `lsusb`コマンドを入力すると`ls`コマンドが見つからないと表示される場合、以下のコマンドを入力してインストールできます。
+    * 現在、正常に上位機にログインできているので、以下のコマンドを入力して`lsusb`でデバイスを検索します。以下のいずれかの結果が出ます。
+        * `lsusb`コマンドを入力すると`ls`コマンドが見つからないと表示される場合、以下のコマンドを入力してインストールできます
             ```bash
             sudo apt-get install usbutils
             ```
-        * `lsusb`コマンドを入力しても何も反応がない場合、これはシステムの問題です。別のシステムを使用するか、正常に動作するシステムを使用してください。
-        * 下の画像のような情報を得た場合、これは参考情報です。`1d50:606f`が表示されていることを確認してください。
+        * `lsusb`コマンドを入力しても何も反応がない場合、これはシステムの問題です。別のシステムを使用するか、正常なシステムを使用してください
+        * 下図のような情報が表示された場合、これは参考としてのみ使用してください。`1d50:606f`が表示されていることを確認してください
             <ImageView image={require('@site/docs/General/get-id/img/606f.webp').default} size="100%" align="left" />
-    * `1d50:606f`は今回使用する予定のデバイスです。後のメッセージは無視してください。システムの問題により、すべてが正しく表示されない場合があります。
-    * 複数の`1d50:606f`がある場合、片方を除外することをお勧めします。それ以外の場合、後続の焼込やファームウェア接続に影響を与える可能性があります。例えば、`FLY MINI PAD`の場合、搭載されたUTOCを使用し、他のCANブリッジデバイスは使用しないでください。
-    * もしこれがない場合、データラインが正常に接続されているか、ファームウェアが正しいかどうかを確認してください。
+    * `1d50:606f`は今回使用するデバイスに該当します
+    * 複数の`1d50:606f`がある場合、推奨されるのは一つを除外することです。これにより後続の焼込やファームウェア接続に影響を与えないようにします。例えば、`FLY MINI PAD`の場合、板載UTOCを使用し、他のCANブリッジデバイスは使用しないことをお勧めします
+    * これが表示されない場合、データラインがしっかりと接続されているかどうか、ファームウェアが正しいものになっているかを確認してください。
 
 :::warning 注意事項
-`1d50:606f`が表示されたら、CAN IDの検索に進んでください。
+`1d50:606f`が表示されたら、CAN IDを検索することができます
 :::
 
-### CAN IDの検索
+### CAN IDを検索する
 
-    * CAN IDを検索するには、以下のコマンドを入力します。
+    * 下記のコマンドを入力してIDを検索します
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
-    * IDが表示され、最後の`Application:`が`Klipper`と表示された場合、このIDはそのまま使用できます。
-    * IDが表示され、最後の`Application:`が`CANBOOT`または`Katapult`と表示された場合、ファームウェアを焼く必要があります。
+    * IDが表示され、最後の`Application:`に`Klipper`と表示される場合、このIDはそのまま使用できます
+    * IDが表示され、最後の`Application:`に`CANBOOT`または`Katapult`と表示される場合、ファームウェアを書き換える必要があります
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
 
@@ -56,32 +56,45 @@
 
     :::danger 注意事項
 
-    * CAN IDが見つからない場合、以下のドキュメントを参照してください  
-    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN問題集</Button>
+    * CAN IDが見つからない場合、下記のドキュメントをご覧ください  
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CANに関する問題集</Button>
 
     :::
 
-### CAN IDを構成ファイルに記述する
+### CANのIDを設定ファイルに記入する
 
-    * プリンタのWebインターフェースを開き、左側のサイドバーにある構成オプションで、fluiddでは`{…}`、mainsailでは`マシン`を選択してクリックします。これにより、`printer.cfg`が表示されます。
+  <table>
+    <tr>
+      <td>
+        - fluiddの場合: `{…}` をクリックすると、`printer.cfg`が見つかります
+        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="100%" align="center" />
+      </td>
+      <td>
+        - mainsailの場合: `マシン` をクリックすると、`printer.cfg`が見つかります
+        <ImageView image={require('@site/docs/General/get-id/img/mainsail-cfg.webp').default} size="100%" align="center" />
+      </td>
+    </tr>
+  </table>
 
-        <ImageView image={require('@site/docs/General/get-id/img/fluidd-cfg.webp').default} size="50%" align="left" />
 
-    * 検索したUUIDをコピーし、`printer.cfg`の`[mcu]`セクションの`canbus_uuid:`に貼り付けます。保存して再起動すると、マザーボードに接続されます。Klipperがファームウェアの更新が必要、ADCエラーなどの警告を出す場合、Klipperがマザーボードに接続されていることを示します。
-    * `Application:`がCanbootの場合、構成ファイルに記述することはできません。Klipperファームウェアを焼くことで次のステップに進めます。
+    * 検索したUUIDをコピーして、`printer.cfg`の`[mcu]`セクションの`canbus_uuid:`に記入します。保存して再起動すると、マザーボードに接続されます。Klipperがファームウェアの更新やADCエラーを報告した場合、Klipperがマザーボードに接続されたことを意味します
+    * `Application:`がCanbootの場合、設定ファイルに記入することはできません。Klipperファームウェアを書き込むまで次のステップには進めません
         <ImageView image={require('@site/docs/General/get-id/img/canbus-uuid.webp').default} size="50%" align="left" />
 
         :::danger
 
-        注意：ドキュメントで示されているすべてのIDは例です。実際の各マザーボードのIDは異なりますので、実際に取得したIDに基づいて修正してください。
+        注意: ドキュメント中に出てくるすべてのIDは例示です。実際の各マザーボードのIDは異なるため、実際に取得したIDに基づいて修正してください。
 
         :::
 
-    * 参考となる構成例
+    * 下記は参考となる設定です
         :::danger
-
-        * ここに示すのは、1つのマザーボードと1つのツールボードを使用する場合の参考構成です。
-        * マザーボードのIDは必ず`[mcu]`に加え、`canbus_uuid:`を追加して検索したIDを指定します。
-        * ツールボードの場合は必ず`[mcu ツールボード名]`に加え、`canbus_uuid:`を追加して検索したIDを指定します。
+        ```
+        [mcu]
+        canbus_uuid: <ここに先ほど検索したIDを入力>
+        ```
+        * 以下の例は、マザーボードとツールボードが一つずつの場合の参考となるMCU IDの設定方法です
+        * マザーボードのIDの場合は必ず`[mcu]`に`canbus_uuid:`を追加して検索したIDを入力します
+        * ツールボードの場合は必ず`[mcu ツールボード名]`に`canbus_uuid:`を追加して検索したIDを入力します
         :::
         <ImageView image={require('@site/docs/General/get-id/img/canid.webp').default} size="50%" align="left" />

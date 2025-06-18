@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: USBファームウェアの書き込み
+sidebar_label: USBファームウェア焼込
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_usb.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBファームウェアのコンパイル
+# USB ファームウェアのコンパイル
 
 ## コンパイルの開始
 
@@ -22,24 +22,29 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
+    * `Q` キーを押して、**Save configuration** が表示されたらさらに `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 今すぐ設定が保存され、コマンドラインに戻ります
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 現在は設定が保存され、コマンドラインに戻っているはずです
+    * 下記のコマンドを入力してコンパイルを開始します（時間がかかります）
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## ファームウェアの書き込み
+
+## ファームウェアの焼込
 
 :::tip
-以下のコマンドを実行してファームウェアを書き込みます
+以下のコマンドを実行してファームウェアを焼込んでください
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/flashdone_jumper.webp').default} size="90%" align="center" />

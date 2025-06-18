@@ -1,11 +1,11 @@
 ---
 sidebar_position: 2
-sidebar_label: Flashage du firmware
+sidebar_label: Programme de l'usine
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
-import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
@@ -20,12 +20,15 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Appuyez sur `Q`, apparaît **Save configuration**, appuyez ensuite sur `Y`
-    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration devrait maintenant être sauvegardée et vous êtes revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour démarrer la compilation, cela prend un certain temps
-    <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie ressemble au texte ci-dessous, la compilation a réussi
+    * Appuyez sur `Q`, puis sur `Y` lorsque vous voyez **Save configuration**
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez la commande ci-dessous pour commencer la compilation, cela peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Si la sortie finale contient les lignes suivantes, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
@@ -33,17 +36,9 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 ## Vérifier si le mode de flash est activé
-    * Assurez-vous que l'ordinateur hôte peut se connecter correctement à Internet et que le câble de connexion entre l'hôte et l'appareil sous tension possède la fonctionnalité de transmission de données.
-    * Connectez-vous via SSH à l'ordinateur hôte puis entrez `lsusb` et appuyez sur Entrée, si l'information entourée dans l'image ci-dessous apparaît, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème du système de l'ordinateur hôte, nous ne pouvons rien faire, vous devez changer de système confirmé ou remplacer l'ordinateur hôte.
-        * Si l'erreur "commande lsusb introuvable" apparaît, exécutez cette commande pour l'installer
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * Les ID affichés dans la zone rouge peuvent être utilisés comme référence mais ne sont pas des IDs fixes, ils sont variables. Le suffixe `OpenMoko, Inc. rp2040` après `XX` est un indicateur de reconnaissance variable.
-        * Certains ordinateurs hôtes peuvent ne pas afficher complètement ou ne pas afficher du tout en raison de problèmes système.
 
-## Flashage du firmware
+    <LS />
+
+## Flasher le firmware
 
     <Katapult />

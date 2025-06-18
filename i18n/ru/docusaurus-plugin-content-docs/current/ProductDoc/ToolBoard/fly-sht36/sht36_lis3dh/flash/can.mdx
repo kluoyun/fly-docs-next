@@ -1,18 +1,18 @@
 ---
 sidebar_position: 3
-sidebar_label: Программирование CAN-программного обеспечения
+sidebar_label: ПРОГРАММИРОВАНИЕ ФИРМЕНТЫ ДЛЯ CAN
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# Компиляция CAN-программного обеспечения
+# КОМПИЛЯЦИЯ CAN-ФИРМЕНТЫ
 
-## Начало компиляции
+## НАЧАЛО КОМПИЛЯЦИИ
 
     <SSH />
 
@@ -20,34 +20,37 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Выберите GPIO пины для настройки при старте микроконтроллера, введите: !gpio20 Обратите внимание, что это должно быть заглавное "!"
+    * Выберите GPIO пины для настройки при старте микроконтроллера, введите: `!gpio20`. Обратите внимание, что `!` — это заглавная буква.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/can.webp').default} size="100%" align="center" />
-    * Нажмите `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите клавишу `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернулись к командной строке
-    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться к командной строке
+    * Введите следующую команду для начала компиляции (время может занять немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее, компиляция успешно завершена:
+    * Если в конце выводится следующее содержимое, компиляция прошла успешно:
 
         ```bash
-        Связывание out/klipper.elf
-        Создание hex-файла out/klipper.bin
+        Linking out/klipper.elf
+        Creating bin file out/klipper.bin
         ```
 
     <LS />
 
 
-## Программирование прошивки
+## ПРОГРАММИРОВАНИЕ ФИРМЕНТЫ
 
-    * Перед программированием подключите инструментальную плату к UTOC или материнской плате с прошивкой моста с помощью кабеля XT30. Ниже приведена схема соединения
+    * Перед программированием используйте кабель XT30 для подключения инструментальной платы к UTOC или материнской плате с прошивкой моста, ниже приведен пример соединительной схемы
     * Убедитесь, что переключатели установлены правильно
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * Проверьте сопротивление между CAN H и CAN L мультиметром при отключенном питании. Оно должно быть около `60 Ом`. Если оно составляет `120 Ом`, установите резистор `120 Ом`. Если оно около `40 Ом`, снимите резистор
+    * Убедитесь, что при отключенном питании измерение сопротивления между CAN H и CAN L составляет около `60 Ом`. Если показатель равен `120 Ом`, подключите переходник `120 Ом`; если около `40 Ом`, уберите переходник
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## Проверка запуска прошивки
+## ПРОВЕРКА ЗАПУСКА ФИРМЕНТЫ
 
-    * Если прошивка успешно запущена, светодиод загорится
+    * Если фиксация прошла успешно, светодиод загорится
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.webp').default} size="100%" align="center" />

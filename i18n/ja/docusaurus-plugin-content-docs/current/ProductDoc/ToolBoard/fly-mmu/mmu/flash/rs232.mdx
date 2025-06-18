@@ -1,10 +1,10 @@
 ---
 sidebar_position: 4
-sidebar_label: RS232ファームウェアの書き込み
+sidebar_label: RS232ファームウェア書き込み
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_rs232.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
 # RS232 ファームウェアのコンパイル
 
-## コンパイル開始
+## コンパイルの開始
 
     <SSH />
 
@@ -20,14 +20,17 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * micro-controllerの起動時に設定するGPIOピンを選択します。入力：!PA15 请注意!は大文字です
+    * マイクロコントローラー起動時に設定するGPIOピンを選択します。入力：!PA15 （!は大文字です）
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/rs232.webp').default} size="100%" align="center" />
     * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っています
-    * `make -j4` を入力してコンパイルを開始します。時間がかかることがあります
+    * 現在、設定が保存され、コマンドラインインターフェースに戻ったはずです
+    * 下記のコマンドを入力してコンパイルを開始します。時間は少しかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 下記の内容が出力されたらコンパイル成功です
+    * 最後に以下のような出力が出ればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
@@ -35,7 +38,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## 書き込みモードに入る
+## フラッシュモードへの移行
 
     :::tip
 
@@ -44,36 +47,36 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
     :::
 
     * DFUモードに入るには2つの方法があります
-    * 方法1：マザーボードを完全に電源オフにし、BOOTボタンを押しながらデータ転送用のケーブルをマザーボードとホスト間に接続します
-    * 方法2：データ転送用のケーブルをマザーボードとホスト間に接続し、BOOTボタンを押しながらRSTボタンを押し、その後RSTボタンを離し最後にBOOTボタンを離します
+    * 方法1：マザーボードが完全に電源オフの状態で、BOOTボタンを押しながらデータ転送用ケーブルをマザーボードと上位機器に接続します
+    * 方法2：データ転送用ケーブルをマザーボードと上位機器に接続し、BOOTボタンを押しながらRSTボタンを押し、RSTボタンを離し、最後にBOOTボタンも離します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/boot.webp').default} size="100%" align="center" />
 
-## 書き込みモードに入ったか確認
+## フラッシュモードに入ったかどうかの確認
 
     <LS />
 
 
 ## ファームウェアの書き込み 
-    
+
     <Katapult />
     
     3. ファームウェアの書き込み
-    
+
         ```bash
         sudo dfu-util -a 0 -d 0483:df11 --dfuse-address 0x08000000 -D ~/kliper/out/klipper.bin
         ```
 
-    4. 下図矢印部分に示されている内容``File downloaded successfully``が表示されたら書き込み成功です
+    4. 下図矢印部分に示されている「File downloaded successfully」が表示されたら書き込み成功です
 
         <ImageView image={require('@site/docs/General/dfu-flash/img/make-flash.webp').default} size="100%" align="center" />
 
     :::tip
 
-    書き込み後、マザーボードを完全に電源オフにする必要があります。
+    書き込みが完了したら、マザーボードを完全に一度電源を切る必要があります。
 
     :::
 
-## ファームウェアが正常に起動したかどうかの確認
+## ファームウェアの起動確認
 
     * ファームウェアが正常に起動するとLEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />

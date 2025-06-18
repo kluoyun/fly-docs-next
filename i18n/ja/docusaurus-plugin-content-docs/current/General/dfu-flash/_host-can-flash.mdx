@@ -1,57 +1,64 @@
 ::: tip
 
-* IDの検索やファームウェアのフラッシュは、プリント中に実行しないことを推奨します
-* 同じマザーボードまたはツールボードKatapultの場合、CANファームウェアとKlipperのCANファームウェアはIDが完全に一致します
+* IDを検索したり、ファームウェアを書き込む際は、プリント中に実行しないでください
+* 同じマザーボードまたはツールボードであるKatapultのCANファームウェアとKlipperのCANファームウェアは、IDが完全に一致します
 
 :::
 
 ::: warning
 
-* 上位機器のCANネットワークが正しく設定されていることを確認してください
-* `lsusb`後に`1d50:606f`が表示される場合のみ、以下のコマンドを使用してCAN IDを検索できます
-* ツールボードのCANレートが上位機器と同じである必要があります。そうでない場合、IDを見つけることができず、焼付けもできません
+* 上位機器のCANネットワークが正しく構成されていることを確認してください
+* `lsusb`コマンド後に`1d50:606f`が表示される場合のみ、以下のコマンドを使用してCAN IDを検索できます
+* ツールボードのCANレートが上位機器と同じである必要があります。そうでないとIDを見つけることができず、書き込みもできません
 
 :::
 
-* 次のコマンドを実行してCANBus UUIDを照会します：
+* 下記のコマンドを実行してCANBus UUIDを照会します：
 
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
+    `fast`システムではこのコマンドを使用して焼付けを行います。*`<あなたのマザーボードID>`を上記の照会結果に置き換えてください*
 
-    * 入力後、機械により以下のような結果が表示されます。参考までに記載します：
-        * 第一種：ブリッジファームウェアがインストールされたマザーボードの場合、IDが一つ表示され、「Application: Klipper」というメッセージが表示されます
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />
-        * 第二種：ブリッジファームウェアがインストールされたマザーボードとファームウェアを焼付けするためのツールボードの場合、二つのIDが表示されます
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />
-        * 第三種：UTOCとファームウェアを焼付けするためのツールボードを使用した場合
+     ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+     ```
+
+    * 機械に応じて以下のいずれかの状況が表示されます。以下は参考例です：
+        * 第一種：ブリッジファームウェアがインストールされたマザーボードの場合、IDが一つ表示され、「Application: Klipper」というメッセージが出力されます
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />  
+        * 第二種：ブリッジファームウェアがインストールされ、ツールボードが必要なファームウェアが搭載された場合、二つのIDが表示されます
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />  
+        * 第三種：UTOCと必要なツールボードを使用する場合
         * ヒント：UTOCにはIDが表示されません
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />
-        * 第四種：IDが表示されない場合、通常はKlipperによって占有されており、上位機器のCAN0レートが正しくないか、接続異常が原因です
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />  
+        * 第四種：IDの表示がない場合、一般的にはKlipperによって占有されている可能性があります。上位機器のCAN0レートが正しくないか、接続異常が発生している場合です
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />  
 
-    * 通常、ファームウェアを焼付けする必要があるツールボードがCANBOOT状態にある場合、「Application: CanBoot」というメッセージが表示され、対応するファームウェアランプが点滅します。この場合、Klipperファームウェアを焼付けする必要があります。それ以外の場合は接続できません！！！
-    * ヒント：KlipperファームウェアでIDが設定済みの場合、IDは表示されなくなり、Klipperによって占有されます。この場合、対応するIDを無効化し、マザーボードを完全に電源オフして再起動する必要があります。
+    * 通常、焼付けが必要なツールボードがCANBOOTモードにある場合、「Application: CanBoot」が表示され、対応するファームウェアLEDが点滅します。この場合、Klipperファームウェアを焼付けする必要があります。それ以外の場合、接続できません！！！
+    * ヒント：Klipperファームウェアがすでに設定ファイルにIDが入力されている場合、IDは表示されなくなり、Klipperによって占有されます。この場合、対応するIDを無効化し、マザーボードを完全に電源オフして再起動する必要があります。
 
 ::: warning
 
-* UUIDが見つからない場合、以下のドキュメントをご覧ください  
-* <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN問題集</Button>
+* UUIDが見つからない場合は、以下のドキュメントをご覧ください  
+* <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN問題まとめ</Button>
 
 :::
 
 # ファームウェア焼付け
 
-    * 下記のコマンド内の`241696050c56`をUUID照会結果で見つけたUUIDに置き換えてください。注意：`-u`の後ろにはスペースがあります
+    * 下記のコマンド中の`241696050c56`をUUID照会結果に置き換えます。注意：`-u`の後ろにはスペースがあります
         ```bash
         python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
         ```
 
-    * 画像のように「CAN Flash Success」と表示された場合、焼付け成功です
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />
+    * 下図のように「CAN Flash Success」と表示されれば焼付け成功です
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />  
 
-## 固定されたファームウェアを更新する場合、新しいファームウェアをコンパイルした後、再度焼付けコマンドを実行するだけで更新できます。ただし、IDが見つかるか、Klipperが接続されていることを確認してください
 
+## ファームウェア更新
+    * 固件を更新する場合は、固件を再コンパイルしてから再度焼付けコマンドを実行することで更新できます
+    * ただし、対応するIDが見つかること、またはKlipperが正常に接続されていることを確認してください
         ```bash
         python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
         ```

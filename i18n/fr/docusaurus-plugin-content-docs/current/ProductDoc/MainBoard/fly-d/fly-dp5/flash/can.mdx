@@ -1,19 +1,20 @@
 ---
 sidebar_position: 3
-sidebar_label: Programme de la carte CAN via un pont USB
+sidebar_label: Programmeur USB vers CAN
+
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Programme de la carte CAN via un pont USB
+# Programmeur USB vers CAN
 
-## Début de la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -21,10 +22,13 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Appuyez sur la touche `Q`, une fois que vous voyez **Save configuration**, appuyez à nouveau sur `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Appuyez sur la touche `Q`, une fenêtre **Save configuration** apparaît, puis appuyez sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prendra un certain temps
+    * Entrez la commande ci-dessous pour démarrer la compilation, cela peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * Si la sortie finale ressemble au texte suivant, la compilation a réussi
 
@@ -32,19 +36,12 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-## Vérification du mode de programmation
 
-    * Assurez-vous que l'ordinateur principal peut se connecter correctement à Internet et que le câble de connexion entre l'ordinateur principal et le périphérique inférieur possède la fonctionnalité de transmission de données.
-    * Connectez-vous via SSH à l'ordinateur principal et tapez `lsusb` puis appuyez sur Entrée. Si vous voyez les informations encerclées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème avec le système de l'ordinateur principal, nous ne pouvons rien faire à ce sujet. Vous devez changer pour un système confirmé comme fonctionnant ou remplacer l'ordinateur principal.
-        * Si vous recevez un message indiquant qu'il n'y a pas de commande `lsusb`, vous pouvez installer cette commande en exécutant :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * L'ID affiché dans le cadre rouge peut servir de référence mais n'est pas fixe : `OpenMoko, Inc. stm32f072xx` le suffixe `XX` signifie que c'est variable.
-        * Certains ordinateurs principaux peuvent afficher des informations incomplètes ou ne pas afficher du tout en raison de problèmes de système.
+## Vérifier si le mode de programmation est activé
 
-## Programmation de la carte
+    <LS />
+
+## Programmer le firmware
+
 
     <CANBOOT />

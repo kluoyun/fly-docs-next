@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: USBブリッジCANファームウェア焼付け
+sidebar_label: USBブリッジCANファームウェアの焼込み
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,9 +12,9 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USBブリッジCANファームウェア焼付け
+# USBブリッジCANファームウェアの焼込み
 
-## ビルドの開始
+## コンパイル開始
 
     <SSH />
 
@@ -22,32 +22,25 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインに戻ったはずです
-    * `make -j4` を入力してビルドを開始します（時間がかかります）
+    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 現在は設定が保存され、コマンドラインに戻った状態になっているはずです
+    * 下記のコマンドを入力してコンパイルを開始します。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されたらビルド成功です
+    * 最後に以下のような出力が表示されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
+## 焼込モードの確認
 
-## 焼付けモードの確認
+    <LS />
 
-    * 上位機が正常にネットワーク接続できるか確認し、下位機と接続されているデータ線がデータ転送機能を持つことを確認してください。
-    * 上位機にSSH接続後、`lsusb` と入力してエンターを押すと、以下の画像で囲まれた情報が表示された場合、次のステップに進むことができます。
-        * 何も情報が返ってこない場合、これは上位機のシステムの問題であり、こちらでは対応できません。正常なシステムに切り替えるか、上位機を交換してください。
-        * `lsusb` コマンドがないというメッセージが出た場合、以下コマンドでインストールできます
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * 赤枠内に表示されるIDは参考にはなりますが、**固定ではありません（可変）**です。`OpenMoko, Inc. stm32h723xx` の後ろにある `XX` は可変を意味します。
-        * 部分的な上位機はシステムの問題により、完全に表示されない場合があります。
-
-## ファームウェア焼付け
-
+## ファームウェアの焼込み
+    
     <CANBOOT />

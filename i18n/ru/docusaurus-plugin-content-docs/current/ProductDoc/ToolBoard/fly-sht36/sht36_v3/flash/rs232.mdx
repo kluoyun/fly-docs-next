@@ -4,7 +4,7 @@ sidebar_label: Компиляция и запись прошивки RS232
 ---
 
 import USBFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,34 +20,39 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * Выберите **GPIO pins для установки при старте микроконтроллера**, введите: **!gpio5**
+    * Выберите **GPIO пины для установки при старте микроконтроллера**, введите: **!gpio5**
     :::warning
-        Введите `!gpio5` в английской раскладке
+        Введите `!gpio5` в английской раскладке.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/rs232.webp').default} size="100%" align="center" />
     * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы должны вернуться в командную строку
-    * Введите `make -j4` для начала компиляции, процесс займет некоторое время
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
-    * Если последний вывод содержит следующее изображение, компиляция успешно завершена
-       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции (время может занять немного):
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если вывод содержит следующее содержимое, то компиляция успешно завершена:
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
 
 
-
-
-## Переход в режим записи
+## Переключение в режим записи
 
     :::tip
 
-    Стрелка указывает на кнопку `BOOT`
+    Стрелка указывает на кнопку `BOOT`.
 
     :::
 
-    * При полностью отключенном инструментальном щите, удерживайте кнопку `BOOT`, подключите щит к интерфейсу USB вашего компьютера с помощью USB Type-C кабеля с функцией передачи данных, после правильного подключения отпустите кнопку `BOOT`
+    * Отключите питание инструментальной платы, удерживая кнопку `BOOT`, подключите плату инструментов к интерфейсу USB вашего основного устройства с помощью Type-C кабеля с функцией передачи данных, после правильного подключения отпустите кнопку `BOOT`.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/boot.webp').default} size="80%" align="center" />
 
-## Проверка входа в режим записи
+## Проверка перехода в режим записи
 
     <LS />
 
@@ -60,5 +65,5 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
 ## Проверка запуска прошивки
 
-    * Если прошивка успешно запущена, то показанное ниже изображение демонстрирует, что **светодиод загорится**
+    * Если прошивка запущена нормально, то светодиод, показанный на рисунке ниже, загорится.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />

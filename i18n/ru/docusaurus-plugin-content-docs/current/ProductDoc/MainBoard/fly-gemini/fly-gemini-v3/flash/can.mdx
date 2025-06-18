@@ -1,10 +1,11 @@
 ---
 sidebar_position: 4
-sidebar_label: Загрузка прошивки USB-CAN моста
+sidebar_label: Прошивка CAN-моста через USB
+
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/405/_utoc.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +13,7 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Загрузка прошивки USB-CAN моста
+# Прошивка CAN-моста через USB
 
 ## Начало компиляции
 
@@ -22,12 +23,15 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, чтобы появилось окно **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
-    * Введите `make -j4`, чтобы начать компиляцию (время займет немного)
+    * Теперь конфигурация должна быть сохранена, и вы вернетесь в командную строку
+    * Введите следующую команду для начала компиляции (время может занять немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если последним выводом будет следующее, то компиляция успешна
+    * Если последний вывод содержит следующее, компиляция успешно завершена:
 
         ```bash
         Linking out/klipper.elf
@@ -38,9 +42,10 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 ## Загрузка прошивки
 
 :::tip
-Выполните следующую команду для загрузки прошивки
+Для загрузки прошивки выполните следующую команду:
 :::
 
     ```bash
     sudo fly-flash -d gemini-v3 -h -f ~/klipper/out/klipper.bin
     ```
+<ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-gemini/fly-gemini-v3/flash/img/flashdone_jumper.webp').default} size="90%" align="center" />

@@ -1,41 +1,41 @@
 ---
 sidebar_position: 4
-sidebar_label: Запись прошивки USB-CAN моста
+sidebar_label: Загрузка прошивки USB-CAN моста
 ---
 
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import GetCanbusUUID from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/get-id/_get-canid-flyosfast.mdx';
 import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 
-# Запись прошивки USB-CAN моста
+# Загрузка прошивки USB-CAN моста
 
-## Подключение к верхнему устройству по SSH
+## Подключение по SSH к хост-компьютеру
 
     :::danger Предупреждение
-    - Перед компиляцией прошивки необходимо использовать `WiFi для подключения к верхнему устройству по SSH`
+    - Перед компиляцией прошивки необходимо подключиться к хост-компьютеру через Wi-Fi по SSH
     :::
 
- * Сначала вы можете: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#использование-wifi-для-подключения-к-ssh-верхнего-устройства">использовать WiFi для подключения к SSH верхнего устройства</Button>  
+ * Сначала пожалуйста: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#подключение-через-wifi-по-ssh">Подключение через Wi-Fi по SSH</Button>  
  ---
  <br/>
 
 <Tabs>
-    <TabItem value="usb" label="Запись прошивки USB-CAN моста" default>
-    ### Запись прошивки USB-CAN моста
-    :::tip Совет
-    - В системе FLYOS-FAST уже предварительно скомпилирована одна прошивка USB-CAN моста, нет необходимости вручную компилировать прошивку, выполните приведенные ниже команды для записи
-    - Также можно выбрать `компиляцию прошивки USB-CAN моста вручную`, чтобы скомпилировать прошивку самостоятельно
+    <TabItem value="usb" label="Загрузка прошивки USB-CAN моста" default>
+    ### Загрузка прошивки USB-CAN моста
+    :::tip Подсказка
+    - В системе FLYOS-FAST уже предварительно скомпилирована одна версия прошивки USB-CAN моста, не требуется ручная компиляция прошивки, выполните команды ниже для загрузки
+    - Также можно выбрать «Ручную компиляцию прошивки USB-CAN моста» и скомпилировать прошивку самостоятельно
     :::
 
-    * Выберите соответствующую прошивку для вашего устройства, по умолчанию для системы FLY используется `1M`
+    * Выберите соответствующую вашему устройству прошивку, в системе FLY по умолчанию используется `1M`
 
-    * По умолчанию система C5 работает на скорости 1M, если требуется 500K, измените параметр `canbus_bitrate` в системной конфигурации на требуемую скорость
+    * В системе C5 по умолчанию используется скорость 1M, если требуется 500K, измените скорость `canbus_bitrate` в настройках системы
 
-    * Данная команда записывает прошивку `1M` для USB-CAN моста
+    * Данная команда загружает прошивку USB-CAN моста с скоростью `1M`
     ```bash
     fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-1m.bin
     ```
-    * Данная команда записывает прошивку `500k` для USB-CAN моста
+    * Данная команда загружает прошивку USB-CAN моста с скоростью `500k`
     ```bash
     fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-500k.bin
     ```
@@ -47,27 +47,30 @@ import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 
 
 
-    <TabItem value="can" label="Компиляция прошивки USB-CAN моста вручную">
-        ## Компиляция прошивки USB-CAN моста вручную
+    <TabItem value="can" label="Ручная компиляция прошивки USB-CAN моста">
+        ## Ручная компиляция прошивки USB-CAN моста
         <MakeOperate/>
     
         <CAN />
     
-        * Нажмите клавишу `Q`, появится `Save configuration`, затем нажмите клавишу `Y`
+        * Нажмите клавишу `Q`, появится сообщение `Save configuration`, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * Теперь конфигурация должна быть сохранена, и вы должны вернуться в командную строку
+        * Теперь конфигурация сохранена, и вы вернулись в командную строку
     
-        * Введите `make -j4` для начала компиляции, процесс занимает некоторое время
+       * Введите следующую команду для начала компиляции, процесс займет некоторое время
+        ```bash
+        make -j4
+        ```
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
-        * В конце выводится следующее содержимое, что означает успешную компиляцию
+        * В конце выводится следующее содержимое, компиляция успешна
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
     ---
 
-        ### Запись прошивки
+        ### Загрузка прошивки
         :::tip
-        Выполните следующую команду для записи прошивки
+        Выполните следующую команду для загрузки прошивки
         :::
         
             ```bash

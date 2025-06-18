@@ -1,16 +1,16 @@
 ---
 sidebar_position: 3
-sidebar_label: Прошивка CAN-программного обеспечения
+sidebar_label: Загрузка прошивки CAN
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_can.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# Компиляция CAN-программного обеспечения
+# Компиляция прошивки CAN
 
 ## Начало компиляции
 
@@ -20,18 +20,19 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Выберите GPIO пины для настройки при старте микроконтроллера, введите: !PA15, обратите внимание, что это заглавная буква
+    * Выберите GPIO пины для установки при старте микроконтроллера, введите: !PA15 Обратите внимание, что это должно быть заглавное "!"
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/can.webp').default} size="100%" align="center" />
-    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернетесь к командной строке
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Теперь должна сохраниться конфигурация и вы вернетесь в командную строку
+    * Введите следующую команду для начала компиляции (время займет немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если в конце выводится следующее содержимое, компиляция успешно завершена:
+    * В конце вывода следующее означает успешную компиляцию:
 
         ```bash
         Linking out/klipper.elf
-        Создание hex файла out/klipper.bin
+        Creating hex file out/klipper.bin
         ```
 
 ## Поиск устройства
@@ -39,22 +40,19 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
     <LS />
 
 
-## Запись прошивки
+## Загрузка прошивки
 
-    * Перед записью прошивки подключите инструментальную плату к UTOC или материнской плате с прошивкой моста с помощью кабеля XT30. Ниже приведен пример соединения:
+    * Перед загрузкой прошивки подключите инструментальную плату к UTOC или материнской плате с прошивкой моста, ниже приведена схема соединения:
     * Убедитесь, что переключатели установлены правильно
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/can_mode.webp').default} size="90%" align="center" />
-    * Подключение к UTOC
+    * Ссылка на подключение к UTOC
         <ImageView image={require('@site/docs/General/get-id/img/utoc.webp').default} size="80%" align="left" />
-    * Убедитесь, что перед питанием измеряется сопротивление между CAN H и CAN L. Приблизительно 60 Ом — нормально. Если около 120 Ом, установите перемычку на 120 Ом. Если около 40 Ом, удалите перемычку.
+    * Убедитесь, что при отключенном питании сопротивление между CAN H и CAN L измеряется вольтметром около `60Ом`, если `120Ом`, то подключите переходник `120Ом`, если около `40Ом`, то удалите переходник
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
 ## Проверка запуска прошивки
 
-    * Если прошивка успешно запущена, светодиод загорится
+    * Если прошивка успешно запущена, светодиоды загорятся
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/led.webp').default} size="100%" align="center" />
-
-  
-

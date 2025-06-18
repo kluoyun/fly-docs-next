@@ -7,185 +7,181 @@ sidebar_label: Подключение к ПК по SSH
 
 # Подключение к ПК по SSH
 
-* Можно использовать **последовательный порт** или **Wi-Fi** для подключения к устройству
-* Пожалуйста, заранее подготовьте **MobaXterm_Personal** или другой **инструмент для SSH-подключений**
-* Убедитесь, что карта SD или M2WE прошиты **соответствующей системой для вашего ПК**
-* **Если ПК не запускается корректно, отключите все внешние устройства, такие как драйверы, ограничители, вентиляторы и т.д.!**
+* Можно использовать **последовательный порт** или **Wi-Fi** для подключения к устройству.
+* Пожалуйста, заранее подготовьте **MobaXterm_Personal** или другое **SSH-терминальное приложение**.
+* Убедитесь, что карта SD или M2WE записаны с **системой, совместимой с вашим ПК**.
+* **Если ПК не запускается корректно, удалите все внешние устройства, такие как драйверы, ограничители, вентиляторы и т. д.!**
 
 :::warning Внимание
-- Если ваш ПК запускается впервые, обязательно используйте **последовательное подключение для SSH на ПК**
-- При компиляции прошивки обязательно используйте **Wi-Fi для подключения к SSH на ПК**, чтобы упростить процесс компиляции и прошивки!
-- Операции подключения к SSH для системы **FLYOS-Armbian** и системы **FLYOS-FAST** отличаются. Выберите соответствующую инструкцию в зависимости от прошитой системы!
-:::
+- Если это первая загрузка вашего ПК, обязательно используйте **последовательное соединение для подключения к SSH ПК**.
+- При компиляции прошивки используйте обязательно **Wi-Fi-подключение к SSH ПК**, чтобы упростить процесс компиляции и перезагрузки!
+- Существуют различия в подключении к SSH для системы **FLYOS-Armbian** и системы **FLYOS-FAST**. Выберите соответствующую инструкцию в зависимости от установленной на вашем устройстве системы!
+::>
 
 <Tabs>
-    <TabItem value="serial" label="Подключение через последовательный порт для системы FLYOS-Armbian" default>
-        ## Подключение через последовательный порт к SSH на ПК FLYOS-Armbian
+    <TabItem value="serial" label="Подключение по последовательному порту к системе FLYOS-Armbian" default>
+        ## Подключение по последовательному порту к SSH ПК FLYOS-Armbian
 
-        * Используйте USB Type-C кабель для подключения FLY ПК к компьютеру
-        * Для других ПК запросите информацию о способах подключения!!
+        * Используйте USB Type-C кабель для подключения FLY ПК к компьютеру.
+        * Для других ПК уточните метод подключения самостоятельно!
 
         * Порты FLY-Pi v2
                 <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
-        * Если материнская плата успешно подключена к компьютеру, откройте диспетчер устройств, и вы увидите порт CH340
+        * Если основная плата подключена к компьютеру нормально, откройте Диспетчер устройств, и вы увидите порт CH340.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        * Откройте `MobaXterm` и выполните следующие настройки, выбрав ранее в диспетчере устройств видимый порт
+        * Откройте `MobaXterm` и выполните следующие настройки, выбрав ранее виденный в диспетчере устройств порт.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        * Если всё нормально, вы увидите экран загрузки
+        * Если всё сделано правильно, вы увидите экран запуска.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-3.webp').default} size="60%" align="center" />
 
-        * Дождитесь момента, когда появится следующий экран — это означает, что система загружена
+        * Подождите немного, и если появится этот экран, значит, устройство запущено.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-4.webp').default} size="60%" align="center" />
 
-        * **Если спустя несколько минут интерфейс не показывает ничего, нажмите несколько раз клавишу Enter**
+        * **Если через несколько минут интерфейс не показывает ничего, нажмите несколько раз клавишу Enter.**
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-5.webp').default} size="60%" align="center" />
 
-        * **После нажатия клавиши Enter вы увидите следующее содержимое**
+        * **После нажатия клавиши Enter вы увидите следующее содержимое.**
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-6.webp').default} size="60%" align="center" />
 
         :::warning
-        - На данный момент вы вошли как пользователь root. Введите: `su fly`, чтобы переключиться на обычного пользователя, после чего можно продолжать дальнейшие действия!!
+        - В данный момент вы вошли как пользователь root. Введите: `su fly`, чтобы переключиться на обычного пользователя и продолжить работу.
         :::
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-13.webp').default} size="60%" align="center" />
 
-        * Если нужно проверить IP, введите в SSH: `ip a | grep inet`, а затем найдите IP в возвращаемом содержимом, который находится в той же подсети, что и ваш маршрутизатор
+        * Если нужно проверить IP, введите в SSH: `ip a | grep inet` и найдите IP возвращаемого содержимого, который принадлежит вашему маршрутизатору.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-8.webp').default} size="70%" align="center" />
 
     </TabItem>
-    <TabItem value="fast-serial" label="Подключение через последовательный порт для системы FLYOS-FAST" default>
-        ## Подключение через последовательный порт к SSH на ПК FLYOS-FAST
+    <TabItem value="fast-serial" label="Подключение по последовательному порту к системе FLYOS-FAST" default>
+        ## Подключение по последовательному порту к SSH ПК FLYOS-FAST
 
-        * Используйте USB Type-C кабель для подключения FLY ПК к компьютеру
-        * Для других ПК запросите информацию о способах подключения!!
+        * Используйте USB Type-C кабель для подключения FLY ПК к компьютеру.
+        * Для других ПК уточните метод подключения самостоятельно!
 
         * Порты FLY-Pi v2
-                <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
-        * Если материнская плата успешно подключена к компьютеру, откройте диспетчер устройств, и вы увидите порт CH340
+        <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/piv2-port.webp').default} size="30%" align="center" />
+        * Если основная плата подключена к компьютеру нормально, откройте Диспетчер устройств, и вы увидите порт CH340.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/pc-device-mgr.webp').default} size="50%" align="center" />
 
-        * Откройте `MobaXterm` и выполните следующие настройки, выбрав ранее в диспетчере устройств видимый порт
+        * Откройте `MobaXterm` и выполните следующие настройки, выбрав ранее виденный в диспетчере устройств порт.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-2.webp').default} size="60%" align="center" />
 
-        * Если всё нормально, вы увидите экран загрузки
+        * Если всё сделано правильно, вы увидите экран запуска.
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial1.webp').default} size="60%" align="center" />  
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial2.webp').default} size="60%" align="center" />
 
 
-        * Поскольку система FLYOS-FAST загружается быстро, вы, скорее всего, увидите мешанину символов, как показано на рисунке ниже. Это нормально, не беспокойтесь, **нажмите несколько раз клавишу Enter**
+        * Поскольку система FLYOS-FAST запускается быстро, скорее всего, вы увидите мешанину символов, как показано на картинке ниже. Это нормальное явление, не беспокойтесь, **нажмите несколько раз клавишу Enter**.
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial3.webp').default} size="60%" align="center" />
 
 
-        * **После нажатия клавиши Enter вы увидите следующее содержимое**
+        * **После нажатия клавиши Enter вы увидите следующее содержимое.**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial4.webp').default} size="60%" align="center" />
 
-        * Введите логин: `root`, нажмите Enter, затем введите пароль: `mellow`, нажмите Enter. При вводе пароля символы не отображаются — это нормальное явление  
+        * Введите имя пользователя: `root`, нажмите Enter, затем введите пароль: `mellow`, нажмите Enter. Пароль не будет отображаться при вводе — это нормально.
 
         :::warning Внимание 
-        - Логин системы FLYOS-FAST: `root`, пароль: `mellow`
-        - В системе FLYOS-FAST доступен только один аккаунт — `root`!!
+        - Учетная запись системы FLYOS-FAST — root, пароль — mellow.
+        - В системе FLYOS-FAST существует только одна учетная запись — root.
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial5.webp').default} size="60%" align="center" />
 
-        * Если нужно проверить IP, введите в SSH: `ip a | grep inet`, а затем найдите IP в возвращаемом содержимом, который находится в той же подсети, что и ваш маршрутизатор
+        * Если нужно проверить IP, введите в SSH: `ip a | grep inet` и найдите IP возвращаемого содержимого, который принадлежит вашему маршрутизатору.
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_serial6.webp').default} size="60%" align="center" />
 
     </TabItem>
-    <TabItem value="net" label="Подключение через Wi-Fi для системы FLYOS-Armbian" default>
-        ## Подключение через Wi-Fi к SSH на ПК FLYOS-Armbian
+    <TabItem value="net" label="Подключение по Wi-Fi к системе FLYOS-Armbian" default>
+        ## Подключение по Wi-Fi к SSH ПК FLYOS-Armbian
 
-        * Убедитесь, что система ПК уже **корректно запущена**
-        * Убедитесь, что вы **знаете имя пользователя и пароль ПК**. По умолчанию для системы FLY имя пользователя: `fly`, пароль: `mellow`
-        * Для подключения через Wi-Fi к SSH на ПК необходимо, чтобы ваш **ПК уже был подключен к роутеру, и вы знаете его IP**
+        * Убедитесь, что система ПК уже успешно запущена.
+        * Убедитесь, что вы знаете **имя пользователя и пароль ПК**. По умолчанию для системы FLY имя пользователя — fly, пароль — mellow.
+        * Предварительным условием подключения по Wi-Fi к SSH является подключение ПК к роутеру и знание его IP-адреса.
 
-        * Откройте MobaXterm и установите настройки, как показано на рисунке ниже, в поле `Remote host` укажите IP ПК, который вы нашли при подключении через последовательный порт, либо можете найти его через интерфейс роутера
+        * Откройте MobaXterm и установите настройки, как показано на рисунке ниже. В поле «Remote host» введите IP-адрес ПК, полученный при подключении через последовательный порт, или получите IP через интерфейс роутера.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
 
-        **Внимание: здесь на четвёртом шаге вводится имя пользователя ПК**
+        **Внимание: здесь в четвертом шаге вводится имя пользователя ПК**
         :::tip
-        - На четвёртом шаге введите имя пользователя ПК. Для fly ПК с системой FLYOS-Armbian введите `fly`, для других ПК укажите правильное имя пользователя в зависимости от实际情况
+        - В четвертом шаге введите имя пользователя ПК. Для fly ПК с системой FLYOS-Armbian введите «fly», для других ПК используйте правильное имя пользователя в соответствии с фактическими условиями.
         :::
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-9.webp').default} size="60%" align="center" />
 
-        * При первом подключении появится окно, нажмите `Accept`
+        * При первом подключении появится окно, нажмите «Accept».
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
-        * Введите пароль, нажмите Enter
+        * Введите пароль ПК, после чего нажмите Enter.
         :::tip
-        - При вводе пароля символы не будут видны, просто нажмите Enter после завершения ввода
+        - Здесь пароль не будет виден при вводе, просто нажмите Enter после ввода.
         :::
         
-        **По умолчанию для системы FLYOS-Armbian имя пользователя: `fly`, пароль: `mellow`**
+        По умолчанию для системы FLYOS-Armbian имя пользователя — fly, пароль — mellow.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-11.webp').default} size="60%" align="center" />
 
-        **Если появится окно, как показано ниже, оно предупреждает о сохранении пароля пользователя. Нажмите `No`**
-
+        **Если появится окно, как показано на изображении ниже, это предупреждение о сохранении пароля пользователя. Нажмите «No».**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        * Если появится следующий экран, подключение успешно выполнено!
+        * После этого появится изображение, как показано ниже, что означает успешный вход!
+
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-12.webp').default} size="60%" align="center" />
 
 
     </TabItem>
-    <TabItem value="FAST-net" label="Подключение через Wi-Fi для системы FLYOS-FAST" default>
-        ## Подключение через Wi-Fi к SSH на ПК FLYOS-FAST
+    <TabItem value="FAST-net" label="Подключение по Wi-Fi к системе FLYOS-FAST" default>
+        ## Подключение по Wi-Fi к SSH ПК FLYOS-FAST
 
-        * Убедитесь, что система ПК уже **корректно запущена**
-        * Убедитесь, что вы **знаете имя пользователя и пароль ПК**. По умолчанию для системы FLY имя пользователя: `fly`, пароль: `mellow`
-        * Для подключения через Wi-Fi к SSH на ПК необходимо, чтобы ваш **ПК уже был подключен к роутеру, и вы знаете его IP**
+        * Убедитесь, что система ПК уже успешно запущена.
+        * Убедитесь, что вы знаете **имя пользователя и пароль ПК**. По умолчанию для системы FLY имя пользователя — root, пароль — mellow.
+        * Предварительным условием подключения по Wi-Fi к SSH является подключение ПК к роутеру и знание его IP-адреса.
 
-        * Откройте MobaXterm и установите настройки, как показано на рисунке ниже, в поле `Remote host` укажите IP ПК, который вы нашли при подключении через последовательный порт, либо можете найти его через интерфейс роутера
+        * Откройте MobaXterm и установите настройки, как показано на рисунке ниже. В поле «Remote host» введите IP-адрес ПК, полученный при подключении через последовательный порт, или получите IP через интерфейс роутера.
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-1.webp').default} size="60%" align="center" />
 
-        **Внимание: здесь на четвёртом шаге вводится имя пользователя ПК**
-        :::tip
-        - На четвёртом шаге введите имя пользователя ПК. Для fly ПК с системой FLYOS-FAST введите `root`, для других ПК укажите правильное имя пользователя в зависимости от实际情况
-        :::
+        **Внимание: здесь в четвертом шаге вводится имя пользователя root**
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_2.webp').default} size="60%" align="center" />
 
-        * При первом подключении появится окно, нажмите `Accept`
+        * При первом подключении появится окно, нажмите «Accept».
 
         <ImageView image={require('@site/docs/DebugDoc/BasicTutorial/img/mobaxterm-10.webp').default} size="50%" align="center" />
 
-        * Введите пароль, нажмите Enter
+        * Введите пароль ПК, после чего нажмите Enter.
         :::tip
-        - При вводе пароля символы не будут видны, просто нажмите Enter после завершения ввода
+        - Здесь пароль не будет виден при вводе, просто нажмите Enter после ввода.
         :::
         
-        **По умолчанию для системы FLYOS-FAST имя пользователя: `root`, пароль: `mellow`**
+        По умолчанию для системы FLYOS-FAST имя пользователя — root, пароль — mellow.
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_3.webp').default} size="60%" align="center" />
 
-        **Если появится окно, как показано ниже, оно предупреждает о сохранении пароля пользователя. Нажмите `No`即可**
-
+        **Если появится окно, как показано на изображении ниже, это предупреждение о сохранении пароля пользователя. Нажмите «No».**
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_4.webp').default} size="60%" align="center" />
 
-        * Если появится следующий экран, подключение успешно выполнено!
+        * После этого появится изображение, как показано ниже, что означает успешный вход!
 
         :::warning Внимание 
-        - Для системы FLYOS-FAST логин: `root`, пароль: `mellow`
-        - В системе FLYOS-FAST доступен только один аккаунт — `root`!!
+        - Учетная запись системы FLYOS-FAST — root, пароль — mellow.
+        - В системе FLYOS-FAST существует только одна учетная запись — root.
         :::
 
         <ImageView image={require('@site/docs/General/flyos-fast/img/flyos-fast_ssh_5.webp').default} size="60%" align="center" />

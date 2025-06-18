@@ -1,11 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: CANファームウェア焼付け
-
+sidebar_label: CANファームウェアの書き込み
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -21,32 +20,35 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * マイクロコントローラー起動時に設定するGPIOピンを選択します。入力：gpio24
+    * マイクロコントローラー起動時に設定するGPIOピンを選択します。入力: gpio24
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/flash/img/can.webp').default} size="100%" align="center" />
     * `Q` キーを押して「Save configuration」が表示されたら、その後に `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインに戻ります
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 現在、設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * 下記のコマンドを入力してコンパイルを開始します。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下のような出力が出ればコンパイル成功です
+    * 最後に以下の出力が表示されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
     <LS />
 
-## ファームウェア焼付け
+## ファームウェアの書き込み
 
-    * ツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードにXT30データラインで接続してください。参考配線図は以下になります
+    * ファームウェアを書き込む前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードに接続します。参照配線図は以下です
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040/flash/img/sb2040_utoc.webp').default} size="80%" align="left" />
-    * CAN HとCAN Lの抵抗値をオフ状態でマルチメーターで測定し、約 `60Ω` であることを確認してください。もし `120Ω` であれば `120Ω` のジャンパを接続し、約 `40Ω` であればジャンパを外してください
+    * CAN HとCAN Lが電源オフ状態で約60Ωの抵抗値になるようにマルチメーターで測定してください。もし約120Ωであれば「120Ω」ジャンパーを接続し、約40Ωであればジャンパーを外してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## ファームウェア起動の確認
+## ファームウェアの起動確認
 
     * ファームウェアが正常に起動するとLEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-pro/flash/img/led.webp').default} size="50%" align="center" />

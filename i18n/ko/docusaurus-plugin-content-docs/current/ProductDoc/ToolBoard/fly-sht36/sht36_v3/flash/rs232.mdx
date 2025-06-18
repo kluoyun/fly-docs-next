@@ -5,7 +5,7 @@ sidebar_label: RS232 펌웨어 컴파일 및 플래시
 ---
 
 import USBFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -21,31 +21,36 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
     <RS232 />
 
-    * **GPIO 핀을 마이크로컨트롤러 시작 시 설정**을 선택하고, 입력: **!gpio5**
+    * **micro-controller 시작 시 설정할 GPIO 핀 선택**: 입력: **!gpio5**
     :::warning
-        `!gpio5`를 입력할 때 영문 입력 상태에서 입력해야 합니다.
+        `!gpio5`를 입력하기 전에 반드시 영문 입력 모드로 변경해야 합니다.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * `Q` 키를 누르면 **구성 저장**이 나타나고, 그 다음에 `Y` 키를 누릅니다
+    * `Q` 키를 누르면 **구성 저장**이 나타나므로 그 후에 `Y` 키를 누릅니다
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 이제 구성이 저장되고 명령줄 인터페이스로 돌아갔습니다
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
-    * 마지막으로 아래의 내용이 출력되면 컴파일이 성공한 것입니다
-       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+    * 이제 구성이 저장되었고 명령줄 화면으로 돌아왔습니다
+    * 아래 명령어를 입력하여 컴파일을 시작합니다 (시간이 다소 소요됩니다)
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 마지막에 아래 내용이 출력되면 컴파일 성공입니다
 
-
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
 
 
 ## 플래시 모드 진입
 
     :::tip
 
-    화살표가 가리키는 것이 **BOOT 버튼**입니다.
+    화살표가 가리키는 부분이 **BOOT 버튼**입니다
 
     :::
 
-    * 도구보드가 **완전히 전원을 차단된 상태**에서 **BOOT 버튼**을 누른 채로 **데이터 전송 기능이 있는 TypeC 데이터 케이블**을 사용하여 **도구보드**를 **상위 기기의 USB 포트**에 연결합니다. 올바르게 연결된 후 **BOOT 버튼**을 놓습니다
+    * 도구 보드가 **완전히 전원이 끊긴 상태**에서 **BOOT 버튼**을 누른 상태에서 데이터 전송 기능이 있는 TypeC 데이터 케이블로 **도구 보드**를 **상위 컴퓨터의 USB 단자**에 연결한 후, 정상적으로 연결된 후에 **BOOT 버튼**을 놓습니다
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/boot.webp').default} size="80%" align="center" />
 
 ## 플래시 모드 진입 확인
@@ -53,13 +58,13 @@ import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
     <LS />
 
 
-## RS232 펌웨어 플래시 
-
+## RS232 펌웨어 플래시
+    
     <USBFLASH />
     
 
 
-## 펌웨어 정상 작동 확인
+## 펌웨어 정상 실행 여부 확인
 
-    * 펌웨어가 정상적으로 시작되면 아래의 **LED가 켜집니다**
+    * 펌웨어가 정상적으로 실행되면 아래 사진처럼 **LED가 점등됩니다**
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />

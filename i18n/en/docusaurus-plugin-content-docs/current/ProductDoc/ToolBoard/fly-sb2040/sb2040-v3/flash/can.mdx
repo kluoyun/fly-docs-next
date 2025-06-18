@@ -4,7 +4,7 @@ sidebar_label: CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -22,34 +22,37 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     * Select **GPIO pins to set at micro-controller startup**, input: **!gpio5,!gpio19,!gpio24**
     :::warning
-        Please enter in English input mode: `!gpio5,!gpio19,!gpio24`
+        Please enter `!gpio5,!gpio19,!gpio24` in English input mode.
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/can.webp').default} size="100%" align="center" />
-    * Press `Q`, then a **Save configuration** prompt will appear, press `Y` again
+    * Press the `Q` key, a **Save configuration** prompt will appear, then press the `Y` key
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Now the configuration should be saved and you should exit to the command line interface
-    * Enter `make -j4` to start compilation, it may take some time
+    * Enter the following command to start compiling, it may take some time
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the output below is displayed, the compilation is successful
+    * If the output below is displayed, compilation is successful
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
     <LS />
 
 ## Burn Firmware
 
-    * Before burning the firmware, connect the tool board to UTOC or a mainboard flashed with bridge firmware using an XT30 data cable, refer to the wiring diagram below
+    * Before burning the firmware, use an XT30 data cable to connect the tool board to UTOC or the mainboard with bridge firmware installed. Below is the reference wiring diagram
     * Please ensure that the DIP switch is set correctly
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/sb2040v3_utoc.webp').default} size="80%" align="center" />
-    * Ensure that the resistance between CAN H and CAN L is around `60Ω` when measured with a multimeter in a power-off state; if it is `120Ω`, turn on the `120Ω` DIP switch; if it is around `40Ω`, turn off the DIP switch
+    * Ensure that the resistance between CAN H and CAN L is around `60Ω` when measured with a multimeter under power-off conditions. If it is `120Ω`, the `120Ω` DIP switch needs to be turned on. If it is around `40Ω`, the DIP switch needs to be turned off
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
-## Confirm Firmware Startup
+## Confirm if Firmware has Started
 
     * If the firmware starts up normally, the LED will light up
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sb2040/sb2040-v3/flash/img/led.webp').default} size="100%" align="center" />

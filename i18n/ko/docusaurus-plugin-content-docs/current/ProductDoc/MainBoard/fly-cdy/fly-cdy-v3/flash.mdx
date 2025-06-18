@@ -1,13 +1,16 @@
 ---
 sidebar_position: 2
 sidebar_label: 펌웨어 컴파일 및 플래시
+
 ---
+
+
 
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import PcDfuFlash from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
-import HostDfuFlash from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
 import UTOC from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -19,9 +22,9 @@ import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
     :::tip
 
     * CDV는 기본적으로 TF 카드를 사용하여 펌웨어를 플래시합니다.
-    * 최대 `32G` 용량의 TF 카드를 준비해 주십시오.
-    * 브랜드가 없는 메모리 카드는 플래시에 실패할 수 있으므로, 아래에서 추천하는 브랜드의 TF 카드를 사용하십시오.
-    * TF 카드의 전송 속도는 `class10`급 또는 그 이상이어야 하며, SanDisk와 같은 브랜드의 TF 카드를 권장합니다.
+    * 용량이 `32GB` 이하인 TF 카드를 준비하십시오.
+    * 불량 메모리 카드는 플래시 실패의 원인이 될 수 있으므로, 아래에서 권장하는 브랜드의 TF 카드를 사용하십시오.
+    * TF 카드의 전송 속도는 최소 `class10` 이상을 권장하며, SanDisk 등 브랜드 제품을 추천합니다.
 
     :::
 
@@ -37,26 +40,32 @@ import TF from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q` 키를 누르면 **Save configuration**이 나타나고, 이때 `Y` 키를 누릅니다.
+    * `Q` 키를 누르면 **Save configuration** 메시지가 나타나고, 그 후에 `Y` 키를 누릅니다.
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 이제 설정이 저장되고 명령줄 인터페이스로 돌아왔습니다.
-    * `make -j4`를 입력하여 컴파일을 시작합니다. 시간이 좀 걸립니다.
+    * `Q` 키를 누르면 **Save configuration** 메시지가 나타나고, 그 후에 `Y` 키를 누릅니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * 이제 설정이 저장되었으며 명령줄 화면으로 돌아왔습니다.
+    * 아래 명령어를 입력하여 컴파일을 시작합니다. 시간이 다소 걸릴 수 있습니다.
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래의 내용이 출력되면 컴파일이 성공한 것입니다.
+    * 마지막에 다음 내용이 출력되면 컴파일이 성공한 것입니다.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+
         
-    * 컴파일 성공 예제는 아래와 같습니다.
+    * 아래 이미지는 컴파일 성공 예시입니다.
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
 
 ## 펌웨어 플래시
 
 :::danger 주의사항
-* CDV는 기본적으로 TF 카드를 사용하여 BL 펌웨어를 미리 플래시합니다.
+* CDV는 사전 플래시된 BL 펌웨어를 사용합니다.
 :::
 
     <TF />

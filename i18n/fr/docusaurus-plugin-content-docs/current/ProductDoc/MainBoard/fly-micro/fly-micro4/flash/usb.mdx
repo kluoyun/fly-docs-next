@@ -5,22 +5,22 @@ sidebar_label: Programmeur USB
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
-import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
 # Compilation du firmware USB
 
-    :::warning
+    :::tip
 
-    * La carte Micro4 est préchargée avec le firmware Katapult via USB, pas besoin de la reprogrammer.
+    * La Micro4 est préchargée avec le programme Katapult via USB, il n'est pas nécessaire de la reprogrammer.
 
     :::
 
-## Démarrage de la compilation
+## Démarrer la compilation
 
     <SSH />
 
@@ -28,33 +28,27 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Sélectionnez les broches GPIO à configurer au démarrage du micro-contrôleur, entrez : gpio8
+    * Sélectionner les broches GPIO à configurer au démarrage du microcontrôleur, entrer : gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/usb.webp').default} size="100%" align="center" />
-    * Appuyez sur `Q`, apparaît **Enregistrer la configuration**, appuyez ensuite sur `Y`
+    * Appuyer sur la touche `Q`, apparaît **Save configuration**, puis appuyer sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Vous devriez maintenant avoir enregistré la configuration et être revenu à l'interface de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * La configuration devrait maintenant être sauvegardée et vous êtes revenu à l'invite de commande
+    * Entrer la commande ci-dessous pour commencer la compilation, cela peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au texte suivant, la compilation a réussi :
+    * Si la sortie finale ressemble à ceci, la compilation a réussi :
 
         ```bash
         Linking out/klipper.elf
-        Création du fichier hex out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
-## Vérification du mode de programmation
+## Vérifier si le mode de programmation est activé
 
-    * Assurez-vous que l'ordinateur hôte est correctement connecté à Internet et que le câble de connexion du périphérique inférieur à l'ordinateur supérieur possède une fonctionnalité de transmission de données.
-    * Connectez-vous via SSH à l'ordinateur hôte, puis entrez `lsusb` et appuyez sur Entrée. Si vous voyez les informations entourées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est renvoyée, il s'agit d'un problème du système de l'ordinateur hôte. Nous ne pouvons rien faire à ce sujet, vous devez changer pour un système confirmé comme fonctionnel ou remplacer l'ordinateur hôte.
-        * Si l'instruction `lsusb` n'existe pas, vous pouvez exécuter cette commande pour l'installer :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * Les IDs affichés dans le cadre rouge peuvent être utilisés comme référence mais ne sont pas fixes ; le suffixe `OpenMoko, Inc. rp2040` est significatif et le `XX` signifie qu'il peut varier.
-        * Certains ordinateurs hôtes peuvent afficher des informations incomplètes ou ne rien afficher en raison de problèmes de système.
+    <LS />
 
-## Programmation du firmware
+## Programmer le firmware
 
     <CANBOOT />

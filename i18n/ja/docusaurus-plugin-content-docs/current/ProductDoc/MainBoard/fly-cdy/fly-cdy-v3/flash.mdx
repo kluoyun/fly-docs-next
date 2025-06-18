@@ -1,33 +1,36 @@
 ---
 sidebar_position: 2
-sidebar_label: 固件編譯と焼込
+sidebar_label: ファームウェアのコンパイルと書き込み
 ---
+
+
+
 
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import PcDfuFlash from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
-import HostDfuFlash from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
 import UTOC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
 
-# 固件編譯と焼込
+# ファームウェアのコンパイルと書き込み
 
     :::tip
 
-    * CDVはデフォルトでTFカードを使用してファームウェアを焼込ます
-    * 容量が`32G`以下のTFカードを準備してください
-    * ブランド外のメモリーカードは焼込に失敗する可能性があるため、推奨されるメモリーカードを使用してファームウェアの更新を行ってください
+    * CDVはデフォルトでTFカードを使用してファームウェアを書き込んでいます
+    * 容量が`32G`以下のTFカードをご用意ください
+    * 互換性のないメモリーカードは書き込みに失敗する可能性がありますので、できるだけ推奨されるメモリーカードを使用してください
     * TFカードの転送速度は`class10`級またはそれ以上であることが望ましく、サンディスクなどのブランドのTFカードをお勧めします
 
     :::
 
 
 
-## 準備作業
+## 事前準備
 
     <SSH />
 
@@ -37,26 +40,32 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
+    * `Q`キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っています
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 再び `Q` キーを押して **Save configuration** が表示され、その後 `Y` キーを押します
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * これで設定が保存され、コマンドラインインターフェースに戻ります
+    * コンパイルを開始するために次のコマンドを入力します。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されたらコンパイル成功です
+    * 最後に以下のような出力が出ればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+
         
-    * コンパイル成功の例は下記の通りです
+    * コンパイル成功の例がこちらです
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
 
-## ファームウェアの焼込
+## ファームウェアの書き込み
 
-:::danger 注意
-* CDVは事前にTFカード焼込のBLファームウェアがインストールされています
+:::danger 注意事項
+* CDVには事前にTFカードで書き込まれたBLファームウェアが含まれています
 :::
 
     <TF />

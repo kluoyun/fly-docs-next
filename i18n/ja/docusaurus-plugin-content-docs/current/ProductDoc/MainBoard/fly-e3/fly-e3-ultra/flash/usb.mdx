@@ -1,25 +1,25 @@
 ---
 sidebar_position: 2
-sidebar_label: USBファームウェアの焼込み
+sidebar_label: USBファームウェアの書き込み
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# USBファームウェアのコンパイル
+# USBファームウェアのビルド
 
     :::tip
 
-    * 出荷時にすでにTFカードブートローダーがプリフラッシュされていますので、再度フラッシュする必要はありません。
+    * 工場出荷時にTFカードブートローダーが事前に焼かれているため、再度焼く必要はありません
 
     :::
 
-## コンパイル開始
+## ビルドの開始
 
     <SSH />
 
@@ -27,12 +27,15 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
+    * `Q` キーを押すと **Save configuration** が表示されるので、その後に `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在、設定が保存され、コマンドラインに戻ったはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 現在は設定が保存され、コマンドラインに戻っているはずです
+    * 下記のコマンドを入力してビルドを開始します（時間がかかります）
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
+    * 最後に以下のような出力が出ればビルド成功です
 
         ```bash
         Linking out/klipper.elf
@@ -40,6 +43,6 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
         ```
 
 
-## ファームウェアの焼込み
+## ファームウェアの書き込み
     
     <TF />

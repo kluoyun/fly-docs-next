@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: CANファームウェア焼込み
+sidebar_label: CANファームウェアの書き込み
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
 # CANファームウェアのコンパイル
 
-## コンパイル開始
+## コンパイルの開始
 
     <SSH />
 
@@ -20,34 +20,37 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * マイクロコントローラー起動時に設定するGPIOピンを選択します。「!gpio20」を入力してください。（「!」は大文字です）
+    * マイクロコントローラー起動時に設定するGPIOピンを選択します。`!gpio20`を入力してください。（`!`は大文字）
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/can.webp').default} size="100%" align="center" />
-    * `Q` キーを押して、「Save configuration」が表示されたら、その後に `Y` キーを押します
+    * `Q`キーを押して、**Save configuration**が表示されたら、その後に`Y`キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在、設定が保存され、コマンドラインインターフェースに戻ったはずです
-    * `make -j4` を入力してコンパイルを開始します（時間がかかります）
+    * これで設定が保存され、コマンドラインに戻ります
+    * 下記のコマンドを入力してコンパイルを開始します。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が表示されたらコンパイル成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
     <LS />
 
 
-## ファームウェアの焼込み
+## ファームウェアの書き込み
 
-    * ツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードにXT30データラインで接続します。参考接続図は以下にあります
-    * ダイアルスイッチが正しい位置にセットされていることを確認してください
+    * ファームウェアを書き込む前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードに接続してください。下記は参考接続図です
+    * ダイアルスイッチが正しい位置に設定されていることを確認してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * CAN HとCAN Lが電源オフ状態で、マルチメーターで約60Ωの抵抗値が測定されるか確認します。もし約120Ωなら「120Ω」ジャンパーを接続し、約40Ωならジャンパーを外してください
+    * CAN HとCAN Lが電源オフ状態で、マルチメーターで約`60Ω`の抵抗値を測定することを確認してください。もし`120Ω`であれば`120Ω`のジャンパーを接続し、約`40Ω`であればジャンパーを外してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## ファームウェアの起動確認
+## ファームウェアが正常に起動したかの確認
 
     * ファームウェアが正常に起動するとLEDが点灯します
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.webp').default} size="100%" align="center" />

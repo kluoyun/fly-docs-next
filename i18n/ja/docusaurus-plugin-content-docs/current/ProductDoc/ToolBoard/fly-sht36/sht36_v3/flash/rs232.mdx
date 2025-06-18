@@ -1,17 +1,16 @@
 ---
 sidebar_position: 4
-sidebar_label: RS232ファームウェアのコンパイルとフラッシュ
-
+sidebar_label: RS232ファームウェアのコンパイルと書き込み
 ---
 
 import USBFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rp2.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import RS232 from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_rs232.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
 
-# RS232 ファームウェアのコンパイル
+# RS232ファームウェアのコンパイル
 
 ## コンパイル開始
 
@@ -23,43 +22,48 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio5**
     :::warning
-        英語入力モードで `!gpio5` を入力してください
+        `!gpio5`を入力する際は英数入力状態で行ってください。
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/rs232.webp').default} size="100%" align="center" />
-    * `Q` キーを押すと **設定の保存** が表示され、その後 `Y` キーを押します
+    * `Q` キーを押して **「Save configuration」** が表示されたら、その後に `Y` キーを押す
     <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェイスに戻ったはずです
-    * コンパイルを開始するために `make -j4` を入力します。時間がかかります
-        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="65%" align="center" />
-    * 最後に以下の内容が出力されればコンパイル成功です
-       <ImageView image={require('@site/docs/General/dfu-flash/img/make_uf2_finish.webp').default} size="65%" align="center" />
+    * 現在、設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * コンパイルを開始するために以下のコマンドを入力します。時間がかかります
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * 最後に以下の内容が表示されたらコンパイル成功です
+
+        ```bash
+        Linking out/klipper.elf
+        Creating uf2 file out/klipper.uf2
+        ```
 
 
-
-
-## フラッシュモードに入る
+## 書き込みモードに入る
 
     :::tip
 
-    矢印で指されているのが `BOOT` ボタンです
+    矢印で示したのが`BOOTボタン`です
 
     :::
 
-    * ツールボードは**完全に電源を切った状態**で、**BOOTボタン**を押したまま、データ転送機能付きのTypeCケーブルを使用して**ツールボード**を**ホストコンピューターのUSBポート**に接続します。正しく接続されたら `BOOT` ボタンを離します
+    * ツールボードが**完全に電源を切れた状態**で、**BOOTボタン**を押しながら、データ転送機能付きのTypeCケーブルを使用して、**ツールボード**を**ホストPCのUSBポート**に接続します。正しい接続が確認できたら、**BOOTボタン**を放します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/boot.webp').default} size="80%" align="center" />
 
-## フラッシュモードに入ったかどうかの確認
+## 書き込みモードに入ったか確認
 
     <LS />
 
 
-## RS232ファームウェアのフラッシュ
+## RS232ファームウェアの書き込み
     
     <USBFLASH />
     
 
 
-## ファームウェアが起動したかどうかの確認
+## ファームウェアが正常に起動したかどうかの確認
 
-    * ファームウェアが正常に起動すれば、以下の画像のように **LEDが点灯します**
+    * ファームウェアが正常に起動すると、次の画像のように**LEDが点灯します**
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />

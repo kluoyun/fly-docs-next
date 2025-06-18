@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: CANファームウェアのコンパイルとフラッシュ
+sidebar_label: CANファームウェアのコンパイルと書き込み
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,53 +20,57 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * **GPIOピンをマイクロコントローラーの起動時に設定する**を選択し、入力：**!gpio18**
+    * **GPIOピンをマイクロコントローラー起動時に設定する**を選択し、入力：**!gpio18**
     :::warning
-        `!gpio18`を入力する際は英数入力状態にしてください
+        `!gpio18`を入力する際は英数入力で行ってください。
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/can.webp').default} size="95%" align="center" />
-    * **上図と照らし合わせ、一致していることを確認してから次の手順に進んでください**
-    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
+    * 上図と一致していることを確認し、問題なければ次のステップに進んでください
+    * `Q` キーを押すと「Save configuration」が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻ったはずです
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * 現在、設定が保存され、コマンドラインインターフェースに戻っているはずです
+    * コンパイルを開始するには以下のコマンドを入力してください。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下の内容が表示されたらコンパイル成功です
+    * 最後に以下の内容が出力されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
+---
 
-## オフボードコンピュータの設定
+## 上位機の設定
     :::warning
-        オフボードコンピュータが **FLY** の場合は、**オフボードコンピュータの設定** をスキップしてください
+        上位機が **FLY** の場合は「上位機の設定」はスキップできます。
     :::
 
     :::warning
-       オフボードコンピュータが **非FLY** の場合は、以下の手順を実行してください
+        上位機が **非FLY** の場合は以下の手順を実行してください。
     :::
 
-    ### オフボードコンピュータがCANをサポートしているかどうかの確認
+    ### CANサポートの検証
 
-    * **FLYオフボードコンピュータ** の場合はこの操作は必要ありません
-    * システムが`Ubuntu`の場合には`UbuntuのCAN0の設定`が必要ですが、このドキュメントはまだ更新されていません
-    * 下記のコマンドを入力し、システムがCANをサポートしているかどうかを確認します
+    * **FLY上位機** の場合、この操作は必要ありません
+    * システムが `Ubuntu` の場合、`UbuntuのCAN0設定`が必要ですが、このドキュメントはまだ更新されていません
+    * 下記のコマンドを入力し、システムがCANをサポートしているか確認してください
     ```bash
-    sudo modprobe can && echo "カーネルはCANをサポートしています" || echo "カーネルはCANをサポートしていません"
+    sudo modprobe can && echo "カーネルがCANをサポートしています" || echo "カーネルがCANをサポートしていません"
     ```
-    * 上記のコマンドを入力すると、カーネルがCANをサポートしている場合、「カーネルはCANをサポートしています」と返されます。サポートしていない場合は「カーネルはCANをサポートしていません」と返されます。
+    * 上記のコマンドを実行すると、カーネルがCANをサポートしている場合、「カーネルがCANをサポートしています」と返ります。サポートしていない場合、「カーネルがCANをサポートしていません」と返ります。
     :::tip
-        「カーネルはCANをサポートしています」の場合、次のステップに進めます。サポートしていない場合、「カーネルはCANをサポートしていません」と返された場合は、オフボードコンピュータのシステムを変更するか、オフボードコンピュータ自体を変更してください。
+        「カーネルがCANをサポートしています」と返ったら、次のステップのCAN0設定に進んでください。「カーネルがCANをサポートしていません」と返った場合、上位機のシステムを変更するか、上位機自体を交換してください。
     :::
    
    ### CAN0の設定
 
-    * このコマンドは既存のCAN0の設定を上書きします。実行後、システムを再起動する必要があります
-    * 実際の状況に応じて、次のいずれかを選択してください（**KlipperのデフォルトCANレートは1Mで、1Mレートを使用することをお勧めします**）
+    * このコマンドはシステムの既存のCAN0設定を上書きします。実行後、システムを再起動する必要があります
+    * 実際の状況に応じて、以下のいずれかを選択してください (**KlipperのデフォルトCAN速度は1Mであり、1M速度をお勧めします**)
 
     :::warning
-        1Mレートの場合、下記のコマンドを入力します
+        1M速度を使用する場合、以下のコマンドを入力してください
     :::
 
     ```bash
@@ -81,7 +85,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
     ```
 
     :::warning
-        500Kレートの場合、下記のコマンドを入力します
+        500K速度を使用する場合、以下のコマンドを入力してください
     :::
 
     ```bash
@@ -95,30 +99,37 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
     EOF
     ```
 
-    * システムを再起動します
+    * デバイスを再起動します
 
     ```bash
     sudo reboot
     ```
 
-## デバイスの検索
+## 書き込みモードへの確認
+    * 上位機が正常にネットワークに接続されていることを確認し、下位機と接続するデータ線がデータ転送機能を持っていることを確認してください。
+    * 上位機にSSH接続し、`lsusb` コマンドを入力してエンターキーを押します。もし下図に囲まれた情報を表示できる場合、次のステップに進んでください。
+        * 何も情報が返ってこない場合、これは上位機のシステムに問題があります。対策がありませんので、正常なシステムに切り替えるか、上位機自体を交換してください。
+        * `lsusb` コマンドがないと表示される場合、以下のコマンドを実行してインストールできます
+            ```bash
+            sudo apt-get install usbutils
+            ```
+            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
+    * `OpenMoko, Inc. Geschwister Schneider CAN adapter` というサフィックスがあるかどうかが判断基準です。
+        * 部分的な上位機ではシステムの問題により、完全に表示されない場合や表示されない場合があります。
 
-    <LS />
-
-
-## ファームウェアのフラッシュ
-    * ファームウェアをフラッシュする前に、XT30データ線を使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたマザーボードに接続します。参照配線図は以下にあります
-    * ダイアルスイッチが対応する位置に設定されていることを確認してください
+## ファームウェアの書き込み
+    * ファームウェアを書き込む前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアが書き込まれたメインボードに接続してください。以下の接続図を参考にしてください
+    * バイスの位置が正しいことを確認してください
     ## KFインターフェースの図
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/KF.webp').default} size="80%" align="left" />
     ## XT30インターフェースの図
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/xt30.webp').default} size="80%" align="left" />
-    * CAN HとCAN Lが電源が切れた状態でマルチメーターで抵抗値を測定し、約`60Ω`であることを確認してください。`120Ω`であれば`120Ω`のジャンパーを接続し、`40Ω`程度であればジャンパーを外してください
+    * CAN H と CAN L が電源オフの状態で60Ω程度の抵抗値になることを確認してください。120Ωの場合、120Ωのジャンパーを接続し、40Ω程度の場合、ジャンパーを取り外してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-CAN/img/120r.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
-## ファームウェアの起動確認
+## ファームウェア起動の確認
 
-    * ファームウェアが正常に起動するとLEDが点灯します
+    * ファームウェアが正常に起動した場合、LEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/TOOL-LITE/TOOL-LITE-232/img/led.webp').default} size="50%" align="center" />

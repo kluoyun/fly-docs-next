@@ -4,18 +4,18 @@ sidebar_label: USB Firmware Flashing
 ---
 
 import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
-import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_uf2.mdx';
+import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
 # USB Firmware Compilation
 
     :::tip
 
-    * The Micro4 comes with the Katapult firmware pre-flashed on the USB connection and does not need to be flashed again.
+    * The Micro4 comes with the Katapult firmware pre-flashed on the USB connection, so you don't need to flash it again.
 
     :::
 
@@ -29,30 +29,25 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     * Select GPIO pins to set at micro-controller startup, input: gpio8
         <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/usb.webp').default} size="100%" align="center" />
-    * Press `Q` key, a **Save configuration** prompt will appear, then press `Y` key
+    * Press `Q`, then when **Save configuration** appears, press `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should have been saved and you should have exited to the command line interface
-    * Enter `make -j4` to start compilation, it may take some time
+    * Now the configuration should be saved and you should be back to the command line interface
+    * Enter the following command to start compilation, it takes a while
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following output appears, the compilation is successful
+    * If the output is as follows, the compilation is successful
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
-## Confirm Entering Flash Mode
-    * Ensure that the host machine can connect to the internet normally and ensure that the data cable connecting the peripheral device to the host machine has data transmission capability.
-    * After SSH connecting to the host machine, enter `lsusb` and press Enter. If the information circled in the image below appears, you can proceed to the next step.
-        * If there is no feedback at all, this indicates a problem with the host machine's system, and we are unable to help. You need to replace it with a confirmed normal system or change the host machine.
-        * If the instruction `lsusb` is not found, you can execute this command to install it:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * The ID displayed in the red box can be used as a reference but is not fixed; the suffix `OpenMoko, Inc. rp2040` has a judgment basis where `XX` means it is variable.
-        * Some host machines may display incomplete or no information due to system issues.
+## Confirm Entering Bootloader Mode
 
-## Firmware Flashing
+    <LS />
+
+## Flash Firmware
     
     <CANBOOT />

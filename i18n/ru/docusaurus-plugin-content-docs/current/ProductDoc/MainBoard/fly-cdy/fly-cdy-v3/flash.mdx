@@ -8,9 +8,9 @@ sidebar_label: Компиляция и запись прошивки
 
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import PcDfuFlash from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
-import HostDfuFlash from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
 import UTOC from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -23,8 +23,8 @@ import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     * По умолчанию CDV использует TF-карту для записи прошивки
     * Подготовьте TF-карту объемом не более `32 ГБ`
-    * Использование неизвестных брендов может привести к неудачной записи, рекомендуется использовать следующие рекомендованные TF-карты для обновления прошивки
-    * Скорость передачи данных TF-карты должна быть как минимум `class10`, рекомендуется использовать TF-карты от SanDisk и других известных брендов
+    * Некачественные карты памяти могут привести к неудачной записи, поэтому рекомендуется использовать следующие бренды TF-карт для обновления прошивки
+    * Лучше всего использовать TF-карты класса `10` или выше, например, от производителя SanDisk
 
     :::
 
@@ -40,26 +40,32 @@ import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация сохранена, и вы вернулись в командную строку
-    * Введите `make -j4`, чтобы начать компиляцию (время может занять немного)
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь должна быть сохранена конфигурация и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции (процесс может занять некоторое время)
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если последний вывод содержит следующее, то компиляция успешна
+    * Если последний вывод содержит следующее, то компиляция успешно завершена
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
+
         
-    * Пример успешной компиляции:
+    * Ниже приведен пример успешной компиляции
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
 
 ## Запись прошивки
 
 :::danger Важно
-* CDV предварительно установлен BL-прошивка для записи через TF-карту
+* CDV поставляется с предварительно установленной BL-прошивкой для TF-карты
 :::
 
     <TF />

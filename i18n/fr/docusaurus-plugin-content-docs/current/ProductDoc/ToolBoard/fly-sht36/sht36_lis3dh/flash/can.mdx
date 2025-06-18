@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: Flashage du firmware CAN
+sidebar_label: Programme de l'interface CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,34 +20,38 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Sélectionner les broches GPIO à configurer au démarrage du microcontrôleur, entrer : !gpio20 (remarque : le point d'exclamation est en majuscule)
+    * Sélectionnez les broches GPIO à configurer au démarrage du micro-contrôleur, entrez : `!gpio20`. Veuillez noter que `!` est en majuscule.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/can.webp').default} size="100%" align="center" />
-    * Appuyer sur `Q`, apparaît **Enregistrer la configuration**, puis appuyer sur `Y`
+    * Appuyez sur `Q`, apparaîtra **Enregistrer la configuration**, puis appuyez à nouveau sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration doit maintenant être sauvegardée et vous êtes revenu à l'interface de ligne de commande
-    * Entrer `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez la commande ci-dessous pour démarrer la compilation, cela prendra un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au texte ci-dessous, la compilation a réussi :
+    * Si la sortie finale ressemble à ceci, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Création du fichier hex out/klipper.bin
+        Création du fichier binaire out/klipper.bin
         ```
 
     <LS />
 
 
-## Flashage du firmware
+## Programme du firmware
 
-    * Avant de flasher le firmware, connectez le boîtier d'outils à UTOC ou à une carte mère flashed avec le firmware bridge à l'aide d'un câble XT30. Voici un schéma de raccordement de référence
-    * Vérifiez que les interrupteurs sont positionnés correctement
+    * Avant de programmer le firmware, connectez la carte outil à UTOC ou à une carte mère flashée avec le firmware bridge en utilisant un câble XT30. Ci-dessous se trouve un schéma de câblage de référence
+    * Vérifiez que les commutateurs sont correctement positionnés
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` lorsqu'il n'y a pas d'alimentation. Si elle est de `120Ω`, ajoutez une résistance de `120Ω`. Si elle est d'environ `40Ω`, retirez la résistance
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en coupant le courant avec un multimètre. Si elle est de `120Ω`, branchez une résistance de `120Ω`. Si elle est d'environ `40Ω`, retirez la résistance
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
 ## Vérification du démarrage du firmware
 
-    * Si le firmware démarre correctement, la LED s'allumera
+    * Si le firmware démarre normalement, la LED s'allumera
     <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_lis3dh/flash/img/led.webp').default} size="100%" align="center" />
+

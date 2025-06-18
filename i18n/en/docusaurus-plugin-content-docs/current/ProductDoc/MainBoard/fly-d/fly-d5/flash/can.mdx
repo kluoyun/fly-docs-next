@@ -4,12 +4,12 @@ sidebar_label: USB Bridge CAN Firmware Burning
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_utoc.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
-
+import Katapult from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
-import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
+
 
 # USB Bridge CAN Firmware Burning
 
@@ -21,44 +21,44 @@ import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Press the `Q` key, when the **Save configuration** prompt appears, press `Y` again.
+    * Press `Q` key, when the **Save configuration** appears, press `Y` again
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * Now the configuration should be saved and you should have exited to the command line interface.
-    * Enter `make -j4` to start compiling, it will take some time.
+    * Now the configuration should be saved and you should exit to the command line interface
+    * Enter the following command to start compilation, it will take some time
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following output is displayed at the end, the compilation is successful.
+    * If the output is as follows, the compilation is successful
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-    
+
+
 ## Enter Burning Mode
 
     :::tip Tip
-        The Katapult firmware has been pre-installed on D5 units produced after September 1, 2024.
+        The D5 produced after September 1, 2024 has already been flashed with the Katapult firmware.
     :::
-    * Connect the main board to the host machine using a Type-C data cable, and **double-click the reset button**, at which point the LED on the main board will flash.
+    * After connecting the main board to the host computer with a Type-C data cable, **double-click the reset button**, at this time there will be an LED light flashing on the main board.
     :::warning Warning
-       * If there is no flashing LED, please re-flash the Katapult firmware: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter-dfu-burning-mode">Flash Katapult Firmware</Button>
-       * If there is no flashing LED, please execute the next step after flashing the Katapult firmware.
+       * If there is no LED light flashing, please re-flash the Katapult firmware: <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/bl#enter-dfu-burning-mode">Flash Katapult Firmware</Button>
+       * If there is no LED light flashing, please execute the next step after flashing the Katapult firmware.
     :::
     <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-d/fly-d5/flash/img/d5_dfu.webp').default} size="100%" align="center" />
 
-## Confirm Burning Mode Entry
+## Confirm Whether Entering Burning Mode
 
-    * Ensure that the host machine can connect to the network normally, and ensure that the data line connecting the lower-level machine to the host machine has data transmission capability.
-    * After SSH connection to the host machine, enter `lsusb` and press Enter. If the information circled in the image below is displayed, you can proceed to the next step.
-        * If there is no feedback at all, this is a problem with the host system, and we are unable to help; you need to replace with a confirmed normal system or change the host machine.
-        * If the `lsusb` command is not found, you can run this command to install it:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * The ID displayed in the red box can be used as a reference but is not a **fixed ID (it is variable)**. The suffix `stm32f072xx` after `OpenMoko, Inc.` has a judgment basis where `XX` means variable.
-        * Some host machines may display incomplete or no information due to system issues.
+    <LS />
 
-## Burn Firmware
+## Demonstration Video
+
+<AutoPlayer width="90%" url_zh="https://www.bilibili.com/video/BV1Ae5Tz5EiX/" url_other="https://www.youtube.com/embed/KS4iRlSnync?si=7_PtrExfBY-9uFO_" />
 
 
-    <CANBOOT />
+## Flash Firmware
+
+
+    <Katapult />

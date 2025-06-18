@@ -1,16 +1,16 @@
 ---
 sidebar_position: 4
-sidebar_label: 103 Version CAN Firmware Compilation and Burning
+sidebar_label: CAN Firmware Compilation and Burning for Version 103
 ---
 
 import CANFLASH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/103/_can.mdx';
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_can.mdx';
 
-# 103 Version CAN Firmware Compilation
+# Compilation of CAN Firmware for Version 103
 
 ## Start Compilation
 
@@ -20,14 +20,17 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Select **GPIO pins to set at micro-controller startup**, input: !PC13 (Note: it should be uppercase)
+    * Select **GPIO pins to set at micro-controller startup**, enter: !PC13 (Note: It must be uppercase)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/103.webp').default} size="100%" align="center" />
-    * Press `Q` key, then you will see **Save configuration**, press `Y` key again at this time
+    * Press the `Q` key, a **Save configuration** prompt will appear, then press `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now the configuration should be saved and exit to the command line interface
-    * Input `make -j4` to start compilation, it takes a bit of time
+    * Now the configuration should be saved and you should have returned to the command line interface
+    * Enter the following command to start compiling, it may take some time
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following content is output at last, the compilation is successful
+    * If the output below appears, compilation is successful
 
         ```bash
         Linking out/klipper.elf
@@ -36,17 +39,17 @@ import LS from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <LS />
 
-## Burn Firmware
+## Flash Firmware
 
-    * Use an XT30 data cable to connect the tool board to UTOC or the main board with bridge firmware before burning the firmware, below is the reference wiring diagram
-    * Please pay attention to whether the DIP switch is set to the corresponding position
+    * Before flashing the firmware, connect the tool board to UTOC or the mainboard with bridge firmware using an XT30 data cable, and refer to the wiring diagram below
+    * Please ensure that the DIP switch is set correctly
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/sht36v2_utoc.webp').default} size="80%" align="left" />
-    * Please ensure that the resistance value between CAN H and CAN L is about `60Ω` when measured with a multimeter in a power-off condition, if it is `120Ω`, a `120Ω` jumper needs to be connected, if it is about `40Ω`, the jumper needs to be removed
+    * Ensure that the resistance between CAN H and CAN L measures around `60Ω` in a power-off state; if it is `120Ω`, a `120Ω` jumper should be connected; if it is around `40Ω`, remove the jumper
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
-## Confirm Whether the Firmware Starts Successfully
+## Confirm Whether Firmware Has Started
 
-    * If the firmware starts successfully, the LED will light up
+    * If the firmware starts normally, the LED will light up
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v2/flash/img/led.webp').default} size="70%" align="center" />

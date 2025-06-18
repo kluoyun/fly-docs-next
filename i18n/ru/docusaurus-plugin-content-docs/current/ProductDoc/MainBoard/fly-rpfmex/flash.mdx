@@ -1,16 +1,16 @@
 ---
 sidebar_position: 2
-sidebar_label: Запись прошивки
+sidebar_label: Прошивка прошивки
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
-import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb1.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
+import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_usb.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 
-# Компиляция прошивки через USB
+# Компиляция прошивки по USB
 
 ## Начало компиляции
 
@@ -20,32 +20,25 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
-    <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
-    <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если последний вывод содержит следующее, компиляция успешно завершена
+    * Нажмите `Q`, чтобы появилось **Сохранить конфигурацию**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация должна быть сохранена и вы должны вернуться в командную строку
+    * Введите следующую команду для начала компиляции, процесс может занять некоторое время
+    ```bash
+    make -j4
+    ```
+        <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
+    * Если последним выводом будет следующее, компиляция успешно завершена
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## Проверка режима записи
+## Проверка режима прошивки
 
-    * Убедитесь, что хост-компьютер подключен к интернету и шина данных между хост-компьютером и целевым устройством работает корректно.
-    * Подключитесь к хост-компьютеру через SSH и введите `lsusb` и нажмите Enter. Если появляется информация, заключенная в красном кружке на приведенном ниже изображении, можно переходить к следующему шагу.
-        * Если нет никакого ответа, это проблема системы хост-компьютера, мы не можем помочь, вам нужно заменить систему или хост-компьютер.
-        * Если нет команды `lsusb`, выполните эту команду для установки:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/ProductDoc/MainBoard/fly-micro/fly-micro4/flash/img/6177.webp').default} size="70%" align="center" /> 
-    * ID, показанный в красной рамке, может служить ориентиром, но он **не является фиксированным** и может изменяться. После `OpenMoko, Inc. rp2040` последовательность `XX` указывает на изменяемую часть.
-        * Некоторые системы хост-компьютеров могут отображать информацию неполностью или вообще не отображать.
+    <LS />
 
-## Запись прошивки
-
-
+## Загрузка прошивки
+    
     <Katapult />

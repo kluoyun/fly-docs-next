@@ -1,10 +1,10 @@
 ---
 sidebar_position: 2
-sidebar_label: USBファームウェアの書き込み
+sidebar_label: USBファームウェア焼付け
 ---
 
 import Katapult from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_usb.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -22,31 +22,25 @@ import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押します
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * これで設定が保存され、コマンドラインに戻ります
-    * `make -j4` を入力してコンパイルを開始します。時間がかかります
+    * `Q` キーを押して、**Save configuration** が表示されたら、その後に `Y` キーを押す
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * これで設定が保存され、コマンドラインに戻ったはずだ
+    * 下記のコマンドを入力してコンパイルを開始する。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 最後に以下のような出力が表示されたらコンパイル成功です
+    * 最後に以下の内容が出力されればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 書き込みモードへの確認
+## 焼付けモードの確認
 
-    * 上位機が正常にネットワーク接続でき、データ転送機能を持つ下位機と接続されていることを確認してください。
-    * SSH で上位機に接続し、`lsusb` と入力して Enter キーを押します。以下の画像内の赤枠で囲まれた情報が表示された場合、次のステップに進んでください。
-        * 何も情報が返ってこない場合、これは上位機のシステム問題であり、解決できません。正常なシステムに切り替えるか、上位機を交換してください。
-        * `lsusb` コマンドがないと表示される場合、このコマンドでインストールできます
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * 赤枠内に表示される ID は参考程度ですが、**固定ではありません（可変）**です。`OpenMoko, Inc. stm32f072xx` の後ろの `XX` は可変です。
-        * 一部の上位機はシステムの問題により、完全に表示されない場合があります。
+    <LS />
 
-## ファームウェアの書き込み
+## ファームウェアの焼付け
     
     <CANBOOT />

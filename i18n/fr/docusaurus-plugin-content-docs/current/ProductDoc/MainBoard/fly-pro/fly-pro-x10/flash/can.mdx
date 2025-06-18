@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: Programme de la carte CAN via un pont USB
+sidebar_label: Flashage du firmware CAN via pont USB
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +12,7 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Programme de la carte CAN via un pont USB
+# Flashage du firmware CAN via pont USB
 
 ## Début de la compilation
 
@@ -22,32 +22,25 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Appuyez sur la touche `Q`, une fois que le message **Save configuration** apparaît, appuyez à nouveau sur `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * La configuration doit maintenant être sauvegardée et vous devez être revenu à l'interface de ligne de commande
-    * Tapez `make -j4` pour commencer la compilation, cela peut prendre un certain temps
+    * Appuyez sur la touche `Q`, puis sur `Y` lorsque vous voyez **Save configuration**
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
+    * Entrez la commande suivante pour démarrer la compilation, qui peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au texte suivant, la compilation a réussi
+    * Si la sortie finale contient les lignes suivantes, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
+## Vérification du mode de flashage
 
-## Vérification du mode de programmation
+    <LS />
 
-    * Assurez-vous que l'ordinateur principal est correctement connecté à Internet et que le câble de connexion entre l'ordinateur principal et le périphérique inférieur possède la fonctionnalité de transmission de données.
-    * Connectez-vous via SSH à l'ordinateur principal puis tapez `lsusb` et appuyez sur Entrée. Si l'information entourée par les cercles dans l'image ci-dessous apparaît, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème système de l'ordinateur principal. Nous ne pouvons rien faire à ce sujet. Vous devez soit changer vers un système fonctionnel, soit remplacer l'ordinateur principal.
-        * Si la commande `lsusb` n'est pas reconnue, vous pouvez l'installer en exécutant cette commande :
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * L'ID affiché dans la zone rouge peut être utilisé comme référence mais il n'est pas fixe ; le suffixe `stm32h723xx` après `OpenMoko, Inc.` sert de critère de jugement, où `XX` est variable.
-        * Certains ordinateurs principaux peuvent ne pas afficher ou ne pas afficher correctement en raison de problèmes système.
-## Programmation du firmware
-
+## Flashage du firmware
+    
     <CANBOOT />
-

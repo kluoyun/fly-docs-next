@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: flash du firmware CAN
+sidebar_label: Programme de la carte CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_can.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,12 +20,15 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Appuyez sur `Q`, puis lorsque vous voyez **Save configuration**, appuyez à nouveau sur `Y`
+    * Appuyez sur `Q`, une fois que **Save configuration** apparaît, appuyez à nouveau sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour démarrer la compilation, cela peut prendre un certain temps
+    * Entrez la commande ci-dessous pour démarrer la compilation, cela prendra un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale ressemble au texte suivant, la compilation a réussi :
+    * Une sortie similaire à celle-ci indique que la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
@@ -35,11 +38,11 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
     <LS />
 
 
-## Flashage du firmware
+## Programmation du firmware
 
-    * Avant de flasher le firmware, connectez le circuit d'outils au UTOC ou à la carte mère avec une ligne XT30, ci-dessous est un schéma de raccordement de référence
+    * Avant de programmer le firmware, connectez la carte d'outil avec une ligne de données XT30 à UTOC ou au contrôleur principal flashé avec le firmware bridge. Voici un schéma de raccordement de référence
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/img/utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L mesure environ `60Ω` en utilisant un multimètre en hors tension ; si elle est de `120Ω`, connectez une résistance de `120Ω` ; si elle est d'environ `40Ω`, retirez la résistance
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en utilisant un multimètre en cas d'absence d'alimentation. Si elle est de `120Ω`, connectez un saut de `120Ω`. Si elle est d'environ `40Ω`, retirez le saut.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />

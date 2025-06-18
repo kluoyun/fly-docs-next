@@ -1,19 +1,19 @@
 ---
 sidebar_position: 3
-sidebar_label: USB橋接CAN 펌웨어焼录
+sidebar_label: USB 연결 CAN 펌웨어 프로그래밍
 ---
 
 import CANFLASH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import SSH from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# USB橋接CAN 펌웨어焼录
+# USB 연결 CAN 펌웨어 프로그래밍
 
-## 시작하기 전 컴파일
+## 컴파일 시작
 
     <SSH />
 
@@ -21,31 +21,26 @@ import CANBOOT from '@site/i18n/ko/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * `Q` 키를 누르면 **Save configuration** 메시지가 나타나고, 그 후에 `Y` 키를 누릅니다.
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * `Q` 키를 누르면 **Save configuration** 메시지가 나타나고, 이 때 `Y` 키를 누릅니다.
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * 이제 설정이 저장되었으며 명령줄 인터페이스로 돌아왔습니다.
-    * `make -j4` 명령을 입력하여 컴파일을 시작합니다. 시간이 다소 걸릴 수 있습니다.
+    * 아래 명령어를 입력하여 컴파일을 시작합니다. 시간이 다소 걸립니다.
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * 마지막으로 아래의 내용이 출력되면 컴파일이 성공적으로 완료된 것입니다.
+    * 마지막에 다음 내용이 출력되면 컴파일이 성공한 것입니다.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-## 펌웨어焼录 모드 확인
+## 프로그래밍 모드 진입 확인
 
-    * 상위 컴퓨터가 정상적으로 연결되어 있는지 확인하고, 상위 컴퓨터와 데이터 전송 기능을 가진 하위 컴퓨터를 연결합니다.
-    * SSH를 통해 상위 컴퓨터에 연결한 후 `lsusb` 명령어를 입력하고 Enter 키를 누릅니다. 아래 이미지에서 빨간색 사각형으로 표시된 정보가 나타나면 다음 단계로 진행할 수 있습니다.
-        * 아무런 정보도 반환되지 않는 경우, 상위 컴퓨터 시스템에 문제가 있을 수 있으며 해결 방법은 없으므로, 정상적인 시스템으로 교체하거나 상위 컴퓨터를 바꾸어야 합니다.
-        * `lsusb` 명령어가 없다는 메시지가 나온 경우 아래 명령어를 실행하여 설치할 수 있습니다.
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * 빨간색 사각형 안에 표시된 ID는 참고용이며 고정적이지 않습니다. `OpenMoko, Inc. stm32h723xx`라는 뒤의 접미사 `XX`는 변할 수 있습니다.
-        * 일부 상위 컴퓨터는 시스템 문제로 인해 정보가 제대로 표시되지 않을 수 있습니다.
+    <LS />
 
-## 펌웨어焼录
+## 펌웨어 프로그래밍
+
 
     <CANBOOT />

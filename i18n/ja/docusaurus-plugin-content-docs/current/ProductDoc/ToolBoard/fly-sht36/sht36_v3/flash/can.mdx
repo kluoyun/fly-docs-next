@@ -4,7 +4,7 @@ sidebar_label: CANファームウェアのコンパイルと書き込み
 ---
 
 import CANFLASH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can1.mdx';
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +12,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
 # CANファームウェアのコンパイル
 
-## コンパイル開始
+## コンパイルの開始
 
     <SSH />
 
@@ -22,49 +22,52 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     * **GPIOピンをマイクロコントローラーの起動時に設定する**を選択し、入力：**!gpio5**
     :::warning
-        英数入力モードで`!gpio5`を入力してください。
+        `!gpio5`は英数入力状态下で入力してください。
     :::
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/can.webp').default} size="100%" align="center" />
-    * 上図と一致していることを確認してください。一致したら次のステップに進んでください
-    * `Q`キーを押して「**Save configuration**」が表示されたら、その後に`Y`キーを押します
+    * **上図と一致していることを確認し、次に進んでください**
+    * `Q`キーを押して「Save configuration」が表示されたら、その後に`Y`キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
-    * 現在、設定が保存され、コマンドラインに戻ったはずです
-    * `make -j4`を入力してコンパイルを開始します。時間がかかります
+    * 現在、設定が保存されコマンドラインインターフェースに戻っているはずです
+    * 下記のコマンドを入力してコンパイルを開始します（時間がかかります）
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * 最後に以下の内容が出力されればコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 ---
 
-## 上位機の設定
+## 上位機器の設定
     :::warning
-        FLYの上位機を使用している場合、この「**上位機の設定**」のステップは実行する必要はありません。
+        上位機器が**FLY**の場合、この「上位機器の設定」ステップは実行する必要はありません。
     :::
 
     :::warning
-        非FLYの上位機を使用している場合、以下の手順を実行してください。
+        上位機器が**FLY以外**の場合には、以下の手順を実行してください。
     :::
 
-    ### CANサポートの検証
+    ### CANサポートの確認
 
-    * FLY上位機の場合、この操作は不要です
-    * システムがUbuntuの場合、Ubuntu向けのCAN0構成が必要ですが、このドキュメントはまだ更新されていません
-    * 下記のコマンドを入力して、システムがCANをサポートしているかどうかを確認します
+    * **FLY上位機器**の場合はこの操作は不要です
+    * システムが`Ubuntu`の場合には`UbuntuでのCAN0の設定`が必要ですが、このドキュメントはまだ更新されていません
+    * 下記のコマンドを入力してシステムがCANをサポートしているかどうかを確認します
     ```bash
-    sudo modprobe can && echo "カーネルはCANをサポートしています" || echo "カーネルはCANをサポートしていません"
+    sudo modprobe can && echo "あなたのカーネルはCANをサポートしています" || echo "あなたのカーネルはCANをサポートしていません"
     ```
-    * 上記のコマンドを実行すると、カーネルがCANをサポートしている場合、「カーネルはCANをサポートしています」と返されます。サポートしていない場合、「カーネルはCANをサポートしていません」と返されます。
+    * 上記のコマンドを実行すると、カーネルがCANをサポートしている場合、「あなたのカーネルはCANをサポートしています」と返されます。そうでない場合、「あなたのカーネルはCANをサポートしていません」と返されます。
     :::tip
-        「カーネルはCANをサポートしています」と返された場合、次にCAN0の構成を行ってください。「カーネルはCANをサポートしていません」と返された場合、上位機のシステムを変更するか、新しい上位機に交換してください。
+        「あなたのカーネルはCANをサポートしています」と返されたら次のステップのCAN0の設定を行ってください。「あなたのカーネルはCANをサポートしていません」と返されたら、上位機器システムの交換または上位機器の変更をお勧めします。
     :::
-   
-   ### CAN0の構成
 
-    * このコマンドは既存のCAN0構成を上書きします。実行後、システムを再起動する必要があります
-    * KlipperのデフォルトCAN速度は1Mであり、1M速度を推奨しています
+   ### CAN0の設定
+
+    * このコマンドはシステムの既存のCAN0設定を上書きし、実行後はシステムを再起動する必要があります
+    * 実際の状況に応じて一つを選択してください（**KlipperのデフォルトCAN速度は1Mで、1M速度を使用することをお勧めします**）
 
     :::warning
         1M速度の場合、下記のコマンドを入力してください
@@ -75,7 +78,7 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
         allow-hotplug can0
         iface can0 can static
             bitrate 1000000
-            up ifconfig \$IFACE txqueuelen 1024
+            up ifconfig $IFACE txqueuelen 1024
             pre-up ip link set can0 type can bitrate 1000000
             pre-up ip link set can0 txqueuelen 1024
     EOF
@@ -90,13 +93,13 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
     allow-hotplug can0
     iface can0 can static
         bitrate 500000
-        up ifconfig \$IFACE txqueuelen 1024
+        up ifconfig $IFACE txqueuelen 1024
         pre-up ip link set can0 type can bitrate 500000
         pre-up ip link set can0 txqueuelen 1024
     EOF
     ```
 
-    * システムを再起動します
+    * デバイスを再起動します
 
     ```bash
     sudo reboot
@@ -106,16 +109,18 @@ import LS from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
 
 ## ファームウェアの書き込み
-         
-    * ファームウェアを書き込む前に、XT30データケーブルを使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードに接続してください。参考接続図は以下にあります
-    * ダイアルスイッチが対応する位置に設定されていることを確認してください
+
+    * ファームウェアを書き込む前に、XT30データラインを使用してツールボードをUTOCまたはブリッジファームウェアがインストールされたメインボードに接続してください。参考接線図は下記です
+    * ダイアルスイッチが対応する位置に設定されているか確認してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/sht36v3_utoc.webp').default} size="80%" align="left" />
-    * CAN HとCAN Lが電源オフ状態で、60Ω前後の抵抗値になるようにマルチメーターで測定することを確認してください。120Ωの場合には120Ωのジャンパーを接続し、40Ω前後の場合にはジャンパーを外してください
+    * CAN HとCAN Lが電源オフ状態で60Ω程度の抵抗値になるようにマルチメーターで測定してください。120Ωであれば120Ωのジャンパーを接続し、40Ω程度であればジャンパーを取り外してください
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/120.webp').default} size="100%" align="center" />
 
     <CANFLASH />
 
-## 固件の起動確認
+## ファームウェアの起動確認
 
-    * 固件が正常に起動した場合、LEDが点灯します
+    * ファームウェアが正常に起動するとLEDが点灯します
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_v3/flash/img/led.webp').default} size="50%" align="center" />
+
+---

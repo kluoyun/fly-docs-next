@@ -4,20 +4,20 @@ sidebar_label: Запись прошивки через USB
 ---
 
 import Katapult from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb1.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 
 
-# Компиляция прошивки через USB
+# Компиляция прошивки для USB
 
     :::tip
 
-    * По умолчанию предустановленная прошивка Katapult с CAN-интерфейсом
-    * Для использования USB-записи требуется прошивка Katapult для USB
-    * После записи прошивка не требует повторной перезаписи
+    * Предустановленная в заводских условиях CAN-связь с использованием фиксированной прошивки Katapult
+    * Для использования записи прошивки через USB требуется прошивка USB Katapult
+    * После записи больше не требуется повторная запись
     * <Button variant="contained" disableElevation component="a" rel="noopener" href="./bl">Запись прошивки Katapult</Button>
 
     :::
@@ -30,15 +30,17 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Выберите GPIO пины, которые будут установлены при старте микроконтроллера, введите: !PA15 (обратите внимание, что это должно быть заглавное !)
+    * Выберите GPIO пины для настройки при старте микроконтроллера, введите: !PA15 (обратите внимание, что это прописные буквы)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/usb.webp').default} size="100%" align="center" />
-    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+    * Нажмите клавишу `Q`, появится **Сохранить конфигурацию**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернетесь в командную строку
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Теперь конфигурация должна быть сохранена и вы вернулись к командной строке
+    * Введите следующую команду для начала компиляции (процесс может занять некоторое время):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее, компиляция успешна
-
+    * Если вывод содержит следующие строки, компиляция успешно завершена:
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
@@ -48,9 +50,8 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <LS />
 
-
 ## Запись прошивки
-    
+
     <Katapult />
 
 ## Проверка запуска прошивки

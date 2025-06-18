@@ -3,11 +3,14 @@ sidebar_position: 2
 sidebar_label: Firmware Compilation and Burning
 ---
 
+
+
+
 import SSH from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import PcDfuFlash from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
-import HostDfuFlash from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
 import UTOC from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import CANBOOT from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
@@ -17,10 +20,10 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     :::tip
 
-    * 407ZG uses TF card for firmware burning by default.
-    * Please prepare a TF card with capacity no more than `32G`.
-    * Counterfeit memory cards may cause burning failure, please use the recommended memory cards below for firmware updates.
-    * The transmission speed of the TF card should be Class10 or above, it is recommended to use SanDisk brand TF cards.
+    * The default firmware burning method for 407ZG is using the TF card.
+    * Please prepare a TF card with a capacity of no more than `32G`.
+    * Counterfeit memory cards may cause burning failure; please try to use the recommended memory cards below for firmware updates.
+    * The transmission speed of the TF card should be at least `class10` or higher, it is recommended to use brands like SanDisk.
 
     :::
 
@@ -30,32 +33,35 @@ import TF from '@site/i18n/en/docusaurus-plugin-content-docs/current/General/dfu
 
     <SSH />
 
-## Compile Klipper Firmware
+## Compiling Klipper Firmware
 
     <MakeOperate/>
 
     <USB />
 
-    * Press `Q` key, appear **Save configuration**, then press `Y` key
+    * Press `Q`, then when **Save configuration** appears, press `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Now you should have saved the configuration and exited to the command line interface
-    * Enter `make -j4` to start compiling, it takes some time
+    * Now the configuration should have been saved and you should have returned to the command line interface.
+    * Enter the following command to start compiling, it will take some time.
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * If the following content is output at the end, compilation is successful
+    * If the output ends with the following content, the compilation is successful.
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
-        
-    * The image below is an example of successful compilation
+
+    * Below is an example of a successful compilation.
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
 
-## Burn Firmware
+## Burning Firmware
 
-:::danger Note
-* F404ZG comes pre-flashed with BL firmware that can be burned via TF card.
+:::danger Notice
+* The BL firmware pre-burned on F404ZG is for TF card burning.
 :::
 
     <TF />

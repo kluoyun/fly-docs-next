@@ -4,7 +4,7 @@ sidebar_label: Запись прошивки CAN
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,18 +20,21 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Выберите GPIO пины для установки при старте микроконтроллера, введите: gpio17
+    * Выберите GPIO пины для настройки при старте микроконтроллера, введите: gpio17
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/can.webp').default} size="100%" align="center" />
     * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
     * Теперь конфигурация должна быть сохранена и вы вернулись к командной строке
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Введите следующую команду для начала компиляции (время займет немало):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее содержимое, компиляция успешно завершена:
+    * Если последний вывод содержит следующее, компиляция успешна:
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
 
 ## Поиск устройства
@@ -41,15 +44,14 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 
 ## Запись прошивки
 
-    * Перед записью прошивки подключите инструментальную плату к UTOC или материнской плате с прошивкой моста через кабель XT30, ниже приведена схема соединения
+    * Перед записью прошивки подключите инструментальную плату к UTOC или материнской плате с прошивкой моста с помощью кабеля XT30. Ниже приведен пример соединения:
         <ImageView image={require('@site/docs/General/get-id/img/utoc.webp').default} size="80%" align="left" />
-    * Убедитесь, что перед питанием CAN H и CAN L измеряются мультиметром сопротивление около `60 Ом`, если оно составляет `120 Ом`, подключите переходник `120 Ом`, если около `40 Ом`, удалите переходник
+    * Убедитесь, что сопротивление между CAN H и CAN L измеряется около `60 Ом` в отключенном состоянии; если оно составляет `120 Ом`, установите перемычку `120 Ом`; если около `40 Ом`, уберите перемычку
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/120.webp').default} size="50%" align="center" />
 
     <CANFLASH />
 
 ## Проверка запуска прошивки
 
-    * Если прошивка запущена нормально, светодиоды загорятся
+    * Если прошивка успешно запущена, светодиоды загорятся
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-ercf/ercf/flash/img/led.webp').default} size="100%" align="center" />
-

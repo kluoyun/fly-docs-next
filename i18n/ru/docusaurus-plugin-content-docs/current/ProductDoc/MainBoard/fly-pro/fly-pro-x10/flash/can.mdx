@@ -1,10 +1,11 @@
 ---
 sidebar_position: 3
-sidebar_label: Прошивка CAN через USB-мост
+sidebar_label: Прошивка CAN-моста через USB
+
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -12,7 +13,7 @@ import LS from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu
 import TF from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Прошивка CAN через USB-мост
+# Прошивка CAN-моста через USB
 
 ## Начало компиляции
 
@@ -22,32 +23,24 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, появится предложение **Save configuration**, затем нажмите `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
-    * Введите `make -j4`, чтобы начать компиляцию (время может занять немного)
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация сохранена и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции (время может занять длительное)
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод завершения содержит следующее содержимое, то компиляция успешна
+    * В конце вывода, если появляются следующие строки, компиляция успешно завершена:
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
 
-
 ## Проверка режима прошивки
 
-    * Убедитесь, что компьютер верхнего уровня подключен к сети и шнур данных, соединяющий компьютер верхнего уровня с нижним уровнем, имеет функцию передачи данных.
-    * Подключитесь по SSH к компьютеру верхнего уровня и введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в красном круге на изображении ниже, можно переходить к следующему шагу.
-        * Если нет никакого ответа, это проблема системы компьютера верхнего уровня, мы не можем помочь. Вам нужно заменить рабочую систему или заменить компьютер верхнего уровня.
-        * Если отсутствует команда `lsusb`, выполните эту команду для установки:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * ID, показанный в красном прямоугольнике, может служить ориентиром, но он не является фиксированным — он может изменяться. Суффикс `stm32h723xx` после `OpenMoko, Inc.` имеет диагностическое значение, где `XX` может меняться.
-        * Некоторые компьютеры верхнего уровня могут показывать недостаточно или вообще не показывать данные из-за проблем с системой.
-
+    <LS />
 
 ## Прошивка прошивки
     

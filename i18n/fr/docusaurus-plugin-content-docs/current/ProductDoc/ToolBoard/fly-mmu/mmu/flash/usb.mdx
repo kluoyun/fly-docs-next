@@ -1,10 +1,11 @@
 ---
 sidebar_position: 5
-sidebar_label: USB固件烧录
+sidebar_label: Programmeur USB
+
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_usb1.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -15,14 +16,14 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     :::tip
 
-    * Le firmware CAN préinstallé à la sortie d'usine pour le MMU
-    * Si vous utilisez la compilation via USB, vous devez brûler le firmware USB pour Katapult
-    * Une fois brûlé, il n'est pas nécessaire de le brûler à nouveau
-    * <Button variant="contained" disableElevation component="a" rel="noopener" href="./bl">Brûlage du firmware Katapult</Button>
+    * Le firmware Katapult avec connexion CAN préinstallé à la sortie d'usine
+    * Si vous utilisez le programmeur USB, il est nécessaire de flasher le firmware USB de Katapult
+    * Une fois flashé, il n'est plus nécessaire de refaire le processus
+    * <Button variant="contained" disableElevation component="a" rel="noopener" href="./bl">Flashing du firmware Katapult</Button>
 
     :::
 
-## Démarrer la compilation
+## Démarrage de la compilation
 
     <SSH />
 
@@ -30,26 +31,30 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Sélectionnez les broches GPIO à configurer au démarrage du microcontrôleur, entrez : !PA15 Veuillez noter que ! est en majuscule
+    * Sélectionnez les broches GPIO à configurer au démarrage du microcontrôleur, entrez : !PA15 (remarque : c'est en majuscules)
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-mmu/mmu/flash/img/usb.webp').default} size="100%" align="center" />
-    * Appuyez sur la touche `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
+    * Appuyez sur `Q`, apparaît **Enregistrer la configuration**, puis appuyez sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Vous devriez maintenant avoir enregistré la configuration et être revenu à l'interface de ligne de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * La configuration devrait maintenant être sauvegardée et vous êtes revenu à l'interface de ligne de commande
+    * Entrez la commande suivante pour commencer la compilation, cela peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * La fin de la sortie avec le contenu suivant indique que la compilation a réussi
+    * Lorsque la sortie finale ressemble à ce qui suit, la compilation est réussie
 
         ```bash
         Linking out/klipper.elf
-        Création du fichier hex out/klipper.bin
+        Creating hex file out/klipper.bin
         ```
 
-## Vérification du mode de chargement
+## Vérification du mode de flashage
+
 
     <LS />
 
 
-## Chargement du firmware
+## Flashage du firmware
     
     <Katapult />
 

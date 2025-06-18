@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-sidebar_label: 固件編譯與燒錄
+sidebar_label: ファームウェアのコンパイルと書き込み
 ---
 
 
@@ -8,22 +8,22 @@ sidebar_label: 固件編譯與燒錄
 
 import SSH from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
-import PcDfuFlash from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-dfu-flash.mdx';
-import HostDfuFlash from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-dfu-flash.mdx';
-import MakeOperate from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import PcDfuFlash from "/docs/General/dfu-flash/_pc-dfu-flash.mdx";
+import HostDfuFlash from "/docs/General/dfu-flash/_host-dfu-flash.mdx";
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_usb.mdx';
 import UTOC from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/407/_utoc.mdx';
 import CANBOOT from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_pc-tf-flash.mdx';
 
-# 固件編譯與燒錄
+# ファームウェアのコンパイルと書き込み
 
     :::tip
 
     * E3 ProはデフォルトでTFカードを使用してファームウェアを焼付けます
-    * 32G以下のTFカードをご用意ください
-    * ブランド外のメモリーカードは焼付けに失敗する可能性がありますので、推奨されるメモリーカードを使用してください
-    * TFカードの転送速度はClass10以上であることが望ましく、SanDiskなどのブランドのTFカードをお勧めします
+    * 容量が`32G`以下のTFカードを用意してください
+    * メモリーカードが正常に動作しない場合がありますので、推奨されるメモリーカードを使用してファームウェアを更新することをお勧めします
+    * TFカードの転送速度は`class10`級またはそれ以上であることが望ましく、SanDiskなどのブランドのTFカードを使用することをお勧めします
 
     :::
 
@@ -39,26 +39,29 @@ import TF from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu
 
     <USB />
 
-    * Qキーを押すと「Save configuration」が表示され、その後Yキーを押します
+    * `Q` キーを押すと **Save configuration** が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * 現在は設定が保存され、コマンドラインインターフェースに戻っているはずです
-    * make -j4を入力してコンパイルを開始します。時間がかかります
+    * 現在、設定が保存されコマンドラインインターフェースに戻ったはずです
+    * コンパイルを開始するには次のコマンドを入力してください。時間がかかります
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * コンパイルが成功すると、以下のような出力がされます
+    * 最後に以下の内容が表示されたらコンパイル成功です
 
         ```bash
         Linking out/klipper.elf
         Creating hex file out/klipper.bin
         ```
         
-    * コンパイルが成功した例
+    * コンパイル成功の例を以下に示します
 
         <ImageView image={require('@site/docs/General/dfu-flash/_firmware/img/make-done.webp').default} size="50%" align="left" />
 
-## ファームウェアの焼付け
+## ファームウェアの書き込み
 
-:::danger 注意
-* F404ZGは事前にTFカード焼付け用のBLファームウェアがインストールされています
+:::danger 注意事項
+* F404ZGには事前にTFカードでブートローダーを焼付けたBLファームウェアがインストールされています
 :::
 
     <TF />

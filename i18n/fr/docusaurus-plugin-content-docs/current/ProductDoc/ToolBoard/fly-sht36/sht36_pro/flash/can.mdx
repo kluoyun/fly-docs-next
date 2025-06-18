@@ -1,10 +1,10 @@
 ---
 sidebar_position: 3
-sidebar_label: Compilation et flashage du firmware CAN
+sidebar_label: Compilation et écriture du firmware CAN
 ---
 
 import CANFLASH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/2040/_can.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -20,32 +20,35 @@ import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu
 
     <CAN />
 
-    * Sélectionnez les broches GPIO à configurer au démarrage du micro-contrôleur, entrez : !gpio13 (remarque : c'est en majuscule)
+    * Sélectionner les broches GPIO à configurer au démarrage du micro-contrôleur, entrer : `!gpio13`. Veuillez noter que `!` est en majuscule.
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/can.webp').default} size="100%" align="center" />
-    * Appuyez sur `Q`, apparaît **Save configuration**, puis appuyez à nouveau sur `Y`
+    * Appuyer sur `Q`, apparaît **Enregistrer la configuration**, puis appuyer sur `Y`
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de commande
-    * Entrez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Vous devriez maintenant avoir enregistré la configuration et être revenu à l'interface de commande
+    * Entrer la commande suivante pour commencer la compilation, cela peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Si la sortie finale est la suivante, alors la compilation a réussi :
+    * Si la sortie finale contient les lignes ci-dessous, la compilation a réussi
 
         ```bash
         Linking out/klipper.elf
-        Creating hex file out/klipper.bin
+        Creating bin file out/klipper.bin
         ```
     <LS />
 
 
-## Flashage du firmware
+## Écriture du firmware
 
-    * Avant de flasher le firmware, connectez la carte outil à UTOC ou à une carte mère avec le firmware bridge via une ligne XT30. Voici un schéma de raccordement de référence
+    * Avant d'écrire le firmware, connectez la carte outil à UTOC ou à une carte mère flashée avec le firmware pont via un câble XT30. Voici un schéma de raccordement de référence
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/sht36pro_utoc.webp').default} size="80%" align="left" />
-    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en utilisant un multimètre en cas de coupure de courant. Si elle est de `120Ω`, connectez une jumelle de `120Ω`. Si elle est d'environ `40Ω`, retirez la jumelle
+    * Assurez-vous que la résistance entre CAN H et CAN L est d'environ `60Ω` en utilisant un multimètre en position hors tension. Si elle est de `120Ω`, connectez une jumelle de `120Ω`. Si elle est d'environ `40Ω`, retirez la jumelle
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/120.webp').default} size="80%" align="center" />
 
     <CANFLASH />
 
 ## Vérification du démarrage du firmware
 
-    * Si le firmware démarre correctement, la LED s'allumera constamment
+    * Si le firmware démarre correctement, la LED restera allumée
         <ImageView image={require('@site/docs/ProductDoc/ToolBoard/fly-sht36/sht36_pro/flash/img/led.webp').default} size="70%" align="center" />

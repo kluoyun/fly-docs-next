@@ -1,18 +1,17 @@
 ---
 sidebar_position: 2
-sidebar_label: Programmeur USB
-
+sidebar_label: Flashage du firmware via USB
 ---
 
 import Katapult from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
-import MakeOperate from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import USB from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/072/_usb.mdx';
 import SSH from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
 import LS from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_usb.mdx';
 import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-katapult-flash.mdx';
 
-# Compilation du firmware USB
+# Compilation du firmware via USB
 
 
 ## Démarrer la compilation
@@ -23,10 +22,13 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
 
     <USB />
 
-    * Appuyez sur `Q`, apparaît **Save configuration**, puis appuyez à nouveau sur `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
+    * Appuyez sur `Q`, puis apparaît **Save configuration**, appuyez ensuite sur `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     * Vous devriez maintenant avoir sauvegardé la configuration et être revenu à l'interface de ligne de commande
-    * Tapez `make -j4` pour commencer la compilation, cela prend un certain temps
+    * Entrez la commande ci-dessous pour commencer la compilation, cela peut prendre un certain temps
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
     * Si la sortie finale ressemble au texte suivant, la compilation a réussi
 
@@ -35,19 +37,10 @@ import CANBOOT from '@site/i18n/fr/docusaurus-plugin-content-docs/current/Genera
         Creating hex file out/klipper.bin
         ```
 
-## Vérifier si le mode de programmation est activé
+## Vérifier si le mode de flashage est activé
 
-    * Assurez-vous que l'ordinateur hôte peut se connecter correctement à Internet et que le câble de connexion entre l'ordinateur hôte et l'hôte distant possède la fonctionnalité de transmission de données.
-    * Connectez-vous via SSH à l'ordinateur hôte et tapez `lsusb` puis appuyez sur Entrée. Si vous voyez les informations encerclées dans l'image ci-dessous, vous pouvez passer à l'étape suivante.
-        * Si aucune information n'est retournée, il s'agit d'un problème avec le système de l'ordinateur hôte. Nous ne pouvons rien faire à ce sujet, vous devez changer de système ou remplacer l'ordinateur hôte.
-        * Si l'instruction `lsusb` n'est pas reconnue, vous pouvez installer cette commande avec
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * L'ID affiché dans la zone rouge peut servir de référence mais n'est pas **ID fixe** (il est variable). Le suffixe `stm32f072xx` après `OpenMoko, Inc.` permet de juger que `XX` est variable.
-        * Certains ordinateurs hôtes peuvent afficher des informations incomplètes ou ne pas afficher du tout en raison de problèmes liés au système.
+    <LS />
 
-## Programmation du firmware
+## Flasher le firmware
     
     <CANBOOT />

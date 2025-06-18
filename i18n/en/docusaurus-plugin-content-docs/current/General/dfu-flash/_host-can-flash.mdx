@@ -1,15 +1,15 @@
 :::tip
 
-* It is recommended not to perform ID finding and firmware flashing during the printing process.
-* The CAN firmware IDs of the same motherboard or tool board Katapult are completely consistent with the Klipper CAN firmware IDs.
+* It is recommended not to find the ID or flash the firmware during the printing process.
+* The CAN firmware of the same motherboard or tool board Katapult and the CAN firmware of Klipper have completely consistent IDs.
 
 :::
 
 :::warning
 
-* Ensure that the CAN network of the host computer has been configured.
+* Please ensure that the CAN network of the host computer has been configured.
 * You can use the following command to search for the CAN ID only when `1d50:606f` appears after running `lsusb`.
-* The CAN rate of the tool board must be consistent with the host computer; otherwise, the ID cannot be found and burned.
+* The CAN rate of the tool board must be consistent with the host computer, otherwise the ID cannot be found and burned.
 
 :::
 
@@ -18,40 +18,46 @@
     ```bash
     ~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0
     ```
+    Use this command to burn the `fast` system, *replace `<your motherboard ID>` with the ID queried in the previous step.*
+    
+     ```bash
+    python ~/klipper/scripts/canbus_query.py can0
+     ```
 
-    * After entering, you will encounter one of the following situations based on your machine. Below are references:
-        * First case: A motherboard with bridge firmware installed displays an ID and prompts `Application: Klipper`.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />
-        * Second case: A motherboard with bridge firmware installed, along with a tool board that requires firmware burning, displays two IDs.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />
-        * Third case: Using UTOC with a tool board that requires firmware burning.
-        * Tip: UTOC does not display the ID.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />
-        * Fourth case: No ID prompt, generally due to Klipper occupation, incorrect CAN0 rate of the host computer, or wiring abnormalities.
-            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />
+    * After inputting, one of the following situations will appear depending on your machine, the following are references:
+        * First type: The motherboard with the bridge firmware installed will display an ID and prompt `Application: Klipper`
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid.webp').default} size="100%" align="left" />  
+        * Second type: The motherboard with the bridge firmware installed and the tool board that needs to be burned with firmware will display two IDs
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid1.webp').default} size="100%" align="left" />  
+        * Third type: Using UTOC with the tool board that needs to be burned
+        * Tip: UTOC does not display the ID
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid2.webp').default} size="100%" align="left" />  
+        * Fourth type: No ID prompt, usually because the klipper is occupied, the CAN0 rate of the host computer is incorrect, or there is a wiring anomaly
+            <ImageView image={require('@site/docs/General/dfu-flash/img/canid3.webp').default} size="100%" align="left" />  
 
-    * Normally, if the tool board that needs to be burned is in CANBOOT mode, it will prompt `Application: CanBoot`, and the corresponding firmware light will flash. At this point, you need to burn the Klipper firmware; otherwise, it cannot be connected!!!
-    * Tip: If it is a Klipper firmware and the ID has been filled into the configuration, the ID will not be displayed and will be occupied by Klipper. You need to shield the corresponding ID and power off/restart the mainboard completely.
+    * Normally, if the tool board that needs to be burned is in the CANBOOT state, it will prompt `Application: CanBoot` and the corresponding firmware light will flash. At this time, you need to burn the Klipper firmware, otherwise it cannot be connected!!!
+    * Tip: If it is Klipper firmware and the ID has been entered into the configuration, the ID will not be displayed and will be occupied by Klipper. You need to disable the corresponding ID and restart the motherboard completely after cutting off the power.
 
     :::warning
 
-    * If no UUID is queried, please refer to the following document.
+    * If the UUID is not queried, please refer to the documentation below.  
     * <Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/DebugDoc/faq/klipper_can">CAN Problem Collection</Button>
 
     :::
 
 # Firmware Burning
 
-    * Replace `241696050c56` in the following command with the UUID found during the query. Please note that there is a space after `-u`.
+    * Replace `241696050c56` in the following command with the UUID found in the UUID query, note that there is a space after `-u`
         ```bash
         python3 ~/klipper/lib/canboot/flash_can.py -u 241696050c56
         ```
 
     * As shown in the figure below, if `CAN Flash Success` appears, the burning is successful.
-        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />
+        <ImageView image={require('@site/docs/General/dfu-flash/img/canflash.webp').default} size="100%" align="left" />  
 
-## If you need to update the firmware, just re-execute the burning instruction after compiling the firmware, but ensure that the ID can be found or Klipper is already connected.
-
+## Firmware Update
+    * If you need to update the firmware, you only need to re-execute the burning instruction after compiling the firmware.
+    * But please make sure that the corresponding ID can be found or Klipper is already connected.
         ```bash
         python3 ~/klipper/lib/canboot/flash_can.py -u  <MCU ID>
         ```

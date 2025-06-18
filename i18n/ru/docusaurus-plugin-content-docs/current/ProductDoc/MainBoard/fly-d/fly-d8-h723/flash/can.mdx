@@ -4,7 +4,7 @@ sidebar_label: Прошивка CAN через USB-мост
 ---
 
 import CANFLASH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_host-can-flash.mdx';
-import MakeOperate from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/klipper-make/_make-operate.mdx';
+import MakeOperate from "/docs/General/klipper-make/_make-operate.mdx";
 import CAN from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import SSH from '@site/i18n/ru/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/_ssh.mdx';
 
@@ -21,12 +21,15 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
     <CAN />
 
-    * Нажмите клавишу `Q`, когда появится подсказка **Save configuration**, затем нажмите `Y`
-        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="50%" align="center" />
-    * Теперь конфигурация должна быть сохранена и вы вернулись в командную строку
-    * Введите `make -j4` для начала компиляции, процесс может занять некоторое время
+    * Нажмите клавишу `Q`, появится **Save configuration**, затем нажмите `Y`
+        <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
+    * Теперь конфигурация должна быть сохранена, и вы вернулись в командную строку
+    * Введите следующую команду для начала компиляции (время займет немного):
+    ```bash
+    make -j4
+    ```
         <ImageView image={require('@site/docs/General/dfu-flash/img/make.webp').default} size="50%" align="center" />
-    * Если вывод содержит следующее содержимое, компиляция завершена успешно:
+    * Если вывод содержит следующее, компиляция успешна:
 
         ```bash
         Linking out/klipper.elf
@@ -35,16 +38,7 @@ import CANBOOT from '@site/i18n/ru/docusaurus-plugin-content-docs/current/Genera
 
 ## Проверка режима прошивки
 
-    * Убедитесь, что хост-компьютер имеет нормальное подключение к сети и что соединение между хост-компьютером и целевым устройством поддерживает передачу данных.
-    * После подключения по SSH к хост-компьютеру введите команду `lsusb` и нажмите Enter. Если появляется информация, заключенная в красном контуре на изображении ниже, можно переходить к следующему шагу.
-        * Если нет никакого вывода, это проблема системы хост-компьютера, мы не можем помочь вам. Вам нужно заменить систему или хост-компьютер на исправные.
-        * Если отсутствует команда `lsusb`, выполните эту команду для установки:
-            ```bash
-            sudo apt-get install usbutils
-            ```
-            <ImageView image={require('@site/docs/General/get-id/img/6177.webp').default} size="80%" align="left" /> 
-    * ID, показанный в красном контуре, является справочной информацией, но он **не фиксирован** и может изменяться. Последовательность символов `stm32h723xx` после `OpenMoko, Inc.` является важным признаком для определения устройства.
-        * На некоторых хост-компьютерах из-за проблем с системой информация может отображаться неполностью или вообще не отображаться.
+    <LS />
 
 ## Прошивка прошивки
 

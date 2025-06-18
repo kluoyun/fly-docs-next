@@ -1,18 +1,18 @@
 ---
 sidebar_position: 4
-sidebar_label: USBブリッジCANファームウェアの書き込み
+sidebar_label: USBブリッジCANファームウェアの焼込み
 ---
 
 import CAN from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/dfu-flash/_firmware/723/_utoc.mdx';
 import GetCanbusUUID from '@site/i18n/ja/docusaurus-plugin-content-docs/current/General/get-id/_get-canid-flyosfast.mdx';
 import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 
-# USBブリッジCANファームウェアの書き込み
+# USBブリッジCANファームウェアの焼込み
 
-## SSH接続を上位機に確立する
+## SSH接続を上位機に
 
     :::danger 警告
-    - ファームウェアのビルド前に`WiFiで上位機にSSH接続`する必要があります
+    - ファームウェアのコンパイル前に`WiFiで上位機にSSH接続`する必要があります
     :::
 
  * 最初に：<Button variant="contained" disableElevation component="a" rel="noopener" href="/docs/ProductDoc/MainBoard/fly-c/fly-c5/ssh#使用wifi接続して上位機にsshする">WiFiで上位機にSSH接続</Button>  
@@ -20,22 +20,22 @@ import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
  <br/>
 
 <Tabs>
-    <TabItem value="usb" label="USBブリッジCANファームウェアの書き込み" default>
-    ### USBブリッジCANファームウェアの書き込み
+    <TabItem value="usb" label="USBブリッジCANファームウェアの焼込み" default>
+    ### USBブリッジCANファームウェアの焼込み
     :::tip ヒント
-    - FLYOS-FASTシステムには事前にUSBブリッジCANファームウェアがコンパイルされています。手動でファームウェアをビルドする必要はありません。以下のコマンドを実行することで書き込みが可能です。
-    - ファームウェアを手動でビルドすることも選択できます。
+    - FLYOS-FASTシステムには事前に1つのUSBブリッジCANファームウェアがコンパイルされています。手動でファームウェアをコンパイルする必要はありません。以下のコマンドを実行すると焼込みが可能です。
+    - 「USBブリッジCANファームウェアの手動コンパイル」を選択し、自分でファームウェアをコンパイルすることもできます。
     :::
 
-    * お使いのデバイスに合わせて適切に選択してください。FLYシステムのデフォルトは`1M`
+    * あなたのデバイスに合わせて慎重に選択してください。FLYシステムのデフォルトは`1M`です。
 
-    * C5システムのデフォルトは1Mレートです。500Kに変更する場合は、システム設定で`canbus_bitrate`のレートを変更します。
+    * C5システムのデフォルトは1Mビットレートですが、500Kに変更する場合はシステム設定で`canbus_bitrate`のレートを変更してください。
 
-    * このコマンドは`1M`のUSBブリッジCANファームウェアを書き込みます
+    * このコマンドは`1M`の`USBブリッジCANファームウェア`を焼込みます
     ```bash
     fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-1m.bin
     ```
-    * このコマンドは`500k`のUSBブリッジCANファームウェアを書き込みます
+    * このコマンドは`500k`の`USBブリッジCANファームウェア`を焼込みます
     ```bash
     fly-flash -d c5 -h -f /usr/lib/firmware/klipper-h723-128k-usbcan-500k.bin
     ```
@@ -47,27 +47,30 @@ import MakeOperate from "/docs/General/flyos-fast/_firmware_make_operate.mdx";
 
 
 
-    <TabItem value="can" label="USBブリッジCANファームウェアの手動ビルド">
-        ## USBブリッジCANファームウェアの手動ビルド
+    <TabItem value="can" label="USBブリッジCANファームウェアの手動コンパイル">
+        ## USBブリッジCANファームウェアの手動コンパイル
         <MakeOperate/>
     
         <CAN />
     
-        * `Q` キーを押すと `Save configuration` が表示され、その際に `Y` キーを押します
+        * `Q` キーを押すと `Save configuration` が表示され、その後 `Y` キーを押します
         <ImageView image={require('@site/docs/General/dfu-flash/img/configuration.webp').default} size="40%" align="center" />
     
-        * 現在、設定が保存され、コマンドラインインターフェースに戻っています
+        * 現在、設定が保存され、コマンドラインインターフェースに戻ったはずです
     
-        * `make -j4` コマンドを入力してビルドを開始します。時間がかかります
+       * コンパイルを開始するために以下のコマンドを入力します。時間がかかります
+        ```bash
+        make -j4
+        ```
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build1.webp').default} size="60%" align="center" />
     
-        * 最後に以下の内容が出力されたらビルド成功です
+        * 最後に以下の内容が表示されたらコンパイル成功です
         <ImageView image={require('@site/docs/General/flyos-fast/img/firmware_build2.webp').default} size="60%" align="center" />
     ---
 
-        ### ファームウェアの書き込み
+        ### ファームウェアの焼込み
         :::tip
-        下記のコマンドを実行してファームウェアを書き込みます
+        ファームウェアを焼込むために以下のコマンドを実行してください
         :::
         
             ```bash
